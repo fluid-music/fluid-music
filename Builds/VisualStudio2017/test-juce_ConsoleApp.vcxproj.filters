@@ -940,7 +940,7 @@
     <ClCompile Include="..\..\Source\CLIApp.cpp">
       <Filter>test-juce\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Main.cpp">
+    <ClCompile Include="..\..\Source\CliUiBehaviour.cpp">
       <Filter>test-juce\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.cpp">
@@ -4345,6 +4345,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\CLIApp.h">
+      <Filter>test-juce\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\CliUiBehaviour.h">
       <Filter>test-juce\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\JUCE\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h">

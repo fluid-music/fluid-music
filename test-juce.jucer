@@ -5,7 +5,10 @@
     <GROUP id="{E03437D9-F7F3-5413-6A30-51BDC7A4D4BC}" name="Source">
       <FILE id="BbVjEA" name="CLIApp.cpp" compile="1" resource="0" file="Source/CLIApp.cpp"/>
       <FILE id="T4tZrh" name="CLIApp.h" compile="0" resource="0" file="Source/CLIApp.h"/>
-      <FILE id="LRTRe2" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="hQ3viv" name="CliUiBehaviour.cpp" compile="1" resource="0"
+            file="Source/CliUiBehaviour.cpp"/>
+      <FILE id="pRi14J" name="CliUiBehaviour.h" compile="0" resource="0"
+            file="Source/CliUiBehaviour.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
@@ -50,7 +53,7 @@
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="tracktion_engine" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="tracktion_engine" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
   </MODULES>
   <LIVE_SETTINGS>
     <WINDOWS/>

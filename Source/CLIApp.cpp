@@ -26,11 +26,9 @@ void CLIApp::unhandledException(const std::exception*, const String&, int)
 
 void CLIApp::initialise(const String& commandLine) 
 {
-    //myMainWindow.reset(new MyApplicationWindow());
-    //myMainWindow->setBounds(100, 100, 400, 500);
-    //myMainWindow->setVisible(true);
+    std::cout << "command line: " << commandLine << std::endl;
     std::cout << "Is standalone? " << isStandaloneApp() << std::endl;
-    std::cout << "Is Standalone App? " << JUCEApplicationBase::isStandaloneApp() << std::endl;
+    MessageManager::getInstance()->callAsync([this] { onRunning(); });
 }
 
 void CLIApp::shutdown() 
@@ -40,12 +38,22 @@ void CLIApp::shutdown()
 
 const String CLIApp::getApplicationName() 
 {
-    return "Charles' App!!!";
+    return "Cybernetic Productions!!";
 }
 
 const String CLIApp::getApplicationVersion() 
 {
-    return "1.0";
+    return "0.1";
+}
+
+void CLIApp::onRunning()
+{
+    std::cout << "Running!" << std::endl;
+    auto args = ArgumentList({ "UNSPECIFIED" }, getCommandLineParameterArray());
+    for (auto arg : args.arguments) {
+        std::cout << arg.text << std::endl;
+    }
+    quit();
 }
 
 START_JUCE_APPLICATION(CLIApp)

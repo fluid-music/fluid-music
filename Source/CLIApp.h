@@ -11,6 +11,7 @@
 #pragma once
 #include <iostream>
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "CliUiBehaviour.h"
 
 class CLIApp : public juce::JUCEApplicationBase {
     /** Returns the global instance of the application object being run. */
@@ -76,6 +77,9 @@ class CLIApp : public juce::JUCEApplicationBase {
 
 private:
     //bool initialiseApp() override;
-    tracktion_engine::Engine engine{ "Sweet!" };
-    //JUCE_DECLARE_NON_COPYABLE(JUCEApplication);
+    tracktion_engine::Engine engine{ "Sweet!", std::make_unique<CliUiBehaviour>(), nullptr };
+
+    // onRunning should be called once, and only after the MessageManager is
+    // also running. There is where I am putting the body of the application.
+    void onRunning();
 };
