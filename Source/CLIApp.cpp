@@ -30,6 +30,7 @@ void CLIApp::initialise(const String& commandLine)
     //myMainWindow->setBounds(100, 100, 400, 500);
     //myMainWindow->setVisible(true);
     std::cout << "Is standalone? " << isStandaloneApp() << std::endl;
+    std::cout << "Is Standalone App? " << JUCEApplicationBase::isStandaloneApp() << std::endl;
 }
 
 void CLIApp::shutdown() 
