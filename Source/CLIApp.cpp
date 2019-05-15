@@ -26,8 +26,6 @@ void CLIApp::unhandledException(const std::exception*, const String&, int)
 
 void CLIApp::initialise(const String& commandLine) 
 {
-    std::cout << "command line: " << commandLine << std::endl;
-    std::cout << "Is standalone? " << isStandaloneApp() << std::endl;
     MessageManager::getInstance()->callAsync([this] { onRunning(); });
 }
 
@@ -38,7 +36,7 @@ void CLIApp::shutdown()
 
 const String CLIApp::getApplicationName() 
 {
-    return "Cybernetic Productions!!";
+    return "Cybernetic Production";
 }
 
 const String CLIApp::getApplicationVersion() 
@@ -48,11 +46,74 @@ const String CLIApp::getApplicationVersion()
 
 void CLIApp::onRunning()
 {
-    std::cout << "Running!" << std::endl;
+    // Parse and print arguments
     auto args = ArgumentList({ "UNSPECIFIED" }, getCommandLineParameterArray());
     for (auto arg : args.arguments) {
         std::cout << arg.text << std::endl;
     }
+
+    // ------------ Plugin Scan -------------
+        // Log all the stuff about the plugins
+    std::cout << "Plugin Info..." << std::endl;
+    juce::File pluginDir{ "C:\\Program Files\\Common Files\\VST3\\" };
+    juce::FileSearchPath pluginSearchPath;
+    pluginSearchPath.add(pluginDir);
+    juce::VST3PluginFormat vst3;
+    juce::String deadPlugins;
+    std::cout << "Plugin directors isDir? " << pluginDir.getFullPathName() << " - " << pluginDir.isDirectory() << std::endl;
+
+    engine.getPluginManager().scanCompletedCallback = [] {
+        std::cout << "----------Plugin Scan Completed----------" << std::endl;
+    };
+    juce::PluginDirectoryScanner pluginScanner{
+        engine.getPluginManager().knownPluginList,
+        vst3,
+        pluginSearchPath,
+        true,
+        deadPlugins
+    };
+    engine.getPluginManager().setNumberOfThreadsForScanning(1);
+
+    juce::String pluginName;
+    std::cout << "Next plugin to scan: " << pluginScanner.getNextPluginFileThatWillBeScanned() << std::endl;
+    while (pluginScanner.scanNextFile(false, pluginName)) {
+        std::cout << "Scanned: " << pluginName << std::endl;
+        std::cout << "Dead Plugins: " << deadPlugins << std::endl;
+    }
+    std::cout << "Scanned: " << pluginName << std::endl;
+    std::cout << "Dead Plugins: " << deadPlugins << std::endl << std::endl;
+    for (auto filename : pluginScanner.getFailedFiles()) {
+        std::cout << "Failed to load plugin: " << filename << std::endl;
+    }
+    // ----------------------
+
+    // If there's an input.tracktionedit in working dir, load it. otherwise create a new one. 
+    auto inputFile = File::getCurrentWorkingDirectory().getChildFile("input.tracktionedit");
+    std::cout << "Looking for input file: " << inputFile.getFullPathName() << std::endl;
+    bool load = inputFile.existsAsFile();
+    ValueTree valueTree;
+    if (load) {
+        valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
+        std::cout << "Loaded: " << inputFile.getFullPathName() << std::endl;
+    }
+    else {
+        std::cout << "Creating empty edit" << std::endl;
+        valueTree = te::createEmptyEdit();
+    }
+
+    // Create the edit object
+    te::Edit::LoadContext loadContext;
+    std::unique_ptr<te::Edit> edit = std::make_unique<te::Edit>(engine,
+        valueTree,
+        te::Edit::forRendering,
+        &loadContext,
+        0);
+    BigInteger tracksToDo;
+    int trackIndex = 0;
+    for (auto track : te::getAllTracks(*edit)) {
+        tracksToDo.setBit(trackIndex++);
+    }
+    te::Renderer::renderToFile({ "Chaz Render Job" }, { juce::File::getCurrentWorkingDirectory().getChildFile("out.wav") }, *edit, { 0, 20 }, tracksToDo, true, {}, false);
     quit();
 }
 
