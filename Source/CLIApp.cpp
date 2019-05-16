@@ -55,12 +55,18 @@ void CLIApp::onRunning()
     // ------------ Plugin Scan -------------
         // Log all the stuff about the plugins
     std::cout << "Plugin Info..." << std::endl;
-    juce::File pluginDir{ "C:\\Program Files\\Common Files\\VST3\\" };
     juce::FileSearchPath pluginSearchPath;
-    pluginSearchPath.add(pluginDir);
+#ifdef JUCE_WIN
+    // https://helpcenter.steinberg.de/hc/en-us/articles/115000177084-VST-plug-in-locations-on-Windows
+    pluginSearchPath.add({ "C:\\Program Files\\Common Files\\VST3\\" });
+#endif
+#ifdef JUCE_MAC
+    pluginSearchPath.add({ "/Library/Audio/Plug-Ins/VST3/" });
+    pluginSearchPath.add({ "~/Library/Audio/Plug-Ins/VST3/" });
+#endif
     juce::VST3PluginFormat vst3;
     juce::String deadPlugins;
-    std::cout << "Plugin directors isDir? " << pluginDir.getFullPathName() << " - " << pluginDir.isDirectory() << std::endl;
+
 
     engine.getPluginManager().scanCompletedCallback = [] {
         std::cout << "----------Plugin Scan Completed----------" << std::endl;
@@ -113,7 +119,12 @@ void CLIApp::onRunning()
     for (auto track : te::getAllTracks(*edit)) {
         tracksToDo.setBit(trackIndex++);
     }
-    te::Renderer::renderToFile({ "Chaz Render Job" }, { juce::File::getCurrentWorkingDirectory().getChildFile("out.wav") }, *edit, { 0, 20 }, tracksToDo, true, {}, false);
+    te::Renderer::renderToFile(
+                               { "Chaz Render Job" },
+                               { juce::File::getCurrentWorkingDirectory().getChildFile("out.wav") },
+                               *edit,
+                               { 0, 20 },
+                               tracksToDo, true, {}, false);
     quit();
 }
 
