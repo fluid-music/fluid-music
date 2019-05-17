@@ -55,15 +55,16 @@ void CLIApp::onRunning()
     // ------------ Plugin Scan -------------
         // Log all the stuff about the plugins
     std::cout << "Plugin Info..." << std::endl;
-    juce::FileSearchPath pluginSearchPath;
-#ifdef JUCE_WIN
-    // https://helpcenter.steinberg.de/hc/en-us/articles/115000177084-VST-plug-in-locations-on-Windows
-    pluginSearchPath.add({ "C:\\Program Files\\Common Files\\VST3\\" });
-#endif
-#ifdef JUCE_MAC
-    pluginSearchPath.add({ "/Library/Audio/Plug-Ins/VST3/" });
-    pluginSearchPath.add({ "~/Library/Audio/Plug-Ins/VST3/" });
-#endif
+//    juce::FileSearchPath pluginSearchPath;
+//#ifdef JUCE_WINDOWS
+//    // https://helpcenter.steinberg.de/hc/en-us/articles/115000177084-VST-plug-in-locations-on-Windows
+//    pluginSearchPath.add({ "C:\\Program Files\\Common Files\\VST3\\" });
+//#endif
+//#ifdef JUCE_MAC
+//    pluginSearchPath.add({ "/Library/Audio/Plug-Ins/VST3/" });
+//    pluginSearchPath.add({ "~/Library/Audio/Plug-Ins/VST3/" });
+//#endif
+    
     juce::VST3PluginFormat vst3;
     juce::String deadPlugins;
 
@@ -74,7 +75,7 @@ void CLIApp::onRunning()
     juce::PluginDirectoryScanner pluginScanner{
         engine.getPluginManager().knownPluginList,
         vst3,
-        pluginSearchPath,
+        vst3.getDefaultLocationsToSearch(),
         true,
         deadPlugins
     };
