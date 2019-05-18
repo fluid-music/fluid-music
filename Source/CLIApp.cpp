@@ -126,6 +126,9 @@ void CLIApp::onRunning()
                                *edit,
                                { 0, 20 },
                                tracksToDo, true, {}, false);
+
+    // careful, dispatch may only be called form the main message thread
+    engine.getPluginManager().knownPluginList.dispatchPendingMessages();
     quit();
 }
 

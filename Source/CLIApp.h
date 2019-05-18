@@ -77,7 +77,7 @@ class CLIApp : public juce::JUCEApplicationBase {
 
 private:
     //bool initialiseApp() override;
-    tracktion_engine::Engine engine{ "Sweet!", std::make_unique<CliUiBehaviour>(), nullptr };
+    tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
 
     // onRunning should be called once, and only after the MessageManager is
     // also running. There is where I am putting the body of the application.
