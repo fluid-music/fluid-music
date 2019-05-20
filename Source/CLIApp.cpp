@@ -53,25 +53,11 @@ void CLIApp::onRunning()
     }
 
     // ------------ Plugin Scan -------------
-        // Log all the stuff about the plugins
+    // Log all the stuff about the plugins
     std::cout << "Plugin Info..." << std::endl;
-//    juce::FileSearchPath pluginSearchPath;
-//#ifdef JUCE_WINDOWS
-//    // https://helpcenter.steinberg.de/hc/en-us/articles/115000177084-VST-plug-in-locations-on-Windows
-//    pluginSearchPath.add({ "C:\\Program Files\\Common Files\\VST3\\" });
-//#endif
-//#ifdef JUCE_MAC
-//    pluginSearchPath.add({ "/Library/Audio/Plug-Ins/VST3/" });
-//    pluginSearchPath.add({ "~/Library/Audio/Plug-Ins/VST3/" });
-//#endif
     
     juce::VST3PluginFormat vst3;
     juce::String deadPlugins;
-
-
-    engine.getPluginManager().scanCompletedCallback = [] {
-        std::cout << "----------Plugin Scan Completed----------" << std::endl;
-    };
     juce::PluginDirectoryScanner pluginScanner{
         engine.getPluginManager().knownPluginList,
         vst3,
@@ -79,15 +65,13 @@ void CLIApp::onRunning()
         true,
         deadPlugins
     };
-    engine.getPluginManager().setNumberOfThreadsForScanning(1);
 
     juce::String pluginName;
-    std::cout << "Next plugin to scan: " << pluginScanner.getNextPluginFileThatWillBeScanned() << std::endl;
-    while (pluginScanner.scanNextFile(false, pluginName)) {
-        std::cout << "Scanned: " << pluginName << std::endl;
-        std::cout << "Dead Plugins: " << deadPlugins << std::endl;
-    }
-    std::cout << "Scanned: " << pluginName << std::endl;
+    do {
+        std::cout << "Scanning: \"" << pluginScanner.getNextPluginFileThatWillBeScanned() << "\"" << std::endl;
+    } while (pluginScanner.scanNextFile(true, pluginName));
+
+    // log failures
     std::cout << "Dead Plugins: " << deadPlugins << std::endl << std::endl;
     for (auto filename : pluginScanner.getFailedFiles()) {
         std::cout << "Failed to load plugin: " << filename << std::endl;
@@ -96,12 +80,12 @@ void CLIApp::onRunning()
 
     // If there's an input.tracktionedit in working dir, load it. otherwise create a new one. 
     auto inputFile = File::getCurrentWorkingDirectory().getChildFile("input.tracktionedit");
-    std::cout << "Looking for input file: " << inputFile.getFullPathName() << std::endl;
+    std::cout << "Check file:  " << inputFile.getFullPathName() << std::endl;
     bool load = inputFile.existsAsFile();
     ValueTree valueTree;
     if (load) {
         valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
-        std::cout << "Loaded: " << inputFile.getFullPathName() << std::endl;
+        std::cout << "Loaded file: " << inputFile.getFullPathName() << std::endl;
     }
     else {
         std::cout << "Creating empty edit" << std::endl;
