@@ -26,7 +26,6 @@ void CLIApp::unhandledException(const std::exception*, const String&, int)
 
 void CLIApp::initialise(const String& commandLine) 
 {
-    argumentList = std::make_unique<ArgumentList>(String{ "UNSPECIFIED" }, getCommandLineParameterArray());
     MessageManager::getInstance()->callAsync([this] { onRunning(); });
 }
 
@@ -42,21 +41,14 @@ const String CLIApp::getApplicationName()
 
 const String CLIApp::getApplicationVersion() 
 {
-    return "0.1";
+    return "0.0.1";
 }
 
-void CLIApp::onRunning()
+void CLIApp::ScanForPlugins()
 {
-    if (argumentList) {
-        for (auto arg : argumentList->arguments) {
-            std::cout << arg.text << std::endl;
-        }
-    }
-
-    // ------------ Plugin Scan -------------
     // Log all the stuff about the plugins
     std::cout << "Plugin Info..." << std::endl;
-    
+
     juce::VST3PluginFormat vst3;
     juce::String deadPlugins;
     juce::PluginDirectoryScanner pluginScanner{
@@ -77,29 +69,67 @@ void CLIApp::onRunning()
     for (auto filename : pluginScanner.getFailedFiles()) {
         std::cout << "Failed to load plugin: " << filename << std::endl;
     }
-    // --------------------------------------
+}
 
-    // If there's an input.tracktionedit in working dir, load it. otherwise create a new one. 
-    auto inputFile = File::getCurrentWorkingDirectory().getChildFile("input.tracktionedit");
-    std::cout << "Check file:  " << inputFile.getFullPathName() << std::endl;
-    bool load = inputFile.existsAsFile();
+void CLIApp::ListPlugins()
+{
+    std::cout << "Known Plugins:" << std::endl;
+    for (auto plugin : engine.getPluginManager().knownPluginList) {
+        std::cout << plugin->pluginFormatName << " - " << plugin->name << " - " << plugin->fileOrIdentifier << std::endl;
+    }
+}
+
+void CLIApp::onRunning()
+{
+    ArgumentList argumentList = ArgumentList(String{ "UNSPECIFIED" }, getCommandLineParameterArray());
+    for (auto arg : argumentList.arguments) {
+        std::cout << arg.text << std::endl;
+    }
+
+    if (argumentList.containsOption("-s|--scan-plugins")) ScanForPlugins();
+    if (argumentList.containsOption("--list-plugins")) ListPlugins();
+
+    // Create input edit.
+    // If -i inputfile is specified, use that file
+    // Else if "default.tracktionedit" exists in working dir, use that
+    // Else create an empty edit
     ValueTree valueTree;
-    if (load) {
+    File inputFile;
+    if (argumentList.containsOption("-i")) {
+        inputFile = argumentList.getExistingFileForOption("-i");
         valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
         std::cout << "Loaded file: " << inputFile.getFullPathName() << std::endl;
     }
     else {
-        std::cout << "Creating empty edit" << std::endl;
-        valueTree = te::createEmptyEdit();
+        inputFile = File::getCurrentWorkingDirectory().getChildFile("default.tracktionedit");;
+        if (inputFile.existsAsFile()) {
+            std::cout << "Loading default.tracktionedit" << std::endl;
+            valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
+        }
+        else {
+            // Caution: edit will have no file specified. 
+            std::cout << "Creating an empty edit" << std::endl;
+            valueTree = te::createEmptyEdit();
+        }
     }
 
     // Create the edit object
+    std::cout << "Creating Edit Object" << std::endl;
     te::Edit::LoadContext loadContext;
     std::unique_ptr<te::Edit> edit = std::make_unique<te::Edit>(engine,
         valueTree,
         te::Edit::forRendering,
         &loadContext,
         0);
+
+    // List any missing plugins
+    for (auto plugin : edit->getPluginCache().getPlugins()) {
+        if (plugin->isMissing()) {
+            std::cout << "WARNING! Edit contains this plugin, which is missing from the host: " << plugin->getName() << std::endl;
+        }
+    }
+
+    // Render
     BigInteger tracksToDo;
     int trackIndex = 0;
     for (auto track : te::getAllTracks(*edit)) {
