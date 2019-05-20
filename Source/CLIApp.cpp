@@ -69,6 +69,7 @@ void CLIApp::ScanForPlugins()
     for (auto filename : pluginScanner.getFailedFiles()) {
         std::cout << "Failed to load plugin: " << filename << std::endl;
     }
+    std::cout << std::endl;
 }
 
 void CLIApp::ListPlugins()
@@ -77,6 +78,49 @@ void CLIApp::ListPlugins()
     for (auto plugin : engine.getPluginManager().knownPluginList) {
         std::cout << plugin->pluginFormatName << " - " << plugin->name << " - " << plugin->fileOrIdentifier << std::endl;
     }
+    std::cout << std::endl;
+}
+
+void CLIApp::ListProjects() {
+    std::cout << "List Projects..." << std::endl;
+    const auto& pm = te::ProjectManager::getInstance();
+    std::cout << "Library Projects: " << std::endl;
+    for (auto project : pm->getAllProjects(pm->getLibraryProjectsFolder()))
+    {
+        std::cout << project->getName() << " - " << project->getProjectFile().getFullPathName() << std::endl;
+    }
+    std::cout << "Active Projects: " << std::endl;
+    for (auto project : pm->getAllProjects(pm->getActiveProjectsFolder()))
+    {
+        std::cout << project->getName() << " - " << project->getProjectFile().getFullPathName() << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void CLIApp::ListClips(te::Edit& edit) {
+    std::cout << "List Clips..." << std::endl;
+    // I believe "Clip" tracks may be Marker, Chord, or Audio tracks (and
+    // possibly others). Audio Tracks may have midi clips
+    for (auto track : te::getClipTracks(edit)) {
+        std::cout << "--- Track: " << track->getName() << std::endl;
+        for (auto clip : track->getClips()) {
+            std::cout
+                << clip->getName() << " - "
+                << clip->typeToString(clip->type) << " - "
+                << clip->getStartBeat() << " to " << clip->getEndBeat() << " - ";
+            if (auto audioClip = dynamic_cast<te::WaveAudioClip*>(clip)) {
+                std::cout << "File: " << audioClip->getCurrentSourceFile().getFullPathName();
+            }
+            if (auto midiClip = dynamic_cast<te::MidiClip*>(clip)) {
+                std::cout
+                    << "Notes/CC: "
+                    << midiClip->getSequence().getNumNotes() << "/"
+                    << midiClip->getSequence().getNumControllerEvents();
+            } 
+            std::cout << std::endl;
+        }
+    }
+    std::cout << std::endl;
 }
 
 void CLIApp::onRunning()
@@ -88,6 +132,8 @@ void CLIApp::onRunning()
 
     if (argumentList.containsOption("-s|--scan-plugins")) ScanForPlugins();
     if (argumentList.containsOption("--list-plugins")) ListPlugins();
+    if (argumentList.containsOption("--list-projects")) ListProjects();
+    
 
     // Create input edit.
     // If -i inputfile is specified, use that file
@@ -129,6 +175,9 @@ void CLIApp::onRunning()
         }
     }
 
+    // Handle CLI args that deal with the edit
+    if (argumentList.containsOption("--list-clips")) ListClips(*edit);
+
     // Render
     BigInteger tracksToDo;
     int trackIndex = 0;
@@ -142,7 +191,7 @@ void CLIApp::onRunning()
                                { 0, 20 },
                                tracksToDo, true, {}, false);
 
-    // careful, dispatch may only be called form the main message thread
+    // careful, dispatch may only be called from the main message thread
     engine.getPluginManager().knownPluginList.dispatchPendingMessages();
     quit();
 }

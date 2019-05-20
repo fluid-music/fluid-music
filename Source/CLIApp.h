@@ -77,6 +77,8 @@ class CLIApp : public juce::JUCEApplicationBase {
 
     void ScanForPlugins();
     void ListPlugins();
+    void ListProjects();
+    void ListClips(te::Edit&);
 private:
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
 
