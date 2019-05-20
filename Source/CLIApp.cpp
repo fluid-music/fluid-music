@@ -26,12 +26,13 @@ void CLIApp::unhandledException(const std::exception*, const String&, int)
 
 void CLIApp::initialise(const String& commandLine) 
 {
+    argumentList = std::make_unique<ArgumentList>(String{ "UNSPECIFIED" }, getCommandLineParameterArray());
     MessageManager::getInstance()->callAsync([this] { onRunning(); });
 }
 
 void CLIApp::shutdown() 
 {
-    //myMainWindow = nullptr;
+    std::cout << "Shutdown!" << std::endl;
 }
 
 const String CLIApp::getApplicationName() 
@@ -46,10 +47,10 @@ const String CLIApp::getApplicationVersion()
 
 void CLIApp::onRunning()
 {
-    // Parse and print arguments
-    auto args = ArgumentList({ "UNSPECIFIED" }, getCommandLineParameterArray());
-    for (auto arg : args.arguments) {
-        std::cout << arg.text << std::endl;
+    if (argumentList) {
+        for (auto arg : argumentList->arguments) {
+            std::cout << arg.text << std::endl;
+        }
     }
 
     // ------------ Plugin Scan -------------
@@ -76,7 +77,7 @@ void CLIApp::onRunning()
     for (auto filename : pluginScanner.getFailedFiles()) {
         std::cout << "Failed to load plugin: " << filename << std::endl;
     }
-    // ----------------------
+    // --------------------------------------
 
     // If there's an input.tracktionedit in working dir, load it. otherwise create a new one. 
     auto inputFile = File::getCurrentWorkingDirectory().getChildFile("input.tracktionedit");
