@@ -31,7 +31,11 @@ void CLIApp::initialise(const String& commandLine)
 
 void CLIApp::shutdown() 
 {
-    std::cout << "Shutdown!" << std::endl;
+    // Gurantee that changes to the settings file will be written to disk.
+    // Careful, dispatch may only be called from the main message thread.
+    engine.getPluginManager().knownPluginList.dispatchPendingMessages();
+
+    std::cout << "Shutdown!" << std::endl << std::endl;
 }
 
 const String CLIApp::getApplicationName() 
@@ -123,6 +127,20 @@ void CLIApp::ListClips(te::Edit& edit) {
     std::cout << std::endl;
 }
 
+void CLIApp::ListTracks(te::Edit& edit) {
+    std::cout << "List Tracks..." << std::endl;
+    for (auto track : te::getAllTracks(edit)) { // are these mutually exclusive?
+        if (track->isAudioTrack()) std::cout << "Audio Track - ";
+        if (track->isAutomationTrack()) std::cout << "Automation Track - ";
+        if (track->isChordTrack()) std::cout << "Chord Track - ";
+        if (track->isFolderTrack()) std::cout << "Folder Track - ";
+        if (track->isMarkerTrack()) std::cout << "Marker Track - ";
+        if (track->isTempoTrack()) std::cout << "Tempo Track - ";
+        std::cout << track->getName() << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 void CLIApp::onRunning()
 {
     ArgumentList argumentList = ArgumentList(String{ "UNSPECIFIED" }, getCommandLineParameterArray());
@@ -177,6 +195,7 @@ void CLIApp::onRunning()
 
     // Handle CLI args that deal with the edit
     if (argumentList.containsOption("--list-clips")) ListClips(*edit);
+    if (argumentList.containsOption("--list-tracks")) ListTracks(*edit);
 
     // Render
     BigInteger tracksToDo;
@@ -191,8 +210,6 @@ void CLIApp::onRunning()
                                { 0, 20 },
                                tracksToDo, true, {}, false);
 
-    // careful, dispatch may only be called from the main message thread
-    engine.getPluginManager().knownPluginList.dispatchPendingMessages();
     quit();
 }
 
