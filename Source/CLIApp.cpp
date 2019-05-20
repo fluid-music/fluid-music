@@ -34,6 +34,13 @@ void CLIApp::shutdown()
     // Gurantee that changes to the settings file will be written to disk.
     // Careful, dispatch may only be called from the main message thread.
     engine.getPluginManager().knownPluginList.dispatchPendingMessages();
+    // I'm calling dispatchPendingMessages on the application settings too, in
+    // hopes that this will guarantee that changes to the project manager
+    // manager info will be saved (for example, when using 
+    // --autodetect-pm-settings). Aver Cursory test suggests that this is not
+    // needed; the Project Manager settings will be saved anyway. I'm not %100
+    // sure that this is the right way to do it, but for now I'm leaving it in.
+    te::getApplicationSettings()->dispatchPendingMessages();
 
     std::cout << "Shutdown!" << std::endl << std::endl;
 }
@@ -88,7 +95,6 @@ void CLIApp::ListPlugins()
 void CLIApp::ListProjects() {
     std::cout << "List Projects..." << std::endl;
     const auto& pm = te::ProjectManager::getInstance();
-    std::cout << "Library Projects: " << std::endl;
     for (auto project : pm->getAllProjects(pm->getLibraryProjectsFolder()))
     {
         std::cout << project->getName() << " - " << project->getProjectFile().getFullPathName() << std::endl;
@@ -143,15 +149,62 @@ void CLIApp::ListTracks(te::Edit& edit) {
     std::cout << std::endl;
 }
 
+void CLIApp::autodetectPmSettings()
+{
+    auto file =  File::getSpecialLocation(File::userApplicationDataDirectory)
+        .getChildFile("Tracktion")
+        .getChildFile("Waveform")
+        .getChildFile("Waveform.settings");
+
+    std::cout << "Looking for Waveform settings: " << file.getFullPathName() << std::endl;
+    if (!file.existsAsFile())
+    {
+        std::cout << "Waveform settings not found" << std::endl;
+    } else
+    {
+        std::cout << "Found Waveform settings" << std::endl;
+        XmlDocument parser(file);
+        std::unique_ptr<XmlElement> xml(parser.getDocumentElement());
+        if (xml == nullptr) std::cout << "Failed to parse Waveform.settings" << std::endl;
+        
+        ValueTree folders;
+        folders = ValueTree::fromXml(*xml);
+        if (folders.isValid())
+        {
+            folders = folders.getChildWithProperty(te::IDs::name, "projectList");
+            if (folders.isValid())
+            {
+                folders = folders.getChildWithName(te::IDs::ROOT);
+                if (folders.isValid())
+                {
+                    // folders is the element that contains the following two children
+                    // - te::IDs::LIBRARY
+                    // - te::IDs::ACTIVE
+                    te::ProjectManager::getInstance()->folders = folders;
+                    std::cout
+                        << "LIBRARY uid: " << folders.getChildWithName(te::IDs::LIBRARY).getProperty("uid").toString() << std::endl
+                        << "ACTIVE uid:  " << folders.getChildWithName(te::IDs::ACTIVE).getProperty("uid").toString() << std::endl
+                        << std::endl;
+                    return;
+                }
+            }
+        }
+    }
+
+    std::cout << "Failed to load Waveform settings from: " << file.getFullPathName() << std::endl << std::endl;
+    return;
+}
+
 void CLIApp::onRunning()
 {
     ArgumentList argumentList = ArgumentList(String{ "UNSPECIFIED" }, getCommandLineParameterArray());
 
     if (argumentList.containsOption("-s|--scan-plugins")) ScanForPlugins();
+    if (argumentList.containsOption("--autodetect-pm-settings")) autodetectPmSettings();
     if (argumentList.containsOption("--list-plugins")) ListPlugins();
     if (argumentList.containsOption("--list-projects")) ListProjects();
 
-    // Create input edit.
+    // Create a te::Edit object.
     // If -i inputfile is specified, use that file
     // Else if "default.tracktionedit" exists in working dir, use that
     // Else create an empty edit
@@ -172,7 +225,7 @@ void CLIApp::onRunning()
         }
         else
         {
-            // Caution: edit will have no file specified.
+            // Caution: edit will not have a file specified.
             std::cout << "Creating an empty edit" << std::endl;
             valueTree = te::createEmptyEdit();
         }
@@ -193,6 +246,7 @@ void CLIApp::onRunning()
             std::cout << "WARNING! Edit contains this plugin, which is missing from the host: " << plugin->getName() << std::endl;
         }
     }
+    std::cout << std::endl; // Newline after empty space
 
     // Handle CLI args that deal with the edit
     if (argumentList.containsOption("--list-clips")) ListClips(*edit);

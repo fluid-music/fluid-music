@@ -80,6 +80,10 @@ class CLIApp : public juce::JUCEApplicationBase {
     void ListProjects();
     void ListClips(te::Edit&);
     void ListTracks(te::Edit&);
+
+    /** Try to lookup and add the project manager settings from Tracktion Waveform.
+    */
+    void autodetectPmSettings();
 private:
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
 
