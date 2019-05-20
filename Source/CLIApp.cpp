@@ -102,9 +102,9 @@ void CLIApp::ListClips(te::Edit& edit) {
     // I believe "Clip" tracks may be Marker, Chord, or Audio tracks (and
     // possibly others). Audio Tracks may have midi clips
     for (auto track : te::getClipTracks(edit)) {
-        std::cout << "--- Track: " << track->getName() << std::endl;
         for (auto clip : track->getClips()) {
             std::cout
+                << track->getName() << " - "
                 << clip->getName() << " - "
                 << clip->typeToString(clip->type) << " - "
                 << clip->getStartBeat() << " to " << clip->getEndBeat() << " - ";
@@ -113,8 +113,8 @@ void CLIApp::ListClips(te::Edit& edit) {
             }
             if (auto midiClip = dynamic_cast<te::MidiClip*>(clip)) {
                 std::cout
-                    << "Notes/CC: "
-                    << midiClip->getSequence().getNumNotes() << "/"
+                    << "Notes,CC: "
+                    << midiClip->getSequence().getNumNotes() << ","
                     << midiClip->getSequence().getNumControllerEvents();
             } 
             std::cout << std::endl;
