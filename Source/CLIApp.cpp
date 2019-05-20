@@ -129,7 +129,9 @@ void CLIApp::ListClips(te::Edit& edit) {
 
 void CLIApp::ListTracks(te::Edit& edit) {
     std::cout << "List Tracks..." << std::endl;
-    for (auto track : te::getAllTracks(edit)) { // are these mutually exclusive?
+    for (auto track : te::getAllTracks(edit))
+    {
+        // are these mutually exclusive?
         if (track->isAudioTrack()) std::cout << "Audio Track - ";
         if (track->isAutomationTrack()) std::cout << "Automation Track - ";
         if (track->isChordTrack()) std::cout << "Chord Track - ";
@@ -144,14 +146,10 @@ void CLIApp::ListTracks(te::Edit& edit) {
 void CLIApp::onRunning()
 {
     ArgumentList argumentList = ArgumentList(String{ "UNSPECIFIED" }, getCommandLineParameterArray());
-    for (auto arg : argumentList.arguments) {
-        std::cout << arg.text << std::endl;
-    }
 
     if (argumentList.containsOption("-s|--scan-plugins")) ScanForPlugins();
     if (argumentList.containsOption("--list-plugins")) ListPlugins();
     if (argumentList.containsOption("--list-projects")) ListProjects();
-    
 
     // Create input edit.
     // If -i inputfile is specified, use that file
@@ -164,14 +162,17 @@ void CLIApp::onRunning()
         valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
         std::cout << "Loaded file: " << inputFile.getFullPathName() << std::endl;
     }
-    else {
+    else
+    {
         inputFile = File::getCurrentWorkingDirectory().getChildFile("default.tracktionedit");;
-        if (inputFile.existsAsFile()) {
+        if (inputFile.existsAsFile())
+        {
             std::cout << "Loading default.tracktionedit" << std::endl;
             valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
         }
-        else {
-            // Caution: edit will have no file specified. 
+        else
+        {
+            // Caution: edit will have no file specified.
             std::cout << "Creating an empty edit" << std::endl;
             valueTree = te::createEmptyEdit();
         }
