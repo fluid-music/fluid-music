@@ -119,7 +119,11 @@ void CLIApp::ListClips(te::Edit& edit) {
                 << clip->typeToString(clip->type) << " - "
                 << clip->getStartBeat() << " to " << clip->getEndBeat() << " - ";
             if (auto audioClip = dynamic_cast<te::WaveAudioClip*>(clip)) {
-                std::cout << "File: " << audioClip->getCurrentSourceFile().getFullPathName();
+                // to make the clip use a filename for the source, use
+                //audioClip->getSourceFileReference().setToDirectFileReference(...);
+                // to make the clip use a project reference, use
+                 //audioClip->getSourceFileReference().setToProjectFileReference(...);
+                std::cout << "Source: " << audioClip->getSourceFileReference().source;
             }
             if (auto midiClip = dynamic_cast<te::MidiClip*>(clip)) {
                 std::cout
@@ -245,6 +249,9 @@ void CLIApp::onRunning()
         &loadContext,
         0);
 
+    // Note we cannot save an edit file if TE cannot resolve the original file.
+    edit->editFileRetriever = [inputFile] { return inputFile; };
+
     // List any missing plugins
     for (auto plugin : edit->getPluginCache().getPlugins()) {
         if (plugin->isMissing()) {
@@ -256,20 +263,42 @@ void CLIApp::onRunning()
     // Handle CLI args that deal with the edit
     if (argumentList.containsOption("--list-clips")) ListClips(*edit);
     if (argumentList.containsOption("--list-tracks")) ListTracks(*edit);
+    // If -o is specified save an output file
+    if (argumentList.containsOption("-o")) {
+        auto outputFilename = argumentList.getValueForOption("-o");
+        // if no output filename is specified, use this default filename
+        if (outputFilename == "") outputFilename = "default-output.tracktionedit"; 
+        auto outputFile = File::getCurrentWorkingDirectory().getChildFile(outputFilename);
+        auto outputExt = outputFile.getFileExtension().toLowerCase();
 
-    // Render
-    BigInteger tracksToDo;
-    int trackIndex = 0;
-    for (auto track : te::getAllTracks(*edit)) {
-        tracksToDo.setBit(trackIndex++);
+        if (outputExt == ".tracktionedit") // save an edit file
+        {
+            std::cout << "Saving: " << outputFile.getFullPathName() << std::endl;
+            te::EditFileOperations(*edit).saveAs(outputFile, true);
+        }
+        else if (outputExt == ".wav") // save a .wav file
+        {
+            std::cout << "Output .wav" << std::endl;
+            // Render
+            BigInteger tracksToDo;
+            int trackIndex = 0;
+            for (auto track : te::getAllTracks(*edit)) {
+                tracksToDo.setBit(trackIndex++);
+            }
+            te::Renderer::renderToFile(
+                { "Chaz Render Job" },
+                outputFile,
+                *edit,
+                { 0, 20 },
+                tracksToDo, true, {}, false);
+        }
+        else {
+            std::cout
+                << "Could not output file due to unknown extension: "
+                << outputFile.getFullPathName()
+                << std::endl;
+        }
     }
-    te::Renderer::renderToFile(
-                               { "Chaz Render Job" },
-                               { juce::File::getCurrentWorkingDirectory().getChildFile("out.wav") },
-                               *edit,
-                               { 0, 20 },
-                               tracksToDo, true, {}, false);
-
     quit();
 }
 
