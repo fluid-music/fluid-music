@@ -199,9 +199,48 @@ void CLIApp::autodetectPmSettings()
             }
         }
     }
-
     std::cout << "Failed to load Waveform settings from: " << file.getFullPathName() << std::endl << std::endl;
     return;
+}
+
+void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& edit, bool useRelativePath)
+{
+    int failures = 0;
+    std::cout << "Searching for clips with project sources, and setting them to direct file references" << std::endl;
+    for (auto track : te::getClipTracks(edit)) { // for each track
+        for (auto clip : track->getClips()) { // for each clip
+            if (auto audioClip = dynamic_cast<te::WaveAudioClip*>(clip)) { // if it is an audio clip
+                auto& sourceFileRef = audioClip->getSourceFileReference();
+                if (sourceFileRef.isUsingProjectReference()) { // and it uses a project reference
+                    auto file = sourceFileRef.getFile(); // check if we can find the associated file
+                    if (file == File()) {
+                        // We failed to find the file for a for the project reference clip
+                        jassert(false);
+                        failures++;
+                        std::cerr
+                            << "ERROR: Failed to update source clip: " << audioClip->getName()
+                            << " source=\"" << sourceFileRef.source << "\"" << std::endl;
+                    }
+                    else {
+                        std::cout
+                            << "Updating \"" << sourceFileRef.source
+                            << "\" to \"" << file.getFullPathName() << "\"" << std::endl;
+                        sourceFileRef.setToDirectFileReference(file, useRelativePath);
+                        audioClip->sourceMediaChanged();
+                    }
+                }
+            }
+        }
+    }
+    if (failures > 0) {
+        std::cerr
+            << "ERROR: not all source clips were found!" << std::endl
+            << "In my testing on windows, this happens when any of the following are true:" << std::endl
+            << "- App is not aware of the project manager (try --autodetect-pm-settings)" << std::endl
+            << "- The uid is not found by the project manager" << std::endl
+            << "- The project manager was setup, but the file was not found" << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 void CLIApp::onRunning()
@@ -261,8 +300,10 @@ void CLIApp::onRunning()
     std::cout << std::endl; // Newline after empty space
 
     // Handle CLI args that deal with the edit
+    if (argumentList.containsOption("--use-direct-refs")) setClipSourcesToDirectFileReferences(*edit, false);
     if (argumentList.containsOption("--list-clips")) ListClips(*edit);
     if (argumentList.containsOption("--list-tracks")) ListTracks(*edit);
+
     // If -o is specified save an output file
     if (argumentList.containsOption("-o")) {
         auto outputFilename = argumentList.getValueForOption("-o");
@@ -278,13 +319,14 @@ void CLIApp::onRunning()
         }
         else if (outputExt == ".wav") // save a .wav file
         {
-            std::cout << "Output .wav" << std::endl;
+            std::cout << "Save: " << outputFile.getFullPathName() << std::endl;
             // Render
             BigInteger tracksToDo;
             int trackIndex = 0;
             for (auto track : te::getAllTracks(*edit)) {
                 tracksToDo.setBit(trackIndex++);
             }
+            // This will not overwrite the existing file
             te::Renderer::renderToFile(
                 { "Chaz Render Job" },
                 outputFile,

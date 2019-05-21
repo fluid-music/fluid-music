@@ -81,6 +81,11 @@ class CLIApp : public juce::JUCEApplicationBase {
     void ListClips(te::Edit&);
     void ListTracks(te::Edit&);
 
+    /** For each audio clip with a source that references a project ID, update
+        that source so it uses a filepath instead.
+    */
+    void setClipSourcesToDirectFileReferences(te::Edit&, bool useRelativePath);
+
     /** Try to lookup and add the project manager settings from Tracktion Waveform.
     */
     void autodetectPmSettings();
