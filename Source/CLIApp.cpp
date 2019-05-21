@@ -151,7 +151,12 @@ void CLIApp::ListTracks(te::Edit& edit) {
 
 void CLIApp::autodetectPmSettings()
 {
-    auto file =  File::getSpecialLocation(File::userApplicationDataDirectory)
+    auto appPrefsDir =  File::getSpecialLocation(File::userApplicationDataDirectory);
+#ifdef JUCE_MAC
+    auto osxSubfolder = appPrefsDir.getChildFile("Application Support");
+    if (osxSubfolder.isDirectory()) appPrefsDir = osxSubfolder;
+#endif
+    auto file = appPrefsDir
         .getChildFile("Tracktion")
         .getChildFile("Waveform")
         .getChildFile("Waveform.settings");
