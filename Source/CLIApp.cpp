@@ -199,34 +199,43 @@ void CLIApp::autodetectPmSettings()
             }
         }
     }
-    std::cout << "Failed to load Waveform settings from: " << file.getFullPathName() << std::endl << std::endl;
+    std::cout << "Failed to load Tracktion Waveform settings from: " << file.getFullPathName() << std::endl << std::endl;
     return;
 }
 
 void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& edit, bool useRelativePath)
 {
     int failures = 0;
-    std::cout << "Searching for clips with project sources, and setting them to direct file references" << std::endl;
+    std::cout << "Searching for audio clips and updating their sources to "
+        << (useRelativePath ? "relative" : "absolute")
+        << " file paths" << std::endl;
+
     for (auto track : te::getClipTracks(edit)) { // for each track
         for (auto clip : track->getClips()) { // for each clip
             if (auto audioClip = dynamic_cast<te::WaveAudioClip*>(clip)) { // if it is an audio clip
                 auto& sourceFileRef = audioClip->getSourceFileReference();
-                if (sourceFileRef.isUsingProjectReference()) { // and it uses a project reference
-                    auto file = sourceFileRef.getFile(); // check if we can find the associated file
-                    if (file == File()) {
-                        // We failed to find the file for a for the project reference clip
-                        jassert(false);
-                        failures++;
-                        std::cerr
-                            << "ERROR: Failed to update source clip: " << audioClip->getName()
-                            << " source=\"" << sourceFileRef.source << "\"" << std::endl;
-                    }
-                    else {
-                        std::cout
-                            << "Updating \"" << sourceFileRef.source
-                            << "\" to \"" << file.getFullPathName() << "\"" << std::endl;
-                        sourceFileRef.setToDirectFileReference(file, useRelativePath);
+                auto file = sourceFileRef.getFile();
+                if (file == File()) {
+                    // We failed to get the filepath from the project manager
+                    failures++;
+                    std::cerr
+                        << "ERROR: Failed to find and update source clip: " << audioClip->getName()
+                        << " source=\"" << sourceFileRef.source << "\"" << std::endl;
+                }
+                else {
+                    // We got a filepath. We are not certain the file exists.
+                    // Even if the file does not exists, we may be able to
+                    // update the source property.
+                    //
+                    // TODO: What hapens if files have no common ancestor, and
+                    // we are changing to relative paths???
+                    String original = sourceFileRef.source;
+                    sourceFileRef.setToDirectFileReference(file, useRelativePath);
+                    if (original != sourceFileRef.source) {
                         audioClip->sourceMediaChanged();
+                        std::cout
+                            << "Updated \"" << original
+                            << "\" to \"" << sourceFileRef.source << "\"" << std::endl;
                     }
                 }
             }
@@ -234,11 +243,10 @@ void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& edit, bool useRelati
     }
     if (failures > 0) {
         std::cerr
-            << "ERROR: not all source clips were found!" << std::endl
+            << "ERROR: not all source clips could be identified!" << std::endl
             << "In my testing on windows, this happens when any of the following are true:" << std::endl
             << "- App is not aware of the project manager (try --autodetect-pm-settings)" << std::endl
-            << "- The uid is not found by the project manager" << std::endl
-            << "- The project manager was setup, but the file was not found" << std::endl;
+            << "- The uid is not found by the project manager" << std::endl;
     }
     std::cout << std::endl;
 }
@@ -252,7 +260,7 @@ void CLIApp::onRunning()
     if (argumentList.containsOption("--list-plugins")) ListPlugins();
     if (argumentList.containsOption("--list-projects")) ListProjects();
 
-    // Create a te::Edit object.
+    // Create an inputFile and a te::Edit object.
     // If -i inputfile is specified, use that file
     // Else if "default.tracktionedit" exists in working dir, use that
     // Else create an empty edit
@@ -279,14 +287,17 @@ void CLIApp::onRunning()
         }
     }
 
-    // Create the edit object
+
+    // Create the edit object. Assume we are 
+    te::Edit::Options editOptions{ engine };
+    editOptions.editProjectItemID = te::ProjectItemID::createNewID(0);
+    editOptions.editState = valueTree;
+    editOptions.numUndoLevelsToStore = 0;
+    editOptions.role = te::Edit::forRendering;
+    editOptions.editFileRetriever = [inputFile] { return inputFile; };
+    
     std::cout << "Creating Edit Object" << std::endl;
-    te::Edit::LoadContext loadContext;
-    std::unique_ptr<te::Edit> edit = std::make_unique<te::Edit>(engine,
-        valueTree,
-        te::Edit::forRendering,
-        &loadContext,
-        0);
+    std::unique_ptr<te::Edit> edit = std::make_unique<te::Edit>(editOptions);
 
     // Note we cannot save an edit file if TE cannot resolve the original file.
     edit->editFileRetriever = [inputFile] { return inputFile; };
@@ -297,24 +308,29 @@ void CLIApp::onRunning()
             std::cout << "WARNING! Edit contains this plugin, which is missing from the host: " << plugin->getName() << std::endl;
         }
     }
-    std::cout << std::endl; // Newline after empty space
+    std::cout << std::endl;
 
     // Handle CLI args that deal with the edit
-    if (argumentList.containsOption("--use-direct-refs")) setClipSourcesToDirectFileReferences(*edit, false);
+    if (argumentList.containsOption("--make-sources-absolute")) setClipSourcesToDirectFileReferences(*edit, false);
+    if (argumentList.containsOption("--make-sources-relative")) setClipSourcesToDirectFileReferences(*edit, true);
     if (argumentList.containsOption("--list-clips")) ListClips(*edit);
     if (argumentList.containsOption("--list-tracks")) ListTracks(*edit);
 
     // If -o is specified save an output file
     if (argumentList.containsOption("-o")) {
-        auto outputFilename = argumentList.getValueForOption("-o");
+        // Create an output file
         // if no output filename is specified, use this default filename
-        if (outputFilename == "") outputFilename = "default-output.tracktionedit"; 
+        auto outputFilename = argumentList.getValueForOption("-o");
+        if (outputFilename == "") outputFilename = "default-output.tracktionedit";
         auto outputFile = File::getCurrentWorkingDirectory().getChildFile(outputFilename);
-        auto outputExt = outputFile.getFileExtension().toLowerCase();
+        auto outputExt = outputFile.getFileExtension().toLowerCase(); // resolve relative if needed
 
         if (outputExt == ".tracktionedit") // save an edit file
         {
             std::cout << "Saving: " << outputFile.getFullPathName() << std::endl;
+            if (outputFile.getParentDirectory() != inputFile.getParentDirectory()) {
+                std::cout << "DANGER: Savign to a differnet directory. Relative paths may become inaccurate." << std::endl;
+            }
             te::EditFileOperations(*edit).saveAs(outputFile, true);
         }
         else if (outputExt == ".wav") // save a .wav file
@@ -326,7 +342,6 @@ void CLIApp::onRunning()
             for (auto track : te::getAllTracks(*edit)) {
                 tracksToDo.setBit(trackIndex++);
             }
-            // This will not overwrite the existing file
             te::Renderer::renderToFile(
                 { "Chaz Render Job" },
                 outputFile,
