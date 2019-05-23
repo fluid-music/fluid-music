@@ -37,7 +37,7 @@ void CLIApp::shutdown()
     // I'm calling dispatchPendingMessages on the application settings too, in
     // hopes that this will guarantee that changes to the project manager
     // manager info will be saved (for example, when using 
-    // --autodetect-pm-settings). Aver Cursory test suggests that this is not
+    // --autodetect-pm). Aver Cursory test suggests that this is not
     // needed; the Project Manager settings will be saved anyway. I'm not %100
     // sure that this is the right way to do it, but for now I'm leaving it in.
     te::getApplicationSettings()->dispatchPendingMessages();
@@ -253,7 +253,7 @@ void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& edit, bool useRelati
         std::cerr
             << "ERROR: not all source clips could be identified!" << std::endl
             << "In my testing on windows, this happens when any of the following are true:" << std::endl
-            << "- App is not aware of the project manager (try --autodetect-pm-settings)" << std::endl
+            << "- App is not aware of the project manager (try --autodetect-pm)" << std::endl
             << "- The uid is not found by the project manager" << std::endl;
     }
     if (verbose) std::cout << std::endl;
@@ -261,12 +261,59 @@ void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& edit, bool useRelati
 
 void CLIApp::onRunning()
 {
-    ArgumentList argumentList = ArgumentList(String{ "UNSPECIFIED" }, getCommandLineParameterArray());
+    ArgumentList argumentList = ArgumentList(String{ "cyber" }, getCommandLineParameterArray());
+    ConsoleApplication cApp;
 
-    if (argumentList.containsOption("-s|--scan-plugins")) ScanForPlugins();
-    if (argumentList.containsOption("-a|--autodetect-pm-settings")) autodetectPmSettings();
-    if (argumentList.containsOption("--list-plugins")) ListPlugins();
-    if (argumentList.containsOption("--list-projects")) ListProjects();
+    cApp.addCommand({
+        "-s|--scan-plugins",
+        "-s|--scan-plugins", // this is printed by -h
+        "Scan for plugins, adding them to the settings file", // printed by -h
+        "Searches the default plugin paths, and saves results in the persistent\n\
+        application properties file. Once plugins are saved in the file, you\n\
+        should not need to scan again unless you install more plugins.",
+        [this](auto&) { ScanForPlugins(); } });
+
+    cApp.addCommand({
+        "-a|--autodetect-pm",
+        "-a|--autodetect-pm",
+        "Add Tracktion Waveform project manager to the settings file",
+        "This is useful if you want to load .tracktionedit files that were\n\
+        saved in Waveform. These edits refer to audio clips with an id, not a\n\
+        filepath. To load them you need to import project manager settings.\n\
+        You should only need to run this once. It will only work on a machine\n\
+        that also has Tracktion Waveform installed.",
+        [this](auto&) { autodetectPmSettings(); }
+        });
+
+    cApp.addCommand({
+        "--list-plugins",
+        "--list-plugins",
+        "List all the plugins that are registered in the settings file",
+        "Lists all detected plugins. Run this after --scan-plugins.",
+        [this](auto&) { ListPlugins(); }
+        });
+
+    cApp.addCommand({
+        "--list-projects",
+        "--list-projects",
+        "List all the projects from the project manager.",
+        "Edit files saved in Waveform may include references to projects from\n\
+        the Waveform project manager. Print a list of all the projects found.\n\
+        If the list is empty, Waveform may not be installed, or you may need run\n\
+        with the --autodetect-pm option.",
+        [this](auto&) { ListProjects(); }
+        });
+
+    // Because of the while loop below, we must not create a default command.
+    // Instead of using the default command, add -h if the arg list is empty.
+    cApp.addHelpCommand("-h|--help", "Usage:", false);
+    if (argumentList.size() == 0) argumentList.arguments.add({ "-h" });
+
+    // Search the provided argumentList for commands registered. When a command is found, 
+    while (auto command = cApp.findCommand(argumentList, true)) {
+        command->command(argumentList);
+        argumentList.removeOptionIfFound(command->commandOption);
+    }
 
     // Create an inputFile and a te::Edit object.
     // If -i inputfile is specified, use that file
@@ -302,9 +349,10 @@ void CLIApp::onRunning()
     editOptions.role = te::Edit::forRendering;
     editOptions.editFileRetriever = [inputFile] { return inputFile; };
     std::unique_ptr<te::Edit> edit = std::make_unique<te::Edit>(editOptions);
+
     // By default (and for simplicity), all clips in an in-memory edit should
-    // have a sources property with an absolute path value. We want to avoid
-    // clip sources with project id or relative values.
+    // have a source property with an absolute path value. We want to avoid
+    // clip sources with project ids or relative path values.
     setClipSourcesToDirectFileReferences(*edit, false, true);
 
     // List any missing plugins
@@ -360,7 +408,7 @@ void CLIApp::onRunning()
                 << std::endl;
         }
     }
-    quit();
+    MessageManager::getInstance()->callAsync(quit);
 }
 
 START_JUCE_APPLICATION(CLIApp)
