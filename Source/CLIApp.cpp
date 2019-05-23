@@ -236,7 +236,7 @@ void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& edit, bool useRelati
                     String original = sourceFileRef.source;
                     sourceFileRef.setToDirectFileReference(file, useRelativePath);
                     if (original != sourceFileRef.source) {
-                        audioClip->sourceMediaChanged();
+                        audioClip->sourceMediaChanged(); // what does this really do, and is it needed?
                         if (verbose) std::cout
                             << "Updated \"" << original
                             << "\" to \"" << sourceFileRef.source << "\"" << std::endl;
@@ -294,16 +294,18 @@ void CLIApp::onRunning()
     // Create the edit object.
     // Note we cannot save an edit file without and ediit file retriever. It is
     // also used resolves audioclips that have source='./any/relative/path.wav'.
+    std::cout << "Creating Edit Object" << std::endl;
     te::Edit::Options editOptions{ engine };
     editOptions.editProjectItemID = te::ProjectItemID::createNewID(0);
     editOptions.editState = valueTree;
     editOptions.numUndoLevelsToStore = 0;
     editOptions.role = te::Edit::forRendering;
     editOptions.editFileRetriever = [inputFile] { return inputFile; };
-    
-    std::cout << "Creating Edit Object" << std::endl;
     std::unique_ptr<te::Edit> edit = std::make_unique<te::Edit>(editOptions);
-    setClipSourcesToDirectFileReferences(*edit, false, true); // absolute
+    // By default (and for simplicity), all clips in an in-memory edit should
+    // have a sources property with an absolute path value. We want to avoid
+    // clip sources with project id or relative values.
+    setClipSourcesToDirectFileReferences(*edit, false, true);
 
     // List any missing plugins
     for (auto plugin : edit->getPluginCache().getPlugins()) {
@@ -314,12 +316,10 @@ void CLIApp::onRunning()
     std::cout << std::endl;
 
     // Handle CLI args that deal with the edit
-    if (argumentList.containsOption("--make-sources-absolute")) setClipSourcesToDirectFileReferences(*edit, false);
-    if (argumentList.containsOption("--make-sources-relative")) setClipSourcesToDirectFileReferences(*edit, true);
     if (argumentList.containsOption("--list-clips")) ListClips(*edit);
     if (argumentList.containsOption("--list-tracks")) ListTracks(*edit);
 
-    // If -o is specified save an output file
+    // If -o is specified, save an output file
     if (argumentList.containsOption("-o")) {
         // Create an output file
         // if no output filename is specified, use this default filename
