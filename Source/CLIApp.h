@@ -78,19 +78,26 @@ class CLIApp : public juce::JUCEApplicationBase {
     void ScanForPlugins();
     void ListPlugins();
     void ListProjects();
-    void ListClips(te::Edit&);
-    void ListTracks(te::Edit&);
+    void ListClips();
+    void ListTracks();
+
+    /** Create and activate an empty edit
+    */
+    void activateEmptyEdit(File inputFile);
+    void loadEditFile(File inputFile);
+    void saveActiveEdit(File outputFile);
 
     /** For each audio clip with a source that references a project ID, update
         that source so it uses a filepath instead.
     */
-    void setClipSourcesToDirectFileReferences(te::Edit&, bool useRelativePath, bool verbose);
+    void setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose);
 
     /** Try to lookup and add the project manager settings from Tracktion Waveform.
     */
     void autodetectPmSettings();
 private:
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
+    std::unique_ptr<te::Edit> edit;
 
     // onRunning should be called once, and only after the MessageManager is
     // also running. There is where I am putting the body of the application.

@@ -107,11 +107,11 @@ void CLIApp::ListProjects() {
     std::cout << std::endl;
 }
 
-void CLIApp::ListClips(te::Edit& edit) {
+void CLIApp::ListClips() {
     std::cout << "List Clips..." << std::endl;
     // I believe "Clip" tracks may be Marker, Chord, or Audio tracks (and
     // possibly others). Audio Tracks may have midi clips
-    for (auto track : te::getClipTracks(edit)) {
+    for (auto track : te::getClipTracks(*edit)) {
         for (auto clip : track->getClips()) {
             std::cout
                 << track->getName() << " - "
@@ -137,9 +137,9 @@ void CLIApp::ListClips(te::Edit& edit) {
     std::cout << std::endl;
 }
 
-void CLIApp::ListTracks(te::Edit& edit) {
+void CLIApp::ListTracks() {
     std::cout << "List Tracks..." << std::endl;
-    for (auto track : te::getAllTracks(edit))
+    for (auto track : te::getAllTracks(*edit))
     {
         // are these mutually exclusive?
         if (track->isAudioTrack()) std::cout << "Audio Track - ";
@@ -151,6 +151,92 @@ void CLIApp::ListTracks(te::Edit& edit) {
         std::cout << track->getName() << std::endl;
     }
     std::cout << std::endl;
+}
+
+void CLIApp::activateEmptyEdit(File inputFile)
+{
+    std::cout << "Creating Edit Object" << std::endl;
+    te::Edit::Options editOptions{ engine };
+    editOptions.editProjectItemID = te::ProjectItemID::createNewID(0);
+    editOptions.editState = te::createEmptyEdit();
+    editOptions.numUndoLevelsToStore = 0;
+    editOptions.role = te::Edit::forRendering;
+    editOptions.editFileRetriever = [inputFile] { return inputFile; };
+    edit = std::move(std::make_unique<te::Edit>(editOptions));
+}
+
+void CLIApp::loadEditFile(File inputFile) {
+    // we are assuming the file exists. 
+    ValueTree valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
+
+    // Create the edit object.
+    // Note we cannot save an edit file without and ediit file retriever. It is
+    // also used resolves audioclips that have source='./any/relative/path.wav'.
+    std::cout << "Creating Edit Object" << std::endl;
+    te::Edit::Options editOptions{ engine };
+    editOptions.editProjectItemID = te::ProjectItemID::createNewID(0);
+    editOptions.editState = valueTree;
+    editOptions.numUndoLevelsToStore = 0;
+    editOptions.role = te::Edit::forRendering;
+    editOptions.editFileRetriever = [inputFile] { return inputFile; };
+    std::unique_ptr<te::Edit> newEdit = std::make_unique<te::Edit>(editOptions);
+
+    // By default (and for simplicity), all clips in an in-memory edit should
+    // have a source property with an absolute path value. We want to avoid
+    // clip sources with project ids or relative path values.
+    setClipSourcesToDirectFileReferences(*newEdit, false, true);
+
+    // List any missing plugins
+    for (auto plugin : newEdit->getPluginCache().getPlugins()) {
+        if (plugin->isMissing()) {
+            std::cout << "WARNING! Edit contains this plugin, which is missing from the host: " << plugin->getName() << std::endl;
+        }
+    }
+    edit = std::move(newEdit);
+    std::cout << "Loaded file: " << inputFile.getFullPathName() << std::endl;
+    std::cout << std::endl;
+}
+
+void CLIApp::saveActiveEdit(File outputFile) {
+    if (!edit) {
+        std::cerr
+            << "ERROR: Output failed. No edit file loaded."
+            << std::endl << std::endl;
+        return;
+    }
+    auto outputExt = outputFile.getFileExtension().toLowerCase(); // resolve relative if needed
+
+    if (outputExt == ".tracktionedit") {
+        // Save a .tracktionedit file.
+        std::cout << "Saving: " << outputFile.getFullPathName() << std::endl;
+        // When edit files are saved, prefer relative paths. 
+        edit->editFileRetriever = [outputFile] { return outputFile; };
+        setClipSourcesToDirectFileReferences(*edit, true, true);
+        // .save and .saveAs may be silent no-ops unless we markAsChanged()
+        edit->markAsChanged();
+        te::EditFileOperations(*edit).saveAs(outputFile, true);
+    }
+    else if (outputExt == ".wav") {
+        // Render a .wav file
+        std::cout << "Save: " << outputFile.getFullPathName() << std::endl;
+        BigInteger tracksToDo;
+        int trackIndex = 0;
+        for (auto track : te::getAllTracks(*edit)) {
+            tracksToDo.setBit(trackIndex++);
+        }
+        te::Renderer::renderToFile(
+            { "Chaz Render Job" },
+            outputFile,
+            *edit,
+            { 0, 20 },
+            tracksToDo, true, {}, false);
+    }
+    else {
+        std::cout
+            << "Could not output file due to unknown extension: "
+            << outputFile.getFullPathName()
+            << std::endl;
+    }
 }
 
 void CLIApp::autodetectPmSettings()
@@ -169,7 +255,8 @@ void CLIApp::autodetectPmSettings()
     if (!file.existsAsFile())
     {
         std::cout << "Waveform settings not found" << std::endl;
-    } else
+    }
+    else
     {
         std::cout << "Found Waveform settings" << std::endl;
         XmlDocument parser(file);
@@ -203,15 +290,15 @@ void CLIApp::autodetectPmSettings()
     return;
 }
 
-void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& edit, bool useRelativePath, bool verbose = true)
+void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose = true)
 {
     int failures = 0;
     if (verbose) std::cout << "Searching for audio clips and updating their sources to "
         << (useRelativePath ? "relative" : "absolute")
         << " file paths" << std::endl;
 
-    for (auto track : te::getClipTracks(edit)) { // for each track
-        for (auto clip : track->getClips()) { // for each clip
+    for (auto track : te::getClipTracks(changeEdit)) { // for each track
+        for (auto clip : track->getClips()) { // inspect each clip
             if (auto audioClip = dynamic_cast<te::WaveAudioClip*>(clip)) { // if it is an audio clip
                 auto& sourceFileRef = audioClip->getSourceFileReference();
                 auto file = sourceFileRef.getFile();
@@ -261,7 +348,7 @@ void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& edit, bool useRelati
 
 void CLIApp::onRunning()
 {
-    ArgumentList argumentList = ArgumentList(String{ "cyber" }, getCommandLineParameterArray());
+    ArgumentList argumentList = ArgumentList(String{ "cybr" }, getCommandLineParameterArray());
     ConsoleApplication cApp;
 
     cApp.addCommand({
@@ -304,6 +391,64 @@ void CLIApp::onRunning()
         [this](auto&) { ListProjects(); }
         });
 
+    cApp.addCommand({
+        "-i",
+        "-i file.tracktionedit",
+        "Load the specified .tracktionedit file",
+        "Command line options that follow will operate on the specified input\n\
+        file. Note that the order of arguments matters.",
+        [this](const ArgumentList& args) {
+            auto inputFile = args.getExistingFileForOption("-i");
+            loadEditFile(inputFile);
+        }});
+
+    cApp.addCommand({
+        "-o",
+        "-o out.tracktionedit",
+        "Save/render the active edit to a .tracktionedit or .wav",
+        "Save as file. The output format will be detected from the filename.\n\
+        If no argument is specified, use \"./default-out.tracktionedit\"",
+        [this](const ArgumentList& args) {
+            // Create an output file
+            // if no output filename is specified, use this default filename
+            auto outputFilename = args.getValueForOption("-o");
+            if (outputFilename == "") outputFilename = "default-out.tracktionedit";
+            auto outputFile = File::getCurrentWorkingDirectory().getChildFile(outputFilename);
+            saveActiveEdit(outputFile);
+        }});
+
+    cApp.addCommand({
+        "--list-clips",
+        "--list-clips",
+        "Print a list of the clips in the active edit",
+        "The output includes the name of the parent track, and source property",
+        [this](auto&) {
+            ListClips();
+        } });
+
+    cApp.addCommand({
+        "--list-tracks",
+        "--list-tracks",
+        "Print a list of tracks in the active Edit",
+        "Output includes type of track",
+        [this](auto&) {
+            ListTracks();
+        } });
+
+    cApp.addCommand({
+        "-e|--empty",
+        "-e|--empty [f.tracktionedit]",
+        "Activate an empty edit. default=default.tracktionedit",
+        "Edits need a tracktionedit file or they cannot save. This file does\n\
+        need to exist, but it does need to be specified. I'm not sure that the\n\
+        location of the file affects anything, because when saving an edit,\n\
+        source paths are updated based on the new file location.",
+        [this](const ArgumentList& args) {
+            auto filename = args.getValueForOption("-e");
+            if (filename == "") filename = "default.tracktionedit";
+            activateEmptyEdit(File::getCurrentWorkingDirectory().getChildFile(filename));
+        } });
+
     // Because of the while loop below, we must not create a default command.
     // Instead of using the default command, add -h if the arg list is empty.
     cApp.addHelpCommand("-h|--help", "Usage:", false);
@@ -312,102 +457,14 @@ void CLIApp::onRunning()
     // Search the provided argumentList for commands registered. When a command is found, 
     while (auto command = cApp.findCommand(argumentList, true)) {
         command->command(argumentList);
-        argumentList.removeOptionIfFound(command->commandOption);
+        argumentList.removeValueForOption(command->commandOption);
     }
 
-    // Create an inputFile and a te::Edit object.
-    // If -i inputfile is specified, use that file
-    // Else if "default.tracktionedit" exists in working dir, use that
-    // Else create an empty edit
-    ValueTree valueTree;
-    File inputFile;
-    if (argumentList.containsOption("-i")) {
-        inputFile = argumentList.getExistingFileForOption("-i");
-        valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
-        std::cout << "Loaded file: " << inputFile.getFullPathName() << std::endl;
-    }
-    else {
-        inputFile = File::getCurrentWorkingDirectory().getChildFile("default.tracktionedit");;
-        if (inputFile.existsAsFile()) {
-            std::cout << "Loading default.tracktionedit" << std::endl;
-            valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
-        }
-        else {
-            std::cout << "Creating an empty edit" << std::endl;
-            valueTree = te::createEmptyEdit();
-        }
+    // Inform user of malformed arguments
+    for (auto arg : argumentList.arguments) {
+        std::cerr << "ERROR: invalid argument: " << arg.text << std::endl;
     }
 
-    // Create the edit object.
-    // Note we cannot save an edit file without and ediit file retriever. It is
-    // also used resolves audioclips that have source='./any/relative/path.wav'.
-    std::cout << "Creating Edit Object" << std::endl;
-    te::Edit::Options editOptions{ engine };
-    editOptions.editProjectItemID = te::ProjectItemID::createNewID(0);
-    editOptions.editState = valueTree;
-    editOptions.numUndoLevelsToStore = 0;
-    editOptions.role = te::Edit::forRendering;
-    editOptions.editFileRetriever = [inputFile] { return inputFile; };
-    std::unique_ptr<te::Edit> edit = std::make_unique<te::Edit>(editOptions);
-
-    // By default (and for simplicity), all clips in an in-memory edit should
-    // have a source property with an absolute path value. We want to avoid
-    // clip sources with project ids or relative path values.
-    setClipSourcesToDirectFileReferences(*edit, false, true);
-
-    // List any missing plugins
-    for (auto plugin : edit->getPluginCache().getPlugins()) {
-        if (plugin->isMissing()) {
-            std::cout << "WARNING! Edit contains this plugin, which is missing from the host: " << plugin->getName() << std::endl;
-        }
-    }
-    std::cout << std::endl;
-
-    // Handle CLI args that deal with the edit
-    if (argumentList.containsOption("--list-clips")) ListClips(*edit);
-    if (argumentList.containsOption("--list-tracks")) ListTracks(*edit);
-
-    // If -o is specified, save an output file
-    if (argumentList.containsOption("-o")) {
-        // Create an output file
-        // if no output filename is specified, use this default filename
-        auto outputFilename = argumentList.getValueForOption("-o");
-        if (outputFilename == "") outputFilename = "default-output.tracktionedit";
-        auto outputFile = File::getCurrentWorkingDirectory().getChildFile(outputFilename);
-        auto outputExt = outputFile.getFileExtension().toLowerCase(); // resolve relative if needed
-
-        if (outputExt == ".tracktionedit") {
-            // Save a .tracktionedit file.
-            std::cout << "Saving: " << outputFile.getFullPathName() << std::endl;
-            // When edit files are saved, prefer relative paths. 
-            edit->editFileRetriever = [outputFile] { return outputFile; };
-            setClipSourcesToDirectFileReferences(*edit, true, true);
-            // .save and .saveAs may be silent no-ops unless we markAsChanged()
-            edit->markAsChanged();
-            te::EditFileOperations(*edit).saveAs(outputFile, true);
-        }
-        else if (outputExt == ".wav") {
-            // Render a .wav file
-            std::cout << "Save: " << outputFile.getFullPathName() << std::endl;
-            BigInteger tracksToDo;
-            int trackIndex = 0;
-            for (auto track : te::getAllTracks(*edit)) {
-                tracksToDo.setBit(trackIndex++);
-            }
-            te::Renderer::renderToFile(
-                { "Chaz Render Job" },
-                outputFile,
-                *edit,
-                { 0, 20 },
-                tracksToDo, true, {}, false);
-        }
-        else {
-            std::cout
-                << "Could not output file due to unknown extension: "
-                << outputFile.getFullPathName()
-                << std::endl;
-        }
-    }
     MessageManager::getInstance()->callAsync(quit);
 }
 
