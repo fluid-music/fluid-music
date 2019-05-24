@@ -436,9 +436,9 @@ void CLIApp::onRunning()
         } });
 
     cApp.addCommand({
-        "-e|--empty",
-        "-e|--empty [f.tracktionedit]",
-        "Activate an empty edit. default=default.tracktionedit",
+        "-e",
+        "-e|--empty [editfile]",
+        "Activate an empty edit with optional .tracktionedit file",
         "Edits need a tracktionedit file or they cannot save. This file does\n\
         need to exist, but it does need to be specified. I'm not sure that the\n\
         location of the file affects anything, because when saving an edit,\n\
