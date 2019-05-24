@@ -436,7 +436,7 @@ void CLIApp::onRunning()
         } });
 
     cApp.addCommand({
-        "-e",
+        "-e|--empty",
         "-e|--empty [editfile]",
         "Activate an empty edit with optional .tracktionedit file",
         "Edits need a tracktionedit file or they cannot save. This file does\n\
