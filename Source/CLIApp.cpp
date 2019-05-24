@@ -55,10 +55,9 @@ const String CLIApp::getApplicationVersion()
     return "0.0.1";
 }
 
-void CLIApp::ScanForPlugins()
+void CLIApp::scanVst3()
 {
-    // Log all the stuff about the plugins
-    std::cout << "Plugin Info..." << std::endl;
+    std::cout << "Scanning for VST3 plugins..." << std::endl;
 
     juce::VST3PluginFormat vst3;
     juce::String deadPlugins;
@@ -66,6 +65,36 @@ void CLIApp::ScanForPlugins()
         engine.getPluginManager().knownPluginList,
         vst3,
         vst3.getDefaultLocationsToSearch(),
+        true,
+        deadPlugins
+    };
+
+    juce::String pluginName;
+    do {
+        std::cout << "Scanning: \"" << pluginScanner.getNextPluginFileThatWillBeScanned() << "\"" << std::endl;
+    } while (pluginScanner.scanNextFile(true, pluginName));
+
+    // log failures
+    std::cout << "Dead Plugins: " << deadPlugins << std::endl << std::endl;
+    for (auto filename : pluginScanner.getFailedFiles()) {
+        std::cout << "Failed to load plugin: " << filename << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void CLIApp::scanVst2() {
+#if !JUCE_PLUGINHOST_VST
+    std::cout << "VST 2 hosting is not enabled in the projucer project. Skip VST 2 scan" << std::endl;
+    return;
+#endif
+    juce::VSTPluginFormat vst2;
+    std::cout << "Scanning for VST2 plugins in: " << vst2.getDefaultLocationsToSearch().toString() << std::endl;
+
+    juce::String deadPlugins;
+    juce::PluginDirectoryScanner pluginScanner{
+        engine.getPluginManager().knownPluginList,
+        vst2,
+        vst2.getDefaultLocationsToSearch(),
         true,
         deadPlugins
     };
@@ -358,7 +387,10 @@ void CLIApp::onRunning()
         "Searches the default plugin paths, and saves results in the persistent\n\
         application properties file. Once plugins are saved in the file, you\n\
         should not need to scan again unless you install more plugins.",
-        [this](auto&) { ScanForPlugins(); } });
+        [this](auto&) {
+            scanVst2();
+            scanVst3();
+        } });
 
     cApp.addCommand({
         "-a|--autodetect-pm",

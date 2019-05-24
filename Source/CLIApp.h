@@ -75,7 +75,8 @@ class CLIApp : public juce::JUCEApplicationBase {
     const String getApplicationName() override;
     const String getApplicationVersion() override;
 
-    void ScanForPlugins();
+    void scanVst2();
+    void scanVst3();
     void ListPlugins();
     void ListProjects();
     void ListClips();
