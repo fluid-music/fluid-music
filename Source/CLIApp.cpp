@@ -83,10 +83,7 @@ void CLIApp::scanVst3()
 }
 
 void CLIApp::scanVst2() {
-#if !JUCE_PLUGINHOST_VST
-    std::cout << "VST 2 hosting is not enabled in the projucer project. Skip VST 2 scan" << std::endl;
-    return;
-#endif
+#if JUCE_PLUGINHOST_VST
     juce::VSTPluginFormat vst2;
     std::cout << "Scanning for VST2 plugins in: " << vst2.getDefaultLocationsToSearch().toString() << std::endl;
 
@@ -110,6 +107,10 @@ void CLIApp::scanVst2() {
         std::cout << "Failed to load plugin: " << filename << std::endl;
     }
     std::cout << std::endl;
+#else
+    std::cout << "VST 2 hosting is not enabled in the projucer project. Skip VST 2 scan" << std::endl;
+    return;
+#endif
 }
 
 void CLIApp::ListPlugins()
