@@ -37,7 +37,7 @@ void CLIApp::shutdown()
     // I'm calling dispatchPendingMessages on the application settings too, in
     // hopes that this will guarantee that changes to the project manager
     // manager info will be saved (for example, when using 
-    // --autodetect-pm). Aver Cursory test suggests that this is not
+    // --autodetect-pm). A very Cursory test suggests that this is not
     // needed; the Project Manager settings will be saved anyway. I'm not %100
     // sure that this is the right way to do it, but for now I'm leaving it in.
     te::getApplicationSettings()->dispatchPendingMessages();
@@ -108,7 +108,7 @@ void CLIApp::scanVst2() {
     }
     std::cout << std::endl;
 #else
-    std::cout << "VST 2 hosting is not enabled in the projucer project. Skip VST 2 scan" << std::endl;
+    std::cout << "VST 2 hosting is not enabled in the projucer project. Skipping VST 2 scan." << std::endl;
     return;
 #endif
 }
@@ -453,7 +453,7 @@ void CLIApp::onRunning()
     cApp.addCommand({
         "--list-clips",
         "--list-clips",
-        "Print a list of the clips in the active edit",
+        "Print a list of the clips in the active Edit",
         "The output includes the name of the parent track, and source property",
         [this](auto&) {
             listClips();
@@ -501,7 +501,7 @@ void CLIApp::onRunning()
 
     // Inform user of malformed (unhandled) arguments
     for (auto arg : argumentList.arguments) {
-        std::cerr << "ERROR: invalid argument: " << arg.text << std::endl;
+        std::cerr << "ERROR: unhandled argument: " << arg.text << std::endl;
     }
 
     MessageManager::getInstance()->callAsync(quit);
