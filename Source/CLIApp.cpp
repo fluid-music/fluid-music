@@ -481,18 +481,24 @@ void CLIApp::onRunning()
             activateEmptyEdit(File::getCurrentWorkingDirectory().getChildFile(filename));
         } });
 
-    // Because of the while loop below, we must not create a default command.
+    // Because of the while loop below, we must not use the "default command"
+    // functionality built into the juce::ConsoleApplication class. If there is
+    // a default command, cApp.findCommand will always return that command, even
+    // when the supplied ArgumentList is empty, causing our while loop below to
+    // repeat indefinitely.
+    //
     // Instead of using the default command, add -h if the arg list is empty.
     cApp.addHelpCommand("-h|--help", "Usage:", false);
     if (argumentList.size() == 0) argumentList.arguments.add({ "-h" });
 
-    // Search the provided argumentList for commands registered. When a command is found, 
+    // Check only the first argument in the ArgumentList. If that command
+    // exists, execute it, and remove it and its value (if any).
     while (auto command = cApp.findCommand(argumentList, true)) {
         command->command(argumentList);
         argumentList.removeValueForOption(command->commandOption);
     }
 
-    // Inform user of malformed arguments
+    // Inform user of malformed (unhandled) arguments
     for (auto arg : argumentList.arguments) {
         std::cerr << "ERROR: invalid argument: " << arg.text << std::endl;
     }
