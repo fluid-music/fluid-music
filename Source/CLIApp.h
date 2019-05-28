@@ -77,10 +77,10 @@ class CLIApp : public juce::JUCEApplicationBase {
 
     void scanVst2();
     void scanVst3();
-    void ListPlugins();
-    void ListProjects();
-    void ListClips();
-    void ListTracks();
+    void listPlugins();
+    void listProjects();
+    void listClips();
+    void listTracks();
 
     /** Create and activate an empty edit
     */

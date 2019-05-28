@@ -113,7 +113,7 @@ void CLIApp::scanVst2() {
 #endif
 }
 
-void CLIApp::ListPlugins()
+void CLIApp::listPlugins()
 {
     std::cout << "Known Plugins:" << std::endl;
     for (auto plugin : engine.getPluginManager().knownPluginList) {
@@ -122,7 +122,7 @@ void CLIApp::ListPlugins()
     std::cout << std::endl;
 }
 
-void CLIApp::ListProjects() {
+void CLIApp::listProjects() {
     std::cout << "List Projects..." << std::endl;
     const auto& pm = te::ProjectManager::getInstance();
     for (auto project : pm->getAllProjects(pm->getLibraryProjectsFolder()))
@@ -137,7 +137,7 @@ void CLIApp::ListProjects() {
     std::cout << std::endl;
 }
 
-void CLIApp::ListClips() {
+void CLIApp::listClips() {
     std::cout << "List Clips..." << std::endl;
     // I believe "Clip" tracks may be Marker, Chord, or Audio tracks (and
     // possibly others). Audio Tracks may have midi clips
@@ -167,7 +167,7 @@ void CLIApp::ListClips() {
     std::cout << std::endl;
 }
 
-void CLIApp::ListTracks() {
+void CLIApp::listTracks() {
     std::cout << "List Tracks..." << std::endl;
     for (auto track : te::getAllTracks(*edit))
     {
@@ -410,7 +410,7 @@ void CLIApp::onRunning()
         "--list-plugins",
         "List all the plugins that are registered in the settings file",
         "Lists all detected plugins. Run this after --scan-plugins.",
-        [this](auto&) { ListPlugins(); }
+        [this](auto&) { listPlugins(); }
         });
 
     cApp.addCommand({
@@ -421,7 +421,7 @@ void CLIApp::onRunning()
         the Waveform project manager. Print a list of all the projects found.\n\
         If the list is empty, Waveform may not be installed, or you may need run\n\
         with the --autodetect-pm option.",
-        [this](auto&) { ListProjects(); }
+        [this](auto&) { listProjects(); }
         });
 
     cApp.addCommand({
@@ -456,7 +456,7 @@ void CLIApp::onRunning()
         "Print a list of the clips in the active edit",
         "The output includes the name of the parent track, and source property",
         [this](auto&) {
-            ListClips();
+            listClips();
         } });
 
     cApp.addCommand({
@@ -465,7 +465,7 @@ void CLIApp::onRunning()
         "Print a list of tracks in the active Edit",
         "Output includes type of track",
         [this](auto&) {
-            ListTracks();
+            listTracks();
         } });
 
     cApp.addCommand({
