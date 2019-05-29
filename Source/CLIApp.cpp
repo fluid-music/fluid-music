@@ -258,7 +258,7 @@ void CLIApp::saveActiveEdit(File outputFile) {
             { "Chaz Render Job" },
             outputFile,
             *edit,
-            { 0, 20 },
+            { 0, edit->getLength() },
             tracksToDo, true, {}, false);
     }
     else {
