@@ -81,6 +81,7 @@ class CLIApp : public juce::JUCEApplicationBase {
     void listProjects();
     void listClips();
     void listTracks();
+    void play();
 
     /** Create and activate an empty edit
     */

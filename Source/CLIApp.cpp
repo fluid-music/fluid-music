@@ -192,7 +192,7 @@ void CLIApp::activateEmptyEdit(File inputFile)
     editOptions.numUndoLevelsToStore = 0;
     editOptions.role = te::Edit::forRendering;
     editOptions.editFileRetriever = [inputFile] { return inputFile; };
-    edit = std::move(std::make_unique<te::Edit>(editOptions));
+    edit = std::make_unique<te::Edit>(editOptions);
 }
 
 void CLIApp::loadEditFile(File inputFile) {
@@ -267,6 +267,24 @@ void CLIApp::saveActiveEdit(File outputFile) {
             << outputFile.getFullPathName()
             << std::endl;
     }
+}
+
+void CLIApp::play() {
+    if (!edit) {
+        std::cerr << "Faild to play, because there is no active edit." << std::endl;
+        return;
+    }
+    te::Edit::Options options{engine};
+    options.editState = edit->state.createCopy();
+    options.role = te::Edit::EditRole::forEditing;
+    options.numUndoLevelsToStore = 0;
+    options.editFileRetriever = []{
+        return File::getCurrentWorkingDirectory().getChildFile("temp.tracktionedit");
+    };
+    te::Edit* newEdit = new te::Edit(options); // VEERRYYYY sloppy
+    newEdit->getTransport().setLoopRange({0, newEdit->getLength()});
+    newEdit->getTransport().looping = true;
+    newEdit->getTransport().play(false);
 }
 
 void CLIApp::autodetectPmSettings()
@@ -482,6 +500,15 @@ void CLIApp::onRunning()
             activateEmptyEdit(File::getCurrentWorkingDirectory().getChildFile(filename));
         } });
 
+    cApp.addCommand({
+        "-p",
+        "-p",
+        "Play the active edit",
+        "no-op if there is no active edit",
+        [this](auto&) {
+            play();
+        } });
+
     // Because of the while loop below, we must not use the "default command"
     // functionality built into the juce::ConsoleApplication class. If there is
     // a default command, cApp.findCommand will always return that command, even
@@ -504,7 +531,7 @@ void CLIApp::onRunning()
         std::cerr << "ERROR: unhandled argument: " << arg.text << std::endl;
     }
 
-    MessageManager::getInstance()->callAsync(quit);
+    //MessageManager::getInstance()->callAsync(quit);
 }
 
 START_JUCE_APPLICATION(CLIApp)
