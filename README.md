@@ -6,10 +6,9 @@ This project does not use the MAIN function, but subclasses [`juce::JUCEApplicat
 
 Test projects include (this list may be out of date):
 
-- [test-juce](https://github.com/CharlesHolbrow/test-juce)
-  - my first experiment with the juce + tracktion engine
+- [cybr](https://github.com/CharlesHolbrow/test-juce)
   - `CLIApp` subclasses `juce::JUCEApplicationBase` to init an app and run the event loop
-  - initialize 
+  - This was my original experiment (test-juce) but it's also the repo I'm pushing forward
 - [tracktionedit-player](https://github.com/CharlesHolbrow/tracktionedit-player) 
   - uses JUCE GUI to run a full application
   - loads a `.tracktionedit` and renders a file
