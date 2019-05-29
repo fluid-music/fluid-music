@@ -81,6 +81,9 @@ class CLIApp : public juce::JUCEApplicationBase {
     void listProjects();
     void listClips();
     void listTracks();
+    /** WIP - testing custom plugin
+    */
+    void junk();
 
     /** Create and activate an empty edit
     */

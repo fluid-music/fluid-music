@@ -183,6 +183,27 @@ void CLIApp::listTracks() {
     std::cout << std::endl;
 }
 
+void CLIApp::junk()
+{
+    if (!edit) {
+        std::cout << "JUNK: No active edit. Junk not possible." << std::endl;
+        return;
+    }
+    if (auto audioTrack = te::getFirstAudioTrack(*edit)) {
+        if (auto plugin = audioTrack->pluginList.insertPlugin(te::VolumeAndPanPlugin::create(), -1)) {
+            std::cout << "Plugin added: " << plugin->getName() << " to: " << audioTrack->getName() << std::endl;
+            if (auto vpPlugin = dynamic_cast<te::VolumeAndPanPlugin*>(plugin.get())) {
+                vpPlugin->setVolumeDb(-12);
+                std::cout << "Plugin is correct type :)" << std::endl;
+            }
+        }
+        else {
+            std::cout << "Failed to add plugin" << std::endl;
+        }
+    };
+    std::cout << std::endl;
+}
+
 void CLIApp::activateEmptyEdit(File inputFile)
 {
     std::cout << "Creating Edit Object" << std::endl;
@@ -480,6 +501,15 @@ void CLIApp::onRunning()
             auto filename = args.getValueForOption("-e");
             if (filename == "") filename = "default.tracktionedit";
             activateEmptyEdit(File::getCurrentWorkingDirectory().getChildFile(filename));
+        } });
+
+    cApp.addCommand({
+        "-j",
+        "-j",
+        "Experimental command",
+        "Just used for testing (for now)",
+        [this](auto&) {
+            junk();
         } });
 
     // Because of the while loop below, we must not use the "default command"
