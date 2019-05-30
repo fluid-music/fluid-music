@@ -35,6 +35,13 @@ OpenFrameworksPlugin::~OpenFrameworksPlugin()
     semitones->detachFromCurrentValue();
 }
 
+ValueTree OpenFrameworksPlugin::create()
+{
+    ValueTree v (te::IDs::PLUGIN);
+    v.setProperty (te::IDs::type, xmlTypeName, nullptr);
+    return v;
+}
+
 const char* OpenFrameworksPlugin::xmlTypeName = "openframeworks";
 
 void OpenFrameworksPlugin::initialise(const te::PlaybackInitialisationInfo&) {}

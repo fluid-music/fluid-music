@@ -20,6 +20,7 @@ class OpenFrameworksPlugin : public te::Plugin
 public:
     OpenFrameworksPlugin(te::PluginCreationInfo);
     ~OpenFrameworksPlugin();
+    static ValueTree create();
 
     //==============================================================================
     juce::CachedValue<float> semitonesValue;

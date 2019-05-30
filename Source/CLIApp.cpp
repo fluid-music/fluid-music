@@ -193,12 +193,18 @@ void CLIApp::junk()
     }
     if (auto audioTrack = te::getFirstAudioTrack(*edit)) {
         // insert my plugin
-        //if (auto plugin = audioTrack->pluginList.insertPlugin())
+        if (auto plugin = audioTrack->pluginList.insertPlugin(OpenFrameworksPlugin::create(), 0)) {
+            std::cout << "My Plugin Added!" << std::endl;
+            if (auto ofPlugin = dynamic_cast<OpenFrameworksPlugin*>(plugin.get())){
+                std::cout << "My Plugin is correct type!" << std::endl;
+                ofPlugin->semitonesValue.setValue(30, nullptr);
+            }
+        }
         // insert a VolumeAndPanPlugin
         if (auto plugin = audioTrack->pluginList.insertPlugin(te::VolumeAndPanPlugin::create(), -1)) {
             std::cout << "Plugin added: " << plugin->getName() << " to: " << audioTrack->getName() << std::endl;
             if (auto vpPlugin = dynamic_cast<te::VolumeAndPanPlugin*>(plugin.get())) {
-                vpPlugin->setVolumeDb(-36);
+                vpPlugin->setVolumeDb(-3);
                 std::cout << "Plugin is correct type :)" << std::endl;
             }
         }
