@@ -9,6 +9,10 @@
             file="Source/CliUiBehaviour.cpp"/>
       <FILE id="pRi14J" name="CliUiBehaviour.h" compile="0" resource="0"
             file="Source/CliUiBehaviour.h"/>
+      <FILE id="xeKpc6" name="OpenFrameworksPlugin.cpp" compile="1" resource="0"
+            file="Source/OpenFrameworksPlugin.cpp"/>
+      <FILE id="EOu6Gd" name="OpenFrameworksPlugin.h" compile="0" resource="0"
+            file="Source/OpenFrameworksPlugin.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

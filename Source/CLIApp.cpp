@@ -9,6 +9,7 @@
 */
 
 #include "CLIApp.h"
+#include "OpenFrameworksPlugin.h"
 
 bool CLIApp::moreThanOneInstanceAllowed() { return true; }
 void CLIApp::anotherInstanceStarted(const String&) {}
@@ -26,6 +27,7 @@ void CLIApp::unhandledException(const std::exception*, const String&, int)
 
 void CLIApp::initialise(const String& commandLine) 
 {
+    engine.getPluginManager().createBuiltInType<OpenFrameworksPlugin>();
     MessageManager::getInstance()->callAsync([this] { onRunning(); });
 }
 
@@ -190,10 +192,13 @@ void CLIApp::junk()
         return;
     }
     if (auto audioTrack = te::getFirstAudioTrack(*edit)) {
+        // insert my plugin
+        //if (auto plugin = audioTrack->pluginList.insertPlugin())
+        // insert a VolumeAndPanPlugin
         if (auto plugin = audioTrack->pluginList.insertPlugin(te::VolumeAndPanPlugin::create(), -1)) {
             std::cout << "Plugin added: " << plugin->getName() << " to: " << audioTrack->getName() << std::endl;
             if (auto vpPlugin = dynamic_cast<te::VolumeAndPanPlugin*>(plugin.get())) {
-                vpPlugin->setVolumeDb(-12);
+                vpPlugin->setVolumeDb(-36);
                 std::cout << "Plugin is correct type :)" << std::endl;
             }
         }
@@ -372,7 +377,7 @@ void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool use
                     // the edit file is not found, and we are using a realtive
                     // path, but it will still set the relative path correctly.
                     String original = sourceFileRef.source;
-                    sourceFileRef.setToDirectFileReference(file, useRelativePath);
+                    sourceFileRef.setToDirectFileReference(file, useRelativePath); // assertion breakpoint if edit file DNE
                     if (original != sourceFileRef.source) {
                         audioClip->sourceMediaChanged(); // what does this really do, and is it needed?
                         if (verbose) std::cout
