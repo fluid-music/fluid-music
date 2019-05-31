@@ -29,6 +29,8 @@ public:
     //==============================================================================
     static float getMaximumSemitones() { return 3.0f * 12.0f; }
 
+
+    // Overridden from Plugin ======================================================
     static const char* getPluginName() { return NEEDS_TRANS("MIDI Modifier"); }
     static const char* xmlTypeName;
 
@@ -36,19 +38,24 @@ public:
     juce::String getPluginType() override { return xmlTypeName; }
     juce::String getShortName(int) override { return "OF"; }
 
-    void initialise(const te::PlaybackInitialisationInfo&) override;
-    void deinitialise() override;
-    double getLatencySeconds() override;
-    int getNumOutputChannelsGivenInputs(int) override;
-    void getChannelNames(juce::StringArray*, juce::StringArray*) override;
-    bool takesAudioInput() override;
-    bool canBeAddedToClip() override;
-    bool needsConstantBufferSize() override;
+    void initialise(const te::PlaybackInitialisationInfo&) override { } // Happens lazily (in my case, on render.)
+    void initialiseFully() override { } // never called in my case?
+    void deinitialise() override { }
+    double getLatencySeconds() override { return 0.0; }
+    int getNumOutputChannelsGivenInputs(int) override { return 0; }
+    void getChannelNames(juce::StringArray*, juce::StringArray*) override {}
+    bool isSynth() override { return false; }
+    bool takesAudioInput() override { return false; }
+    bool canBeAddedToClip() override { return false; }
+    bool needsConstantBufferSize() override { return false; }
+    // takesMidiInput is not overridden, and by default if returns false. Why??
 
     void applyToBuffer(const te::AudioRenderContext&) override;
+    // Overridden from Selectable ==================================================
 
     juce::String getSelectableDescription() override;
 
+    // Overridden from AutomatableEditItem =========================================
     void restorePluginStateFromValueTree(const juce::ValueTree&) override;
 
 private:

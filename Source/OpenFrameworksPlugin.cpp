@@ -44,15 +44,6 @@ ValueTree OpenFrameworksPlugin::create()
 
 const char* OpenFrameworksPlugin::xmlTypeName = "openframeworks";
 
-void OpenFrameworksPlugin::initialise(const te::PlaybackInitialisationInfo&) {}
-void OpenFrameworksPlugin::deinitialise() {}
-double OpenFrameworksPlugin::getLatencySeconds() { return 0.0; }
-int OpenFrameworksPlugin::getNumOutputChannelsGivenInputs(int) { return 0; }
-void OpenFrameworksPlugin::getChannelNames(StringArray*, StringArray*) {}
-bool OpenFrameworksPlugin::takesAudioInput() { return false; }
-bool OpenFrameworksPlugin::canBeAddedToClip() { return false; }
-bool OpenFrameworksPlugin::needsConstantBufferSize() { return false; }
-
 void OpenFrameworksPlugin::applyToBuffer(const te::AudioRenderContext& fc)
 {
     if (fc.bufferForMidiMessages != nullptr)
