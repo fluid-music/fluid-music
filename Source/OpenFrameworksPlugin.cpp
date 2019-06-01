@@ -17,8 +17,10 @@ OpenFrameworksPlugin::OpenFrameworksPlugin(te::PluginCreationInfo info) : te::Pl
 {
     semitones = addParam("semitones up", TRANS("Semitones"),
         { -getMaximumSemitones(), getMaximumSemitones() },
+        // valueToString
         [](float value) { return std::abs(value) < 0.01f ? "(" + TRANS("Original pitch") + ")"
                                                             : te::getSemitonesAsString(value); },
+        // stringToValue
         [](const String& s) { return jlimit(-OpenFrameworksPlugin::getMaximumSemitones(),
                                             OpenFrameworksPlugin::getMaximumSemitones(),
                                             s.getFloatValue()); });
