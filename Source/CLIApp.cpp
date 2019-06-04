@@ -482,6 +482,16 @@ void CLIApp::onRunning()
             activateEmptyEdit(File::getCurrentWorkingDirectory().getChildFile(filename));
         } });
 
+    cApp.addCommand({
+        "--print-length",
+        "--print-length",
+        "print the length of the active edit",
+        "What are the units?",
+        [this](auto&) {
+            if (!edit) return;
+            std::cout << "Edit Length: " << edit->getLength() << " seconds" << std::endl << std::endl;
+        } });
+
     // Because of the while loop below, we must not use the "default command"
     // functionality built into the juce::ConsoleApplication class. If there is
     // a default command, cApp.findCommand will always return that command, even
