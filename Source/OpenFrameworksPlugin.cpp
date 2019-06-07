@@ -54,9 +54,13 @@ void OpenFrameworksPlugin::applyToBuffer(const te::AudioRenderContext& fc)
         for (auto& msg : *(fc.bufferForMidiMessages)) {
             std::cout
                 << "Got midi message: "
-                << msg.getTimeStamp() // This is not really meaningful. It's the time stamp within the block, with I believe is arbitrary. We should really figure out how to playhead->getEditTime (or whatever it is) this value
-                << " - "
-                << msg.getDescription()
+                << msg.getTimeStamp() + fc.midiBufferOffset // This is not really meaningful. It's the time stamp within the block, with I believe is arbitrary. We should really figure out how to playhead->getEditTime (or whatever it is) this value
+                << " midiBufferOffset: " << fc.midiBufferOffset
+                << " pHead.getEditTime.r1.start " << fc.getEditTime().editRange1.start + msg.getTimeStamp()
+                << " - isSplit? " << fc.getEditTime().isSplit
+                << " - continuity " << fc.continuity
+                << " - " << fc.playhead.streamTimeToSourceTime(fc.strea)
+                << " - " << msg.getDescription()
                 << std::endl;
         }
     }
