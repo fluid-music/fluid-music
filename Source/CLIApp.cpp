@@ -26,6 +26,7 @@ void CLIApp::unhandledException(const std::exception*, const String&, int)
 
 void CLIApp::initialise(const String& commandLine) 
 {
+    editJobs.addChangeListener(this);
     MessageManager::getInstance()->callAsync([this] { onRunning(); });
 }
 
@@ -274,17 +275,7 @@ void CLIApp::play() {
         std::cerr << "Faild to play, because there is no active edit." << std::endl;
         return;
     }
-    te::Edit::Options options{engine};
-    options.editState = edit->state.createCopy();
-    options.role = te::Edit::EditRole::forEditing;
-    options.numUndoLevelsToStore = 0;
-    options.editFileRetriever = []{
-        return File::getCurrentWorkingDirectory().getChildFile("temp.tracktionedit");
-    };
-    te::Edit* newEdit = new te::Edit(options); // VEERRYYYY sloppy
-    newEdit->getTransport().setLoopRange({0, newEdit->getLength()});
-    newEdit->getTransport().looping = true;
-    newEdit->getTransport().play(false);
+    editJobs.play(*edit);
 }
 
 void CLIApp::autodetectPmSettings()
@@ -336,6 +327,11 @@ void CLIApp::autodetectPmSettings()
     }
     std::cout << "Failed to load Tracktion Waveform settings from: " << file.getFullPathName() << std::endl << std::endl;
     return;
+}
+
+void CLIApp::changeListenerCallback(ChangeBroadcaster* source)
+{
+    quitIfReady();
 }
 
 void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose = true)
@@ -531,7 +527,8 @@ void CLIApp::onRunning()
         std::cerr << "ERROR: unhandled argument: " << arg.text << std::endl;
     }
 
-    //MessageManager::getInstance()->callAsync(quit);
+    // If jobs were added to EditJobs, wait for them to finish
+    quitIfReady();
 }
 
 START_JUCE_APPLICATION(CLIApp)
