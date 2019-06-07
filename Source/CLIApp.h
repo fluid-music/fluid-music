@@ -12,8 +12,9 @@
 #include <iostream>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "CliUiBehaviour.h"
+#include "EditJobs.h"
 
-class CLIApp : public juce::JUCEApplicationBase {
+class CLIApp : public JUCEApplicationBase, ChangeListener {
     /** Returns the global instance of the application object being run. */
     //static CLIApp* JUCE_CALLTYPE getInstance() noexcept;
 
@@ -81,6 +82,7 @@ class CLIApp : public juce::JUCEApplicationBase {
     void listProjects();
     void listClips();
     void listTracks();
+    void play();
 
     /** Create and activate an empty edit
     */
@@ -96,9 +98,18 @@ class CLIApp : public juce::JUCEApplicationBase {
     /** Try to lookup and add the project manager settings from Tracktion Waveform.
     */
     void autodetectPmSettings();
+
+    /** Decide when to quit
+    */
+    void changeListenerCallback(ChangeBroadcaster* source);
+
+    /** If all the jobs are done, quit
+    */
+    void quitIfReady() { if (editJobs.isEmpty()) quit(); }
 private:
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
     std::unique_ptr<te::Edit> edit;
+    EditJobs editJobs;
 
     // onRunning should be called once, and only after the MessageManager is
     // also running. There is where I am putting the body of the application.

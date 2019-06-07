@@ -26,6 +26,7 @@ void CLIApp::unhandledException(const std::exception*, const String&, int)
 
 void CLIApp::initialise(const String& commandLine) 
 {
+    editJobs.addChangeListener(this);
     MessageManager::getInstance()->callAsync([this] { onRunning(); });
 }
 
@@ -192,7 +193,7 @@ void CLIApp::activateEmptyEdit(File inputFile)
     editOptions.numUndoLevelsToStore = 0;
     editOptions.role = te::Edit::forRendering;
     editOptions.editFileRetriever = [inputFile] { return inputFile; };
-    edit = std::move(std::make_unique<te::Edit>(editOptions));
+    edit = std::make_unique<te::Edit>(editOptions);
 }
 
 void CLIApp::loadEditFile(File inputFile) {
@@ -269,6 +270,14 @@ void CLIApp::saveActiveEdit(File outputFile) {
     }
 }
 
+void CLIApp::play() {
+    if (!edit) {
+        std::cerr << "Faild to play, because there is no active edit." << std::endl;
+        return;
+    }
+    editJobs.play(*edit);
+}
+
 void CLIApp::autodetectPmSettings()
 {
     auto appPrefsDir =  File::getSpecialLocation(File::userApplicationDataDirectory);
@@ -318,6 +327,11 @@ void CLIApp::autodetectPmSettings()
     }
     std::cout << "Failed to load Tracktion Waveform settings from: " << file.getFullPathName() << std::endl << std::endl;
     return;
+}
+
+void CLIApp::changeListenerCallback(ChangeBroadcaster* source)
+{
+    quitIfReady();
 }
 
 void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose = true)
@@ -492,6 +506,15 @@ void CLIApp::onRunning()
             std::cout << "Edit Length: " << edit->getLength() << " seconds" << std::endl << std::endl;
         } });
 
+    cApp.addCommand({
+        "-p",
+        "-p",
+        "Play the active edit",
+        "no-op if there is no active edit",
+        [this](auto&) {
+            play();
+        } });
+
     // Because of the while loop below, we must not use the "default command"
     // functionality built into the juce::ConsoleApplication class. If there is
     // a default command, cApp.findCommand will always return that command, even
@@ -514,7 +537,8 @@ void CLIApp::onRunning()
         std::cerr << "ERROR: unhandled argument: " << arg.text << std::endl;
     }
 
-    MessageManager::getInstance()->callAsync(quit);
+    // If jobs were added to EditJobs, wait for them to finish
+    quitIfReady();
 }
 
 START_JUCE_APPLICATION(CLIApp)
