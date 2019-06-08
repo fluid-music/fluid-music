@@ -13,6 +13,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "CliUiBehaviour.h"
 #include "EditJobs.h"
+#include "OscRecorder.h"
 
 class CLIApp : public JUCEApplicationBase, ChangeListener {
     /** Returns the global instance of the application object being run. */
@@ -110,6 +111,7 @@ private:
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
     std::unique_ptr<te::Edit> edit;
     EditJobs editJobs;
+    OscRecorder oscRecorder;
 
     // onRunning should be called once, and only after the MessageManager is
     // also running. There is where I am putting the body of the application.
