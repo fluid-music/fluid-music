@@ -21,6 +21,7 @@ public:
         te::Edit::Options options{ edit.engine };
         options.editState = edit.state.createCopy();
         options.role = te::Edit::EditRole::forEditing;
+        options.editProjectItemID = te::ProjectItemID::createNewID(0);
         options.numUndoLevelsToStore = 0;
         options.editFileRetriever = [] {
             return File::getCurrentWorkingDirectory().getChildFile("temp.tracktionedit");
@@ -30,9 +31,7 @@ public:
         auto length = newEdit->getLength();
         auto& transport = newEdit->getTransport();
         transport.position = 0;
-        transport.setLoopRange({ 0, length });
         transport.play(false);
-        transport.looping = true;
         playingEdits.add(newEdit);
         sendChangeMessage();
         Timer::callAfterDelay((int)ceil(length * 1000.), [this, newEdit]() {

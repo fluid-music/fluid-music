@@ -101,7 +101,7 @@ class CLIApp : public JUCEApplicationBase, ChangeListener {
 
     /** Decide when to quit
     */
-    void changeListenerCallback(ChangeBroadcaster* source);
+    void changeListenerCallback(ChangeBroadcaster* source) override;
 
     /** If all the jobs are done, quit
     */
