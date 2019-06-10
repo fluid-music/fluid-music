@@ -14,8 +14,24 @@
 
 namespace te = tracktion_engine;
 
-// OSCReceiver::RealtimeCallback
-class OscRecorder : private OSCReceiver::Listener<OSCReceiver::MessageLoopCallback> {
+// For now, just use a simple test message. Later we can figure out if and how
+// to subclass or DRY these.
+struct TimestampedTest {
+    double arrivedAt;
+    int value;
+    String toString() {
+        String s{ "test: " };
+        s << arrivedAt << " - " << value;
+        return s;
+    };
+};
+
+// Eventually we want to subclass or template this so that we can pass in a type
+// Note the two options for the callback type
+// OSCReceiver::RealtimeCallback // OSCReceiver::MessageLoopCallback
+class OscRecorder : public Timer,
+                    private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>
+{
 public:
     OscRecorder() {
         std::cout << "Creating OSC Recorder" << std::endl;
@@ -25,18 +41,43 @@ public:
         } else {
             std::cout << "Failed to Listen for OSC" << std::endl;
         }
+        startTimer(3000);
         std::cout << std::endl;
+    }
+    void timerCallback() {
+        int start1, size1, start2, size2;
+        abstractFifo.prepareToRead(abstractFifo.getNumReady(), start1, size1, start2, size2);
+        for (int i = start1; i < start1 + size1; i++) {
+            std::cout << storage[i].toString() << std::endl;
+        }
+        for (int i = start2; i < start2 + size2; i++) {
+            std::cout << storage[i].toString() << std::endl;
+        }
+        abstractFifo.finishedRead(size1 + size2);
+        if (size1 || size2)
+            std::cout
+                << "Read " << size1 << " + " << size2 << " elements"
+                << std::endl << std::endl;
     }
 private:
     void oscMessageReceived(const OSCMessage& message) override {
-        std::cout << "OSC Received: " << message.getAddressPattern().toString();
-        for (auto arg : message) {
-            if (arg.isInt32()) std::cout << " " << arg.getInt32();
-        }
-        std::cout << std::endl;
+        if (message.size() < 1) return;
+        if (!message[0].isInt32()) return;
+        TimestampedTest obj{ Time::getMillisecondCounterHiRes(), message[0].getInt32() };
+
+        int start1, size1, start2, size2;
+        abstractFifo.prepareToWrite(1, start1, size1, start2, size2);
+        if (size1 > 0) storage[start1] = obj;
+        else if (size2 > 0) storage[start2] = obj;
+        abstractFifo.finishedWrite(size1 + size2);
     }
+
     void oscBundleReceived(const OSCBundle& bundle) override {
         std::cout << "OSC bundle received" << std::endl;
     }
+
     OSCReceiver oscReceiver;
+    static const int SIZE = 1024;
+    AbstractFifo abstractFifo{ SIZE };
+    TimestampedTest storage[SIZE];
 };
