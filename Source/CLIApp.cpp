@@ -9,6 +9,7 @@
 */
 
 #include "CLIApp.h"
+#include "OpenFrameworksPlugin.h"
 
 bool CLIApp::moreThanOneInstanceAllowed() { return true; }
 void CLIApp::anotherInstanceStarted(const String&) {}
@@ -26,6 +27,7 @@ void CLIApp::unhandledException(const std::exception*, const String&, int)
 
 void CLIApp::initialise(const String& commandLine) 
 {
+    engine.getPluginManager().createBuiltInType<OpenFrameworksPlugin>();
     editJobs.addChangeListener(this);
     MessageManager::getInstance()->callAsync([this] { onRunning(); });
 }
@@ -181,6 +183,36 @@ void CLIApp::listTracks() {
         if (track->isTempoTrack()) std::cout << "Tempo Track - ";
         std::cout << track->getName() << std::endl;
     }
+    std::cout << std::endl;
+}
+
+void CLIApp::junk()
+{
+    if (!edit) {
+        std::cout << "JUNK: No active edit. Junk not possible." << std::endl;
+        return;
+    }
+    if (auto audioTrack = te::getFirstAudioTrack(*edit)) {
+        // insert my plugin
+        if (auto plugin = audioTrack->pluginList.insertPlugin(OpenFrameworksPlugin::create(), 0)) {
+            std::cout << "My Plugin Added!" << std::endl;
+            if (auto ofPlugin = dynamic_cast<OpenFrameworksPlugin*>(plugin.get())){
+                std::cout << "My Plugin is correct type!" << std::endl;
+                ofPlugin->semitonesValue.setValue(30, nullptr);
+            }
+        }
+        // insert a VolumeAndPanPlugin
+        if (auto plugin = audioTrack->pluginList.insertPlugin(te::VolumeAndPanPlugin::create(), -1)) {
+            std::cout << "Plugin added: " << plugin->getName() << " to: " << audioTrack->getName() << std::endl;
+            if (auto vpPlugin = dynamic_cast<te::VolumeAndPanPlugin*>(plugin.get())) {
+                vpPlugin->setVolumeDb(-3);
+                std::cout << "Plugin is correct type :)" << std::endl;
+            }
+        }
+        else {
+            std::cout << "Failed to add plugin" << std::endl;
+        }
+    };
     std::cout << std::endl;
 }
 
@@ -365,7 +397,7 @@ void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool use
                     // the edit file is not found, and we are using a realtive
                     // path, but it will still set the relative path correctly.
                     String original = sourceFileRef.source;
-                    sourceFileRef.setToDirectFileReference(file, useRelativePath);
+                    sourceFileRef.setToDirectFileReference(file, useRelativePath); // assertion breakpoint if edit file DNE
                     if (original != sourceFileRef.source) {
                         audioClip->sourceMediaChanged(); // what does this really do, and is it needed?
                         if (verbose) std::cout
@@ -541,6 +573,15 @@ void CLIApp::onRunning()
             auto filename = args.getValueForOption("-e");
             if (filename == "") filename = "default.tracktionedit";
             activateEmptyEdit(File::getCurrentWorkingDirectory().getChildFile(filename));
+        } });
+
+    cApp.addCommand({
+        "-j",
+        "-j",
+        "Experimental command",
+        "Just used for testing (for now)",
+        [this](auto&) {
+            junk();
         } });
 
     cApp.addCommand({

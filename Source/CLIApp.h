@@ -88,6 +88,11 @@ class CLIApp : public JUCEApplicationBase, ChangeListener {
     void listMidiDevices();
     void play();
 
+    /** WIP - testing custom plugin
+    */
+    void junk();
+
+
     /** Create and activate an empty edit
     */
     void activateEmptyEdit(File inputFile);
