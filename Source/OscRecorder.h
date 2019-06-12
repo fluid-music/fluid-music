@@ -44,7 +44,7 @@ public:
         startTimer(3000);
         std::cout << std::endl;
     }
-    void timerCallback() {
+    void timerCallback() override {
         int start1, size1, start2, size2;
         abstractFifo.prepareToRead(abstractFifo.getNumReady(), start1, size1, start2, size2);
         for (int i = start1; i < start1 + size1; i++) {
