@@ -82,6 +82,9 @@ class CLIApp : public JUCEApplicationBase, ChangeListener {
     void listProjects();
     void listClips();
     void listTracks();
+    void listIoDevices();
+    void listWaveDevices();
+    void listMidiDevices();
     void play();
 
     /** Create and activate an empty edit
