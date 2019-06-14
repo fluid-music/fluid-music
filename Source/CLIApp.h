@@ -91,6 +91,7 @@ class CLIApp : public JUCEApplicationBase, ChangeListener {
     /** WIP - testing custom plugin
     */
     void junk();
+    void recordOsc();
 
 
     /** Create and activate an empty edit
@@ -119,7 +120,7 @@ private:
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
     std::unique_ptr<te::Edit> edit;
     EditJobs editJobs;
-    OscRecorder oscRecorder;
+    std::unique_ptr<OscRecorder> oscRecorder;
 
     // onRunning should be called once, and only after the MessageManager is
     // also running. There is where I am putting the body of the application.

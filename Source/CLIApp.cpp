@@ -192,6 +192,7 @@ void CLIApp::junk()
         std::cout << "JUNK: No active edit. Junk not possible." << std::endl;
         return;
     }
+
     if (auto audioTrack = te::getFirstAudioTrack(*edit)) {
         // insert my plugin
         if (auto plugin = audioTrack->pluginList.insertPlugin(OpenFrameworksPlugin::create(), 0)) {
@@ -214,6 +215,11 @@ void CLIApp::junk()
         }
     };
     std::cout << std::endl;
+}
+
+void CLIApp::recordOsc()
+{
+    oscRecorder = std::make_unique<OscRecorder>(engine);
 }
 
 void CLIApp::activateEmptyEdit(File inputFile)
@@ -602,6 +608,15 @@ void CLIApp::onRunning()
         [this](auto&) {
             play();
         } });
+    
+    cApp.addCommand({
+        "-r",
+        "-r",
+        "Setup OSC Recording. Use before calling -p",
+        "Undocumented! TODO: doc",
+        [this](auto&) {
+            recordOsc();
+        } });
 
     cApp.addCommand({
         "--list-io",
@@ -612,11 +627,12 @@ void CLIApp::onRunning()
         - dm.getInputDevice(int)    // Indexes wave then midi devices\n\
         - dm.getOutputDeviceAt(int) // Note inconsistent name\n\
         - dm.get[Wave|Midi][In|Out]Device(int)\n\
-        - dm.find[Input|Output]DeviceWithName(String)\n\
+        - dm.findOutputDeviceWithName(String)\n\
         - dm.get[Midi|Wave][Input|Output]Device(int) // Index all devices\n\
-        All the methods really do the same thing, which is iterate over the four\n\
-        raw arrays for each of wave and MIDI input and output devices. cybr commands\n\
-        that accept a device index argument by its index should use this convention",
+        All the methods really do the same thing, which is iterate over the one or\n\
+        more of four raw arrays for each of wave and MIDI input and output devices.\n\
+        cybr commands that accept a device index argument by its index should use\n\
+        this convention",
         [this](auto&) {
             listIoDevices();
         } });

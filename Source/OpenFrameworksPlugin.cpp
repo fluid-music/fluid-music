@@ -54,6 +54,8 @@ void OpenFrameworksPlugin::applyToBuffer(const te::AudioRenderContext& fc)
         for (auto& msg : *(fc.bufferForMidiMessages)) {
             std::cout
                 << "Got midi message: "
+                << fc.streamTime.start
+                << " juce::Time seconds" << Time::getMillisecondCounterHiRes() * 0.001
                 << msg.getTimeStamp() // This is not really meaningful. It's the time stamp within the block, with I believe is arbitrary. We should really figure out how to playhead->getEditTime (or whatever it is) this value
                 << " - "
                 << msg.getDescription()
