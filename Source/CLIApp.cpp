@@ -28,7 +28,7 @@ void CLIApp::unhandledException(const std::exception*, const String&, int)
 void CLIApp::initialise(const String& commandLine) 
 {
     engine.getPluginManager().createBuiltInType<OpenFrameworksPlugin>();
-    editJobs.addChangeListener(this);
+    appJobs.addChangeListener(this);
     MessageManager::getInstance()->callAsync([this] { onRunning(); });
 }
 
@@ -313,7 +313,7 @@ void CLIApp::play() {
         std::cerr << "Faild to play, because there is no active edit." << std::endl;
         return;
     }
-    editJobs.play(*edit);
+    appJobs.play(*edit);
 }
 
 void CLIApp::autodetectPmSettings()

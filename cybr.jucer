@@ -4,7 +4,7 @@
   <MAINGROUP id="JTqeoX" name="cybr">
     <GROUP id="{E03437D9-F7F3-5413-6A30-51BDC7A4D4BC}" name="Source">
       <FILE id="qi7Ehy" name="OscRecorder.h" compile="0" resource="0" file="Source/OscRecorder.h"/>
-      <FILE id="fOUkdh" name="EditJobs.h" compile="0" resource="0" file="Source/EditJobs.h"/>
+      <FILE id="fOUkdh" name="AppJobs.h" compile="0" resource="0" file="Source/AppJobs.h"/>
       <FILE id="BbVjEA" name="CLIApp.cpp" compile="1" resource="0" file="Source/CLIApp.cpp"/>
       <FILE id="T4tZrh" name="CLIApp.h" compile="0" resource="0" file="Source/CLIApp.h"/>
       <FILE id="hQ3viv" name="CliUiBehaviour.cpp" compile="1" resource="0"

@@ -12,7 +12,7 @@
 #include <iostream>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "CliUiBehaviour.h"
-#include "EditJobs.h"
+#include "AppJobs.h"
 #include "OscRecorder.h"
 
 class CLIApp : public JUCEApplicationBase, ChangeListener {
@@ -115,11 +115,11 @@ class CLIApp : public JUCEApplicationBase, ChangeListener {
 
     /** If all the jobs are done, quit
     */
-    void quitIfReady() { if (editJobs.isEmpty()) quit(); }
+    void quitIfReady() { if (appJobs.isFinished()) quit(); }
 private:
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
     std::unique_ptr<te::Edit> edit;
-    EditJobs editJobs;
+    AppJobs appJobs;
     std::unique_ptr<OscRecorder> oscRecorder;
 
     // onRunning should be called once, and only after the MessageManager is

@@ -13,7 +13,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 namespace te = tracktion_engine;
-class EditJobs : public juce::ChangeBroadcaster {
+class AppJobs : public juce::ChangeBroadcaster {
 public:
 
     /** Make a copy of the Edit, and play it back. */
@@ -41,7 +41,16 @@ public:
     }
 
     bool isEmpty() { return playingEdits.size() == 0; }
+    bool isFinished() { return isEmpty() && ! runForever; }
+    
+    void setRunForever(bool newFlag) {
+        bool changed = (newFlag != runForever);
+        runForever = newFlag;
+        if (changed) sendChangeMessage();
+    }
+    bool getRunForever() { return runForever; }
 
 private:
     juce::OwnedArray<te::Edit> playingEdits;
+    bool runForever = false;
 };
