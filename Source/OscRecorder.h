@@ -21,8 +21,9 @@ struct TimestampedTest {
     double streamTime = 0;
     int value;
     String toString() {
+        String t(streamTime, 4);
         String s{ "test: " };
-        s << streamTime << " - " << value;
+        s << t << " - " << value;
         return s;
     }
 };
@@ -54,15 +55,23 @@ Result createAdjustInputDevice(te::Engine& engine, const String& name)
 {
     // CRASH_TRACER
     TRACKTION_ASSERT_MESSAGE_THREAD
-
     {
-        StringArray virtualDevices;
-        virtualDevices.addTokens (engine.getPropertyStorage().getProperty (te::SettingID::virtualmididevices).toString(), ";", {});
-        virtualDevices.removeEmptyStrings();
-
-        if (virtualDevices.contains (name))
-            return Result::fail (TRANS("Name is already in use!"));
+        auto& mi = engine.getDeviceManager().midiInputs;
+        for (int i = 0; i < mi.size(); i++) {
+            if (mi[i]->getName() == AdjustInputDevice::name) {
+                // Editing an array while iterating is normally a bad idea.
+                // We must break the loop immediately.
+                mi.remove(i);
+                break;
+            }
+        }
     }
+    
+    // This is where the original function would check the engine property
+    // storage, and fail if a input device with the specified name already
+    // exists. We are skipping over that because we just delete the device
+    // (if it exists) in the code above. For the original behavior, see:
+    // te::DeviceManager::createVirtualMidiDevice(const juce::String &name);
 
     {
         te::DeviceManager::ContextDeviceListRebuilder deviceRebuilder (engine.getDeviceManager());
