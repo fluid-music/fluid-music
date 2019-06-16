@@ -697,7 +697,7 @@ void CLIApp::onRunning()
     cApp.addCommand({
         "-h|--help",
         "-h|--help --list-io",
-        "Show detailed useage subsequent arguments",
+        "Print detailed info for subsequent arguments",
         "If there are no arguments after this one, print short description of all\n\
         arguemtns. If there are subsequent arguments, instead of executing/applying\n\
         them, show their detailed help string.",

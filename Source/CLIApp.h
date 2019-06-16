@@ -132,7 +132,7 @@ private:
         String targetHostname { "127.0.0.1" };
 
         /** When helpModeFlag is enabled, the app should print the detailed command
-         string instead of running the command. CLI Users may set the helpModeFlag
+         string instead of running the command. CLI users may set the helpModeFlag
          by specifying the -h CLI argument. */
         bool helpModeFlag = false;
     };
