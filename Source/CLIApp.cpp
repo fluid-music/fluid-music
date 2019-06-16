@@ -494,8 +494,10 @@ void CLIApp::onRunning()
         "This is useful if you want to load .tracktionedit files that were\n\
         saved in Waveform. These edits refer to audio clips with an id, not a\n\
         filepath. To load them you need to import project manager settings.\n\
-        You should only need to run this once. It will only work on a machine\n\
-        that also has Tracktion Waveform installed.",
+        You should only need to run this once every time you create a new\n\
+        Tracktion Waveform project, and the results will be saved in cybr's\n\
+        configuration file. It will only work on a machine that also has\n\
+        Tracktion Waveform installed.",
         [this](auto&) { autodetectPmSettings(); }
         });
 
@@ -588,8 +590,8 @@ void CLIApp::onRunning()
     cApp.addCommand({
         "--print-length",
         "--print-length",
-        "print the length of the active edit",
-        "What are the units?",
+        "Print the length in seconds of the active edit",
+        "No-op if there is no active edit.",
         [this](auto&) {
             if (!edit) return;
             std::cout << "Edit Length: " << edit->getLength() << " seconds" << std::endl << std::endl;
@@ -599,7 +601,7 @@ void CLIApp::onRunning()
         "-p",
         "-p",
         "Play the active edit",
-        "no-op if there is no active edit",
+        "no-op if there is no active edit.",
         [this](auto&) {
             play();
         } });
