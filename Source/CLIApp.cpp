@@ -510,7 +510,7 @@ void CLIApp::onRunning()
     cApp.addCommand({
         "--list-projects",
         "--list-projects",
-        "List all the projects from the project manager.",
+        "List all the projects from the project manager",
         "Edit files saved in Waveform may include references to projects from\n\
         the Waveform project manager. Print a list of all the projects found.\n\
         If the list is empty, Waveform may not be installed, or you may need run\n\
@@ -579,7 +579,7 @@ void CLIApp::onRunning()
     cApp.addCommand({
         "-j",
         "-j",
-        "Experimental command. WORK-IN-PROGRESS.",
+        "Experimental command. WORK-IN-PROGRESS",
         "Just used for testing (for now)",
         [this](auto&) {
             junk();
@@ -607,7 +607,7 @@ void CLIApp::onRunning()
     cApp.addCommand({
         "-r",
         "-r",
-        "Setup OSC Recording. Use before calling -p. WORK-IN-PROGRESS.",
+        "Setup OSC Recording. Use before calling -p. WORK-IN-PROGRESS",
         "Undocumented! TODO: doc",
         [this](auto&) {
             recordOsc();
@@ -652,7 +652,7 @@ void CLIApp::onRunning()
     cApp.addCommand({
         "--target-host",
         "--target-host=127.0.0.1",
-        "Set OSC Destination hostname.",
+        "Set OSC Destination hostname",
         "Sets the destination hostname for OSC. Valid only for subsequent args.\n\
         Default=127.0.0.1",
         [this](const ArgumentList& args) {
@@ -668,7 +668,7 @@ void CLIApp::onRunning()
     cApp.addCommand({
         "--ping-osc",
         "--ping-osc[=100]",
-        "Repeatedly send a test osc message,",
+        "Repeatedly send a test osc message",
         "Sends '/test' OSC message with a single int argument. To specify the target\n\
         hostname and port, preceed this argument with --target-host and --target-port.\n\
         You may optionally specify a period in milliseconds. For example, to send\n\
