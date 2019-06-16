@@ -14,8 +14,10 @@
 #include "CliUiBehaviour.h"
 #include "AppJobs.h"
 #include "OscRecorder.h"
+#include "OscSource.h"
 
 class CLIApp : public JUCEApplicationBase, ChangeListener {
+
     /** Returns the global instance of the application object being run. */
     //static CLIApp* JUCE_CALLTYPE getInstance() noexcept;
 
@@ -109,18 +111,33 @@ class CLIApp : public JUCEApplicationBase, ChangeListener {
     */
     void autodetectPmSettings();
 
-    /** Decide when to quit
+    /** Members of this class that are ChangeBroadcasters should this callback
+     when their state changes in a significant way.
     */
-    void changeListenerCallback(ChangeBroadcaster* source) override;
+    void changeListenerCallback(ChangeBroadcaster* source) override { quitIfReady(); }
 
-    /** If all the jobs are done, quit
+    /** Quit if there is no more work to be done
     */
     void quitIfReady() { if (appJobs.isFinished()) quit(); }
+
 private:
+    /** Some CLI options just set a variable that may be used by a subsequent
+     argument. Note that our CLI only allows one value per argument, so commands
+     that require multiple values for configuration must pre-set their values.
+     for this reason, commands that use values specified in Options should copy
+     the value, so that it may be updated for future commands.
+     */
+    struct Options {
+        int targetPort { 9999 };
+        String targetHostname { "127.0.0.1" };
+    };
+    Options options;
+
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
     std::unique_ptr<te::Edit> edit;
     AppJobs appJobs;
     std::unique_ptr<OscRecorder> oscRecorder;
+    std::unique_ptr<OscSource> oscSource;
 
     // onRunning should be called once, and only after the MessageManager is
     // also running. There is where I am putting the body of the application.

@@ -367,11 +367,6 @@ void CLIApp::autodetectPmSettings()
     return;
 }
 
-void CLIApp::changeListenerCallback(ChangeBroadcaster* source)
-{
-    quitIfReady();
-}
-
 void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose = true)
 {
     int failures = 0;
@@ -584,7 +579,7 @@ void CLIApp::onRunning()
     cApp.addCommand({
         "-j",
         "-j",
-        "Experimental command",
+        "Experimental command. WORK-IN-PROGRESS.",
         "Just used for testing (for now)",
         [this](auto&) {
             junk();
@@ -612,7 +607,7 @@ void CLIApp::onRunning()
     cApp.addCommand({
         "-r",
         "-r",
-        "Setup OSC Recording. Use before calling -p",
+        "Setup OSC Recording. Use before calling -p. WORK-IN-PROGRESS.",
         "Undocumented! TODO: doc",
         [this](auto&) {
             recordOsc();
@@ -635,6 +630,63 @@ void CLIApp::onRunning()
         this convention",
         [this](auto&) {
             listIoDevices();
+        } });
+
+    cApp.addCommand({
+        "--target-port",
+        "--target-port=9999",
+        "Set OSC destination port",
+        "Set the destionation port for OSC. Valid only for subsequent args.\n\
+        Default is 9999",
+        [this](const ArgumentList& args) {
+            String portStr = args.getValueForOption("--target-port");
+            int portInt = portStr.getIntValue();
+            if (portInt > 0) {
+                options.targetPort = portInt;
+                std::cout << "Target port set to " << portInt << std::endl;
+            } else {
+                std::cerr << "Invalid --target-port: " << portStr << std::endl;
+            }
+        } });
+
+    cApp.addCommand({
+        "--target-host",
+        "--target-host=127.0.0.1",
+        "Set OSC Destination hostname.",
+        "Sets the destination hostname for OSC. Valid only for subsequent args.\n\
+        Default=127.0.0.1",
+        [this](const ArgumentList& args) {
+            String hostname = args.getValueForOption("--target-host");
+            if (hostname.length() > 0) {
+                options.targetHostname = hostname;
+                std::cout << "Target Hostname set to: " << hostname << std::endl;
+            } else {
+                std::cerr << "Invalid --target-host: " << hostname << std::endl;
+            }
+        } });
+
+    cApp.addCommand({
+        "--ping-osc",
+        "--ping-osc[=100]",
+        "Repeatedly send a test osc message,",
+        "Sends '/test' OSC message with a single int argument. To specify the target\n\
+        hostname and port, preceed this argument with --target-host and --target-port.\n\
+        You may optionally specify a period in milliseconds. For example, to send\n\
+        every 500 milliseconds, you would specify --ping-osc=500. This uses a\n\
+        dedicated thread and a High Resolution Timer, and unlike sending from Max or\n\
+        node.js it can send with quite high frequency, and quite low jitter. In a\n\
+        cursory test it was sending every 1ms with with ~0.1ms jitter (as measured on\n\
+        receieving end). The test was on a 2015 MacbookPro. Default=100",
+        [this](const ArgumentList& args) {
+            if (oscSource) {
+                std::cout << "There is already an oscSource. Cannot start a seconds one" << std::endl;
+                return;
+            }
+            int period = args.getValueForOption("--ping-osc").getIntValue();
+            oscSource = std::make_unique<OscSource>(options.targetHostname,
+                                                    options.targetPort,
+                                                    period > 0 ? period : 100);
+            appJobs.setRunForever(true);
         } });
 
     // Because of the while loop below, we must not use the "default command"

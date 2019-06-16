@@ -112,7 +112,7 @@ public:
         } else {
             std::cout << "Failed to create virtual midi device: " << result.getErrorMessage() << std::endl;
         };
-        startTimer(3000);
+        startTimer(250);
         std::cout << std::endl;
     }
     void timerCallback() override {
