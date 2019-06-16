@@ -694,15 +694,44 @@ void CLIApp::onRunning()
     // a default command, cApp.findCommand will always return that command, even
     // when the supplied ArgumentList is empty, causing our while loop below to
     // repeat indefinitely.
-    //
+    cApp.addCommand({
+        "-h|--help",
+        "-h|--help --list-io",
+        "Show detailed useage subsequent arguments",
+        "If there are no arguments after this one, print short description of all\n\
+        arguemtns. If there are subsequent arguments, instead of executing/applying\n\
+        them, show their detailed help string.",
+        [this, &cApp](const ArgumentList& args) {
+            options.helpModeFlag = true;
+            if (args.size() == 1) {
+                std::cout << std::endl
+                    << "Usage information..." << std::endl
+                    << "Some arguments accept a value. Long form arguments are specified with a '='" << std::endl
+                    << "    cybr --empty=./somefile.tracktionedit" << std::endl
+                    << "Short form argument values are specified by a space like this:" <<std::endl
+                    << "    cybr -e ./somefile.tracktionedit" << std::endl
+                    << "Below is a list of possible arguments. Argument order is significant." << std::endl;
+                // I believe args are only used to get the exe name (cybr), which
+                // is used in the output.
+                cApp.printCommandList(args);
+            }
+        } });
     // Instead of using the default command, add -h if the arg list is empty.
-    cApp.addHelpCommand("-h|--help", "Usage:", false);
     if (argumentList.size() == 0) argumentList.arguments.add({ "-h" });
 
     // Check only the first argument in the ArgumentList. If that command
-    // exists, execute it, and remove it and its value (if any).
+    // exists, either execute it, or print its detailed help info (depending
+    // on the state of options.helpModeFlag. Remove it and its value (if any).
     while (auto command = cApp.findCommand(argumentList, true)) {
-        command->command(argumentList);
+        if (options.helpModeFlag) {
+            std::cout
+                << command->argumentDescription << "\t" << command->shortDescription
+                << std::endl
+                << command->longDescription
+                << std::endl << std::endl;
+        } else {
+            command->command(argumentList);
+        }
         argumentList.removeValueForOption(command->commandOption);
     }
 
