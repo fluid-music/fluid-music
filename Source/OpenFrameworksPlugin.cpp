@@ -10,9 +10,6 @@
 
 #include "OpenFrameworksPlugin.h"
 
-
-
-
 OpenFrameworksPlugin::OpenFrameworksPlugin(te::PluginCreationInfo info) : te::Plugin(info)
 {
     semitones = addParam("semitones up", TRANS("Semitones"),

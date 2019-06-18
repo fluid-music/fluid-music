@@ -13,9 +13,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "CliUiBehaviour.h"
 #include "AppJobs.h"
-#include "OscRecorder.h"
 #include "OscSource.h"
-#include "Cybr.h"
+#include "CybrEdit.h"
 
 class CLIApp : public JUCEApplicationBase, ChangeListener {
 
@@ -80,38 +79,6 @@ class CLIApp : public JUCEApplicationBase, ChangeListener {
     const String getApplicationName() override;
     const String getApplicationVersion() override;
 
-    void scanVst2();
-    void scanVst3();
-    void listPlugins();
-    void listProjects();
-    void listClips();
-    void listTracks();
-    void listIoDevices();
-    void listWaveDevices();
-    void listMidiDevices();
-    void play();
-
-    /** WIP - testing custom plugin
-    */
-    void junk();
-    void recordOsc();
-
-
-    /** Create and activate an empty edit
-    */
-    void activateEmptyEdit(File inputFile);
-    void loadEditFile(File inputFile);
-    void saveActiveEdit(File outputFile);
-
-    /** For each audio clip with a source that references a project ID, update
-        that source so it uses a filepath instead.
-    */
-    void setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose);
-
-    /** Try to lookup and add the project manager settings from Tracktion Waveform.
-    */
-    void autodetectPmSettings();
-
     /** Members of this class that are ChangeBroadcasters should this callback
      when their state changes in a significant way.
     */
@@ -120,6 +87,17 @@ class CLIApp : public JUCEApplicationBase, ChangeListener {
     /** Quit if there is no more work to be done
     */
     void quitIfReady() { if (appJobs.isFinished()) quit(); }
+
+    /** Try to lookup and add the project manager settings from Tracktion Waveform.
+     */
+    void autodetectPmSettings();
+    void listIoDevices();
+    void listWaveDevices();
+    void listMidiDevices();
+    void scanVst2();
+    void scanVst3();
+    void listPlugins();
+    void listProjects();
 
 private:
     /** Some CLI options just set a variable that may be used by a subsequent
@@ -140,11 +118,9 @@ private:
     Options options;
 
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
-    std::unique_ptr<te::Edit> edit;
     AppJobs appJobs;
-    std::unique_ptr<OscRecorder> oscRecorder;
+    CybrEdit cybrEdit{ engine };
     std::unique_ptr<OscSource> oscSource;
-    std::unique_ptr<Cybr> sidecar;
 
     // onRunning should be called once, and only after the MessageManager is
     // also running. There is where I am putting the body of the application.

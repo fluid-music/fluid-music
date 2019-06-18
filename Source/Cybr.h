@@ -16,6 +16,13 @@ namespace te = tracktion_engine;
 
 const juce::Identifier CYBR("CYBR");
 
+/** Cybr is a listener/updater of the main CYBR object in our ValueTree. This
+ contains the root level extensions that drive the extended functionality that
+ the cybr app adds to existing tracktion_engine functionality.
+ 
+ Cybr is made to be used inside a CybrEdit, and should not need to be
+ instantiated directly.
+ */
 class Cybr : public te::EditItem,
              public ValueTree::Listener
 {
