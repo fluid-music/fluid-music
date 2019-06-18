@@ -15,7 +15,7 @@
 #include "AppJobs.h"
 #include "OscRecorder.h"
 #include "OscSource.h"
-#include "cybr_EditSidecar.h"
+#include "Cybr.h"
 
 class CLIApp : public JUCEApplicationBase, ChangeListener {
 
@@ -144,7 +144,7 @@ private:
     AppJobs appJobs;
     std::unique_ptr<OscRecorder> oscRecorder;
     std::unique_ptr<OscSource> oscSource;
-    std::unique_ptr<EditSidecar> sidecar;
+    std::unique_ptr<Cybr> sidecar;
 
     // onRunning should be called once, and only after the MessageManager is
     // also running. There is where I am putting the body of the application.

@@ -263,6 +263,11 @@ void CLIApp::loadEditFile(File inputFile) {
     }
     edit = std::move(newEdit);
     std::cout << "Loaded file: " << inputFile.getFullPathName() << std::endl;
+
+    // Add the CYBER Sidecar
+    ValueTree cybrValueTree = edit->state.getOrCreateChildWithName(CYBR, nullptr);
+    sidecar = std::make_unique<Cybr>(*edit, cybrValueTree);
+    std::cout << "CYBR sidecar added with id: " << sidecar->itemID.toString() << std::endl;
     std::cout << std::endl;
 }
 

@@ -55,8 +55,8 @@ void OpenFrameworksPlugin::applyToBuffer(const te::AudioRenderContext& fc)
             std::cout
                 << "Got midi message: "
                 << fc.streamTime.start
-                << " juce::Time seconds" << Time::getMillisecondCounterHiRes() * 0.001
-                << msg.getTimeStamp() // This is not really meaningful. It's the time stamp within the block, with I believe is arbitrary. We should really figure out how to playhead->getEditTime (or whatever it is) this value
+                << " juce::Time seconds: " << Time::getMillisecondCounterHiRes() * 0.001
+                << msg.getTimeStamp() // This is not really meaningful. It's the time stamp within the block, which I believe is arbitrary. We should really figure out how to playhead->getEditTime (or whatever it is) this value
                 << " - "
                 << msg.getDescription()
                 << std::endl;

@@ -19,7 +19,7 @@ public:
     /** Make a copy of the Edit, and play it back. */
     void play(te::Edit& edit) {
         te::Edit::Options options{ edit.engine };
-        options.editState = edit.state.createCopy();
+        options.editState = edit.state.createCopy(); // TODO: This should probably not be a copy
         options.role = te::Edit::EditRole::forEditing;
         options.editProjectItemID = te::ProjectItemID::createNewID(0);
         options.numUndoLevelsToStore = 0;
