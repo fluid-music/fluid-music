@@ -28,15 +28,17 @@ public:
     void listClips();
     void listTracks();
     
-    /** WIP - testing custom plugin
-     */
+    /** WIP - testing custom plugin */
     void junk();
     void recordOsc();
     
-    /** Create and activate an empty edit
-     */
+    /** Create and activate an empty edit */
     void activateEmptyEdit(File inputFile);
+
+    /** Load and activate  an edit from a .tracktionedit file */
     void loadEditFile(File inputFile);
+    
+    /** Save the active edit to a .tracktionedig or .wav file */
     void saveActiveEdit(File outputFile);
     
     /** For each audio clip with a source that references a project ID, update
@@ -44,13 +46,13 @@ public:
      */
     void setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose);
 
-    /** Is there an active edit?
-     */
+    /** Is there an active edit? */
     bool hasActiveEdit() { return edit != nullptr; }
     
     std::unique_ptr<te::Edit> edit;
+
 private:
-    te::Engine& engine;
+    te::Engine& engine; // should we just get the engine from the edit?
 
     std::unique_ptr<OscRecorder> oscRecorder;
     std::unique_ptr<Cybr> cybr;

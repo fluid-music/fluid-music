@@ -160,16 +160,18 @@ void CybrEdit::saveActiveEdit(File outputFile) {
         edit->markAsChanged();
         te::EditFileOperations(*edit).saveAs(outputFile, true);
     }
-    else if (outputExt == ".wav") {
-        // Render a .wav file
+    else if (outputExt == ".wav")
+    {
         std::cout << "Save: " << outputFile.getFullPathName() << std::endl;
+        // Just add all the tracks to the bitmask
         BigInteger tracksToDo;
-        int trackIndex = 0;
-        for (auto track : te::getAllTracks(*edit)) {
-            tracksToDo.setBit(trackIndex++);
+        {
+            int trackCount = te::getAllTracks(*edit).size();
+            for (int i = 0; i < trackCount; i++) {
+                tracksToDo.setBit(i);
+            }
         }
-        te::Renderer::renderToFile(
-                                   { "Chaz Render Job" },
+        te::Renderer::renderToFile({ "Chaz Render Job" },
                                    outputFile,
                                    *edit,
                                    { 0, edit->getLength() },

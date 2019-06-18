@@ -91,7 +91,6 @@ class CLIApp : public JUCEApplicationBase, ChangeListener {
     /** Try to lookup and add the project manager settings from Tracktion Waveform.
      */
     void autodetectPmSettings();
-    void listIoDevices();
     void listWaveDevices();
     void listMidiDevices();
     void scanVst2();

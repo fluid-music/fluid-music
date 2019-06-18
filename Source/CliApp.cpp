@@ -8,21 +8,18 @@
   ==============================================================================
 */
 
-#include "CLIApp.h"
+#include "CliApp.h"
 
 bool CLIApp::moreThanOneInstanceAllowed() { return true; }
 void CLIApp::anotherInstanceStarted(const String&) {}
-
 void CLIApp::suspended() {}
 void CLIApp::resumed() {}
-
 void CLIApp::systemRequestedQuit() { quit(); }
 
 void CLIApp::unhandledException(const std::exception*, const String&, int)
 {
     jassertfalse;
 }
-
 
 void CLIApp::initialise(const String& commandLine) 
 {
@@ -108,13 +105,6 @@ void CLIApp::autodetectPmSettings()
     return;
 }
 
-
-
-void CLIApp::listIoDevices() {
-    listMidiDevices();
-    listWaveDevices();
-}
-
 void CLIApp::listWaveDevices() {
     std::cout << "Wave Input Devices:" << std::endl;
     auto& dm = engine.getDeviceManager();
@@ -156,6 +146,7 @@ void CLIApp::listMidiDevices() {
     }
     std::cout << std::endl;
 }
+
 void CLIApp::scanVst3()
 {
     std::cout << "Scanning for VST3 plugins..." << std::endl;
@@ -403,7 +394,8 @@ void CLIApp::onRunning()
         cybr commands that accept a device index argument by its index should use\n\
         this convention",
         [this](auto&) {
-            listIoDevices();
+            listMidiDevices();
+            listWaveDevices();
         } });
 
     cApp.addCommand({
