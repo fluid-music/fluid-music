@@ -23,8 +23,6 @@ namespace te = tracktion_engine;
  */
 class CybrEdit {
 public:
-    CybrEdit(te::Engine& e) : engine(e) {}
-
     void listClips();
     void listTracks();
     
@@ -33,17 +31,16 @@ public:
     void recordOsc();
     
     /** Create and activate an empty edit */
-    void activateEmptyEdit(File inputFile);
+    void activateEmptyEdit(File inputFile, te::Engine& engine);
 
     /** Load and activate  an edit from a .tracktionedit file */
-    void loadEditFile(File inputFile);
+    void loadEditFile(File inputFile, te::Engine& engine);
     
     /** Save the active edit to a .tracktionedig or .wav file */
     void saveActiveEdit(File outputFile);
     
     /** For each audio clip with a source that references a project ID, update
-     that source so it uses a filepath instead.
-     */
+     that source so it uses a filepath instead. */
     void setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose);
 
     /** Is there an active edit? */
@@ -52,8 +49,6 @@ public:
     std::unique_ptr<te::Edit> edit;
 
 private:
-    te::Engine& engine; // should we just get the engine from the edit?
-
     std::unique_ptr<OscRecorder> oscRecorder;
     std::unique_ptr<Cybr> cybr;
 };

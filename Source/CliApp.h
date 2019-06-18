@@ -118,7 +118,7 @@ private:
 
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
     AppJobs appJobs;
-    CybrEdit cybrEdit{ engine };
+    CybrEdit cybrEdit;
     std::unique_ptr<OscSource> oscSource;
 
     // onRunning should be called once, and only after the MessageManager is

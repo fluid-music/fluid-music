@@ -89,10 +89,14 @@ void CybrEdit::junk()
 
 void CybrEdit::recordOsc()
 {
-    oscRecorder = std::make_unique<OscRecorder>(engine);
+    if (!hasActiveEdit()) {
+        std::cerr << "Cannot Record OSC. There is no active edit.";
+        return;
+    }
+    oscRecorder = std::make_unique<OscRecorder>(edit->engine);
 }
 
-void CybrEdit::activateEmptyEdit(File inputFile)
+void CybrEdit::activateEmptyEdit(File inputFile, te::Engine& engine)
 {
     std::cout << "Creating Edit Object" << std::endl;
     te::Edit::Options editOptions{ engine };
@@ -104,7 +108,7 @@ void CybrEdit::activateEmptyEdit(File inputFile)
     edit = std::make_unique<te::Edit>(editOptions);
 }
 
-void CybrEdit::loadEditFile(File inputFile) {
+void CybrEdit::loadEditFile(File inputFile, te::Engine& engine) {
     // we are assuming the file exists.
     ValueTree valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
     

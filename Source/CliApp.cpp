@@ -287,7 +287,7 @@ void CLIApp::onRunning()
         file. Note that the order of arguments matters.",
         [this](const ArgumentList& args) {
             auto inputFile = args.getExistingFileForOption("-i");
-            cybrEdit.loadEditFile(inputFile);
+            cybrEdit.loadEditFile(inputFile, engine);
         }});
 
     cApp.addCommand({
@@ -334,7 +334,7 @@ void CLIApp::onRunning()
         [this](const ArgumentList& args) {
             auto filename = args.getValueForOption("-e");
             if (filename == "") filename = "default.tracktionedit";
-            cybrEdit.activateEmptyEdit(File::getCurrentWorkingDirectory().getChildFile(filename));
+            cybrEdit.activateEmptyEdit(File::getCurrentWorkingDirectory().getChildFile(filename), engine);
         } });
 
     cApp.addCommand({
