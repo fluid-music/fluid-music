@@ -16,10 +16,10 @@ namespace te = tracktion_engine;
 class AppJobs : public juce::ChangeBroadcaster {
 public:
 
-    /** Make a copy of the Edit, and play it back. */
+    /** Play the edit. */
     void play(te::Edit& edit) {
         te::Edit::Options options{ edit.engine };
-        options.editState = edit.state.createCopy(); // TODO: This should probably not be a copy
+        options.editState = edit.state;
         options.role = te::Edit::EditRole::forEditing;
         options.editProjectItemID = te::ProjectItemID::createNewID(0);
         options.numUndoLevelsToStore = 0;
