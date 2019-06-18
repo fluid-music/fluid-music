@@ -11,10 +11,12 @@
 #pragma once
 #include <iostream>
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "cybr_helpers.h"
 #include "CliUiBehaviour.h"
 #include "AppJobs.h"
 #include "OscSource.h"
 #include "CybrEdit.h"
+
 
 class CLIApp : public JUCEApplicationBase, ChangeListener {
 
@@ -118,7 +120,7 @@ private:
 
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
     AppJobs appJobs;
-    CybrEdit cybrEdit;
+    std::unique_ptr<CybrEdit> cybrEdit;
     std::unique_ptr<OscSource> oscSource;
 
     // onRunning should be called once, and only after the MessageManager is

@@ -53,9 +53,15 @@ public:
 
 Result createAdjustInputDevice(te::Engine& engine, const String& name);
 
-// Eventually we want to subclass or template this so that we can pass in a type
-// Note the two options for the callback type
-// OSCReceiver::RealtimeCallback // OSCReceiver::MessageLoopCallback
+/** This class accepts osc messages. For each message received, it:
+- converts them to class objects
+- adds a timestamp
+- saves in a Lock Free Queue
+ 
+Eventually we want to subclass or template this so that we can pass in a type.
+Note the two options for the callback type
+OSCReceiver::RealtimeCallback // OSCReceiver::MessageLoopCallback
+ */
 class OscRecorder : public Timer,
                     private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>
 {
@@ -77,6 +83,7 @@ public:
         startTimer(250);
         std::cout << std::endl;
     }
+
     void timerCallback() override {
         // get the first active MidiInputDevice
         auto& dm = engine.getDeviceManager();
@@ -115,10 +122,13 @@ public:
     }
 private:
     void oscMessageReceived(const OSCMessage& message) override {
+        // Create the object
+        double timeMs = Time::getMillisecondCounterHiRes();
         if (message.size() < 1) return;
         if (!message[0].isInt32()) return;
-        TimestampedTest obj{ Time::getMillisecondCounterHiRes() * 0.001, 0.0, message[0].getInt32() };
+        TimestampedTest obj{ timeMs * 0.001, 0.0, message[0].getInt32() };
 
+        // write to QUEUE
         int start1, size1, start2, size2;
         abstractFifo.prepareToWrite(1, start1, size1, start2, size2);
         if (size1 > 0) storage[start1] = obj;

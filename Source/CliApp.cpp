@@ -287,7 +287,7 @@ void CLIApp::onRunning()
         file. Note that the order of arguments matters.",
         [this](const ArgumentList& args) {
             auto inputFile = args.getExistingFileForOption("-i");
-            cybrEdit.loadEditFile(inputFile, engine);
+            cybrEdit = std::make_unique<CybrEdit>(loadEditFile(inputFile, engine));
         }});
 
     cApp.addCommand({
@@ -302,7 +302,7 @@ void CLIApp::onRunning()
             auto outputFilename = args.getValueForOption("-o");
             if (outputFilename == "") outputFilename = "default-out.tracktionedit";
             auto outputFile = File::getCurrentWorkingDirectory().getChildFile(outputFilename);
-            cybrEdit.saveActiveEdit(outputFile);
+            if (cybrEdit) cybrEdit->saveActiveEdit(outputFile);
         }});
 
     cApp.addCommand({
@@ -311,7 +311,7 @@ void CLIApp::onRunning()
         "Print a list of the clips in the active Edit",
         "The output includes the name of the parent track, and source property",
         [this](auto&) {
-            cybrEdit.listClips();
+            if (cybrEdit) cybrEdit->listClips();
         } });
 
     cApp.addCommand({
@@ -320,7 +320,7 @@ void CLIApp::onRunning()
         "Print a list of tracks in the active Edit",
         "Output includes type of track",
         [this](auto&) {
-            cybrEdit.listTracks();
+            if (cybrEdit) cybrEdit->listTracks();
         } });
 
     cApp.addCommand({
@@ -334,7 +334,8 @@ void CLIApp::onRunning()
         [this](const ArgumentList& args) {
             auto filename = args.getValueForOption("-e");
             if (filename == "") filename = "default.tracktionedit";
-            cybrEdit.activateEmptyEdit(File::getCurrentWorkingDirectory().getChildFile(filename), engine);
+            File file = File::getCurrentWorkingDirectory().getChildFile(filename);
+            cybrEdit = std::make_unique<CybrEdit>(activateEmptyEdit(file, engine));
         } });
 
     cApp.addCommand({
@@ -343,7 +344,7 @@ void CLIApp::onRunning()
         "Experimental command. WORK-IN-PROGRESS",
         "Just used for testing (for now)",
         [this](auto&) {
-            cybrEdit.junk();
+            if (cybrEdit) cybrEdit->junk();
         } });
 
     cApp.addCommand({
@@ -352,8 +353,8 @@ void CLIApp::onRunning()
         "Print the length in seconds of the active edit",
         "No-op if there is no active edit.",
         [this](auto&) {
-            if (cybrEdit.edit) return;
-            std::cout << "Edit Length: " << cybrEdit.edit->getLength() << " seconds" << std::endl << std::endl;
+            if (!cybrEdit) return;
+            std::cout << "Edit Length: " << cybrEdit->edit->getLength() << " seconds" << std::endl << std::endl;
         } });
 
     cApp.addCommand({
@@ -362,11 +363,11 @@ void CLIApp::onRunning()
         "Play the active edit",
         "no-op if there is no active edit.",
         [this](auto&) {
-            if (!cybrEdit.hasActiveEdit()) {
+            if (!cybrEdit) {
                 std::cerr << "Faild to play, because there is no active edit." << std::endl;
                 return;
             }
-            appJobs.play(*(cybrEdit.edit));
+            appJobs.play(*(cybrEdit->edit));
         } });
     
     cApp.addCommand({
@@ -375,7 +376,8 @@ void CLIApp::onRunning()
         "Setup OSC Recording. Use before calling -p. WORK-IN-PROGRESS",
         "Undocumented! TODO: doc",
         [this](auto&) {
-            cybrEdit.recordOsc();
+            if (cybrEdit) cybrEdit->recordOsc();
+            else std::cerr << "Failed to record osc, because there is no active CybrEdit" << std::endl << std::endl;
         } });
 
     cApp.addCommand({

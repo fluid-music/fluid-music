@@ -3,6 +3,9 @@
 <JUCERPROJECT id="gn3eC9" name="cybr" projectType="consoleapp" jucerVersion="5.4.3">
   <MAINGROUP id="JTqeoX" name="cybr">
     <GROUP id="{E03437D9-F7F3-5413-6A30-51BDC7A4D4BC}" name="Source">
+      <FILE id="Pvj39H" name="cybr_helpers.cpp" compile="1" resource="0"
+            file="Source/cybr_helpers.cpp"/>
+      <FILE id="fqY9IW" name="cybr_helpers.h" compile="0" resource="0" file="Source/cybr_helpers.h"/>
       <FILE id="ZCYEgp" name="Cybr.cpp" compile="1" resource="0" file="Source/Cybr.cpp"/>
       <FILE id="FYCIex" name="Cybr.h" compile="0" resource="0" file="Source/Cybr.h"/>
       <FILE id="pjj3ve" name="CybrEdit.cpp" compile="1" resource="0" file="Source/CybrEdit.cpp"/>
