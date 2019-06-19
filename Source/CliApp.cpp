@@ -54,180 +54,7 @@ const String CLIApp::getApplicationVersion()
     return "0.0.1";
 }
 
-void CLIApp::autodetectPmSettings()
-{
-    auto appPrefsDir =  File::getSpecialLocation(File::userApplicationDataDirectory);
-#ifdef JUCE_MAC
-    auto osxSubfolder = appPrefsDir.getChildFile("Application Support");
-    if (osxSubfolder.isDirectory()) appPrefsDir = osxSubfolder;
-#endif
-    auto file = appPrefsDir
-        .getChildFile("Tracktion")
-        .getChildFile("Waveform")
-        .getChildFile("Waveform.settings");
 
-    std::cout << "Looking for Waveform settings: " << file.getFullPathName() << std::endl;
-    if (!file.existsAsFile())
-    {
-        std::cout << "Waveform settings not found" << std::endl;
-    }
-    else
-    {
-        std::cout << "Found Waveform settings" << std::endl;
-        XmlDocument parser(file);
-        std::unique_ptr<XmlElement> xml(parser.getDocumentElement());
-        if (xml == nullptr) std::cout << "Failed to parse Waveform.settings" << std::endl;
-        
-        ValueTree folders;
-        folders = ValueTree::fromXml(*xml);
-        if (folders.isValid())
-        {
-            folders = folders.getChildWithProperty(te::IDs::name, "projectList");
-            if (folders.isValid())
-            {
-                folders = folders.getChildWithName(te::IDs::ROOT);
-                if (folders.isValid())
-                {
-                    // folders is the element that contains the following two children
-                    // - te::IDs::LIBRARY
-                    // - te::IDs::ACTIVE
-                    te::ProjectManager::getInstance()->folders = folders;
-                    std::cout
-                        << "LIBRARY uid: " << folders.getChildWithName(te::IDs::LIBRARY).getProperty("uid").toString() << std::endl
-                        << "ACTIVE uid:  " << folders.getChildWithName(te::IDs::ACTIVE).getProperty("uid").toString() << std::endl
-                        << std::endl;
-                    return;
-                }
-            }
-        }
-    }
-    std::cout << "Failed to load Tracktion Waveform settings from: " << file.getFullPathName() << std::endl << std::endl;
-    return;
-}
-
-void CLIApp::listWaveDevices() {
-    std::cout << "Wave Input Devices:" << std::endl;
-    auto& dm = engine.getDeviceManager();
-    for (int i = 0; i < dm.getNumWaveInDevices(); i++) {
-        auto d = dm.getWaveInDevice(i);
-        std::cout << i << ". "
-        << d->getName() << " - " << d->getAlias()
-        << (d->isEnabled() ? "" : " (disabled)") << std::endl;
-    }
-    std::cout << std::endl;
-
-    std::cout << "Wav Output Devices:" << std::endl;
-    for (int i = 0; i < dm.getNumWaveOutDevices(); i++) {
-        auto d = dm.getWaveOutDevice(i);
-        std::cout << i << ". "
-        << d->getName() << " - " << d->getAlias()
-        << (d->isEnabled() ? "" : " (disabled)") << std::endl;
-    }
-    std::cout << std::endl;
-}
-
-void CLIApp::listMidiDevices() {
-    std::cout << "MIDI Input Devices:" << std::endl;
-    auto& dm = engine.getDeviceManager();
-    for (int i = 0; i < dm.getNumMidiInDevices(); i++) {
-        auto d = dm.getMidiInDevice(i);
-        std::cout << i << ". "
-            << d->getName() << " - " << d->getAlias()
-            << (d->isEnabled() ? "" : " (disabled)") << std::endl;
-    }
-    std::cout << std::endl;
-
-    std::cout << "MIDI Output Devices:" << std::endl;
-    for (int i = 0; i < dm.getNumMidiOutDevices(); i++) {
-        auto d = dm.getMidiOutDevice(i);
-        std::cout << i << ". "
-            << d->getName() << " - " << d->getAlias()
-            << (d->isEnabled() ? "" : " (disabled)") << std::endl;
-    }
-    std::cout << std::endl;
-}
-
-void CLIApp::scanVst3()
-{
-    std::cout << "Scanning for VST3 plugins..." << std::endl;
-    
-    juce::VST3PluginFormat vst3;
-    juce::String deadPlugins;
-    juce::PluginDirectoryScanner pluginScanner{
-        engine.getPluginManager().knownPluginList,
-        vst3,
-        vst3.getDefaultLocationsToSearch(),
-        true,
-        deadPlugins
-    };
-    
-    juce::String pluginName;
-    do {
-        std::cout << "Scanning: \"" << pluginScanner.getNextPluginFileThatWillBeScanned() << "\"" << std::endl;
-    } while (pluginScanner.scanNextFile(true, pluginName));
-    
-    // log failures
-    std::cout << "Dead Plugins: " << deadPlugins << std::endl << std::endl;
-    for (auto filename : pluginScanner.getFailedFiles()) {
-        std::cout << "Failed to load plugin: " << filename << std::endl;
-    }
-    std::cout << std::endl;
-}
-
-void CLIApp::scanVst2() {
-#if JUCE_PLUGINHOST_VST
-    juce::VSTPluginFormat vst2;
-    std::cout << "Scanning for VST2 plugins in: " << vst2.getDefaultLocationsToSearch().toString() << std::endl;
-    
-    juce::String deadPlugins;
-    juce::PluginDirectoryScanner pluginScanner{
-        engine.getPluginManager().knownPluginList,
-        vst2,
-        vst2.getDefaultLocationsToSearch(),
-        true,
-        deadPlugins
-    };
-    
-    juce::String pluginName;
-    do {
-        std::cout << "Scanning: \"" << pluginScanner.getNextPluginFileThatWillBeScanned() << "\"" << std::endl;
-    } while (pluginScanner.scanNextFile(true, pluginName));
-    
-    // log failures
-    std::cout << "Dead Plugins: " << deadPlugins << std::endl << std::endl;
-    for (auto filename : pluginScanner.getFailedFiles()) {
-        std::cout << "Failed to load plugin: " << filename << std::endl;
-    }
-    std::cout << std::endl;
-#else
-    std::cout << "VST 2 hosting is not enabled in the projucer project. Skipping VST 2 scan." << std::endl;
-    return;
-#endif
-}
-
-void CLIApp::listPlugins()
-{
-    std::cout << "Known Plugins:" << std::endl;
-    for (auto plugin : engine.getPluginManager().knownPluginList) {
-        std::cout << plugin->pluginFormatName << " - " << plugin->name << " - " << plugin->fileOrIdentifier << std::endl;
-    }
-    std::cout << std::endl;
-}
-
-void CLIApp::listProjects() {
-    std::cout << "List Projects..." << std::endl;
-    const auto& pm = te::ProjectManager::getInstance();
-    for (auto project : pm->getAllProjects(pm->getLibraryProjectsFolder()))
-    {
-        std::cout << project->getName() << " - " << project->getProjectFile().getFullPathName() << std::endl;
-    }
-    std::cout << "Active Projects: " << std::endl;
-    for (auto project : pm->getAllProjects(pm->getActiveProjectsFolder()))
-    {
-        std::cout << project->getName() << " - " << project->getProjectFile().getFullPathName() << std::endl;
-    }
-    std::cout << std::endl;
-}
 
 void CLIApp::onRunning()
 {
@@ -242,8 +69,8 @@ void CLIApp::onRunning()
         application properties file. Once plugins are saved in the file, you\n\
         should not need to scan again unless you install more plugins.",
         [this](auto&) {
-            scanVst2();
-            scanVst3();
+            scanVst2(engine);
+            scanVst3(engine);
         } });
 
     cApp.addCommand({
@@ -257,7 +84,7 @@ void CLIApp::onRunning()
         Tracktion Waveform project, and the results will be saved in cybr's\n\
         configuration file. It will only work on a machine that also has\n\
         Tracktion Waveform installed.",
-        [this](auto&) { autodetectPmSettings(); }
+        [this](auto&) { autodetectPmSettings(engine); }
         });
 
     cApp.addCommand({
@@ -265,7 +92,7 @@ void CLIApp::onRunning()
         "--list-plugins",
         "List all the plugins that are registered in the settings file",
         "Lists all detected plugins. Run this after --scan-plugins.",
-        [this](auto&) { listPlugins(); }
+        [this](auto&) { listPlugins(engine); }
         });
 
     cApp.addCommand({
@@ -276,7 +103,7 @@ void CLIApp::onRunning()
         the Waveform project manager. Print a list of all the projects found.\n\
         If the list is empty, Waveform may not be installed, or you may need run\n\
         with the --autodetect-pm option.",
-        [this](auto&) { listProjects(); }
+        [this](auto&) { listProjects(engine); }
         });
 
     cApp.addCommand({
@@ -398,8 +225,8 @@ void CLIApp::onRunning()
         cybr commands that accept a device index argument by its index should use\n\
         this convention",
         [this](auto&) {
-            listMidiDevices();
-            listWaveDevices();
+            listMidiDevices(engine);
+            listWaveDevices(engine);
         } });
 
     cApp.addCommand({

@@ -90,16 +90,6 @@ class CLIApp : public JUCEApplicationBase, ChangeListener {
     */
     void quitIfReady() { if (appJobs.isFinished()) quit(); }
 
-    /** Try to lookup and add the project manager settings from Tracktion Waveform.
-     */
-    void autodetectPmSettings();
-    void listWaveDevices();
-    void listMidiDevices();
-    void scanVst2();
-    void scanVst3();
-    void listPlugins();
-    void listProjects();
-
 private:
     /** Some CLI options just set a variable that may be used by a subsequent
      argument. Note that our CLI only allows one value per argument, so commands
