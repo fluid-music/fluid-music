@@ -17,11 +17,12 @@ CybrEdit::CybrEdit(te::Edit& e) :
     std::cout << "CYBR sidecar added with id: " << itemID.toString() << std::endl;
 }
 
+CybrEdit::~CybrEdit() {}
+
 void CybrEdit::valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &property)
 {
     std::cout << "CybrEdit property changed: " << treeWhosePropertyHasChanged.toXmlString() << std::endl;
 }
-
 
 void CybrEdit::listClips() {
     std::cout << "List Clips..." << std::endl;
@@ -96,7 +97,8 @@ void CybrEdit::junk()
 
 void CybrEdit::recordOsc()
 {
-    oscRecorder = std::make_unique<OscRecorder>(edit.engine);
+    oscRecorder = std::make_unique<OscRecorder>(*this);
+    oscRecorder->listen();
 }
 
 void CybrEdit::saveActiveEdit(File outputFile) {

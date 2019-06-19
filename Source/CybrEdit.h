@@ -14,8 +14,8 @@
 #include "cybr_helpers.h"
 #include "OpenFrameworksPlugin.h"
 #include "OscRecorder.h"
-#include "OscSource.h"
 
+class OscRecorder;
 namespace te = tracktion_engine;
 
 const juce::Identifier CYBR("CYBR");
@@ -29,6 +29,7 @@ class CybrEdit : public te::EditItem,
 {
 public:
     CybrEdit(te::Edit& e);
+    virtual ~CybrEdit();
 
     // Some CybrEdit methods only use the Edit, but not the CybrEdit.
     // Eventually We could consider moving these into helpers.
@@ -52,7 +53,5 @@ public:
     String getName() { return {"Cybr Edit Sidecar"}; }
    
     ValueTree state;
-
-private:
     std::unique_ptr<OscRecorder> oscRecorder;
 };
