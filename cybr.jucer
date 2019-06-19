@@ -6,8 +6,6 @@
       <FILE id="Pvj39H" name="cybr_helpers.cpp" compile="1" resource="0"
             file="Source/cybr_helpers.cpp"/>
       <FILE id="fqY9IW" name="cybr_helpers.h" compile="0" resource="0" file="Source/cybr_helpers.h"/>
-      <FILE id="ZCYEgp" name="Cybr.cpp" compile="1" resource="0" file="Source/Cybr.cpp"/>
-      <FILE id="FYCIex" name="Cybr.h" compile="0" resource="0" file="Source/Cybr.h"/>
       <FILE id="pjj3ve" name="CybrEdit.cpp" compile="1" resource="0" file="Source/CybrEdit.cpp"/>
       <FILE id="xIuzOx" name="CybrEdit.h" compile="0" resource="0" file="Source/CybrEdit.h"/>
       <FILE id="aMJqHp" name="OscSource.h" compile="0" resource="0" file="Source/OscSource.h"/>

@@ -10,11 +10,18 @@
 
 #include "CybrEdit.h"
 
-CybrEdit::CybrEdit(te::Edit& e) : edit(e) {
-    ValueTree cybrValueTree = edit.state.getOrCreateChildWithName(CYBR, nullptr);
-    cybr = std::make_unique<Cybr>(edit, cybrValueTree);
-    std::cout << "CYBR sidecar added with id: " << cybr->itemID.toString() << std::endl;
+CybrEdit::CybrEdit(te::Edit& e) :
+    te::EditItem (te::EditItemID::readOrCreateNewID (e, e.state.getOrCreateChildWithName(CYBR, nullptr)), e),
+    state(e.state.getOrCreateChildWithName(CYBR, nullptr))
+{
+    std::cout << "CYBR sidecar added with id: " << itemID.toString() << std::endl;
 }
+
+void CybrEdit::valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &property)
+{
+    std::cout << "CybrEdit property changed: " << treeWhosePropertyHasChanged.toXmlString() << std::endl;
+}
+
 
 void CybrEdit::listClips() {
     std::cout << "List Clips..." << std::endl;

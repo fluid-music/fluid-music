@@ -15,19 +15,23 @@
 #include "OpenFrameworksPlugin.h"
 #include "OscRecorder.h"
 #include "OscSource.h"
-#include "Cybr.h"
 
 namespace te = tracktion_engine;
 
-/** CybrEdit wraps a tracktion_engine::Edit and a Cybr object, and provides the
- main interface for interacting with the model
+const juce::Identifier CYBR("CYBR");
+
+/** CybrEdit is a listener/updater of the main CYBR object in our ValueTree.
+ This contains the root level extensions that drive the extended functionality
+ that the cybr app adds to existing tracktion_engine functionality.
  */
-class CybrEdit {
+class CybrEdit : public te::EditItem,
+                 public ValueTree::Listener
+{
 public:
     CybrEdit(te::Edit& e);
 
-    // Some CybrEdit methods only use the Edit, but not the CybrEdit. We could
-    // consider moving these into helpers. They are probably okay here for now.
+    // Some CybrEdit methods only use the Edit, but not the CybrEdit.
+    // Eventually We could consider moving these into helpers.
 
     /** Print a list of all the clips in the eidt */
     void listClips();
@@ -42,10 +46,13 @@ public:
     void junk();
     void recordOsc();
 
+    // te::EditItem overrides
+
+    void valueTreePropertyChanged(ValueTree &treeWhosePropertyHasChanged, const Identifier &property);
+    String getName() { return {"Cybr Edit Sidecar"}; }
    
-    te::Edit& edit;
+    ValueTree state;
 
 private:
     std::unique_ptr<OscRecorder> oscRecorder;
-    std::unique_ptr<Cybr> cybr;
 };
