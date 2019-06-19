@@ -24,26 +24,26 @@ namespace te = tracktion_engine;
  */
 class CybrEdit {
 public:
-    CybrEdit(std::unique_ptr<te::Edit> e) : edit(std::move(e)) {
-        ValueTree cybrValueTree = edit->state.getOrCreateChildWithName(CYBR, nullptr);
-        cybr = std::make_unique<Cybr>(*edit, cybrValueTree);
-        std::cout << "CYBR sidecar added with id: " << cybr->itemID.toString() << std::endl;
-    }
-    
+    CybrEdit(te::Edit& e);
+
+    // Some CybrEdit methods only use the Edit, but not the CybrEdit. We could
+    // consider moving these into helpers. They are probably okay here for now.
+
+    /** Print a list of all the clips in the eidt */
     void listClips();
+    /** Print a list of all the tracks in the edit*/
     void listTracks();
+    /** Save the active edit to a .tracktionedig or .wav file */
+    void saveActiveEdit(File outputFile);
+
+    // More complex methods will actually use the CybrEdit
     
     /** WIP - testing custom plugin */
     void junk();
     void recordOsc();
-    
-    /** Save the active edit to a .tracktionedig or .wav file */
-    void saveActiveEdit(File outputFile);
 
-    /** Is there an active edit? */
-    bool hasActiveEdit() { return edit != nullptr; }
-    
-    std::unique_ptr<te::Edit> edit;
+   
+    te::Edit& edit;
 
 private:
     std::unique_ptr<OscRecorder> oscRecorder;

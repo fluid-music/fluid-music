@@ -287,7 +287,8 @@ void CLIApp::onRunning()
         file. Note that the order of arguments matters.",
         [this](const ArgumentList& args) {
             auto inputFile = args.getExistingFileForOption("-i");
-            cybrEdit = std::make_unique<CybrEdit>(loadEditFile(inputFile, engine));
+            edit = loadEditFile(inputFile, engine);
+            cybrEdit = std::make_unique<CybrEdit>(*edit);
         }});
 
     cApp.addCommand({
@@ -335,7 +336,8 @@ void CLIApp::onRunning()
             auto filename = args.getValueForOption("-e");
             if (filename == "") filename = "default.tracktionedit";
             File file = File::getCurrentWorkingDirectory().getChildFile(filename);
-            cybrEdit = std::make_unique<CybrEdit>(activateEmptyEdit(file, engine));
+            edit = loadEmptyEdit(file, engine);
+            cybrEdit = std::make_unique<CybrEdit>(*edit);
         } });
 
     cApp.addCommand({
@@ -354,7 +356,7 @@ void CLIApp::onRunning()
         "No-op if there is no active edit.",
         [this](auto&) {
             if (!cybrEdit) return;
-            std::cout << "Edit Length: " << cybrEdit->edit->getLength() << " seconds" << std::endl << std::endl;
+            std::cout << "Edit Length: " << cybrEdit->edit.getLength() << " seconds" << std::endl << std::endl;
         } });
 
     cApp.addCommand({
@@ -367,7 +369,7 @@ void CLIApp::onRunning()
                 std::cerr << "Faild to play, because there is no active edit." << std::endl;
                 return;
             }
-            appJobs.play(*(cybrEdit->edit));
+            appJobs.play((cybrEdit->edit));
         } });
     
     cApp.addCommand({

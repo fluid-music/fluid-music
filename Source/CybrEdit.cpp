@@ -10,11 +10,17 @@
 
 #include "CybrEdit.h"
 
+CybrEdit::CybrEdit(te::Edit& e) : edit(e) {
+    ValueTree cybrValueTree = edit.state.getOrCreateChildWithName(CYBR, nullptr);
+    cybr = std::make_unique<Cybr>(edit, cybrValueTree);
+    std::cout << "CYBR sidecar added with id: " << cybr->itemID.toString() << std::endl;
+}
+
 void CybrEdit::listClips() {
     std::cout << "List Clips..." << std::endl;
     // I believe "Clip" tracks may be Marker, Chord, or Audio tracks (and
     // possibly others). Audio Tracks may have midi clips
-    for (auto track : te::getClipTracks(*edit)) {
+    for (auto track : te::getClipTracks(edit)) {
         for (auto clip : track->getClips()) {
             std::cout
             << track->getName() << " - "
@@ -42,7 +48,7 @@ void CybrEdit::listClips() {
 
 void CybrEdit::listTracks() {
     std::cout << "List Tracks..." << std::endl;
-    for (auto track : te::getAllTracks(*edit))
+    for (auto track : te::getAllTracks(edit))
     {
         // are these mutually exclusive?
         if (track->isAudioTrack()) std::cout << "Audio Track - ";
@@ -58,12 +64,7 @@ void CybrEdit::listTracks() {
 
 void CybrEdit::junk()
 {
-    if (!edit) {
-        std::cout << "JUNK: No active edit. Junk not possible." << std::endl;
-        return;
-    }
-    
-    if (auto audioTrack = te::getFirstAudioTrack(*edit)) {
+    if (auto audioTrack = te::getFirstAudioTrack(edit)) {
         // insert my plugin
         if (auto plugin = audioTrack->pluginList.insertPlugin(OpenFrameworksPlugin::create(), 0)) {
             std::cout << "My Plugin Added!" << std::endl;
@@ -77,7 +78,6 @@ void CybrEdit::junk()
             std::cout << "Plugin added: " << plugin->getName() << " to: " << audioTrack->getName() << std::endl;
             if (auto vpPlugin = dynamic_cast<te::VolumeAndPanPlugin*>(plugin.get())) {
                 vpPlugin->setVolumeDb(-3);
-                std::cout << "Plugin is correct type :)" << std::endl;
             }
         }
         else {
@@ -89,31 +89,21 @@ void CybrEdit::junk()
 
 void CybrEdit::recordOsc()
 {
-    if (!hasActiveEdit()) {
-        std::cerr << "Cannot Record OSC. There is no active edit.";
-        return;
-    }
-    oscRecorder = std::make_unique<OscRecorder>(edit->engine);
+    oscRecorder = std::make_unique<OscRecorder>(edit.engine);
 }
 
 void CybrEdit::saveActiveEdit(File outputFile) {
-    if (!edit) {
-        std::cerr
-        << "ERROR: Output failed. No edit file loaded."
-        << std::endl << std::endl;
-        return;
-    }
     auto outputExt = outputFile.getFileExtension().toLowerCase(); // resolve relative if needed
     
     if (outputExt == ".tracktionedit") {
         // Save a .tracktionedit file.
         std::cout << "Saving: " << outputFile.getFullPathName() << std::endl;
         // When edit files are saved, prefer relative paths.
-        edit->editFileRetriever = [outputFile] { return outputFile; };
-        setClipSourcesToDirectFileReferences(*edit, true, true);
+        edit.editFileRetriever = [outputFile] { return outputFile; };
+        setClipSourcesToDirectFileReferences(edit, true, true);
         // .save and .saveAs may be silent no-ops unless we markAsChanged()
-        edit->markAsChanged();
-        te::EditFileOperations(*edit).saveAs(outputFile, true);
+        edit.markAsChanged();
+        te::EditFileOperations(edit).saveAs(outputFile, true);
     }
     else if (outputExt == ".wav")
     {
@@ -121,15 +111,15 @@ void CybrEdit::saveActiveEdit(File outputFile) {
         // Just add all the tracks to the bitmask
         BigInteger tracksToDo;
         {
-            int trackCount = te::getAllTracks(*edit).size();
+            int trackCount = te::getAllTracks(edit).size();
             for (int i = 0; i < trackCount; i++) {
                 tracksToDo.setBit(i);
             }
         }
         te::Renderer::renderToFile({ "Chaz Render Job" },
                                    outputFile,
-                                   *edit,
-                                   { 0, edit->getLength() },
+                                   edit,
+                                   { 0, edit.getLength() },
                                    tracksToDo, true, {}, false);
     }
     else {

@@ -10,7 +10,7 @@
 
 #include "cybr_helpers.h"
 
-std::unique_ptr<te::Edit> activateEmptyEdit(File inputFile, te::Engine& engine)
+std::unique_ptr<te::Edit> loadEmptyEdit(File inputFile, te::Engine& engine)
 {
     std::cout << "Creating Edit Object" << std::endl;
     te::Edit::Options editOptions{ engine };

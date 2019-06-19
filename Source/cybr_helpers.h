@@ -14,7 +14,7 @@
 namespace te = tracktion_engine;
 
 /** Create and activate an empty edit */
-std::unique_ptr<te::Edit> activateEmptyEdit(File inputFile, te::Engine& engine);
+std::unique_ptr<te::Edit> loadEmptyEdit(File inputFile, te::Engine& engine);
 
 /** Load and activate  an edit from a .tracktionedit file */
 std::unique_ptr<te::Edit> loadEditFile(File inputFile, te::Engine& engine);
