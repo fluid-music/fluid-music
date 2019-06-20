@@ -14,8 +14,10 @@
 #include "cybr_helpers.h"
 #include "OpenFrameworksPlugin.h"
 #include "OscRecorder.h"
+#include "CybrTrackList.h"
 
 class OscRecorder;
+class CybrTrackList;
 namespace te = tracktion_engine;
 
 const juce::Identifier CYBR("CYBR");
@@ -54,4 +56,5 @@ public:
    
     ValueTree state;
     std::unique_ptr<OscRecorder> oscRecorder;
+    std::unique_ptr<CybrTrackList> cybrTrackList;
 };

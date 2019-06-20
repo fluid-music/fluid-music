@@ -14,6 +14,7 @@ CybrEdit::CybrEdit(te::Edit& e) :
     te::EditItem (te::EditItemID::readOrCreateNewID (e, e.state.getOrCreateChildWithName(CYBR, nullptr)), e),
     state(e.state.getOrCreateChildWithName(CYBR, nullptr))
 {
+    cybrTrackList = std::make_unique<CybrTrackList>(*this, state);
     std::cout << "CYBR sidecar added with id: " << itemID.toString() << std::endl;
 }
 
