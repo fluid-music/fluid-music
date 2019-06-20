@@ -16,6 +16,10 @@ CybrEdit::CybrEdit(te::Edit& e) :
 {
     cybrTrackList = std::make_unique<CybrTrackList>(*this, state);
     std::cout << "CYBR sidecar added with id: " << itemID.toString() << std::endl;
+    auto track = cybrTrackList->getOrCreateLastTrack();
+    track->addEvent(1.1, 1);
+    track->addEvent(2.1, 2);
+    track->addEvent(2.0, 3);
 }
 
 CybrEdit::~CybrEdit() {}
