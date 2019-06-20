@@ -52,8 +52,8 @@ Result createAdjustInputDevice(te::Engine& engine, const String& name)
     return Result::ok();
 }
 
-OscRecorder::OscRecorder(CybrEdit& c) : cybr(c) {
-
+OscRecorder::OscRecorder(CybrEdit& c) : cybr(c)
+{
     auto result = createAdjustInputDevice(cybr.edit.engine, AdjustInputDevice::name);
     if (result.wasOk()){
         std::cout << "Created virtual midi device" << std::endl;
@@ -64,7 +64,9 @@ OscRecorder::OscRecorder(CybrEdit& c) : cybr(c) {
     std::cout << std::endl;
 }
 
-OscRecorder::~OscRecorder() {}
+OscRecorder::~OscRecorder() {
+//    timerCallback(); // segfault!
+}
 
 void OscRecorder::listen() {
     std::cout << "Creating OSC Recorder" << std::endl;
@@ -94,24 +96,27 @@ void OscRecorder::timerCallback() {
     // Handle lock free queue
     int start1, size1, start2, size2;
     abstractFifo.prepareToRead(abstractFifo.getNumReady(), start1, size1, start2, size2);
-    
+    auto* t = cybr.cybrTrackList->getOrCreateLastTrack();
+
     if (adjustSecs == 0) {
         std::cout << "Failed to get adjust secs" << std::endl;
     } else {
         for (int i = start1; i < start1 + size1; i++) {
-            storage[i].streamTime = storage[i].arrivedAt + adjustSecs;
-            std::cout << storage[i].toString() << std::endl;
+            auto& obj = storage[i];
+            obj.streamTime = storage[i].arrivedAt + adjustSecs;
+            t->addEvent(obj.streamTime, obj.value);
         }
         for (int i = start2; i < start2 + size2; i++) {
-            storage[i].streamTime = storage[i].arrivedAt + adjustSecs;
-            std::cout << storage[i].toString() << std::endl;
+            auto& obj = storage[i];
+            obj.streamTime = storage[i].arrivedAt + adjustSecs;
+            t->addEvent(obj.streamTime, obj.value);
         }
     }
     abstractFifo.finishedRead(size1 + size2);
     if (size1 || size2)
         std::cout
-        << "Handled " << size1 << " + " << size2 << " elements"
-        << std::endl << std::endl;
+            << "Handled " << size1 << " + " << size2 << " elements"
+            << std::endl << std::endl;
 }
 
 void OscRecorder::oscMessageReceived(const OSCMessage& message) {

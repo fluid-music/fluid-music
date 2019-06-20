@@ -205,8 +205,12 @@ void CLIApp::onRunning()
         "Setup OSC Recording. Use before calling -p. WORK-IN-PROGRESS",
         "Undocumented! TODO: doc",
         [this](auto&) {
-            if (cybrEdit) cybrEdit->recordOsc();
-            else std::cerr << "Failed to record osc, because there is no active CybrEdit" << std::endl << std::endl;
+            if (cybrEdit) {
+                cybrEdit->saveOnClose = true;
+                cybrEdit->recordOsc();
+            } else {
+                std::cerr << "Failed to record osc, because there is no active CybrEdit" << std::endl << std::endl;
+            }
         } });
 
     cApp.addCommand({
