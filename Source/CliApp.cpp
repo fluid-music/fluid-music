@@ -293,7 +293,7 @@ void CLIApp::onRunning()
     // repeat indefinitely.
     cApp.addCommand({
         "-h|--help",
-        "-h|--help [--i ...]",
+        "-h|--help [-i ...]",
         "Print detailed info for subsequent arguments",
         "If there are no arguments after this one, print short description of all\n\
         arguemtns. If there are subsequent arguments, instead of executing/applying\n\
