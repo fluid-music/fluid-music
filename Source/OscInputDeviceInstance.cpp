@@ -21,7 +21,7 @@ OscInputDeviceInstance::~OscInputDeviceInstance()
     getOscInput().removeInstance(this);
 }
 
-void OscInputDeviceInstance::masterTimeUpdate(double time)
+void OscInputDeviceInstance::masterTimeUpdate(double streamTime)
 {
     // copied directly from MidiDeviceInstance::masterTimeUpdate
     if (context.playhead.isPlaying())

@@ -20,7 +20,7 @@ public:
     OscInputDeviceInstance(OscInputDevice& d, te::EditPlaybackContext& c);
     virtual ~OscInputDeviceInstance();
     OscInputDevice& getOscInput();
-    void masterTimeUpdate(double time);
+    void masterTimeUpdate(double streamTime);
     
     juce::String prepareToRecord (double start, double punchIn,
                                   double sampleRate, int blockSizeSamples,
