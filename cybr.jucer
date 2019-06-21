@@ -16,6 +16,10 @@
       <FILE id="xIuzOx" name="CybrEdit.h" compile="0" resource="0" file="Source/CybrEdit.h"/>
       <FILE id="pjj3ve" name="CybrEdit.cpp" compile="1" resource="0" file="Source/CybrEdit.cpp"/>
       <FILE id="WTPBIq" name="CybrTrackList.h" compile="0" resource="0" file="Source/CybrTrackList.h"/>
+      <FILE id="jUxSKN" name="OscInputDevice.h" compile="0" resource="0"
+            file="Source/OscInputDevice.h"/>
+      <FILE id="ARp7iI" name="OscInputDevice.cpp" compile="1" resource="0"
+            file="Source/OscInputDevice.cpp"/>
       <FILE id="qi7Ehy" name="OscRecorder.h" compile="0" resource="0" file="Source/OscRecorder.h"/>
       <FILE id="RkDO2q" name="OscRecorder.cpp" compile="1" resource="0" file="Source/OscRecorder.cpp"/>
       <FILE id="aMJqHp" name="OscSource.h" compile="0" resource="0" file="Source/OscSource.h"/>
