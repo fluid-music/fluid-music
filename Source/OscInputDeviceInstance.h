@@ -49,7 +49,15 @@ public:
     
     te::AudioNode* createLiveInputNode() override;
     
+    /** As far as I can tell, this refers to the time that recording began.
+     startTime does not (In MidiInputDeviceInstance) get updated when when
+     we just begin playback. */
     double startTime = 0;
+    /** How long have we been paused for? */
+    double pausedTime = 0;
+    /** Most recent streamTime */
+    double lastEditTime = -1;
+    /** Are we currently recording? */
     bool recording = false;
 };
 

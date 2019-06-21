@@ -23,15 +23,15 @@ OscInputDeviceInstance::~OscInputDeviceInstance()
 
 void OscInputDeviceInstance::masterTimeUpdate(double streamTime)
 {
-    // copied directly from MidiDeviceInstance::masterTimeUpdate
+    // This behavior is copied directly from MidiDeviceInstance::masterTimeUpdate
     if (context.playhead.isPlaying())
     {
-        //pausedTime = 0;
-        //lastEditTime = context.playhead.streamTimeToSourceTime (time);
+        pausedTime = 0;
+        lastEditTime = context.playhead.streamTimeToSourceTime (streamTime);
     }
     else
     {
-        //pausedTime += edit.engine.getDeviceManager().getBlockSizeMs() / 1000.0;
+        pausedTime += edit.engine.getDeviceManager().getBlockSizeMs() / 1000.0;
     }
 }
 
