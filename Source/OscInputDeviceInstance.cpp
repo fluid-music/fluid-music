@@ -13,12 +13,12 @@
 OscInputDeviceInstance::OscInputDeviceInstance(OscInputDevice& d, te::EditPlaybackContext& c)
     : te::InputDeviceInstance(d, c)
 {
-    //getOscInput().addInstance(this);
+    getOscInput().addInstance(this);
 }
 
 OscInputDeviceInstance::~OscInputDeviceInstance()
 {
-    //getOscInput().removeInstance(this);
+    getOscInput().removeInstance(this);
 }
 
 void OscInputDeviceInstance::masterTimeUpdate(double time)

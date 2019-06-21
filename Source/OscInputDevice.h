@@ -37,7 +37,7 @@ class OscInputDevice : public te::VirtualMidiInputDevice {
 public:
     OscInputDevice(te::Engine& e, const String& name);
     
-    void masterTimeUpdate (double time) override;
+    void masterTimeUpdate (double streamTime) override;
     te::InputDeviceInstance* createInstance (te::EditPlaybackContext& c) override;
     
     void saveProps() override {} // no-op prevents saving, but

@@ -55,16 +55,23 @@ Result createOscInputDevice(te::Engine& engine, const String& name)
 }
 
 ////////////////////////////////////////////////////////////////////////
-OscInputDevice::OscInputDevice(te::Engine& e, const String& name) :
-// The VirtualMidiInputDevice constructor is specified with a type enum.
-// Below I am using the VirtualMidiInputDevice, which is technically
-// correct, but could also lead to some subtle bugs down the line.
-VirtualMidiInputDevice(e, name, te::InputDevice::virtualMidiDevice) {}
 
-void OscInputDevice::masterTimeUpdate (double time)
+OscInputDevice::OscInputDevice(te::Engine& e, const String& name) :
+    // The VirtualMidiInputDevice constructor is specified with a type enum.
+    // Below I am using the VirtualMidiInputDevice, which is technically
+    // correct, but could also lead to some subtle bugs down the line.
+    VirtualMidiInputDevice(e, name, te::InputDevice::virtualMidiDevice)
+{}
+
+void OscInputDevice::masterTimeUpdate (double streamTime)
 {
-    MidiInputDevice::masterTimeUpdate (time);
+    adjustSecs = streamTime - Time::getMillisecondCounterHiRes() * 0.001;
     atomicAdjustSecs = adjustSecs;
+
+    const ScopedLock sl (instanceLock);
+
+    for (auto instance : instances)
+        instance->masterTimeUpdate (streamTime);
 }
 
 te::InputDeviceInstance* OscInputDevice::createInstance (te::EditPlaybackContext& c)
