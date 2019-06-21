@@ -20,6 +20,10 @@
             file="Source/OscInputDevice.h"/>
       <FILE id="ARp7iI" name="OscInputDevice.cpp" compile="1" resource="0"
             file="Source/OscInputDevice.cpp"/>
+      <FILE id="IxfNHJ" name="OscInputDeviceInstance.h" compile="0" resource="0"
+            file="Source/OscInputDeviceInstance.h"/>
+      <FILE id="QTRNah" name="OscInputDeviceInstance.cpp" compile="1" resource="0"
+            file="Source/OscInputDeviceInstance.cpp"/>
       <FILE id="qi7Ehy" name="OscRecorder.h" compile="0" resource="0" file="Source/OscRecorder.h"/>
       <FILE id="RkDO2q" name="OscRecorder.cpp" compile="1" resource="0" file="Source/OscRecorder.cpp"/>
       <FILE id="aMJqHp" name="OscSource.h" compile="0" resource="0" file="Source/OscSource.h"/>

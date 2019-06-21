@@ -9,12 +9,12 @@
 */
 
 #pragma once
-
-#pragma once
 #include <iostream>
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "OscInputDeviceInstance.h"
 
 namespace te = tracktion_engine;
+
 
 // For now, just use a simple test message. Later we can figure out if and how
 // to subclass or DRY these.
@@ -32,29 +32,27 @@ struct TimestampedTest {
 
 // This Custom Midi Input Helps us expose adjustSecs, which is used to convert
 // a Time::getMillisecondCounterHiRes() time to a streamTime relative value.
+class OscInputDeviceInstance;
 class OscInputDevice : public te::VirtualMidiInputDevice {
 public:
-    OscInputDevice(te::Engine& e, const String& name) :
-    // The VirtualMidiInputDevice constructor is specified with a type enum.
-    // Below I am using the VirtualMidiInputDevice, which is technically
-    // correct, but could also lead to some subtle bugs down the line.
-    VirtualMidiInputDevice(e, name, te::InputDevice::virtualMidiDevice) {}
+    OscInputDevice(te::Engine& e, const String& name);
     
-    void masterTimeUpdate (double time) override {
-        MidiInputDevice::masterTimeUpdate (time);
-        atomicAdjustSecs = adjustSecs;
-    }
-    
-    te::InputDeviceInstance* createInstance (te::EditPlaybackContext& c) override {
-        
-    }
+    void masterTimeUpdate (double time) override;
+    te::InputDeviceInstance* createInstance (te::EditPlaybackContext& c) override;
     
     void saveProps() override {} // no-op prevents saving, but
     void loadProps() override {} // doesn't work. Why?
     
     static const String name;
     std::atomic<double> atomicAdjustSecs { 0 };
+    
+    void addInstance(OscInputDeviceInstance* i);
+    void removeInstance(OscInputDeviceInstance* i);
+    
+protected:
+    juce::CriticalSection instanceLock;
+    juce::Array<OscInputDeviceInstance*> instances;
 };
 
+Result createOscInputDevice(te::Engine& engine, const String& name);
 
-Result createAdjustInputDevice(te::Engine& engine, const String& name);

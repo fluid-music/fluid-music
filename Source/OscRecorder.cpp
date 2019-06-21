@@ -13,7 +13,7 @@
 
 OscRecorder::OscRecorder(CybrEdit& c) : cybr(c)
 {
-    auto result = createAdjustInputDevice(cybr.edit.engine, OscInputDevice::name);
+    auto result = createOscInputDevice(cybr.edit.engine, OscInputDevice::name);
     if (result.wasOk()){
         std::cout << "Created virtual midi device" << std::endl;
     } else {

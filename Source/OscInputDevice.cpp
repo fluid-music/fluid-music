@@ -10,9 +10,11 @@
 
 #include "OscInputDevice.h"
 
+
+
 const String OscInputDevice::name{"stream-time-helper"};
 
-Result createAdjustInputDevice(te::Engine& engine, const String& name)
+Result createOscInputDevice(te::Engine& engine, const String& name)
 {
     // CRASH_TRACER
     TRACKTION_ASSERT_MESSAGE_THREAD
@@ -50,4 +52,34 @@ Result createAdjustInputDevice(te::Engine& engine, const String& name)
     engine.getDeviceManager().sendChangeMessage();
     
     return Result::ok();
+}
+
+////////////////////////////////////////////////////////////////////////
+OscInputDevice::OscInputDevice(te::Engine& e, const String& name) :
+// The VirtualMidiInputDevice constructor is specified with a type enum.
+// Below I am using the VirtualMidiInputDevice, which is technically
+// correct, but could also lead to some subtle bugs down the line.
+VirtualMidiInputDevice(e, name, te::InputDevice::virtualMidiDevice) {}
+
+void OscInputDevice::masterTimeUpdate (double time)
+{
+    MidiInputDevice::masterTimeUpdate (time);
+    atomicAdjustSecs = adjustSecs;
+}
+
+te::InputDeviceInstance* OscInputDevice::createInstance (te::EditPlaybackContext& c)
+{
+    return new OscInputDeviceInstance(*this, c);
+}
+
+void OscInputDevice::addInstance (OscInputDeviceInstance* i)
+{
+    const ScopedLock sl (instanceLock);
+    instances.addIfNotAlreadyThere(i);
+}
+
+void OscInputDevice::removeInstance (OscInputDeviceInstance* i)
+{
+    const ScopedLock sl (instanceLock);
+    instances.removeAllInstancesOf(i);
 }
