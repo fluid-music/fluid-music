@@ -15,7 +15,6 @@
 
 namespace te = tracktion_engine;
 
-
 // For now, just use a simple test message. Later we can figure out if and how
 // to subclass or DRY these.
 struct TimestampedTest {

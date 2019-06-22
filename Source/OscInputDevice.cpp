@@ -40,12 +40,12 @@ Result createOscInputDevice(te::Engine& engine, const String& name)
         te::DeviceManager::ContextDeviceListRebuilder deviceRebuilder (engine.getDeviceManager());
         
         // This uses
-        auto vmi = new OscInputDevice (engine, name);
-        engine.getDeviceManager().midiInputs.add (vmi);
+        auto oscDevice = new OscInputDevice (engine, name);
+        engine.getDeviceManager().midiInputs.add (oscDevice);
         
-        vmi->setEnabled (true);
-        vmi->initialiseDefaultAlias();
-        vmi->saveProps(); // Checking if this is commented out is this still saved?
+        oscDevice->setEnabled (true);
+        oscDevice->initialiseDefaultAlias();
+        oscDevice->saveProps(); // Checking if this is commented out is this still saved?
     }
     
     te::VirtualMidiInputDevice::refreshDeviceNames (engine);

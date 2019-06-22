@@ -49,7 +49,7 @@ public:
     
     te::AudioNode* createLiveInputNode() override;
     
-    /** As far as I can tell, this refers to the time that recording began.
+    /** As far as I can tell, startTime refers to when the recording began.
      startTime does not (In MidiInputDeviceInstance) get updated when when
      we just begin playback. */
     double startTime = 0;
