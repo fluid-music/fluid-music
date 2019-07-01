@@ -9,8 +9,11 @@
 */
 
 #pragma once
+#include <vector>
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "TimestampedTest.h"
 #include "OscInputDevice.h"
+
 
 namespace te = tracktion_engine;
 
@@ -20,6 +23,8 @@ public:
     OscInputDeviceInstance(OscInputDevice& d, te::EditPlaybackContext& c);
     virtual ~OscInputDeviceInstance();
     OscInputDevice& getOscInput();
+
+    // Called by the OscInputDevice on the "Build-in Output" thread
     void masterTimeUpdate(double streamTime);
     
     juce::String prepareToRecord (double start, double punchIn,
@@ -28,7 +33,7 @@ public:
 
     bool startRecording() override;
     bool isRecording() override;
-    void stop() override;
+    void stop() override; // called on the master thread
     
     // called if not all devices started correctly when recording started.
     void recordWasCancelled() override;
@@ -38,6 +43,10 @@ public:
 
     // see MidiInputDeviceInstance::stopRecording for what this is really supposed to do
     te::Clip::Array stopRecording() override;
+
+    /** Process all the incoming OSC messages. Like `masterTimeUpdate` this is called by
+     OscInputDevice on the "Built-in Output" thread. */
+    void handleOscMessages(std::vector<TimestampedTest> ttMsgs);
     
     te::Clip::Array applyLastRecordingToEdit (te::EditTimeRange recordedRange,
                                               bool isLooping, te::EditTimeRange loopRange,
@@ -50,8 +59,8 @@ public:
     te::AudioNode* createLiveInputNode() override;
     
     /** As far as I can tell, startTime refers to when the recording began.
-     startTime does not (In MidiInputDeviceInstance) get updated when when
-     we just begin playback. */
+     startTime does not (In MidiInputDeviceInstance) get updated when we
+     just begin playback. */
     double startTime = 0;
     /** How long have we been paused for? */
     double pausedTime = 0;

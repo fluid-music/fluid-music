@@ -10,29 +10,23 @@
 
 #pragma once
 #include <iostream>
+#include <vector>
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "TimestampedTest.h"
 #include "OscInputDeviceInstance.h"
+
 
 namespace te = tracktion_engine;
 
-// For now, just use a simple test message. Later we can figure out if and how
-// to subclass or DRY these.
-struct TimestampedTest {
-    double arrivedAt = 0;
-    double streamTime = 0;
-    int value;
-    String toString() {
-        String t(streamTime, 4);
-        String s{ "test: " };
-        s << t << " - " << value;
-        return s;
-    }
-};
+
 
 // This Custom Midi Input Helps us expose adjustSecs, which is used to convert
 // a Time::getMillisecondCounterHiRes() time to a streamTime relative value.
 class OscInputDeviceInstance;
-class OscInputDevice : public te::VirtualMidiInputDevice {
+class OscInputDevice :
+    public te::VirtualMidiInputDevice,
+    private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>
+{
 public:
     OscInputDevice(te::Engine& e, const String& name);
     
@@ -51,6 +45,15 @@ public:
 protected:
     juce::CriticalSection instanceLock;
     juce::Array<OscInputDeviceInstance*> instances;
+
+private:
+    void oscMessageReceived(const OSCMessage& message) override;
+    void oscBundleReceived(const OSCBundle& bundle) override;
+    
+    OSCReceiver oscReceiver;
+    static const int SIZE = 1024;
+    AbstractFifo abstractFifo{ SIZE };
+    TimestampedTest storage[SIZE];
 };
 
 Result createOscInputDevice(te::Engine& engine, const String& name);

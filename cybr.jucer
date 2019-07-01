@@ -3,6 +3,8 @@
 <JUCERPROJECT id="gn3eC9" name="cybr" projectType="consoleapp" jucerVersion="5.4.3">
   <MAINGROUP id="JTqeoX" name="cybr">
     <GROUP id="{E03437D9-F7F3-5413-6A30-51BDC7A4D4BC}" name="Source">
+      <FILE id="hc8jN8" name="TimestampedTest.h" compile="0" resource="0"
+            file="Source/TimestampedTest.h"/>
       <FILE id="fOUkdh" name="AppJobs.h" compile="0" resource="0" file="Source/AppJobs.h"/>
       <FILE id="T4tZrh" name="CliApp.h" compile="0" resource="0" file="Source/CliApp.h"/>
       <FILE id="BbVjEA" name="CliApp.cpp" compile="1" resource="0" file="Source/CliApp.cpp"/>

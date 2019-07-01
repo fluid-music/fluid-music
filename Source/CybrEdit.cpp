@@ -76,7 +76,7 @@ void CybrEdit::listTracks() {
 
 void CybrEdit::junk()
 {
-    if (auto audioTrack = te::getFirstAudioTrack(edit)) {
+   if (auto audioTrack = te::getFirstAudioTrack(edit)) {
         // insert my plugin
         if (auto plugin = audioTrack->pluginList.insertPlugin(OpenFrameworksPlugin::create(), 0)) {
             std::cout << "My Plugin Added!" << std::endl;
@@ -84,25 +84,11 @@ void CybrEdit::junk()
                 std::cout << "My Plugin is correct type!" << std::endl;
                 ofPlugin->semitonesValue.setValue(30, nullptr);
             }
-        }
-        // insert a VolumeAndPanPlugin
-        if (auto plugin = audioTrack->pluginList.insertPlugin(te::VolumeAndPanPlugin::create(), -1)) {
-            std::cout << "Plugin added: " << plugin->getName() << " to: " << audioTrack->getName() << std::endl;
-            if (auto vpPlugin = dynamic_cast<te::VolumeAndPanPlugin*>(plugin.get())) {
-                vpPlugin->setVolumeDb(-3);
-            }
-        }
-        else {
+        } else {
             std::cout << "Failed to add plugin" << std::endl;
         }
     };
     std::cout << std::endl;
-}
-
-void CybrEdit::recordOsc()
-{
-    oscRecorder = std::make_unique<OscRecorder>(*this);
-    oscRecorder->listen();
 }
 
 void CybrEdit::saveActiveEdit(File outputFile) {

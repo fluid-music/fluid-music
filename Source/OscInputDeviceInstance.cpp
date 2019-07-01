@@ -53,7 +53,7 @@ OscInputDevice& OscInputDeviceInstance::getOscInput()
 
 bool OscInputDeviceInstance::startRecording() { recording = true; return recording; }
 bool OscInputDeviceInstance::isRecording() { return recording; }
-void OscInputDeviceInstance::stop() { recording = false; }
+void OscInputDeviceInstance::stop() { recording = false; } // called on the message thread
 void OscInputDeviceInstance::recordWasCancelled() { recording = false; }
 double OscInputDeviceInstance::getPunchInTime() { return startTime; }
 te::Clip* OscInputDeviceInstance::applyRetrospectiveRecord (te::SelectionManager*) { return nullptr; }
@@ -71,4 +71,13 @@ te::Clip::Array OscInputDeviceInstance::applyLastRecordingToEdit (
     return {};
 }
 
-
+void OscInputDeviceInstance::handleOscMessages(std::vector<TimestampedTest> ttMsgs)
+{
+    for (auto tt : ttMsgs)
+    {
+        tt.editTime = context.playhead.streamTimeToSourceTime(tt.streamTime);
+        // this is sloppy, bcause I'm writing from the "Built-in Output" thread.
+        // TODO: clean this up.
+        std::cout << "Osc Input Device instance received tt" << tt.value << " - " << tt.streamTime << " - " << tt.editTime << std::endl;
+    }
+}

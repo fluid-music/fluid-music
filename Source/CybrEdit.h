@@ -13,10 +13,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "cybr_helpers.h"
 #include "OpenFrameworksPlugin.h"
-#include "OscRecorder.h"
 #include "CybrTrackList.h"
 
-class OscRecorder;
 class CybrTrackList;
 namespace te = tracktion_engine;
 
@@ -47,16 +45,13 @@ public:
     
     /** WIP - testing custom plugin */
     void junk();
-    void recordOsc();
 
     // te::EditItem overrides
-
     void valueTreePropertyChanged(ValueTree &treeWhosePropertyHasChanged, const Identifier &property);
     String getName() { return {"Cybr Edit Sidecar"}; }
    
     // CyberEdit Member variables
     ValueTree state;
-    std::unique_ptr<OscRecorder> oscRecorder;
     std::unique_ptr<CybrTrackList> cybrTrackList;
     bool saveOnClose = false;
 };

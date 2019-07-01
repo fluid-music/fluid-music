@@ -16,6 +16,7 @@
 #include "AppJobs.h"
 #include "OscSource.h"
 #include "CybrEdit.h"
+#include "OscInputDevice.h"
 
 
 class CLIApp : public JUCEApplicationBase, ChangeListener {

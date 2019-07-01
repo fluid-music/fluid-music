@@ -83,7 +83,7 @@ void OscRecorder::oscMessageReceived(const OSCMessage& message) {
     double timeMs = Time::getMillisecondCounterHiRes();
     if (message.size() < 1) return;
     if (!message[0].isInt32()) return;
-    TimestampedTest obj{ timeMs * 0.001, 0.0, message[0].getInt32() };
+    TimestampedTest obj{ timeMs * 0.001, 0.0, 0.0, message[0].getInt32() };
     
     // write to QUEUE
     int start1, size1, start2, size2;

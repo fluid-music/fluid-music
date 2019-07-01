@@ -205,9 +205,19 @@ void CLIApp::onRunning()
         "Setup OSC Recording. Use before calling -p. WORK-IN-PROGRESS",
         "Undocumented! TODO: doc",
         [this](auto&) {
+             // Creating an OscInputDevice indirectly creates an OscInputDeviceInstance
+             // if one is needed. Where does the input device instance get instantiated?
+             // It happens from the `TransportControl::ensureContextAllocated` method,
+             // which is called whenever we play the edit.
+            auto result = createOscInputDevice(engine, OscInputDevice::name);
+            if (result.wasOk()){
+                std::cout << "Created OscInputDevice: SUCCESS!" << std::endl;
+            } else {
+                std::cout << "Created OscInputDevice: FAILURE! " << result.getErrorMessage() << std::endl;
+            };
+
             if (cybrEdit) {
                 cybrEdit->saveOnClose = true;
-                cybrEdit->recordOsc();
             } else {
                 std::cerr << "Failed to record osc, because there is no active CybrEdit" << std::endl << std::endl;
             }
