@@ -54,6 +54,12 @@ private:
     static const int SIZE = 1024;
     AbstractFifo abstractFifo{ SIZE };
     TimestampedTest storage[SIZE];
+    
+    /** Get incoming messages from the network thread
+     - write to this from the network thread in the OSCReceiver callback
+     - read on the Built-in Output thread in the masterTimeUpdate callback
+     */
+    LockFreeOscMessageQueue incomingMessages;
 };
 
 Result createOscInputDevice(te::Engine& engine, const String& name);

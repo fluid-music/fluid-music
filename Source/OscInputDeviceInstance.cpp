@@ -76,8 +76,11 @@ void OscInputDeviceInstance::handleOscMessages(std::vector<TimestampedTest> ttMs
     for (auto tt : ttMsgs)
     {
         tt.editTime = context.playhead.streamTimeToSourceTime(tt.streamTime);
+        toMessageThread.writeMessage(tt);
         // this is sloppy, bcause I'm writing from the "Built-in Output" thread.
         // TODO: clean this up.
-        std::cout << "Osc Input Device instance received tt" << tt.value << " - " << tt.streamTime << " - " << tt.editTime << std::endl;
+        std::cout << "Osc Input Device instance received tt" << tt.value
+            << " - " << tt.streamTime
+            << " - " << tt.editTime << std::endl;
     }
 }

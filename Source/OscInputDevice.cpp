@@ -79,37 +79,7 @@ void OscInputDevice::masterTimeUpdate (double streamTime)
     adjustSecs = streamTime - Time::getMillisecondCounterHiRes() * 0.001;
     atomicAdjustSecs = adjustSecs;
 
-    // temporary storage for received values
-    // is std::vector the right container?
-    std::vector<TimestampedTest> received;
-    
-    // Handle lock free queue
-    int start1, size1, start2, size2;
-    abstractFifo.prepareToRead(abstractFifo.getNumReady(), start1, size1, start2, size2);
-    received.reserve(size1+size2);
-
-    // previous we did: auto* t = cybr.cybrTrackList->getOrCreateLastTrack();
-    
-    if (adjustSecs == 0) {
-        std::cout << "Failed to get adjust secs" << std::endl;
-    } else {
-        for (int i = start1; i < start1 + size1; i++) {
-            auto& obj = storage[i];
-            obj.streamTime = storage[i].arrivedAt + adjustSecs;
-            received.push_back(obj);
-        }
-        for (int i = start2; i < start2 + size2; i++) {
-            auto& obj = storage[i];
-            obj.streamTime = storage[i].arrivedAt + adjustSecs;
-            received.push_back(obj);
-        }
-    }
-    abstractFifo.finishedRead(size1 + size2);
-    
-    if (size1 || size2)
-        std::cout
-            << "Handled " << size1 << " + " << size2 << " elements"
-            << std::endl << std::endl;
+    auto received = incomingMessages.read(adjustSecs);
 
     const ScopedLock sl (instanceLock);
     for (auto instance : instances) {
@@ -138,29 +108,7 @@ void OscInputDevice::removeInstance (OscInputDeviceInstance* i)
 void OscInputDevice::oscMessageReceived(const OSCMessage& message) {
     // Create the object
     double timeMs = Time::getMillisecondCounterHiRes();
-    if (message.size() < 1) return;
-    if (!message[0].isInt32()) return;
-    TimestampedTest obj{ timeMs * 0.001, 0.0, 0.0, message[0].getInt32() };
-    
-    // write to QUEUE
-    int start1, size1, start2, size2;
-    abstractFifo.prepareToWrite(1, start1, size1, start2, size2);
-    if (size1 > 0) storage[start1] = obj;
-    else if (size2 > 0) storage[start2] = obj;
-    abstractFifo.finishedWrite(size1 + size2);
-
-    if (size1 + size2 == 0) {
-        // If our buffer was full, just throw some stuff in the buffer away.
-        // 10 was chosen arbitrarily.
-        abstractFifo.prepareToRead(10, start1, size1, start2, size2);
-        abstractFifo.finishedRead(size1 + size2);
-
-        // write to QUEUE should be identical to above
-        abstractFifo.prepareToWrite(1, start1, size1, start2, size2);
-        if (size1 > 0) storage[start1] = obj;
-        else if (size2 > 0) storage[start2] = obj;
-        abstractFifo.finishedWrite(size1 + size2);
-    }
+    incomingMessages.writeMessage(message, timeMs);
 }
 
 void OscInputDevice::oscBundleReceived(const OSCBundle& bundle) {

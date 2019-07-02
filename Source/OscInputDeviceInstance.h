@@ -68,5 +68,9 @@ public:
     double lastEditTime = -1;
     /** Are we currently recording? */
     bool recording = false;
+    
+private:
+    /** Pass messages from edit to the message thread */
+    LockFreeOscMessageQueue toMessageThread;
 };
 
