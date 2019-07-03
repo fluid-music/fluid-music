@@ -74,6 +74,15 @@ void CybrEdit::listTracks() {
     std::cout << std::endl;
 }
 
+void CybrEdit::listState() {
+    int count = edit.state.getNumChildren();
+    std::cout << "Printing all top level element types" << std::endl;
+    for (int i = 0; i < count; i++){
+        std::cout << edit.state.getChild(i).getType().toString() << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 void CybrEdit::junk()
 {
    if (auto audioTrack = te::getFirstAudioTrack(edit)) {

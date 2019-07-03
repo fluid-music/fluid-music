@@ -79,7 +79,10 @@ void OscInputDevice::masterTimeUpdate (double streamTime)
     adjustSecs = streamTime - Time::getMillisecondCounterHiRes() * 0.001;
     atomicAdjustSecs = adjustSecs;
 
-    auto received = incomingMessages.read(adjustSecs);
+    auto received = incomingMessages.read();
+    for (auto&& msg : received) {
+        msg.streamTime = msg.arrivedAt + adjustSecs;
+    }
 
     const ScopedLock sl (instanceLock);
     for (auto instance : instances) {

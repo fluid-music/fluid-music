@@ -242,6 +242,16 @@ void CLIApp::onRunning()
             listMidiDevices(engine);
             listWaveDevices(engine);
         } });
+    
+    cApp.addCommand({
+        "--list-state",
+        "--list-state",
+        "Print type of top level chilren in the edit",
+        "Sometimes usefull for debugging. I originally wrote this to check if an\n\
+        empty edit has a INPUTDEVICES element before it is even saved. (It does)",
+        [this](auto&) {
+            if (cybrEdit) cybrEdit->listState();
+        } });
 
     cApp.addCommand({
         "--target-port",

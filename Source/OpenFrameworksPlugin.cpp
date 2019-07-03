@@ -43,7 +43,7 @@ ValueTree OpenFrameworksPlugin::create()
 
 const char* OpenFrameworksPlugin::xmlTypeName = "openframeworks";
 
-//
+// Called from a "mixer" thread. (There can be multiple "mixer" threads)
 void OpenFrameworksPlugin::applyToBuffer(const te::AudioRenderContext& fc)
 {
     if (fc.bufferForMidiMessages != nullptr) {

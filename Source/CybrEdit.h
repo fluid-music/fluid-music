@@ -40,9 +40,9 @@ public:
     void listTracks();
     /** Save the active edit to a .tracktionedig or .wav file */
     void saveActiveEdit(File outputFile);
-
-    // More complex methods will actually use the CybrEdit
-    
+    /** List all the top level XML tags of the state */
+    void listState();
+   
     /** WIP - testing custom plugin */
     void junk();
 

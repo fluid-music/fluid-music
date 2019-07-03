@@ -51,9 +51,6 @@ private:
     void oscBundleReceived(const OSCBundle& bundle) override;
     
     OSCReceiver oscReceiver;
-    static const int SIZE = 1024;
-    AbstractFifo abstractFifo{ SIZE };
-    TimestampedTest storage[SIZE];
     
     /** Get incoming messages from the network thread
      - write to this from the network thread in the OSCReceiver callback

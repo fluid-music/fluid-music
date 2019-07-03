@@ -65,7 +65,7 @@ public:
         }
     }
 
-    std::vector<TimestampedTest> read(double adjustSecs) {
+    std::vector<TimestampedTest> read() {
         // temporary storage for received values
         // is std::vector the right container?
         std::vector<TimestampedTest> received;
@@ -77,27 +77,17 @@ public:
         
         // previous we did: auto* t = cybr.cybrTrackList->getOrCreateLastTrack();
         
-        if (adjustSecs == 0) {
-            std::cout << "Failed to get adjust secs" << std::endl;
-        } else {
-            for (int i = start1; i < start1 + size1; i++) {
-                auto& obj = storage[i];
-                obj.streamTime = storage[i].arrivedAt + adjustSecs;
-                received.push_back(obj);
-            }
-            for (int i = start2; i < start2 + size2; i++) {
-                auto& obj = storage[i];
-                obj.streamTime = storage[i].arrivedAt + adjustSecs;
-                received.push_back(obj);
-            }
+        for (int i = start1; i < start1 + size1; i++) {
+            auto& obj = storage[i];
+            received.push_back(obj);
         }
+        for (int i = start2; i < start2 + size2; i++) {
+            auto& obj = storage[i];
+            received.push_back(obj);
+        }
+
         abstractFifo.finishedRead(size1 + size2);
-        
-        if (size1 || size2)
-            std::cout
-            << "Handled " << size1 << " + " << size2 << " elements"
-            << std::endl << std::endl;
-        
+
         return received;
     }
 
