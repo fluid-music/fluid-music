@@ -26,14 +26,14 @@ CybrEdit::CybrEdit(te::Edit* e) :
 }
 
 CybrEdit::~CybrEdit() {
-    flushPendingChangesToState();
+    flushPendingChanges();
     if (saveOnClose)
         saveActiveEdit(File::getCurrentWorkingDirectory().getChildFile({ "out.tracktionedit" }));
 }
 
 void CybrEdit::timerCallback()
 {
-    flushPendingChangesToState();
+    flushPendingChanges();
 }
 
 void CybrEdit::flushPendingChanges()
