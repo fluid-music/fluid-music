@@ -106,16 +106,12 @@ private:
          string instead of running the command. CLI users may set the helpModeFlag
          by specifying the -h CLI argument. */
         bool helpModeFlag = false;
-    };
-    Options options;
+    } options;
 
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
     AppJobs appJobs;
 
-    // cybrEdit is a wrapper around edit. However, it does not manage edit's
-    // lifetime. We want edit to outlive cybrEdit. The containing class must
-    // ensure that the lifetime of the edit passed in to cybrEdit exceedes the
-    // lifetime of cybrEdit.
+    // cybrEdit is a wrapper around edit.
     std::unique_ptr<CybrEdit> cybrEdit;
     std::unique_ptr<OscSource> oscSource;
 

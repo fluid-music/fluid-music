@@ -48,6 +48,8 @@ public:
     void listState();
     /** Simple getter for the underlying edit */
     te::Edit& getEdit() { return *edit; }
+    /** Ensure that all the most recent changes are applied to the state */
+    void flushPendingChanges();
    
     /** WIP - testing custom plugin */
     void junk();

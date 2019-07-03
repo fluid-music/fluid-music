@@ -26,11 +26,17 @@ CybrEdit::CybrEdit(te::Edit* e) :
 }
 
 CybrEdit::~CybrEdit() {
+    flushPendingChangesToState();
     if (saveOnClose)
         saveActiveEdit(File::getCurrentWorkingDirectory().getChildFile({ "out.tracktionedit" }));
 }
 
 void CybrEdit::timerCallback()
+{
+    flushPendingChangesToState();
+}
+
+void CybrEdit::flushPendingChanges()
 {
     // Read any received OSC messages
     auto inputDeviceInstances = edit->getAllInputDevices();
