@@ -10,7 +10,8 @@
 
 #include "cybr_helpers.h"
 
-std::unique_ptr<te::Edit> loadEmptyEdit(File inputFile, te::Engine& engine)
+// Creates a new edit, and leaves deletion up to you
+te::Edit* createEmptyEdit(File inputFile, te::Engine& engine)
 {
     std::cout << "Creating Edit Object" << std::endl;
     te::Edit::Options editOptions{ engine };
@@ -19,10 +20,11 @@ std::unique_ptr<te::Edit> loadEmptyEdit(File inputFile, te::Engine& engine)
     editOptions.numUndoLevelsToStore = 0;
     editOptions.role = te::Edit::forRendering;
     editOptions.editFileRetriever = [inputFile] { return inputFile; };
-    return std::make_unique<te::Edit>(editOptions);
+    return new te::Edit(editOptions);
 }
 
-std::unique_ptr<te::Edit> loadEditFile(File inputFile, te::Engine& engine) {
+// Creates a new edit, and leaves deletion up to you
+te::Edit* createEdit(File inputFile, te::Engine& engine) {
     // we are assuming the file exists.
     ValueTree valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
     
@@ -36,7 +38,7 @@ std::unique_ptr<te::Edit> loadEditFile(File inputFile, te::Engine& engine) {
     editOptions.numUndoLevelsToStore = 0;
     editOptions.role = te::Edit::forRendering;
     editOptions.editFileRetriever = [inputFile] { return inputFile; };
-    std::unique_ptr<te::Edit> newEdit = std::make_unique<te::Edit>(editOptions);
+    te::Edit* newEdit = new te::Edit(editOptions);
     
     // By default (and for simplicity), all clips in an in-memory edit should
     // have a source property with an absolute path value. We want to avoid

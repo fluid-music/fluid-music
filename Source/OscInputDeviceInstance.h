@@ -69,8 +69,10 @@ public:
     /** Are we currently recording? */
     bool recording = false;
     
-private:
-    /** Pass messages from edit to the message thread */
+    /** Pass messages from edit to the message thread.
+     It's a little bit risky to make this public, because we don't want anyone
+     replacing it. It will be refactored when we template it, so for now just
+     using a public member is a reasonable compromize. */
     LockFreeOscMessageQueue toMessageThread;
 };
 

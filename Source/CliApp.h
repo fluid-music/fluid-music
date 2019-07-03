@@ -116,7 +116,6 @@ private:
     // lifetime. We want edit to outlive cybrEdit. The containing class must
     // ensure that the lifetime of the edit passed in to cybrEdit exceedes the
     // lifetime of cybrEdit.
-    std::unique_ptr<te::Edit> edit;
     std::unique_ptr<CybrEdit> cybrEdit;
     std::unique_ptr<OscSource> oscSource;
 

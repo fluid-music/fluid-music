@@ -14,6 +14,7 @@
 #include "cybr_helpers.h"
 #include "OpenFrameworksPlugin.h"
 #include "CybrTrackList.h"
+#include "OscInputDeviceInstance.h"
 
 class CybrTrackList;
 namespace te = tracktion_engine;
@@ -24,11 +25,14 @@ const juce::Identifier CYBR("CYBR");
  This contains the root level extensions that drive the extended functionality
  that the cybr app adds to existing tracktion_engine functionality.
  */
-class CybrEdit : public te::EditItem,
-                 public ValueTree::Listener
+class CybrEdit :
+    public ValueTree::Listener,
+    private Timer
 {
+private:
+    std::unique_ptr<te::Edit> edit;
 public:
-    CybrEdit(te::Edit& e);
+    CybrEdit(te::Edit* edit); // take ownership of the edit, and delete it when ready
     virtual ~CybrEdit();
 
     // Some CybrEdit methods only use the Edit, but not the CybrEdit.
@@ -42,12 +46,19 @@ public:
     void saveActiveEdit(File outputFile);
     /** List all the top level XML tags of the state */
     void listState();
+    /** Simple getter for the underlying edit */
+    te::Edit& getEdit() { return *edit; }
    
     /** WIP - testing custom plugin */
     void junk();
 
+    void valueTreePropertyChanged(ValueTree &treeWhosePropertyHasChanged, const Identifier &property) override;
+    void valueTreeChildAdded(juce::ValueTree &parentTree, juce::ValueTree &childWhichHasBeenAdded) override;
+    
+    /** Check if the CybrEdit needs to be updated. This is where we retrieve incoming OSC messages*/
+    void timerCallback() override;
+
     // te::EditItem overrides
-    void valueTreePropertyChanged(ValueTree &treeWhosePropertyHasChanged, const Identifier &property);
     String getName() { return {"Cybr Edit Sidecar"}; }
    
     // CyberEdit Member variables

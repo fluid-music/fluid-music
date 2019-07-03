@@ -10,14 +10,16 @@
 
 #pragma once
 #include <iostream>
+#include "CybrEdit.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 
 namespace te = tracktion_engine;
 class AppJobs : public juce::ChangeBroadcaster {
 public:
 
-    /** Play the edit. */
-    void play(te::Edit& edit) {
+    /** Play the edit. This creates a NEW CybrEdit and a new te::Edit */
+    void play(CybrEdit& cybrEdit) {
+        te::Edit& edit = cybrEdit.getEdit();
         te::Edit::Options options{ edit.engine };
         options.editState = edit.state;
         options.role = te::Edit::EditRole::forEditing;
@@ -26,16 +28,18 @@ public:
         options.editFileRetriever = [] {
             return File::getCurrentWorkingDirectory().getChildFile("temp.tracktionedit");
         };
+        // The CybrEdit takes responsibility for deleting the edit (via unique_ptr)
         te::Edit* newEdit = new te::Edit(options);
+        CybrEdit* newCybrEdit = new CybrEdit(newEdit);
         newEdit->initialiseAllPlugins();
         auto length = newEdit->getLength();
         auto& transport = newEdit->getTransport();
         transport.position = 0;
         transport.play(false);
-        playingEdits.add(newEdit);
+        playingEdits.add(newCybrEdit);
         sendChangeMessage();
-        Timer::callAfterDelay((int)ceil(length * 1000.), [this, newEdit]() {
-            playingEdits.removeObject(newEdit);
+        Timer::callAfterDelay((int)ceil(length * 1000.), [this, newCybrEdit]() {
+            playingEdits.removeObject(newCybrEdit);
             sendChangeMessage();
         });
     }
@@ -51,6 +55,6 @@ public:
     bool getRunForever() { return runForever; }
 
 private:
-    juce::OwnedArray<te::Edit> playingEdits;
+    juce::OwnedArray<CybrEdit> playingEdits;
     bool runForever = false;
 };

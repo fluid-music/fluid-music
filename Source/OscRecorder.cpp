@@ -13,7 +13,7 @@
 
 OscRecorder::OscRecorder(CybrEdit& c) : cybr(c)
 {
-    auto result = createOscInputDevice(cybr.edit.engine, OscInputDevice::name);
+    auto result = createOscInputDevice(cybr.getEdit().engine, OscInputDevice::name);
     if (result.wasOk()){
         std::cout << "Created virtual midi device" << std::endl;
     } else {
@@ -40,7 +40,7 @@ void OscRecorder::listen() {
 
 void OscRecorder::timerCallback() {
     // get the first active MidiInputDevice
-    auto& dm = cybr.edit.engine.getDeviceManager();
+    auto& dm = cybr.getEdit().engine.getDeviceManager();
     double adjustSecs = 0;
     for (int i = 0; i < dm.getNumMidiInDevices(); i++) {
         te::MidiInputDevice* mi = dm.getMidiInDevice(i);
