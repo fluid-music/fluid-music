@@ -46,9 +46,10 @@ Result createOscInputDevice(te::Engine& engine, const String& name)
         OscInputDevice* oscDevice = new OscInputDevice (engine, name);
         engine.getDeviceManager().midiInputs.add (oscDevice);
         
-        oscDevice->setEnabled (true);
+        oscDevice->recordingEnabled = true; // from MidiInputDevice
+        oscDevice->setEnabled (true); // from VirtualMidiInputDevice, which overrides others, but updates the protected InputDevice::enabled bool
         oscDevice->initialiseDefaultAlias();
-        oscDevice->saveProps(); // Check: if this is commented out, is this still saved?
+        oscDevice->saveProps(); // Check: If this is commented out, is this still saved?
     }
     
     te::VirtualMidiInputDevice::refreshDeviceNames (engine);

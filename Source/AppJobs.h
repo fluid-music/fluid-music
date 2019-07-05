@@ -19,6 +19,73 @@ public:
 
     /** Play the edit. This creates a NEW CybrEdit and a new te::Edit */
     void play(CybrEdit& cybrEdit) {
+        CybrEdit* newCybrEdit = copyCybrEditForPlayback(cybrEdit);
+        te::Edit& newEdit = newCybrEdit->getEdit();
+ 
+        newEdit.getTransport().play(false);
+
+        add(newCybrEdit);
+        Timer::callAfterDelay((int)ceil(newEdit.getLength() * 1000.), [this, newCybrEdit]() {
+            remove(newCybrEdit);
+        });
+    }
+    
+    void record(CybrEdit& cybrEdit) {
+        CybrEdit* newCybrEdit = copyCybrEditForPlayback(cybrEdit);
+        te::Edit& newEdit = newCybrEdit->getEdit();
+
+        // When an edit is first created, it will have no playback context, which is where
+        // the `inputDeviceInstance`s are. I believe that a call to `getAllInputDevices`
+        // before the `EditPlaybackContext` is allocated will just return an empty array.
+        newEdit.getTransport().ensureContextAllocated();
+        for (auto i : newEdit.getAllInputDevices()) {
+            if (auto oscInstance = static_cast<OscInputDeviceInstance*>(i)) {
+                std::cout << "Found OSC input: " << oscInstance->owner.getName();
+                oscInstance->recordEnabled = true;
+            } else {
+                std::cout << "Disarm: " << i->owner.getName() << std::endl;
+                i->recordEnabled = false;
+            }
+        }
+        newEdit.getTransport().record(false, true);
+        
+        add(newCybrEdit);
+        Timer::callAfterDelay((int)ceil(newEdit.getLength() * 1000.), [this, newCybrEdit]() {
+            newCybrEdit->getEdit().getTransport().stop(true, false);
+            remove(newCybrEdit);
+        });
+    }
+
+    /** Add a CybrEdit if it is not already present. If succesful, AppJobs will
+     own that CybrEdit, and is responsible for deleting it. Returns success. */
+    bool add(CybrEdit* cybrEdit) {
+        if (playingEdits.contains(cybrEdit)) return false;
+        
+        playingEdits.add(cybrEdit);
+        sendChangeMessage();
+        return true;
+    }
+
+    /** Remove a CybrEdit if it exists in the collection. Returns success. */
+    bool remove(const CybrEdit* cybrEdit) {
+        if (!playingEdits.contains(cybrEdit)) return false;
+    
+        playingEdits.removeObject(cybrEdit);
+        sendChangeMessage();
+        return true;
+    }
+
+    bool isEmpty() { return playingEdits.size() == 0; }
+    bool isFinished() { return isEmpty() && ! runForever; }
+    bool getRunForever() { return runForever; }
+    void setRunForever(bool newFlag) {
+        bool changed = (newFlag != runForever);
+        runForever = newFlag;
+        if (changed) sendChangeMessage();
+    }
+
+private:
+    static CybrEdit* copyCybrEditForPlayback(CybrEdit& cybrEdit) {
         te::Edit& edit = cybrEdit.getEdit();
         te::Edit::Options options{ edit.engine };
         options.editState = edit.state;
@@ -28,33 +95,14 @@ public:
         options.editFileRetriever = [] {
             return File::getCurrentWorkingDirectory().getChildFile("temp.tracktionedit");
         };
-        // The CybrEdit takes responsibility for deleting the edit (via unique_ptr)
+        // CybrEdit takes responsibility for deleting the Edit (via unique_ptr)
         te::Edit* newEdit = new te::Edit(options);
-        CybrEdit* newCybrEdit = new CybrEdit(newEdit);
         newEdit->initialiseAllPlugins();
-        auto length = newEdit->getLength();
-        auto& transport = newEdit->getTransport();
-        transport.position = 0;
-        transport.play(false);
-        playingEdits.add(newCybrEdit);
-        sendChangeMessage();
-        Timer::callAfterDelay((int)ceil(length * 1000.), [this, newCybrEdit]() {
-            playingEdits.removeObject(newCybrEdit);
-            sendChangeMessage();
-        });
+        newEdit->getTransport().position = 0;
+        CybrEdit* newCybrEdit = new CybrEdit(newEdit);
+        return newCybrEdit;
     }
 
-    bool isEmpty() { return playingEdits.size() == 0; }
-    bool isFinished() { return isEmpty() && ! runForever; }
-    
-    void setRunForever(bool newFlag) {
-        bool changed = (newFlag != runForever);
-        runForever = newFlag;
-        if (changed) sendChangeMessage();
-    }
-    bool getRunForever() { return runForever; }
-
-private:
     juce::OwnedArray<CybrEdit> playingEdits;
     bool runForever = false;
 };

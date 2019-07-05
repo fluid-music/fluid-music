@@ -27,6 +27,13 @@ public:
     // Called by the OscInputDevice on the "Build-in Output" thread
     void masterTimeUpdate(double streamTime);
     
+    /** I believe this gets called automatically by transport.performRecord.
+     However, this will not be called if:
+     - MidiInputDevice::recordingEnabled != true
+     - InputDeviceInstance::recordEnabled != true
+     - InputDeviceInstance::getTargetTrack does not return a track
+     These are requirements even if we call transport.record with the second
+     argument, `allowRecordingIfNoInputsArmed = true`. */
     juce::String prepareToRecord (double start, double punchIn,
                                   double sampleRate, int blockSizeSamples,
                                   bool isLivePunch) override;

@@ -42,6 +42,10 @@ juce::String OscInputDeviceInstance::prepareToRecord (
     int blockSizeSamples,
     bool isLivePunch)
 {
+    // The MidiInputDeviceInstanceBase::prepareToRecord method also assigns
+    // `start` to `startTime`, which is a little strange, bucause the
+    // MidiInputDeviceInstancBase::getPunchInTime returns `startTime`, so I
+    // would expect this method to use `punchInTime`. 
     startTime = start;
     return {};
 }
