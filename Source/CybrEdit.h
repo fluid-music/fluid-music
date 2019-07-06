@@ -43,6 +43,8 @@ public:
     void saveActiveEdit(File outputFile);
     /** List all the top level XML tags of the state */
     void listState();
+    /** List all the edit's inputs. Does not create EditPlaybackContext. */
+    void listInputDevices();
     /** Simple getter for the underlying edit */
     te::Edit& getEdit() { return *edit; }
     /** Ensure that all the most recent changes are applied to the state */

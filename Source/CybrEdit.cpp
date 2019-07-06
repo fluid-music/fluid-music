@@ -90,6 +90,22 @@ void CybrEdit::listClips() {
     std::cout << std::endl;
 }
 
+void CybrEdit::listInputDevices() {
+    std::cout << "List input device state..." << std::endl;
+    auto& inputDevices = edit->getEditInputDevices();
+    auto& deviceManager = edit->engine.getDeviceManager();
+    int numInputDevices = deviceManager.getNumInputDevices();
+
+    XmlElement::TextFormat format;
+    format.addDefaultHeader = false;
+    for (int i = 0; i < numInputDevices; i++) {
+        auto* dev = deviceManager.getInputDevice(i);
+        ValueTree state = inputDevices.getInstanceStateForInputDevice(*dev);
+        std::cout << state.toXmlString(format); // adds endl by default
+    }
+    std::cout << std::endl;
+}
+
 void CybrEdit::listTracks() {
     std::cout << "List Tracks..." << std::endl;
     for (auto track : te::getAllTracks(*edit))
@@ -191,5 +207,3 @@ te::AudioTrack* CybrEdit::getOrCreateCybrHostAudioTrack() {
     }
     return found;
 }
-
-

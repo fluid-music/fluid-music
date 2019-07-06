@@ -244,6 +244,21 @@ void CLIApp::onRunning()
         } });
     
     cApp.addCommand({
+        "--list-edit-inputs",
+        "--list-edit-inputs",
+        "Print edit inputs (only print available inputs)",
+        "\
+        Output a list of inputs from the edit. This is made to only print inputs that\n\
+        are available in your current hardware. This command looks up all the inputs\n\
+        that are available on your current hardware. For each of those input devices,\n\
+        print its XML if that device is in the edit. Note that prints the state from\n\
+        the information in the edit's ValueTree, as opposed to creating an\n\
+        EditPlaybackContext and retrieving the input device instances.",
+        [this](auto&) {
+            if (cybrEdit) cybrEdit->listInputDevices();
+        } });
+
+    cApp.addCommand({
         "--list-state",
         "--list-state",
         "Print type of top level chilren in the edit",
