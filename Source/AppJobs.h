@@ -34,7 +34,12 @@ public:
         CybrEdit* newCybrEdit = copyCybrEditForPlayback(cybrEdit);
         te::Edit& newEdit = newCybrEdit->getEdit();
 
-        // When an edit is first created, it will have no playback context, which is where
+        // It is possible to record without any tracks armed, but that means that
+        // the `OscInputDeviceInstance::prepareToRecord` and `startRecording` handlers
+        // will not be called. Below we disarm recording on all inputs except
+        // `OscInputDeviceInstance`s.
+
+        // When an Edit is first created, it will have no playback context, which is where
         // the `inputDeviceInstance`s are. I believe that a call to `getAllInputDevices`
         // before the `EditPlaybackContext` is allocated will just return an empty array.
         newEdit.getTransport().ensureContextAllocated();
@@ -58,8 +63,20 @@ public:
                 i->recordEnabled = false;
             }
         }
-        newEdit.getTransport().record(false, true);
-        
+
+        // It looks like it is an error call `.record()` while playing an edit.
+        // The way punch-in/out works in Waveform is: You have to start recording
+        // with at least one track armed. Then you can punch in our out on all
+        // tracks, including the one that was initially armed. This probably
+        // corresponds to the punch methods on the input/output device instances.
+        //
+        // The second argument to record is `allowRecordingIfNoInputsArmed`. I've
+        // experience a bug:
+        // - when we set this to true, and there is no VST in the edit, our app
+        // goes into an infinite loop of TransportControl::valueTreePropChanged
+        // callbacks.
+        newCybrEdit->getEdit().getTransport().record(false, false);
+
         add(newCybrEdit);
         Timer::callAfterDelay((int)ceil(newEdit.getLength() * 1000.), [this, newCybrEdit]() {
             newCybrEdit->getEdit().getTransport().stop(true, false);

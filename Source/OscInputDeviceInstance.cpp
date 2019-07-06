@@ -10,8 +10,10 @@
 
 #include "OscInputDeviceInstance.h"
 
-OscInputDeviceInstance::OscInputDeviceInstance(OscInputDevice& d, te::EditPlaybackContext& c)
-    : te::InputDeviceInstance(d, c)
+OscInputDeviceInstance::OscInputDeviceInstance(OscInputDevice& d, te::EditPlaybackContext& c) :
+    te::InputDeviceInstance(d, c),
+    recordingStartTime(0),
+    recording(false)
 {
     getOscInput().addInstance(this);
 }
@@ -42,11 +44,11 @@ juce::String OscInputDeviceInstance::prepareToRecord (
     int blockSizeSamples,
     bool isLivePunch)
 {
-    // The MidiInputDeviceInstanceBase::prepareToRecord method also assigns
+    // The MidiInputDeviceInstanceBase::prepareToRecord method assigns
     // `start` to `startTime`, which is a little strange, bucause the
     // MidiInputDeviceInstancBase::getPunchInTime returns `startTime`, so I
-    // would expect this method to use `punchInTime`. 
-    startTime = start;
+    // would expect this method to use `punchIn`.
+    recordingStartTime = punchIn;
     return {};
 }
 
@@ -59,7 +61,7 @@ bool OscInputDeviceInstance::startRecording() { recording = true; return recordi
 bool OscInputDeviceInstance::isRecording() { return recording; }
 void OscInputDeviceInstance::stop() { recording = false; } // called on the message thread
 void OscInputDeviceInstance::recordWasCancelled() { recording = false; }
-double OscInputDeviceInstance::getPunchInTime() { return startTime; }
+double OscInputDeviceInstance::getPunchInTime() { return recordingStartTime; }
 te::Clip* OscInputDeviceInstance::applyRetrospectiveRecord (te::SelectionManager*) { return nullptr; }
 te::Clip::Array OscInputDeviceInstance::stopRecording() { recording = false; return {}; }
 te::AudioNode* OscInputDeviceInstance::createLiveInputNode() { return new te::MixerAudioNode(false, false); }
@@ -71,7 +73,7 @@ te::Clip::Array OscInputDeviceInstance::applyLastRecordingToEdit (
     bool discardRecordings,
     te::SelectionManager*)
 {
-    std::cerr << "OscInputDeviceInstance::applyLastRecordingToEdit is currently a no-op!"<< std::endl;
+    //std::cerr << "OscInputDeviceInstance::applyLastRecordingToEdit is currently a no-op!"<< std::endl;
     return {};
 }
 
@@ -81,6 +83,6 @@ void OscInputDeviceInstance::handleOscMessages(std::vector<TimestampedTest> ttMs
     for (auto tt : ttMsgs)
     {
         tt.editTime = context.playhead.streamTimeToSourceTime(tt.streamTime);
-        toMessageThread.writeMessage(tt);
+        if (recording && tt.editTime >= recordingStartTime) toMessageThread.writeMessage(tt);
     }
 }
