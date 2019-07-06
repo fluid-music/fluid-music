@@ -38,12 +38,23 @@ public:
         // the `inputDeviceInstance`s are. I believe that a call to `getAllInputDevices`
         // before the `EditPlaybackContext` is allocated will just return an empty array.
         newEdit.getTransport().ensureContextAllocated();
+        auto cybrHostTrack = cybrEdit.getOrCreateCybrHostAudioTrack();
         for (auto i : newEdit.getAllInputDevices()) {
-            if (auto oscInstance = static_cast<OscInputDeviceInstance*>(i)) {
-                std::cout << "Found OSC input: " << oscInstance->owner.getName();
-                oscInstance->recordEnabled = true;
+            if (auto oscInstance = dynamic_cast<OscInputDeviceInstance*>(i)) {
+                std::cout << "Found OSC input: " << oscInstance->owner.getName() << std::endl;
+                oscInstance->recordEnabled = true; // this is a CachedValue
+                oscInstance->setTargetTrack(cybrHostTrack, 0);
+                // We just set the targetTrack, However, note that a single track can have
+                // multiple inputs (the second argument, trackIndex, specified which slot
+                // to set this to. We should be careful, because another input device
+                // instance could possibly point to the same slot. I have not looked in
+                // to what the implications of this are.
+                //
+                // If we wanted to have multiple OSC inputs, we would probably want to
+                // increment the targetIndex.
             } else {
-                std::cout << "Disarm: " << i->owner.getName() << std::endl;
+                // if there are any other inputs that are targeting this track, clear them.
+                if (i->getTargetTrack() == cybrHostTrack) i->clearFromTrack();
                 i->recordEnabled = false;
             }
         }

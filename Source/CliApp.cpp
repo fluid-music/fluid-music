@@ -215,6 +215,7 @@ void CLIApp::onRunning()
             };
 
             if (cybrEdit) {
+                cybrEdit->getOrCreateCybrHostAudioTrack();
                 cybrEdit->saveOnClose = true;
                 appJobs.record(*cybrEdit);
             } else {

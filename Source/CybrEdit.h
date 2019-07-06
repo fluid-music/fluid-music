@@ -35,9 +35,6 @@ public:
     CybrEdit(te::Edit* edit); // take ownership of the edit, and delete it when ready
     virtual ~CybrEdit();
 
-    // Some CybrEdit methods only use the Edit, but not the CybrEdit.
-    // Eventually We could consider moving these into helpers.
-
     /** Print a list of all the clips in the eidt */
     void listClips();
     /** Print a list of all the tracks in the edit*/
@@ -53,11 +50,16 @@ public:
    
     /** WIP - testing custom plugin */
     void junk();
+    
+    /** The CybrEdit uses a te::AudioTrack hosted in the Edit for for integrating with
+     tracktion engine. Use this method to get it, creating it if it does not exist. */
+    te::AudioTrack* getOrCreateCybrHostAudioTrack();
 
     void valueTreePropertyChanged(ValueTree &treeWhosePropertyHasChanged, const Identifier &property) override;
     void valueTreeChildAdded(juce::ValueTree &parentTree, juce::ValueTree &childWhichHasBeenAdded) override;
     
-    /** Check if the CybrEdit needs to be updated. This is where we retrieve incoming OSC messages*/
+    /** Check if the CybrEdit needs to be updated. This is where we retrieve incoming
+     OSC messages from the OscInputDeviceInstance. */
     void timerCallback() override;
 
     // te::EditItem overrides

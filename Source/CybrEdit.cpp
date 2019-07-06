@@ -170,4 +170,26 @@ void CybrEdit::saveActiveEdit(File outputFile) {
     }
 }
 
+te::AudioTrack* CybrEdit::getOrCreateCybrHostAudioTrack() {
+    te::AudioTrack* found = nullptr;
+    edit->getTrackList().visitAllTopLevel([&found] (te::Track& t) {
+        if (auto audioTrack = dynamic_cast<te::AudioTrack*>(&t)) {
+            if (audioTrack->getName() == String{"CYBR_HOST"}) {
+                found = audioTrack;
+                return false;
+            }
+        }
+        return true;
+    });
+    if (!found) {
+        std::cout << "No CYBR_HOST audio track found" << std::endl;
+        // We just want to add a track, and don't really care where it is.
+        // I'm using insertPoint creation from Edit::ensureNumberOfAudioTracks
+        te::TrackInsertPoint insertPoint(nullptr, getTopLevelTracks (*edit).getLast());
+        auto track = edit->insertNewAudioTrack(insertPoint, nullptr);
+        track->setName({ "CYBR_HOST" });
+    }
+    return found;
+}
+
 
