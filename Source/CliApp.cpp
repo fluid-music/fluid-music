@@ -200,7 +200,7 @@ void CLIApp::onRunning()
     cApp.addCommand({
         "-r",
         "-r",
-        "Record OSC. Probably a bad idea to use with -p. WORK-IN-PROGRESS",
+        "Record OSC while playing the Edit. WORK-IN-PROGRESS",
         "Undocumented! TODO: doc",
         [this](auto&) {
              // Creating an OscInputDevice indirectly creates an OscInputDeviceInstance
@@ -216,7 +216,6 @@ void CLIApp::onRunning()
 
             if (cybrEdit) {
                 cybrEdit->getOrCreateCybrHostAudioTrack();
-                cybrEdit->saveOnClose = true;
                 appJobs.record(*cybrEdit);
             } else {
                 std::cerr << "Failed to record osc, because there is no active CybrEdit" << std::endl << std::endl;

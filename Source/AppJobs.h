@@ -35,6 +35,7 @@ public:
         te::Edit& newEdit = newCybrEdit->getEdit();
         
         newEdit.getTransport().triggerClearDevicesOnStop(); // Without this, we go into an infinite loop
+        newCybrEdit->saveOnClose = true;
 
         // It is possible to record without any tracks armed, but that means that
         // the `OscInputDeviceInstance::prepareToRecord` and `startRecording` handlers
@@ -117,7 +118,7 @@ private:
     static CybrEdit* copyCybrEditForPlayback(CybrEdit& cybrEdit) {
         te::Edit& edit = cybrEdit.getEdit();
         te::Edit::Options options{ edit.engine };
-        options.editState = edit.state;//.createCopy();
+        options.editState = edit.state.createCopy();
         options.role = te::Edit::EditRole::forEditing;
         options.editProjectItemID = te::ProjectItemID::createNewID(0);
         options.numUndoLevelsToStore = 0;
