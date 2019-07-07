@@ -33,6 +33,8 @@ public:
     void record(CybrEdit& cybrEdit) {
         CybrEdit* newCybrEdit = copyCybrEditForPlayback(cybrEdit);
         te::Edit& newEdit = newCybrEdit->getEdit();
+        
+        newEdit.getTransport().triggerClearDevicesOnStop(); // Without this, we go into an infinite loop
 
         // It is possible to record without any tracks armed, but that means that
         // the `OscInputDeviceInstance::prepareToRecord` and `startRecording` handlers
@@ -44,11 +46,13 @@ public:
         // before the `EditPlaybackContext` is allocated will just return an empty array.
         newEdit.getTransport().ensureContextAllocated();
         auto cybrHostTrack = cybrEdit.getOrCreateCybrHostAudioTrack();
-        for (auto i : newEdit.getAllInputDevices()) {
-            if (auto oscInstance = dynamic_cast<OscInputDeviceInstance*>(i)) {
+        for (auto i : newEdit.getAllInputDevices())
+        {
+            if (auto oscInstance = dynamic_cast<OscInputDeviceInstance*>(i))
+            {
                 std::cout << "Found OSC input: " << oscInstance->owner.getName() << std::endl;
-                oscInstance->recordEnabled = true; // this is a CachedValue
-                oscInstance->setTargetTrack(cybrHostTrack, 0);
+                i->setTargetTrack(cybrHostTrack, 0);
+                i->setRecordingEnabled(true); // Arm the track
                 // We just set the targetTrack, However, note that a single track can have
                 // multiple inputs (the second argument, trackIndex, specified which slot
                 // to set this to. We should be careful, because another input device
@@ -59,10 +63,11 @@ public:
                 // increment the targetIndex.
             } else {
                 // if there are any other inputs that are targeting this track, clear them.
+                i->setRecordingEnabled(false);
                 if (i->getTargetTrack() == cybrHostTrack) i->clearFromTrack();
-                i->recordEnabled = false;
             }
         }
+
 
         // It looks like it is an error call `.record()` while playing an edit.
         // The way punch-in/out works in Waveform is: You have to start recording
@@ -70,15 +75,11 @@ public:
         // tracks, including the one that was initially armed. This probably
         // corresponds to the punch methods on the input/output device instances.
         //
-        // The second argument to record is `allowRecordingIfNoInputsArmed`. I've
-        // experience a bug:
-        // - when we set this to true, and there is no VST in the edit, our app
-        // goes into an infinite loop of TransportControl::valueTreePropChanged
-        // callbacks.
+        // The second argument to record is `allowRecordingIfNoInputsArmed`.
         newCybrEdit->getEdit().getTransport().record(false, false);
 
         add(newCybrEdit);
-        Timer::callAfterDelay((int)ceil(newEdit.getLength() * 1000.), [this, newCybrEdit]() {
+        Timer::callAfterDelay((int)ceil(newEdit.getLength() * 1000. + 1000), [this, newCybrEdit]() {
             newCybrEdit->getEdit().getTransport().stop(true, false);
             remove(newCybrEdit);
         });
@@ -116,7 +117,7 @@ private:
     static CybrEdit* copyCybrEditForPlayback(CybrEdit& cybrEdit) {
         te::Edit& edit = cybrEdit.getEdit();
         te::Edit::Options options{ edit.engine };
-        options.editState = edit.state;
+        options.editState = edit.state;//.createCopy();
         options.role = te::Edit::EditRole::forEditing;
         options.editProjectItemID = te::ProjectItemID::createNewID(0);
         options.numUndoLevelsToStore = 0;

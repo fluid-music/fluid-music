@@ -49,10 +49,10 @@ public:
     te::Edit& getEdit() { return *edit; }
     /** Ensure that all the most recent changes are applied to the state */
     void flushPendingChanges();
-   
+
     /** WIP - testing custom plugin */
     void junk();
-    
+
     /** The CybrEdit uses a te::AudioTrack hosted in the Edit for for integrating with
      tracktion engine. Use this method to get it, creating it if it does not exist. */
     te::AudioTrack* getOrCreateCybrHostAudioTrack();
