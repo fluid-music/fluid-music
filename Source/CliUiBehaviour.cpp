@@ -8,7 +8,6 @@
   ==============================================================================
 */
 
-#include <iostream>
 #include "CliUiBehaviour.h"
 
 void CliUiBehaviour::runTaskWithProgressBar(te::ThreadPoolJobWithProgress& job) {

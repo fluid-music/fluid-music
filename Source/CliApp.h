@@ -11,10 +11,16 @@
 #pragma once
 #include <iostream>
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "cybr_helpers.h"
 #include "CliUiBehaviour.h"
-#include "EditJobs.h"
+#include "AppJobs.h"
+#include "OscSource.h"
+#include "CybrEdit.h"
+#include "OscInputDevice.h"
+
 
 class CLIApp : public JUCEApplicationBase, ChangeListener {
+
     /** Returns the global instance of the application object being run. */
     //static CLIApp* JUCE_CALLTYPE getInstance() noexcept;
 
@@ -76,40 +82,38 @@ class CLIApp : public JUCEApplicationBase, ChangeListener {
     const String getApplicationName() override;
     const String getApplicationVersion() override;
 
-    void scanVst2();
-    void scanVst3();
-    void listPlugins();
-    void listProjects();
-    void listClips();
-    void listTracks();
-    void play();
-
-    /** Create and activate an empty edit
+    /** Members of this class that are ChangeBroadcasters should this callback
+     when their state changes in a significant way.
     */
-    void activateEmptyEdit(File inputFile);
-    void loadEditFile(File inputFile);
-    void saveActiveEdit(File outputFile);
+    void changeListenerCallback(ChangeBroadcaster* source) override { quitIfReady(); }
 
-    /** For each audio clip with a source that references a project ID, update
-        that source so it uses a filepath instead.
+    /** Quit if there is no more work to be done
     */
-    void setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose);
+    void quitIfReady() { if (appJobs.isFinished()) quit(); }
 
-    /** Try to lookup and add the project manager settings from Tracktion Waveform.
-    */
-    void autodetectPmSettings();
-
-    /** Decide when to quit
-    */
-    void changeListenerCallback(ChangeBroadcaster* source) override;
-
-    /** If all the jobs are done, quit
-    */
-    void quitIfReady() { if (editJobs.isEmpty()) quit(); }
 private:
+    /** Some CLI options just set a variable that may be used by a subsequent
+     argument. Note that our CLI only allows one value per argument, so commands
+     that require multiple values for configuration must pre-set their values.
+     for this reason, commands that use values specified in Options should copy
+     the value, so that it may be updated for future commands.
+     */
+    struct Options {
+        int targetPort { 9999 };
+        String targetHostname { "127.0.0.1" };
+
+        /** When helpModeFlag is enabled, the app should print the detailed command
+         string instead of running the command. CLI users may set the helpModeFlag
+         by specifying the -h CLI argument. */
+        bool helpModeFlag = false;
+    } options;
+
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
-    std::unique_ptr<te::Edit> edit;
-    EditJobs editJobs;
+    AppJobs appJobs;
+
+    // cybrEdit is a wrapper around edit.
+    std::unique_ptr<CybrEdit> cybrEdit;
+    std::unique_ptr<OscSource> oscSource;
 
     // onRunning should be called once, and only after the MessageManager is
     // also running. There is where I am putting the body of the application.

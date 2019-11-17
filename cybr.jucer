@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="gn3eC9" name="cybr" projectType="consoleapp" jucerVersion="5.4.3">
+<JUCERPROJECT id="gn3eC9" name="cybr" projectType="consoleapp" jucerVersion="5.4.5">
   <MAINGROUP id="JTqeoX" name="cybr">
     <GROUP id="{E03437D9-F7F3-5413-6A30-51BDC7A4D4BC}" name="Source">
-      <FILE id="fOUkdh" name="EditJobs.h" compile="0" resource="0" file="Source/EditJobs.h"/>
-      <FILE id="BbVjEA" name="CLIApp.cpp" compile="1" resource="0" file="Source/CLIApp.cpp"/>
-      <FILE id="T4tZrh" name="CLIApp.h" compile="0" resource="0" file="Source/CLIApp.h"/>
-      <FILE id="hQ3viv" name="CliUiBehaviour.cpp" compile="1" resource="0"
-            file="Source/CliUiBehaviour.cpp"/>
+      <FILE id="hc8jN8" name="TimestampedTest.h" compile="0" resource="0"
+            file="Source/TimestampedTest.h"/>
+      <FILE id="fOUkdh" name="AppJobs.h" compile="0" resource="0" file="Source/AppJobs.h"/>
+      <FILE id="T4tZrh" name="CliApp.h" compile="0" resource="0" file="Source/CliApp.h"/>
+      <FILE id="BbVjEA" name="CliApp.cpp" compile="1" resource="0" file="Source/CliApp.cpp"/>
       <FILE id="pRi14J" name="CliUiBehaviour.h" compile="0" resource="0"
             file="Source/CliUiBehaviour.h"/>
+      <FILE id="hQ3viv" name="CliUiBehaviour.cpp" compile="1" resource="0"
+            file="Source/CliUiBehaviour.cpp"/>
+      <FILE id="fqY9IW" name="cybr_helpers.h" compile="0" resource="0" file="Source/cybr_helpers.h"/>
+      <FILE id="Pvj39H" name="cybr_helpers.cpp" compile="1" resource="0"
+            file="Source/cybr_helpers.cpp"/>
+      <FILE id="xIuzOx" name="CybrEdit.h" compile="0" resource="0" file="Source/CybrEdit.h"/>
+      <FILE id="pjj3ve" name="CybrEdit.cpp" compile="1" resource="0" file="Source/CybrEdit.cpp"/>
+      <FILE id="WTPBIq" name="CybrTrackList.h" compile="0" resource="0" file="Source/CybrTrackList.h"/>
+      <FILE id="jUxSKN" name="OscInputDevice.h" compile="0" resource="0"
+            file="Source/OscInputDevice.h"/>
+      <FILE id="ARp7iI" name="OscInputDevice.cpp" compile="1" resource="0"
+            file="Source/OscInputDevice.cpp"/>
+      <FILE id="IxfNHJ" name="OscInputDeviceInstance.h" compile="0" resource="0"
+            file="Source/OscInputDeviceInstance.h"/>
+      <FILE id="QTRNah" name="OscInputDeviceInstance.cpp" compile="1" resource="0"
+            file="Source/OscInputDeviceInstance.cpp"/>
+      <FILE id="aMJqHp" name="OscSource.h" compile="0" resource="0" file="Source/OscSource.h"/>
+      <FILE id="EOu6Gd" name="OpenFrameworksPlugin.h" compile="0" resource="0"
+            file="Source/OpenFrameworksPlugin.h"/>
+      <FILE id="xeKpc6" name="OpenFrameworksPlugin.cpp" compile="1" resource="0"
+            file="Source/OpenFrameworksPlugin.cpp"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
