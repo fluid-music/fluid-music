@@ -74,9 +74,7 @@ public:
         int start1, size1, start2, size2;
         abstractFifo.prepareToRead(abstractFifo.getNumReady(), start1, size1, start2, size2);
         received.reserve(size1+size2);
-        
-        // previous we did: auto* t = cybr.cybrTrackList->getOrCreateLastTrack();
-        
+
         for (int i = start1; i < start1 + size1; i++) {
             auto& obj = storage[i];
             received.push_back(obj);

@@ -323,6 +323,23 @@ void CLIApp::onRunning()
                                                     period > 0 ? period : 100);
             appJobs.setRunForever(true);
         } });
+    
+    cApp.addCommand({
+        "--jack-test",
+        "--jack-test",
+        "check if jack audio is supported",
+        "check if jack audio I/O devices are supported.",
+        [](const ArgumentList&) {
+            std::cout << "compiled okay!!!!!!!" << std::endl;
+            static AudioIODeviceType* d = juce::AudioIODeviceType::createAudioIODeviceType_JACK();
+            if (d)
+                for (auto s : d->getDeviceNames()) {
+                    std::cout << s << std::endl;
+                }
+            else {
+                std::cout << "jack not supported" << std::endl;
+            }
+        } });
 
     // Because of the while loop below, we must not use the "default command"
     // functionality built into the juce::ConsoleApplication class. If there is
