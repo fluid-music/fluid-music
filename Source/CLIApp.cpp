@@ -390,53 +390,6 @@ void CLIApp::setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool use
     if (verbose) std::cout << std::endl;
 }
 
-void CLIApp::listIoDevices() {
-    listMidiDevices();
-    listWaveDevices();
-}
-
-void CLIApp::listWaveDevices() {
-    std::cout << "Wave Input Devices:" << std::endl;
-    auto& dm = engine.getDeviceManager();
-    for (int i = 0; i < dm.getNumWaveInDevices(); i++) {
-        auto d = dm.getWaveInDevice(i);
-        std::cout << i << ". "
-        << d->getName() << " - " << d->getAlias()
-        << (d->isEnabled() ? "" : " (disabled)") << std::endl;
-    }
-    std::cout << std::endl;
-
-    std::cout << "Wav Output Devices:" << std::endl;
-    for (int i = 0; i < dm.getNumWaveOutDevices(); i++) {
-        auto d = dm.getWaveOutDevice(i);
-        std::cout << i << ". "
-        << d->getName() << " - " << d->getAlias()
-        << (d->isEnabled() ? "" : " (disabled)") << std::endl;
-    }
-    std::cout << std::endl;
-}
-
-void CLIApp::listMidiDevices() {
-    std::cout << "MIDI Input Devices:" << std::endl;
-    auto& dm = engine.getDeviceManager();
-    for (int i = 0; i < dm.getNumMidiInDevices(); i++) {
-        auto d = dm.getMidiInDevice(i);
-        std::cout << i << ". "
-            << d->getName() << " - " << d->getAlias()
-            << (d->isEnabled() ? "" : " (disabled)") << std::endl;
-    }
-    std::cout << std::endl;
-
-    std::cout << "MIDI Output Devices:" << std::endl;
-    for (int i = 0; i < dm.getNumMidiOutDevices(); i++) {
-        auto d = dm.getMidiOutDevice(i);
-        std::cout << i << ". "
-            << d->getName() << " - " << d->getAlias()
-            << (d->isEnabled() ? "" : " (disabled)") << std::endl;
-    }
-    std::cout << std::endl;
-}
-
 void CLIApp::onRunning()
 {
     ArgumentList argumentList = ArgumentList(String{ "cybr" }, getCommandLineParameterArray());
@@ -560,24 +513,6 @@ void CLIApp::onRunning()
         "no-op if there is no active edit",
         [this](auto&) {
             play();
-        } });
-
-    cApp.addCommand({
-        "--list-io",
-        "--list-io",
-        "Print the engine's MIDI and Wave IO devices",
-        "Output a list of devices from TracktionEngine's device manager. The device\n\
-        manager API includes many ways to refer to devices.\n\
-        - dm.getInputDevice(int)    // Indexes wave then midi devices\n\
-        - dm.getOutputDeviceAt(int) // Note inconsistent name\n\
-        - dm.get[Wave|Midi][In|Out]Device(int)\n\
-        - dm.find[Input|Output]DeviceWithName(String)\n\
-        - dm.get[Midi|Wave][Input|Output]Device(int) // Index all devices\n\
-        All the methods really do the same thing, which is iterate over the four\n\
-        raw arrays for each of wave and MIDI input and output devices. cybr commands\n\
-        that accept a device index argument by its index should use this convention",
-        [this](auto&) {
-            listIoDevices();
         } });
 
     // Because of the while loop below, we must not use the "default command"
