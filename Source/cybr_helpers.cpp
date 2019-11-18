@@ -264,9 +264,37 @@ void scanVst2(te::Engine& engine) {
 
 void listPlugins(te::Engine& engine)
 {
+    std::cout << "Internal Plugins:" << std::endl
+        << te::VolumeAndPanPlugin::xmlTypeName << std::endl
+        << te::LevelMeterPlugin::xmlTypeName << std::endl
+        << te::VCAPlugin::xmlTypeName << std::endl
+        << te::TextPlugin::xmlTypeName << std::endl
+        << te::RackInstance::xmlTypeName << std::endl
+        << te::InsertPlugin::xmlTypeName << std::endl
+        << te::FreezePointPlugin::xmlTypeName << std::endl
+        << te::AuxSendPlugin::xmlTypeName << std::endl
+        << te::AuxReturnPlugin::xmlTypeName << std::endl
+        << std::endl;
+
+    std::cout << "Effects:" << std::endl
+        << te::ChorusPlugin::xmlTypeName << std::endl
+        << te::CompressorPlugin::xmlTypeName << std::endl
+        << te::DelayPlugin::xmlTypeName << std::endl
+        << te::EqualiserPlugin::xmlTypeName << std::endl
+        << te::FourOscPlugin::xmlTypeName << std::endl
+        << te::LowPassPlugin::xmlTypeName << std::endl
+        << te::MidiModifierPlugin::xmlTypeName << std::endl
+        << te::MidiPatchBayPlugin::xmlTypeName << std::endl
+        << te::PatchBayPlugin::xmlTypeName << std::endl
+        << te::PhaserPlugin::xmlTypeName << std::endl
+        << te::PitchShiftPlugin::xmlTypeName << std::endl
+        << te::ReverbPlugin::xmlTypeName << std::endl
+        << te::SamplerPlugin::xmlTypeName << std::endl
+        << std::endl;
+
     std::cout << "Known Plugins:" << std::endl;
-    for (auto plugin : engine.getPluginManager().knownPluginList) {
-        std::cout << plugin->pluginFormatName << " - " << plugin->name << " - " << plugin->fileOrIdentifier << std::endl;
+    for (auto type : engine.getPluginManager().knownPluginList.getTypes()) {
+        std::cout << type.descriptiveName << std::endl;
     }
     std::cout << std::endl;
 }

@@ -185,6 +185,15 @@ void CLIApp::onRunning()
         } });
 
     cApp.addCommand({
+        "--print-config-path",
+        "--print-config-path",
+        "Print full settings file name",
+        "Find the config settings file",
+        [](const ArgumentList&) {
+            std::cout << te::getApplicationSettings()->getFile().getFullPathName() << std::endl;
+        } });
+
+    cApp.addCommand({
         "-p",
         "-p",
         "Play the active edit",
@@ -330,7 +339,6 @@ void CLIApp::onRunning()
         "check if jack audio is supported",
         "check if jack audio I/O devices are supported.",
         [](const ArgumentList&) {
-            std::cout << "compiled okay!!!!!!!" << std::endl;
             static AudioIODeviceType* d = juce::AudioIODeviceType::createAudioIODeviceType_JACK();
             if (d)
                 for (auto s : d->getDeviceNames()) {
