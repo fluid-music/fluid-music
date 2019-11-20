@@ -180,7 +180,7 @@ void CybrEdit::saveActiveEdit(File outputFile) {
     }
     else {
         std::cout
-        << "Could not output file due to unknown extension: "
+        << "Could not save file due to unknown extension: "
         << outputFile.getFullPathName()
         << std::endl;
     }

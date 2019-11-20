@@ -17,6 +17,7 @@
 #include "OscSource.h"
 #include "CybrEdit.h"
 #include "OscInputDevice.h"
+#include "FluidOscServer.h"
 
 
 class CLIApp : public JUCEApplicationBase, ChangeListener {
@@ -101,6 +102,7 @@ private:
     struct Options {
         int targetPort { 9999 };
         String targetHostname { "127.0.0.1" };
+        int listenPort { 9999 };
 
         /** When helpModeFlag is enabled, the app should print the detailed command
          string instead of running the command. CLI users may set the helpModeFlag
@@ -110,6 +112,7 @@ private:
 
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
     AppJobs appJobs;
+    FluidOscServer fluidOscServer;
 
     // cybrEdit is a wrapper around edit.
     std::unique_ptr<CybrEdit> cybrEdit;

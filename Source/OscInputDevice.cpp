@@ -18,7 +18,7 @@ const String OscInputDevice::name{"OSC-Input-Device"};
  currently only allows one OSC device to exist at a time. If there is already
  an OSC Input Device in the device manager it will be removed before a new one
  is added. */
-Result createOscInputDevice(te::Engine& engine, const String& name)
+Result createOscInputDevice(te::Engine& engine, const String& name, int listenPort)
 {
     // CRASH_TRACER
     TRACKTION_ASSERT_MESSAGE_THREAD
@@ -43,7 +43,7 @@ Result createOscInputDevice(te::Engine& engine, const String& name)
     {
         te::DeviceManager::ContextDeviceListRebuilder deviceRebuilder (engine.getDeviceManager());
         
-        OscInputDevice* oscDevice = new OscInputDevice (engine, name);
+        OscInputDevice* oscDevice = new OscInputDevice(engine, name, listenPort);
         engine.getDeviceManager().midiInputs.add (oscDevice);
         
         oscDevice->recordingEnabled = true; // from MidiInputDevice
@@ -60,7 +60,7 @@ Result createOscInputDevice(te::Engine& engine, const String& name)
 
 ////////////////////////////////////////////////////////////////////////
 
-OscInputDevice::OscInputDevice(te::Engine& e, const String& name) :
+OscInputDevice::OscInputDevice(te::Engine& e, const String& name, int listenPort) :
     // The VirtualMidiInputDevice constructor is specified with a type enum.
     // Below I am using the VirtualMidiInputDevice, which is technically
     // correct, but could also lead to some subtle bugs down the line.
@@ -68,7 +68,7 @@ OscInputDevice::OscInputDevice(te::Engine& e, const String& name) :
 {
     std::cout << "Creating OscInputDevice" << std::endl;
     oscReceiver.addListener(this);
-    if (oscReceiver.connect(9999)) {
+    if (oscReceiver.connect(listenPort)) {
         std::cout << "Listening for OSC" << std::endl;
     } else {
         std::cout << "Failed to Listen for OSC" << std::endl;
@@ -109,13 +109,14 @@ void OscInputDevice::removeInstance (OscInputDeviceInstance* i)
     instances.removeAllInstancesOf(i);
 }
 
-void OscInputDevice::oscMessageReceived(const OSCMessage& message) {
-    // Create the object
+void OscInputDevice::oscMessageReceived(const OSCMessage& message)
+{
     double timeMs = Time::getMillisecondCounterHiRes();
     incomingMessages.writeMessage(message, timeMs);
 }
 
-void OscInputDevice::oscBundleReceived(const OSCBundle& bundle) {
+void OscInputDevice::oscBundleReceived(const OSCBundle& bundle)
+{
     std::cout << "OSC bundle received" << std::endl;
 }
 

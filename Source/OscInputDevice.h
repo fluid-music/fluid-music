@@ -28,7 +28,7 @@ class OscInputDevice :
     private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>
 {
 public:
-    OscInputDevice(te::Engine& e, const String& name);
+    OscInputDevice(te::Engine& e, const String& name, int listenPort);
     
     void masterTimeUpdate (double streamTime) override;
     te::InputDeviceInstance* createInstance (te::EditPlaybackContext& c) override;
@@ -59,5 +59,5 @@ private:
     LockFreeOscMessageQueue incomingMessages;
 };
 
-Result createOscInputDevice(te::Engine& engine, const String& name);
+Result createOscInputDevice(te::Engine& engine, const String& name, int listenPort);
 

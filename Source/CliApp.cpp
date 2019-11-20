@@ -60,10 +60,24 @@ void CLIApp::onRunning()
 {
     ArgumentList argumentList = ArgumentList(String{ "cybr" }, getCommandLineParameterArray());
     ConsoleApplication cApp;
+    cApp.addCommand({
+        "-f|--fluid-server",
+        "-f|--fluid-server",
+        "Launch a server and listen for fluid engine OSC messages",
+        "This runs a server that listens for OSC messages",
+        [this](auto&) {
+            if (fluidOscServer.connect(options.listenPort)) {
+                appJobs.setRunForever(true);
+                std::cout << "FluidOscServer connected!" << std::endl;
+            } else {
+                std::cout << "FluidOscServer falied to connect" << std::endl;
+            }
+
+        } });
 
     cApp.addCommand({
-        "-s|--scan-plugins",
-        "-s|--scan-plugins", // this is printed by -h
+        "--scan-plugins",
+        "--scan-plugins", // this is printed by -h
         "Scan for plugins, adding them to the settings file", // printed by -h
         "Searches the default plugin paths, and saves results in the persistent\n\
         application properties file. Once plugins are saved in the file, you\n\
@@ -90,8 +104,10 @@ void CLIApp::onRunning()
     cApp.addCommand({
         "--list-plugins",
         "--list-plugins",
-        "List all the plugins that are registered in the settings file",
-        "Lists all detected plugins. Run this after --scan-plugins.",
+        "List available plugins",
+        "Lists available plugins. This includes built-in plugins, and those\n\
+        saved in the settings file. Run this after --scan-plugins to see\n\
+        which plugins were found.",
         [this](auto&) { listPlugins(engine); }
         });
 
@@ -152,7 +168,7 @@ void CLIApp::onRunning()
 
     cApp.addCommand({
         "-e|--empty",
-        "-e|--empty [editfile]",
+        "-e|--empty[=editfile]",
         "Activate an empty edit with optional .tracktionedit file",
         "Edits need a tracktionedit file or they cannot save. This file does\n\
         need to exist, but it does need to be specified. I'm not sure that the\n\
@@ -168,8 +184,9 @@ void CLIApp::onRunning()
     cApp.addCommand({
         "-j",
         "-j",
-        "Experimental command. WORK-IN-PROGRESS",
-        "Just used for testing (for now)",
+        "Experimental custom plugin. WORK-IN-PROGRESS",
+        "Just used for testing (for now) - This applies a custom plugin, which\n\
+        is the recomended way to insert audio processing into an edit.",
         [this](auto&) {
             if (cybrEdit) cybrEdit->junk();
         } });
@@ -216,7 +233,7 @@ void CLIApp::onRunning()
              // if one is needed. Where does the input device instance get instantiated?
              // It happens from the `TransportControl::ensureContextAllocated` method,
              // which is called whenever we play the edit.
-            auto result = createOscInputDevice(engine, OscInputDevice::name);
+            auto result = createOscInputDevice(engine, OscInputDevice::name, options.listenPort);
             if (result.wasOk()){
                 std::cout << "Created OscInputDevice: SUCCESS!" << std::endl;
             } else {
