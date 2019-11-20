@@ -66,13 +66,7 @@ void CLIApp::onRunning()
         "Launch a server and listen for fluid engine OSC messages",
         "This runs a server that listens for OSC messages",
         [this](auto&) {
-            if (appJobs.fluidOscServer.connect(options.listenPort)) {
-                appJobs.setRunForever(true);
-                std::cout << "FluidOscServer connected!" << std::endl;
-            } else {
-                std::cout << "FluidOscServer falied to connect" << std::endl;
-            }
-
+            if (cybrEdit) appJobs.runFluidOscServer(options.listenPort);
         } });
 
     cApp.addCommand({
