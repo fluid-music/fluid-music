@@ -10,6 +10,7 @@
 
 #pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "CybrEdit.h"
 
 namespace te = tracktion_engine;
 
@@ -31,3 +32,9 @@ void scanVst2(te::Engine& engine);
 void scanVst3(te::Engine& engine);
 void listPlugins(te::Engine& engine);
 void listProjects(te::Engine& engine);
+
+class CybrEdit;
+/** Create a copy of a the cybrEdit, suitable for playback and editing.
+ CAUTION: The returned CybrEdit should be stored in a unique_ptr to ensure
+ it will be deleted correctly. */
+CybrEdit* copyCybrEditForPlayback(CybrEdit& cybrEdit);

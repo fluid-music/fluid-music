@@ -112,7 +112,6 @@ private:
 
     tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
     AppJobs appJobs;
-    FluidOscServer fluidOscServer;
 
     // cybrEdit is a wrapper around edit.
     std::unique_ptr<CybrEdit> cybrEdit;

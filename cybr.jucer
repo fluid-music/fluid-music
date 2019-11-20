@@ -9,6 +9,7 @@
             file="Source/FluidOscServer.h"/>
       <FILE id="hc8jN8" name="TimestampedTest.h" compile="0" resource="0"
             file="Source/TimestampedTest.h"/>
+      <FILE id="E1Trz1" name="AppJobs.cpp" compile="1" resource="0" file="Source/AppJobs.cpp"/>
       <FILE id="fOUkdh" name="AppJobs.h" compile="0" resource="0" file="Source/AppJobs.h"/>
       <FILE id="T4tZrh" name="CliApp.h" compile="0" resource="0" file="Source/CliApp.h"/>
       <FILE id="BbVjEA" name="CliApp.cpp" compile="1" resource="0" file="Source/CliApp.cpp"/>

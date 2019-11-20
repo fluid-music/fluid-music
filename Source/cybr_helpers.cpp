@@ -55,6 +55,24 @@ te::Edit* createEdit(File inputFile, te::Engine& engine) {
     return newEdit;
 }
 
+CybrEdit* copyCybrEditForPlayback(CybrEdit& cybrEdit) {
+    te::Edit& edit = cybrEdit.getEdit();
+    te::Edit::Options options{ edit.engine };
+    options.editState = edit.state.createCopy();
+    options.role = te::Edit::EditRole::forEditing;
+    options.editProjectItemID = te::ProjectItemID::createNewID(0);
+    options.numUndoLevelsToStore = 0;
+    options.editFileRetriever = [] {
+        return File::getCurrentWorkingDirectory().getChildFile("temp.tracktionedit");
+    };
+    // CybrEdit takes responsibility for deleting the Edit (via unique_ptr)
+    te::Edit* newEdit = new te::Edit(options);
+    newEdit->initialiseAllPlugins();
+    newEdit->getTransport().position = 0;
+    CybrEdit* newCybrEdit = new CybrEdit(newEdit);
+    return newCybrEdit;
+}
+
 void setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose = true)
 {
     int failures = 0;
