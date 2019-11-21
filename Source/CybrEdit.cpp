@@ -207,3 +207,17 @@ te::AudioTrack* CybrEdit::getOrCreateCybrHostAudioTrack() {
     }
     return found;
 }
+
+te::MidiClip::Ptr CybrEdit::getOrCreateMidiClipWithName(juce::String name){
+    for (auto track : te::getClipTracks(*edit)) {
+        for (auto clip : track->getClips()) {
+            if (auto midiClip = dynamic_cast<te::MidiClip*>(clip)) {
+                if (midiClip->getName() == name) return midiClip;
+            }
+        }
+    }
+    edit->ensureNumberOfAudioTracks(1);
+    te::AudioTrack* track = te::getAudioTracks(*edit).getLast();
+    te::MidiClip::Ptr clip = track->insertMIDIClip(name, {0, 4}, nullptr);
+    return clip;
+}

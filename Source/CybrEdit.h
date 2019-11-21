@@ -57,6 +57,9 @@ public:
      tracktion engine. Use this method to get it, creating it if it does not exist. */
     te::AudioTrack* getOrCreateCybrHostAudioTrack();
 
+    /** */
+    te::MidiClip::Ptr getOrCreateMidiClipWithName(String name);
+
     void valueTreePropertyChanged(ValueTree &treeWhosePropertyHasChanged, const Identifier &property) override;
     void valueTreeChildAdded(juce::ValueTree &parentTree, juce::ValueTree &childWhichHasBeenAdded) override;
     
@@ -68,7 +71,7 @@ public:
     String getName() { return {"Cybr Edit Sidecar"}; }
    
     // CyberEdit Member variables
-    ValueTree state;
+    ValueTree state; // type is CYBR. Immediate child of the main edit state
     std::unique_ptr<CybrTrackList> cybrTrackList;
     bool saveOnClose = false;
 };
