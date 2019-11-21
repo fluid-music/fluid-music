@@ -77,16 +77,6 @@ void AppJobs::record(CybrEdit& cybrEdit) {
     });
 }
 
-bool AppJobs::runFluidOscServer(int listenPort) {
-    if (!fluidOscServer.connect(listenPort)) {
-        std::cout << "FluidOscServer falied to connect" << std::endl;
-        return false;
-    }
-    setRunForever(true);
-    std::cout << "FluidOscServer connected!" << std::endl;
-    return true;
-}
-
 bool AppJobs::add(CybrEdit* cybrEdit) {
     if (playingEdits.contains(cybrEdit)) return false;
 

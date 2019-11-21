@@ -21,5 +21,5 @@ class FluidOscServer :
 public:
     FluidOscServer();
     virtual void oscMessageReceived (const OSCMessage& message);
-    std::unique_ptr<CybrEdit> cybrEdit;
+    std::unique_ptr<CybrEdit> activeCybrEdit = nullptr;
 };
