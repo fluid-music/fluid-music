@@ -40,7 +40,7 @@ public:
     /** Print a list of all the tracks in the edit*/
     void listTracks();
     /** Save the active edit to a .tracktionedig or .wav file */
-    void saveActiveEdit(File outputFile);
+    void saveActiveEdit(File outputFile, bool useRelativePaths = true);
     /** List all the top level XML tags of the state */
     void listState();
     /** List all the edit's inputs. Does not create EditPlaybackContext. */

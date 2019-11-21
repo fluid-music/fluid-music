@@ -148,7 +148,7 @@ void CybrEdit::junk()
     std::cout << std::endl;
 }
 
-void CybrEdit::saveActiveEdit(File outputFile) {
+void CybrEdit::saveActiveEdit(File outputFile, bool useRelativePaths) {
     auto outputExt = outputFile.getFileExtension().toLowerCase(); // resolve relative if needed
     
     if (outputExt == ".tracktionedit") {
@@ -156,7 +156,7 @@ void CybrEdit::saveActiveEdit(File outputFile) {
         std::cout << "Saving: " << outputFile.getFullPathName() << std::endl;
         // When edit files are saved, prefer relative paths.
         edit->editFileRetriever = [outputFile] { return outputFile; };
-        setClipSourcesToDirectFileReferences(*edit, true, true);
+        setClipSourcesToDirectFileReferences(*edit, useRelativePaths, true);
         // .save and .saveAs may be silent no-ops unless we markAsChanged()
         edit->markAsChanged();
         te::EditFileOperations(*edit).saveAs(outputFile, true);

@@ -33,9 +33,18 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     }
 
     if (msgAddressPattern.matches({"/save"})) {
+        // If the first argument is string filename
         File file = (message.size() && message[0].isString())
-            ? File{message[0].getString()}
+            ? File::getCurrentWorkingDirectory().getChildFile(message[0].getString())
             : activeCybrEdit->getEdit().editFileRetriever();
-        activeCybrEdit->saveActiveEdit(file);
+
+        // By default use relative file paths. If the second arg begins with 'a', use absolute paths
+        bool useRelativePaths = true;
+        if (message.size() >= 2
+            && message[1].isString()
+            && message[1].getString().startsWithIgnoreCase({"a"}))
+            useRelativePaths = false;
+
+        activeCybrEdit->saveActiveEdit(file, useRelativePaths);
     }
 }
