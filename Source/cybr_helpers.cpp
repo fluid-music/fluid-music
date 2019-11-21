@@ -331,3 +331,20 @@ void listProjects(te::Engine& engine) {
     }
     std::cout << std::endl;
 }
+
+void printOscMessage(const OSCMessage& message) {
+    std::cout << message.getAddressPattern().toString();
+    for (auto arg : message) {
+        std::cout << " - ";
+        auto type = arg.getType();
+        if (type == OSCTypes::int32) std::cout << arg.getInt32();
+        else if (type == OSCTypes::string) std::cout << arg.getString();
+        else if (type == OSCTypes::float32) std::cout << arg.getFloat32();
+        else if (type == OSCTypes::blob) std::cout << arg.getBlob().toBase64Encoding();
+        else if (type == OSCTypes::colour) {
+            OSCColour c = arg.getColour();
+            std::cout << "RGBA("<< c.red << "," << c.green << "," << c.blue << "," << c.alpha << ")";
+        }
+    }
+    std::cout << std::endl;
+};

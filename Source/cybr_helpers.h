@@ -32,6 +32,7 @@ void scanVst2(te::Engine& engine);
 void scanVst3(te::Engine& engine);
 void listPlugins(te::Engine& engine);
 void listProjects(te::Engine& engine);
+void printOscMessage(const OSCMessage& message);
 
 class CybrEdit;
 /** Create a copy of a the cybrEdit, suitable for playback and editing.

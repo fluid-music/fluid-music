@@ -14,12 +14,14 @@
 #include "cybr_helpers.h"
 #include "CybrEdit.h"
 
+typedef void (*OscHandlerFunc)(const OSCMessage&);
+
 class FluidOscServer :
     public OSCReceiver,
     private OSCReceiver::Listener<OSCReceiver::MessageLoopCallback>
 {
 public:
     FluidOscServer();
-    virtual void oscMessageReceived (const OSCMessage& message);
+    virtual void oscMessageReceived (const OSCMessage& message) override;
     std::unique_ptr<CybrEdit> activeCybrEdit = nullptr;
 };
