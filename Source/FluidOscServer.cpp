@@ -14,14 +14,27 @@ FluidOscServer::FluidOscServer() {
     addListener (this);
 }
 
+void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
+    for (const auto& element: bundle) {
+        if (element.isMessage()) oscMessageReceived(element.getMessage());
+        if (element.isBundle()) oscBundleReceived(element.getBundle());
+    }
+}
+
 void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     const OSCAddressPattern msgAddressPattern = message.getAddressPattern();
 
     if (msgAddressPattern.matches({"/test"})) {
         printOscMessage(message);
+        return;
     }
 
-    if (!activeCybrEdit) return; // Subsequent patterns require an activeCybrEdit
+    if (!activeCybrEdit) {
+        std::cout << "NOTE:  message failed , because there is no active CybrEdit: ";
+        printOscMessage(message);
+        std::cout << std::endl;
+        return;
+    }
 
     if (msgAddressPattern.matches({"/insert"})) {
         String name = (message.size() && message[0].isString())
@@ -33,7 +46,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     }
 
     if (msgAddressPattern.matches({"/save"})) {
-        // If the first argument is string filename
+        // If the first argument is string it is a filename
         File file = (message.size() && message[0].isString())
             ? File::getCurrentWorkingDirectory().getChildFile(message[0].getString())
             : activeCybrEdit->getEdit().editFileRetriever();

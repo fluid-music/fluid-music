@@ -23,5 +23,6 @@ class FluidOscServer :
 public:
     FluidOscServer();
     virtual void oscMessageReceived (const OSCMessage& message) override;
+    virtual void oscBundleReceived (const OSCBundle& bundle) override;
     std::unique_ptr<CybrEdit> activeCybrEdit = nullptr;
 };
