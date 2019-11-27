@@ -34,6 +34,9 @@ void listPlugins(te::Engine& engine);
 void listProjects(te::Engine& engine);
 void printOscMessage(const OSCMessage& message);
 
+te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name);
+te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name);
+
 class CybrEdit;
 /** Create a copy of a the cybrEdit, suitable for playback and editing.
  CAUTION: The returned CybrEdit should be stored in a unique_ptr to ensure

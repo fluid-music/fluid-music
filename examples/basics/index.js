@@ -11,27 +11,61 @@ const client = dgram.createSocket('udp4');
 // https://www.npmjs.com/package/osc-min
 const elements = [
   {
-    address: '/test',
+    address: '/select/audiotrack',
     args: [
-      { type: 'string', value: "sup, cuz?" },
-      { type: 'float', value: 123.45 },
-      { type: 'integer', value: result.integer },
+      { type: 'string', value: "Charles' Track!!" },
     ]
   },
   {
-    address: '/test',
+    address: '/select/midiclip',
     args: [
-      { type: 'string', value: 'second argument' },
+      { type: 'string', value: 'This is my MIDI clip :)' },
     ]
-  }
+  },
+  {
+    address: '/i/n',
+    args: [
+      {type: 'integer', value: 48 },
+      {type: 'float', value: 0 },
+      {type: 'float', value: 4 },
+    ]
+  },
+  {
+    address: '/i/n',
+    args: [
+      {type: 'integer', value: 50 },
+      {type: 'float', value: 4 },
+      {type: 'float', value: 4 },
+    ]
+  },
+  {
+    address: '/i/n',
+    args: [
+      {type: 'integer', value: 52 },
+      {type: 'float', value: 8 },
+      {type: 'float', value: 4 },
+    ]
+  },
 ]
-const msg = osc.toBuffer({
+const newClipMsg = osc.toBuffer({
   oscType: 'bundle',
   timetag: 10,
   elements
 });
 
-client.send(msg, 9999, (err) => { err && console.log('send error:', err); });
+const saveMsg = osc.toBuffer({
+  address: '/save',
+  args: {type: 'string', value: 'out.tracktionedit'},
+});
+
+client.send(newClipMsg, 9999, (err) => { err && console.log('send error:', err); });
+
+setTimeout(() => {
+  client.send(saveMsg, 9999, (err) => {
+    err && console.log('Error sending save message:' , err);
+    process.exit();
+  });
+}, 200);
 
 console.log('basics:', result);
 

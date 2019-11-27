@@ -19,12 +19,14 @@ void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
         if (element.isMessage()) oscMessageReceived(element.getMessage());
         if (element.isBundle()) oscBundleReceived(element.getBundle());
     }
+    selectedMidiClip = nullptr;
+    selectedAudioTrack = nullptr;
 }
 
 void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     const OSCAddressPattern msgAddressPattern = message.getAddressPattern();
 
-    if (msgAddressPattern.matches({"/test"})) {
+    if (msgAddressPattern.matches({"/test"}) || msgAddressPattern.matches({"/print"})) {
         printOscMessage(message);
         return;
     }
@@ -32,32 +34,79 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (!activeCybrEdit) {
         std::cout << "NOTE:  message failed , because there is no active CybrEdit: ";
         printOscMessage(message);
-        std::cout << std::endl;
         return;
     }
 
-    if (msgAddressPattern.matches({"/insert"})) {
-        String name = (message.size() && message[0].isString())
-            ? message[0].getString()
-            : String{ "Fluid Clip" };
-        te::MidiClip::Ptr clip = activeCybrEdit->getOrCreateMidiClipWithName(name);
-        te::MidiList& notes = clip.get()->getSequence();
-        notes.addNote(36, 1, 1, 127, 0, nullptr);
+    if (msgAddressPattern.matches({"/i/n"})) return insertMidiNote(message);
+    if (msgAddressPattern.matches({"/select/audiotrack"})) return selectAudioTrack(message);
+    if (msgAddressPattern.matches({"/select/midiclip"})) return selectMidiClip(message);
+    if (msgAddressPattern.matches({"/save"})) return saveActiveEdit(message);
+
+}
+
+void FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
+    if (!activeCybrEdit) return;
+
+    // If the first argument is string it is a filename
+    File file = (message.size() && message[0].isString())
+    ? File::getCurrentWorkingDirectory().getChildFile(message[0].getString())
+    : activeCybrEdit->getEdit().editFileRetriever();
+
+    // By default use relative file paths. If the second arg begins with 'a', use absolute paths
+    bool useRelativePaths = true;
+    if (message.size() >= 2
+        && message[1].isString()
+        && message[1].getString().startsWithIgnoreCase({"a"}))
+        useRelativePaths = false;
+
+    activeCybrEdit->saveActiveEdit(file, useRelativePaths);
+}
+
+void FluidOscServer::selectAudioTrack(const juce::OSCMessage &message) {
+    if (!message.size() || !message[0].isString()) return;
+
+    String trackName = message[0].getString();
+    selectedAudioTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), trackName);
+}
+
+void FluidOscServer::selectMidiClip(const juce::OSCMessage &message) {
+    if (!selectedAudioTrack) return;
+    if (!message.size() || !message[0].isString()) return;
+
+    String clipName = message[0].getString();
+    selectedMidiClip = getOrCreateMidiClipByName(*selectedAudioTrack, clipName);
+}
+
+void FluidOscServer::insertMidiNote(const juce::OSCMessage &message) {
+    if (!selectedMidiClip) return;
+    if (message.size() < 3) return;
+
+    for (const auto& arg : message) { if (!arg.isInt32() && !arg.isFloat32()) return; }
+    double startBeat = 0;
+    double lengthInBeats = 1;
+    int noteNumber = 0;
+    int velocity = 100;
+    int colorIndex = 0;
+
+    if (message[0].isInt32()) noteNumber = message[0].getInt32();
+    else if (message[0].isFloat32()) noteNumber = (int)(message[0].getFloat32());
+
+    if (message[1].isFloat32()) startBeat = message[1].getFloat32();
+    else if (message[1].isInt32()) startBeat = message[1].getInt32();
+
+    if (message[2].isFloat32()) lengthInBeats = message[2].getFloat32();
+    else if (message[2].isInt32()) lengthInBeats = (int)(message[2].getInt32());
+
+    if (message.size() >= 4) {
+        if (message[3].isInt32()) velocity = message[3].getInt32();
+        else if (message[3].isFloat32()) velocity = message[3].getFloat32();
     }
 
-    if (msgAddressPattern.matches({"/save"})) {
-        // If the first argument is string it is a filename
-        File file = (message.size() && message[0].isString())
-            ? File::getCurrentWorkingDirectory().getChildFile(message[0].getString())
-            : activeCybrEdit->getEdit().editFileRetriever();
-
-        // By default use relative file paths. If the second arg begins with 'a', use absolute paths
-        bool useRelativePaths = true;
-        if (message.size() >= 2
-            && message[1].isString()
-            && message[1].getString().startsWithIgnoreCase({"a"}))
-            useRelativePaths = false;
-
-        activeCybrEdit->saveActiveEdit(file, useRelativePaths);
+    if (message.size() >= 5) {
+        if (message[4].isInt32()) colorIndex = message[4].getInt32();
+        else if (message[4].isFloat32()) colorIndex = (int)(message[4].getFloat32());
     }
+
+    te::MidiList& notes = selectedMidiClip->getSequence();
+    notes.addNote(noteNumber, startBeat, lengthInBeats, velocity, colorIndex, nullptr);
 }

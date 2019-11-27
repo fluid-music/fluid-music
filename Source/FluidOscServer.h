@@ -24,5 +24,15 @@ public:
     FluidOscServer();
     virtual void oscMessageReceived (const OSCMessage& message) override;
     virtual void oscBundleReceived (const OSCBundle& bundle) override;
+
+    // message handlers
+    void selectAudioTrack(const OSCMessage& message);
+    void selectMidiClip(const OSCMessage& message);
+    void insertMidiNote(const OSCMessage& message);
+    void saveActiveEdit(const OSCMessage& message);
+
     std::unique_ptr<CybrEdit> activeCybrEdit = nullptr;
+private:
+    te::AudioTrack* selectedAudioTrack = nullptr;
+    te::MidiClip* selectedMidiClip = nullptr;
 };

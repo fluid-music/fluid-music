@@ -334,7 +334,7 @@ void listProjects(te::Engine& engine) {
 
 void printOscMessage(const OSCMessage& message) {
     std::cout << message.getAddressPattern().toString();
-    for (auto arg : message) {
+    for (const auto& arg : message) {
         std::cout << " - ";
         auto type = arg.getType();
         if (type == OSCTypes::int32) std::cout << arg.getInt32();
@@ -348,3 +348,23 @@ void printOscMessage(const OSCMessage& message) {
     }
     std::cout << std::endl;
 };
+
+te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name) {
+    for (auto* track : te::getAudioTracks(edit)) {
+        if (track->getName() == name) return track;
+    }
+    te::TrackInsertPoint insertPoint(nullptr, te::getTopLevelTracks(edit).getLast()); // Does this work if there are no tracks?
+    te::AudioTrack* track = edit.insertNewAudioTrack(insertPoint, nullptr).get();
+    track->setName(name);
+    return track;
+}
+
+te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name) {
+    for (auto* clip : track.getClips()) {
+        if (auto midiClip = dynamic_cast<te::MidiClip*>(clip)) {
+            if (midiClip->getName() == name) return midiClip;
+        }
+    }
+    te::MidiClip* clip = track.insertMIDIClip(name, {0, 4}, nullptr).get();
+    return clip;
+}
