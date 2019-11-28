@@ -3,10 +3,11 @@ const dgram = require('dgram');
 const YAML = require('yaml');
 const osc = require('osc-min');
 
+const FluidClient = require('./FluidClient');
+
 const file = fs.readFileSync('basics.yaml', 'utf8');
 const result = YAML.parse(file);
 
-const client = dgram.createSocket('udp4');
 
 // https://www.npmjs.com/package/osc-min
 const elements = [
@@ -52,25 +53,21 @@ const elements = [
     ]
   },
 ]
-const newClipMsg = osc.toBuffer({
+const newClipMsg = {
   oscType: 'bundle',
-  timetag: 10,
+  timetag: 0,
   elements
-});
+};
 
 const saveMsg = osc.toBuffer({
   address: '/save',
   args: {type: 'string', value: 'out.tracktionedit'},
 });
 
-client.send(newClipMsg, 9999, (err) => { err && console.log('send error:', err); });
+const client = new FluidClient(9999);
+client.send(newClipMsg);
+client.send(saveMsg);
 
-setTimeout(() => {
-  client.send(saveMsg, 9999, (err) => {
-    err && console.log('Error sending save message:' , err);
-    process.exit();
-  });
-}, 200);
 
 console.log('basics:', result);
 
