@@ -75,6 +75,22 @@ void FluidOscServer::selectMidiClip(const juce::OSCMessage &message) {
 
     String clipName = message[0].getString();
     selectedMidiClip = getOrCreateMidiClipByName(*selectedAudioTrack, clipName);
+
+    // Clip startBeats
+    if (message.size() >= 2 && message[1].isFloat32()) {
+        double startBeats = message[1].getFloat32();
+        double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
+        selectedMidiClip->setStart(startSeconds, false, true);
+
+    }
+    // Clip length
+    if (message.size() >= 3 && message[2].isFloat32()) {
+        double lengthInBeats = message[2].getFloat32();
+        double startBeat = selectedMidiClip->getStartBeat();
+        double endBeat = startBeat + lengthInBeats;
+        double endTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeat);
+        selectedMidiClip->setEnd(endTime, true);
+    }
 }
 
 void FluidOscServer::insertMidiNote(const juce::OSCMessage &message) {
