@@ -11,39 +11,44 @@ const client = dgram.createSocket('udp4');
 // https://www.npmjs.com/package/osc-min
 const elements = [
   {
-    address: '/select/audiotrack',
+    address: '/audiotrack/select',
     args: [
       { type: 'string', value: "Charles' Track!!" },
     ]
   },
   {
-    address: '/select/midiclip',
+    address: '/midiclip/select',
     args: [
-      { type: 'string', value: 'This is my MIDI clip :)' },
+      {type: 'string', value: 'This is my MIDI clip :)' },
+      {type: 'float', value: 2 },
+      {type: 'float', value: 4 },
     ]
   },
   {
-    address: '/i/n',
+    address: '/midiclip/clear',
+  },
+  {
+    address: '/midiclip/n',
     args: [
       {type: 'integer', value: 48 },
       {type: 'float', value: 0 },
-      {type: 'float', value: 4 },
+      {type: 'float', value: 1 },
     ]
   },
   {
-    address: '/i/n',
+    address: '/midiclip/n',
     args: [
       {type: 'integer', value: 50 },
-      {type: 'float', value: 4 },
-      {type: 'float', value: 4 },
+      {type: 'float', value: 1 },
+      {type: 'float', value: 1 },
     ]
   },
   {
-    address: '/i/n',
+    address: '/midiclip/n',
     args: [
-      {type: 'integer', value: 52 },
-      {type: 'float', value: 8 },
-      {type: 'float', value: 4 },
+      {type: 'integer', value: 55 },
+      {type: 'float', value: 2 },
+      {type: 'float', value: 1 },
     ]
   },
 ]

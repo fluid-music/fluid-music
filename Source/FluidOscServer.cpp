@@ -37,11 +37,11 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
         return;
     }
 
-    if (msgAddressPattern.matches({"/i/n"})) return insertMidiNote(message);
-    if (msgAddressPattern.matches({"/select/audiotrack"})) return selectAudioTrack(message);
-    if (msgAddressPattern.matches({"/select/midiclip"})) return selectMidiClip(message);
+    if (msgAddressPattern.matches({"/midiclip/n"})) return insertMidiNote(message);
+    if (msgAddressPattern.matches({"/midiclip/select"})) return selectMidiClip(message);
+    if (msgAddressPattern.matches({"/midiclip/clear"})) return clearMidiClip(message);
+    if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
     if (msgAddressPattern.matches({"/save"})) return saveActiveEdit(message);
-
 }
 
 void FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
@@ -91,6 +91,12 @@ void FluidOscServer::selectMidiClip(const juce::OSCMessage &message) {
         double endTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeat);
         selectedMidiClip->setEnd(endTime, true);
     }
+}
+
+void FluidOscServer::clearMidiClip(const juce::OSCMessage &message) {
+    if (!selectedMidiClip) return;
+    selectedMidiClip->clearTakes(); // I do not understand what clearTakes does
+    selectedMidiClip->getSequence().clear(nullptr);
 }
 
 void FluidOscServer::insertMidiNote(const juce::OSCMessage &message) {
