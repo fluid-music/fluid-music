@@ -1,13 +1,16 @@
 const fs  = require('fs');
-const dgram = require('dgram');
 const YAML = require('yaml');
-const osc = require('osc-min');
+const fluidObjToOsc = require('./converters');
 
-const FluidClient = require('./FluidClient');
 
 const file = fs.readFileSync('basics.yaml', 'utf8');
 const result = YAML.parse(file);
 
+const oscMsg = fluidObjToOsc('CharlesTrack', 'CharlesClip', 1, 8, result.pattern);
+console.log(JSON.stringify(oscMsg, null, 2));
+console.log('\n\n\n');
+
+const FluidClient = require('./FluidClient');
 
 // https://www.npmjs.com/package/osc-min
 const elements = [
@@ -20,9 +23,9 @@ const elements = [
   {
     address: '/midiclip/select',
     args: [
-      {type: 'string', value: 'This is my MIDI clip :)' },
-      {type: 'float', value: 2 },
-      {type: 'float', value: 4 },
+      { type: 'string', value: 'This is my MIDI clip :)' },
+      { type: 'float', value: 2 },
+      { type: 'float', value: 4 },
     ]
   },
   {
@@ -59,13 +62,13 @@ const newClipMsg = {
   elements
 };
 
-const saveMsg = osc.toBuffer({
+const saveMsg = {
   address: '/save',
   args: {type: 'string', value: 'out.tracktionedit'},
-});
+};
 
 const client = new FluidClient(9999);
-client.send(newClipMsg);
+client.send(oscMsg);
 client.send(saveMsg);
 
 
