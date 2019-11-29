@@ -2,9 +2,9 @@
   "name": "basics",
   "version": "1.0.0",
   "description": "Basic cybr client examples",
-  "main": "bundle.js",
+  "main": "src/index.js",
   "scripts": {
-    "watch": "nodemon -e .js,.mjs,.json,.yaml,.yml index.js",
+    "watch": "nodemon -e .js,.mjs,.json,.yaml,.yml src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
