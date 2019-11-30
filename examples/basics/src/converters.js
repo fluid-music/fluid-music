@@ -3,11 +3,11 @@ const Parser = require('expr-eval').Parser;
 const parser = new Parser();
 
 /**
- * Create an 
+ * Create an /midiclip/n message
  * @param {[Integer]} noteNum - Midi Note Number
  * @param {Number} startBeats - Note start time in beats
  * @param {Number} lengthBeats - Note length in beats
- * @param {[Integer]} velocity - Midi note velocity
+ * @param {[Integer]} velocity - Midi note velocity. Default = 100
  */
 const createMidiNoteMessage = function(noteNum, startBeats, lengthBeats, velocity) {
   const args = [
@@ -23,9 +23,31 @@ const createMidiNoteMessage = function(noteNum, startBeats, lengthBeats, velocit
   return { address: '/midiclip/n', args }
 }
 
+/**
+ * Convert a string or number
+ * @param {String|Number} value - input value can be 'quarter' or '1/4' or 0.25
+ * @returns Number - A duration in whole notes
+ */
+const valueToWholeNotes = function(value) {
+  let length;
+  if (typeof value === 'number') length = value;
+  else if (typeof value === 'string') {
+    if (value === 'quarter') return 0.25;
+    if (value === 'half') return 0.5;
+    if (value === 'whole') return 1;
+    try {
+      length = parser.evaluate(value);
+    } catch (e) {
+      length = s11.duration.asDuration(value).value() * 0.25;
+    }
+  }
+  else throw new Error('Cannot convert to number of whole notes:', JSON.stringify(value));
+  return length;
+}
+
 
 /**
- * Convert an  object to fluid osc message
+ * Convert an  object to a fluid osc message
  * 
  * @param { string } trackName
  * @param { string } clipName
@@ -33,7 +55,7 @@ const createMidiNoteMessage = function(noteNum, startBeats, lengthBeats, velocit
  * @param { Number} lengthBeats - Note length in beats
  * @param { Array } steps - array of { l: length, n: note } objects
  */
-const fluidObjToOsc = module.exports.fluidObjToOsc = function(trackName, clipName, startBeats, lengthBeats, steps) {
+const fluidObjToOsc = function(trackName, clipName, startBeats, lengthBeats, steps) {
 
   elements = [
     {
@@ -64,14 +86,12 @@ const fluidObjToOsc = module.exports.fluidObjToOsc = function(trackName, clipNam
   steps.forEach((step) => {
     // YAML files specify durations in whole notes, so '1/4' is a quarter note.
     // OSC spec specifies durations in quarter notes, so 1 is a quarter note
-    let length;
-    if (typeof step.l === 'number') length = step.l;
-    if (typeof step.l === 'string') length = parser.evaluate(step.l);
-    length *= 4; // convert whole notes to quarter notes
+    const numWholeNotes = valueToWholeNotes(step.l);
+    const numQuarterNotes = numWholeNotes * 4;
 
-    if (Array.isArray(step.n)) step.n.forEach((n) => appendNote(n, length));
-    else if (step.n) appendNote(step.n, length);
-    elapsed += length;
+    if (Array.isArray(step.n)) step.n.forEach((n) => appendNote(n, numQuarterNotes));
+    else if (step.n) appendNote(step.n, numQuarterNotes);
+    elapsed += numQuarterNotes;
   });
 
   return newClipMsg = {
@@ -79,4 +99,10 @@ const fluidObjToOsc = module.exports.fluidObjToOsc = function(trackName, clipNam
     timetag: 0,
     elements
   };
+}
+
+module.exports = {
+  valueToWholeNotes,
+  fluidObjToOsc,
+  createMidiNoteMessage,
 }

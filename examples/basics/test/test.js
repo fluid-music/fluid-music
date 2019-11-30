@@ -7,7 +7,6 @@ const describe = mocha.describe;
 const it = mocha.it
 
 const converters = require('../src/converters');
-
 const file = fs.readFileSync('./test/test-content.yaml', 'utf8');
 const basics = YAML.parse(file);
 
@@ -68,4 +67,21 @@ describe('fluidObjToOsc', () => {
   });
 });
 
-
+describe('valueToWholeNotes', () => {
+  it('should handle strings in the format "1/4"', () => {
+    converters.valueToWholeNotes('1/4').should.equal(1/4);
+    converters.valueToWholeNotes('1/12').should.equal(1/12);
+    converters.valueToWholeNotes('1/32').should.equal(1/32);
+  });
+  it('should handle strings in the format "sixteenth"', () => {
+    converters.valueToWholeNotes('sixteenth').should.equal(1/16);
+    converters.valueToWholeNotes('quarter').should.equal(1/4);
+  });
+  it('should handle Numbers', () => {
+    converters.valueToWholeNotes(1/8).should.equal(1/8);
+    converters.valueToWholeNotes(1/32).should.equal(1/32);
+  });
+  it('should throw on invalid values', () => {
+    should(() => { converters.valueToWholeNotes('Hi!'); }).throw();
+  });
+});
