@@ -29,16 +29,16 @@ const createMidiNoteMessage = function(noteNum, startBeats, lengthBeats, velocit
  * 
  * @param { string } trackName
  * @param { string } clipName
- * @param {Number} startBeats - Note start time in beats
- * @param {Number} lengthBeats - Note length in beats
- * @param { Array } steps - array of {l: length, n: note } objects
+ * @param { Number } startBeats - Note start time in beats
+ * @param { Number} lengthBeats - Note length in beats
+ * @param { Array } steps - array of { l: length, n: note } objects
  */
-function fluidObjToOsc(trackName, clipName, startBeats, lengthBeats, steps) {
+const fluidObjToOsc = module.exports.fluidObjToOsc = function(trackName, clipName, startBeats, lengthBeats, steps) {
 
   elements = [
     {
       address: '/audiotrack/select',
-      args: { type: 'string', value: trackName },
+      args: [{ type: 'string', value: trackName }],
     },
     {
       address: '/midiclip/select',
@@ -80,5 +80,3 @@ function fluidObjToOsc(trackName, clipName, startBeats, lengthBeats, steps) {
     elements
   };
 }
-
-module.exports = fluidObjToOsc;

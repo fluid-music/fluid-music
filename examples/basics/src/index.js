@@ -1,13 +1,14 @@
 const fs  = require('fs');
 const YAML = require('yaml');
-const fluidObjToOsc = require('./converters');
+const converters = require('./converters');
+const fluidObjToOsc = converters.fluidObjToOsc;
 
 
 const file = fs.readFileSync('basics.yaml', 'utf8');
 const result = YAML.parse(file);
 
 const oscMsg = fluidObjToOsc('CharlesTrack', 'CharlesClip', 1, 8, result.pattern);
-console.log(JSON.stringify(oscMsg, null, 2));
+console.log(oscMsg);
 console.log('\n\n\n');
 
 const FluidClient = require('./FluidClient');
