@@ -19,3 +19,12 @@ cMajArp:
   - { l: 1/4}
   - { l: 1/4, n: g4 }
   - { l: 1/4}
+
+# This should be the same as the no tears left to cry
+tab:
+  n: [*c1, *c2, *c3]
+  s:
+  - r: 1e+a2e+a3e+a4e+a
+    n: 0-......1-....2.
+  - r: '1234'
+    n: '....'

@@ -7,7 +7,6 @@ const file = fs.readFileSync('basics.yaml', 'utf8');
 const result = YAML.parse(file);
 
 const oscMsg = fluidObjToOsc('CharlesTrack', 'CharlesClip', 1, 8, result.pattern);
-
 const FluidClient = require('./FluidClient');
 
 const saveMsg = {
@@ -18,6 +17,4 @@ const saveMsg = {
 const client = new FluidClient(9999);
 client.send(oscMsg);
 client.send(saveMsg);
-
-console.log('basics:', result);
 
