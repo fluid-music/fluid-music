@@ -4,21 +4,21 @@ const parser = new Parser();
 
 /**
  * Create an /midiclip/n message
- * @param {[Integer]} noteNum - Midi Note Number
- * @param {Number} startBeats - Note start time in quarter notes
- * @param {Number} lengthBeats - Note length in quarter notes
- * @param {[Integer]} velocity - Midi note velocity. Default = 100
+ * @param {[Integer]} noteNum - MIDI Note Number
+ * @param {Number} startTimeInQuarterNotes - Note start time in quarter notes
+ * @param {Number} durationInQuarterNotes - Note length in quarter notes
+ * @param {[Integer]} velocity - Optional MIDI note velocity.
  */
-const createMidiNoteMessage = function(noteNum, startBeats, lengthBeats, velocity) {
+const createMidiNoteMessage = function(noteNum, startTimeInQuarterNotes, durationInQuarterNotes, velocity) {
   const args = [
     {type: 'integer', value: noteNum },
-    {type: 'float',   value: startBeats },
+    {type: 'float',   value: startTimeInQuarterNotes },
   ];
 
-  if (typeof lengthBeats !== 'number') lengthBeats = 1;
-  args.push({ type: 'float', value: lengthBeats });
+  if (typeof durationInQuarterNotes !== 'number') durationInQuarterNotes = 1;
+  args.push({ type: 'float', value: durationInQuarterNotes });
 
-  if (typeof velocity === 'number') args.push({ type: 'float', value: velocity });
+  if (typeof velocity === 'number') args.push({ type: 'integer', value: velocity });
 
   return { address: '/midiclip/n', args }
 }

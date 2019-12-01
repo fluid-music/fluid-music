@@ -3,7 +3,6 @@ const YAML = require('yaml');
 const converters = require('./converters');
 const fluidObjToOsc = converters.fluidObjToOsc;
 
-
 const file = fs.readFileSync('basics.yaml', 'utf8');
 const result = YAML.parse(file);
 

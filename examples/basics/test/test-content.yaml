@@ -3,7 +3,7 @@ chords:
   Fadd2: &c2 [f4, g4, a4, c5]
   Gadd2: &c3 [g4, a4, b4, d5]
 
-pattern:
+noTearsLeftToCryVerse:
   - { l: 1/8,  n: *c1 }
   - { l: 3/8 }
   - { l: 1/8,  n: *c2 }
