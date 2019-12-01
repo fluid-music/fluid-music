@@ -5,8 +5,8 @@ const parser = new Parser();
 /**
  * Create an /midiclip/n message
  * @param {[Integer]} noteNum - Midi Note Number
- * @param {Number} startBeats - Note start time in beats
- * @param {Number} lengthBeats - Note length in beats
+ * @param {Number} startBeats - Note start time in quarter notes
+ * @param {Number} lengthBeats - Note length in quarter notes
  * @param {[Integer]} velocity - Midi note velocity. Default = 100
  */
 const createMidiNoteMessage = function(noteNum, startBeats, lengthBeats, velocity) {
@@ -24,9 +24,9 @@ const createMidiNoteMessage = function(noteNum, startBeats, lengthBeats, velocit
 }
 
 /**
- * Convert a string or number
+ * Convert a string or number to a number of whole notes.
  * @param {String|Number} value - input value can be 'quarter' or '1/4' or 0.25
- * @returns Number - A duration in whole notes
+ * @returns {Number} - A duration in whole notes
  */
 const valueToWholeNotes = function(value) {
   let length;
@@ -45,6 +45,13 @@ const valueToWholeNotes = function(value) {
   return length;
 }
 
+const valueToMidiNoteNumber = function(value) {
+  let noteNumber;
+  if      (typeof value === 'number') noteNumber = value;
+  else if (typeof value === 'string') noteNumber = s11.note.create(value).value();
+  else throw new Error('Note value invalid: ' + JSON.stringify(value));
+  return noteNumber;
+};
 
 /**
  * Convert an  object to a fluid osc message
@@ -74,11 +81,8 @@ const fluidObjToOsc = function(trackName, clipName, startBeats, lengthBeats, ste
   ];
 
   let elapsed = 0;
-  const appendNote = (note, length, velocity) => { // add note, but do not advance elapsed Time
-    let noteNumber;
-    if      (typeof note === 'number') noteNumber = note;
-    else if (typeof note === 'string') noteNumber = s11.note.create(note).value();
-    else throw new Error('Note value invalid: ' + JSON.stringify(note));
+  const appendNote = (note, length) => { // add note, but do not advance elapsed Time
+    const noteNumber = valueToMidiNoteNumber(note);
     const msg = createMidiNoteMessage(noteNumber, elapsed, length);
     elements.push(msg);
   }
@@ -103,6 +107,7 @@ const fluidObjToOsc = function(trackName, clipName, startBeats, lengthBeats, ste
 
 module.exports = {
   valueToWholeNotes,
+  valueToMidiNoteNumber,
   fluidObjToOsc,
   createMidiNoteMessage,
 }

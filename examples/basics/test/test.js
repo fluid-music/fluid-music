@@ -85,3 +85,20 @@ describe('valueToWholeNotes', () => {
     should(() => { converters.valueToWholeNotes('Hi!'); }).throw();
   });
 });
+
+
+describe('valueToMidiNoteNumber', () => {
+  it('should convert "c4" string to 60', () => {
+    converters.valueToMidiNoteNumber('c4').should.equal(60);
+  });
+  it('should convert "c##4" string to 62', () => {
+    converters.valueToMidiNoteNumber('c##4').should.equal(62);
+  });
+  it('should leave numbers like 58 unchanged', () => {
+    converters.valueToMidiNoteNumber(58).should.equal(58);
+  });
+  it('should throw on an invalid string', () => {
+    should(() => { converters.valueToMidiNoteNumber('invalid'); }).throw();
+    should(() => { converters.valueToMidiNoteNumber('##'); }).throw();
+  })
+});
