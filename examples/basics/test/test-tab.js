@@ -2,11 +2,27 @@ const should = require('should');
 const mocha = require('mocha');
 const tab = require('../src/tab');
 
-describe('tab.rhythmToAdvanceArray', () => {
-  const q = 1/4;  // quarter note
-  const e = 1/8;  // eighth note
-  const s = 1/16; // sixteenth note
+const q = 1/4;  // quarter note
+const e = 1/8;  // eighth note
+const s = 1/16; // sixteenth note
 
+describe('tab.parseRhythm', () => {
+  it(`should parse '1 2 ' as four eighth notes`, () => {
+    tab.parseRhythm('1 2 ').should.deepEqual([1/8,2/8,3/8,4/8]);
+  });
+  it(`should parse '1   2 ' as four sixteenth and two eighths`, () => {
+    tab.parseRhythm('1   2 ').should.deepEqual([s,s*2,s*3,s*4,3/8,4/8]);
+  });
+  it(`should parse '1234' as four quarter notes`, () => {
+    tab.parseRhythm('1234').should.deepEqual([1/4,2/4,3/4,1]);
+  });
+  it(`should parse '1..2..' as triplets`, () => {
+    const t = 1/4/3; // eighth note triplets
+    tab.parseRhythm('1..2..').should.deepEqual([1*t,2*t,3*t,4*t,5*t,6*t]);
+  });
+});
+
+describe('tab.rhythmToAdvanceArray', () => {
   const eighthRhythm = '1+2+'; 
   it(`should interpret '${eighthRhythm}' as four eighth notes`, () => {
     tab.rhythmToAdvanceArray(eighthRhythm).should.deepEqual([e,e,e,e]);
@@ -48,5 +64,12 @@ describe('tab.rhythmToElapsedArray', () => {
 
   it('should handle 1+2+', () => {
     tab.rhythmToElapsedArray('1+2+').should.deepEqual([0.125, 0.25, 0.375, 0.5]);
+  });
+});
+
+describe('tab.segments', () => {
+  it('should work', () => {
+    tab.getSegments([1,0,0,0,1,0]).should.deepEqual([[1,0,0,0],[1,0]]);
+    tab.getSegments([.1,0,.2,0]).should.deepEqual([[.1,0],[.2,0]]);
   });
 });

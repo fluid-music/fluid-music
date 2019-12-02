@@ -1,10 +1,7 @@
 const fs = require('fs');
 const YAML = require('yaml');
-
 const should = require('should');
 const mocha = require('mocha');
-const describe = mocha.describe;
-const it = mocha.it
 
 const converters = require('../src/converters');
 const file = fs.readFileSync('./test/test-content.yaml', 'utf8');
