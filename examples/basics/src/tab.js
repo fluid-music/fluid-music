@@ -1,7 +1,11 @@
 /**
- * Convert rhythm string to a cumulative array of durations
+ * Convert rhythm string to a cumulative array of durations.
+ *
  * @param {string} rhythm - String representing of a rhythm
- * @returns {number[]} - monotonic time elapsed
+ * @returns {object} - a javascript object representing timing. The object will
+ *          have two properties, both of which are arrays:
+ *          - .totals is a measure of elapsed times
+ *          - .deltas is the duration of each character
  */
 const parseRhythm = function(rhythm) {
   // advances will look like this: [.4,0,0,0,0.5,0]
@@ -11,16 +15,18 @@ const parseRhythm = function(rhythm) {
   // forEach segment, what value does it begin at? [0, 0.4]
   const segmentStartTotals = getSegmentStartTotals(advances);
 
-  const result = [];
+  const totals = []; // [.1, .2, .3, .4, .65, .90]
+  const deltas = [];  // [.1, .1, .1, .1, .25, .25]
   segments.forEach((segment, j) => { // segment will look like [.4,0,0,0]
     const segmentTotal = segment[0];
     segment.forEach((_, i) => {
       let v = (i+1) * segmentTotal / segment.length;
-      result.push(v + segmentStartTotals[j]);
+      totals.push(v + segmentStartTotals[j]);
+      deltas.push(segmentTotal / segment.length)
     });
   });
 
-  return result;
+  return {totals, deltas};
 };
 
 const isEmpty =   (char) => char === ' ' || char === '.';
