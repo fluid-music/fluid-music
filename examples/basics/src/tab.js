@@ -31,6 +31,8 @@ const parseRhythm = function(rhythm) {
 
 const isEmpty =   (char) => char === ' ' || char === '.';
 const notEmpty =  (char) => !isEmpty(char);
+const isWhole =   (char) => char === 'w';
+const isHalf =    (char) => char === 'h';
 const isQuarter = (char) => char.length === 1 && '1234567890'.includes(char);
 const is8th =     (char) => char === '+';
 const is16th =    (char) => char === 'a' || char === 'e';
@@ -38,7 +40,7 @@ const is32nd =    (char) => char === 't';
 
 /**
  * Helper method gets the implied division of a rhythm char.
- * @param {string} char 
+ * @param {string} char
  */
 const division = (char) => {
   if (typeof char !== 'string' || char.length !== 1)
@@ -49,6 +51,8 @@ const division = (char) => {
   if (is8th(char)) return 1/8;
   if (is16th(char)) return 1/16;
   if (is32nd(char)) return 1/32;
+  if (isWhole(char)) return 1;
+  if (isHalf(char)) return 0.5;
 
   throw new Error(`No division for '${char}' character`);
 };
@@ -85,7 +89,7 @@ const rhythmToAdvanceArray = function(rhythm) {
     }
 
     let amount = null;
-    if (isEmpty(char)) 
+    if (isEmpty(char))
       amount = 0;
     else if (next === null)
       amount = division(char);

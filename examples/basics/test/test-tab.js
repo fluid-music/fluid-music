@@ -20,10 +20,17 @@ describe('tab.parseRhythm', () => {
     const t = 1/4/3; // eighth note triplets
     tab.parseRhythm('1..2..').totals.should.deepEqual([1*t,2*t,3*t,4*t,5*t,6*t]);
   });
+  it('should return an object with .deltas and .totals members', () => {
+    const rObj = tab.parseRhythm('h h ');
+    rObj.should.deepEqual({
+      deltas: [.25, .25, .25, .25],
+      totals: [.25, .50, .75, 1.0],
+    });
+  });
 });
 
 describe('tab.rhythmToAdvanceArray', () => {
-  const eighthRhythm = '1+2+'; 
+  const eighthRhythm = '1+2+';
   it(`should interpret '${eighthRhythm}' as four eighth notes`, () => {
     tab.rhythmToAdvanceArray(eighthRhythm).should.deepEqual([e,e,e,e]);
   });
