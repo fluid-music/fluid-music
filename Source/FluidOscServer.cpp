@@ -107,7 +107,7 @@ void FluidOscServer::insertMidiNote(const juce::OSCMessage &message) {
     double startBeat = 0;
     double lengthInBeats = 1;
     int noteNumber = 0;
-    int velocity = 100;
+    int velocity = 64;
     int colorIndex = 0;
 
     if (message[0].isInt32()) noteNumber = message[0].getInt32();
