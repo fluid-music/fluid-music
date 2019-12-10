@@ -16,7 +16,7 @@ const parseRhythm = function(rhythm) {
   const segmentStartTotals = getSegmentStartTotals(advances);
 
   const totals = []; // [.1, .2, .3, .4, .65, .90]
-  const deltas = [];  // [.1, .1, .1, .1, .25, .25]
+  const deltas = []; // [.1, .1, .1, .1, .25, .25]
   segments.forEach((segment, j) => { // segment will look like [.4,0,0,0]
     const segmentTotal = segment[0];
     segment.forEach((_, i) => {
@@ -125,6 +125,22 @@ const getSegments = function(advances) {
   return segments;
 }
 
+/**
+ * getSegmentStartTotals is a helper method used by parseRhythm. It calculates
+ * the start time for each "segment." As an example:
+ * "advances" are returned by rhythmToAdvanceArray: [.4,0,0,0,  .5,0,  .5,0]
+ * "segments" are returned by getSegments:         [[.4,0,0,0],[.5,0],[.5,0]]
+ *
+ * Given the advances here, this should return the total amount of time elapsed
+ * at the beginning of each segment:                [0,         .4,    .9]
+ *
+ * Calculating start times before distributing the advances across any zeros in
+ * segments allows us to accumulate less floating point error. I do not think
+ * there is a reason to export getSegmentStartTotals for public use.
+ *
+ * @param {number[]} advances - an array returned by rhythmToAdvanceArray()
+ * @returns {number[]} - total elapsed times at the beginning of each segment
+ */
 const getSegmentStartTotals = function(advances) {
   const result = [];
   let accumulator = 0;
