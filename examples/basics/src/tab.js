@@ -11,7 +11,7 @@ const parseRhythm = function(rhythm) {
   // advances will look like this: [.4,0,0,0,0.5,0]
   const advances = rhythmToAdvanceArray(rhythm);
   // each segment will look like this: [[.4,0,0,0],[.5, 0]]
-  const segments = getSegments(advances);
+  const segments = advanceArrayToSegments(advances);
   // forEach segment, what value does it begin at? [0, 0.4]
   const segmentStartTotals = getSegmentStartTotals(advances);
 
@@ -117,7 +117,7 @@ const rhythmToElapsedArray = function(rhythm) {
  *   out - [[1,0,0,0], [2,0]]
  * @param {number[]} advances
  */
-const getSegments = function(advances) {
+const advanceArrayToSegments = function(advances) {
   const nonZeroIndices = []; // [0, 4]
   advances.forEach((e, i) => { if (e !== 0) nonZeroIndices.push(i); });
   const segments = [];
@@ -157,9 +157,48 @@ const getSegmentStartTotals = function(advances) {
   return result;
 }
 
+/**
+ * This helper method converts a pattern into an intermediary format that is
+ * helpful for parsing a tab. Its easiest to understand with an example:
+ *
+ * const input = 'a-1-bb...';
+ * const output = [['a',2], ['1',2], ['b',1], ['b', 1], ['.', 3]];
+ *
+ * For every new symbol, the out output lists that symbol, and the number of
+ * positions that that symbols is active for.
+ * @param {string} pattern
+ */
+const patternToSymbolsAndCounts = function(pattern) {
+  const chars = pattern.replace(/ /g, '.').split('');
+  const results = [];
+  // pattern: '0-......1-....22'
+  // symbols:  0 .     1 .   22
+  // counts:   2 6     2 4   11
+
+  let currentChar = chars[0];
+  let onSymbol = currentChar !== '.'; // are we starting on a symbol?
+  if (currentChar === '-') throw new Error(`Bad pattern string: "${chars} (begins on -)`);
+
+  chars.forEach((c) => {
+    if (c === '-') {
+      if (!onSymbol) throw new Error(`Bad pattern string: "${chars}" (- may not follow .)`);
+      results[results.length-1][1]++;
+    } else if (c === '.') {
+      if (onSymbol || !results.length) results.push([c, 1]);
+      else results[results.length-1][1]++;
+      onSymbol = false;
+    } else {
+      results.push([c, 1])
+      onSymbol = true;
+    }
+  });
+  return results;
+}
+
 module.exports = {
   parseRhythm,
   rhythmToElapsedArray,
   rhythmToAdvanceArray,
-  getSegments,
+  advanceArrayToSegments,
+  patternToSymbolsAndCounts,
 };

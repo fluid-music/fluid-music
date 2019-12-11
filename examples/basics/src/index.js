@@ -17,4 +17,3 @@ const saveMsg = {
 const client = new FluidClient(9999);
 client.send(oscMsg);
 client.send(saveMsg);
-

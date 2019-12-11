@@ -74,9 +74,41 @@ describe('tab.rhythmToElapsedArray', () => {
   });
 });
 
-describe('tab.segments', () => {
-  it('should work', () => {
-    tab.getSegments([1,0,0,0,1,0]).should.deepEqual([[1,0,0,0],[1,0]]);
-    tab.getSegments([.1,0,.2,0]).should.deepEqual([[.1,0],[.2,0]]);
+describe('tab.advanceArrayToSegments', () => {
+  it('should split input into arrays based on position of zeros', () => {
+    tab.advanceArrayToSegments([1,0,0,0,1,0]).should.deepEqual([[1,0,0,0],[1,0]]);
+    tab.advanceArrayToSegments([.1,0,.2,0]).should.deepEqual([[.1,0],[.2,0]]);
+  });
+});
+
+describe('tab.patternToSymbolsAndCounts', () => {
+  it("should work on the example in the function's jsdoc comment", () => {
+    const input = 'a-1-bb...';
+    const output = [['a',2], ['1',2], ['b',1], ['b', 1], ['.', 3]];
+    tab.patternToSymbolsAndCounts(input).should.deepEqual(output);
+  });
+  it('should work with "." and " " characters', () => {
+    let patternDots   = '0-......a-....22'
+    let patternSpaces = '0-      a-    22'
+    let counts        = [2,6,    2,4,  1,1]
+    let symbols       = '0.a.22'
+    counts = symbols.split('').map((t, i) => [t, counts[i]]);
+
+    tab.patternToSymbolsAndCounts(patternDots).should.deepEqual(counts);
+    tab.patternToSymbolsAndCounts(patternSpaces).should.deepEqual(counts);
+
+    patternDots   = '..0-......a-....22'
+    patternSpaces = '  0-      a-    22'
+    counts        = [2,2,6,    2,4,  1,1]
+    symbols       = '.0.a.22'
+    counts = symbols.split('').map((t, i) => [t, counts[i]]);
+    tab.patternToSymbolsAndCounts(patternDots).should.deepEqual(counts);
+    tab.patternToSymbolsAndCounts(patternSpaces).should.deepEqual(counts);
+  });
+  it('should throw when the pattern begins with a -', () => {
+    should(() => tab.patternToSymbolsAndCounts('-a...')).throw();
+  });
+  it('should throw if a - follows a .', () => {
+    should(() => tab.patternToSymbolsAndCounts('1.-')).throw();
   });
 });
