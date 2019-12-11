@@ -45,9 +45,12 @@ describe('valueToMidiNoteNumber', () => {
 
 describe('createMidiNoteMessage', () => {
   let noteNum = 60;
-  let startTimeInQuarterNotes = 1.5;
-  let durationInQuarterNotes = 0.5
+  let startTimeInWholeNotes = 0.375;
+  let durationInWholeNotes =  0.125;
   let velocity = 64;
+  let startTimeInQuarterNotes = startTimeInWholeNotes * 4;
+  let durationInQuarterNotes = durationInWholeNotes * 4;
+
 
   const desiredResult = {
     address: '/midiclip/n',
@@ -59,13 +62,13 @@ describe('createMidiNoteMessage', () => {
   };
 
   it('Should create an object designed for osc.toBuffer()', () => {
-    converters.createMidiNoteMessage(noteNum, startTimeInQuarterNotes, durationInQuarterNotes)
+    converters.createMidiNoteMessage(noteNum, startTimeInWholeNotes, durationInWholeNotes)
       .should.deepEqual(desiredResult);
   });
 
   it('should include an extra argument if a velocity is supplied', () => {
     desiredResult.args.push({ type: 'integer', value: velocity });
-    converters.createMidiNoteMessage(noteNum, startTimeInQuarterNotes, durationInQuarterNotes, velocity)
+    converters.createMidiNoteMessage(noteNum, startTimeInWholeNotes, durationInWholeNotes, velocity)
       .should.deepEqual(desiredResult);
   });
 });

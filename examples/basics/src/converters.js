@@ -5,17 +5,18 @@ const parser = new Parser();
 /**
  * Create an /midiclip/n message
  * @param {[Integer]} noteNum - MIDI Note Number
- * @param {Number} startTimeInQuarterNotes - Note start time in quarter notes
- * @param {Number} durationInQuarterNotes - Note length in quarter notes
+ * @param {Number} startTimeInWholeNotes - Note start time in Whole notes
+ * @param {Number} durationInWholeNotes - Note length in Whole notes
  * @param {[Integer]} velocity - Optional MIDI note velocity.
  */
-const createMidiNoteMessage = function(noteNum, startTimeInQuarterNotes, durationInQuarterNotes, velocity) {
+const createMidiNoteMessage = function(noteNum, startTimeInWholeNotes, durationInWholeNotes, velocity) {
   const args = [
     {type: 'integer', value: noteNum },
-    {type: 'float',   value: startTimeInQuarterNotes },
+    {type: 'float',   value: startTimeInWholeNotes * 4 },
   ];
 
-  if (typeof durationInQuarterNotes !== 'number') durationInQuarterNotes = 1;
+  const durationInQuarterNotes =
+    (typeof durationInWholeNotes === 'number') ? durationInWholeNotes * 4 : 1;
   args.push({ type: 'float', value: durationInQuarterNotes });
 
   if (typeof velocity === 'number') args.push({ type: 'integer', value: velocity });
@@ -54,15 +55,16 @@ const valueToMidiNoteNumber = function(value) {
 };
 
 /**
- * Convert an  object to a fluid osc message
+ * Build a OSC message that creates a clip with a bunch of midi notes
  *
  * @param { string } trackName
  * @param { string } clipName
  * @param { Number } startBeats - Clip start time in beats
  * @param { Number} lengthBeats - Clip length in beats
- * @param { Array } steps - array of { l: length, n: note, s: start } objects
+ * @param { {l:number, n: number, s: start}[] } notes - array of objects like:
+ *        { l: length, n: note, s: start } objects
  */
-const fluidObjToOsc = function(trackName, clipName, startBeats, lengthBeats, steps) {
+const fluidObjToOsc = function(trackName, clipName, startBeats, lengthBeats, notes) {
 
   elements = [
     {
@@ -80,21 +82,18 @@ const fluidObjToOsc = function(trackName, clipName, startBeats, lengthBeats, ste
     { address: '/midiclip/clear' },
   ];
 
-  steps.forEach((step) => {
+  notes.forEach((step) => {
     // YAML files specify durations in whole notes, so '1/4' is a quarter note.
     // OSC spec specifies durations in quarter notes, so 1 is a quarter note
-    const numWholeNotes = valueToWholeNotes(step.l);
-    const numQuarterNotes = numWholeNotes * 4;
-
-    const startTimeInWholeNotes = valueToWholeNotes(step.s);
-    const startTimeInQuarterNotes = startTimeInWholeNotes * 4;
+    const length = valueToWholeNotes(step.l);
+    const start = valueToWholeNotes(step.s);
 
     if (typeof step.n !== 'number' ||
         typeof step.s !== 'number' ||
         typeof step.l !== 'number')
         throw new Error('Got bad step: ' + JSON.stringify(step));
 
-    const noteMsg = createMidiNoteMessage(step.n, startTimeInQuarterNotes, numQuarterNotes, step.v);
+    const noteMsg = createMidiNoteMessage(step.n, start, length, step.v);
     elements.push(noteMsg);
   });
 
