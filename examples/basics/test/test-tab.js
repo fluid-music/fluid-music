@@ -112,3 +112,51 @@ describe('tab.patternToSymbolsAndCounts', () => {
     should(() => tab.patternToSymbolsAndCounts('1.-')).throw();
   });
 });
+
+describe('tab.parseTab', () => {
+
+  const chords = [
+    ["e4", "a4", "b4", "c#5"],
+    ["f4", "g4", "a4", "c5"],
+    ["g4", "a4", "b4", "d5"],
+  ]
+  const rhythm  = '1e+a2e+a3e+a4e+a';
+  const pattern = '0-......1-....2.';
+  const notes = [60, 64, 67];
+
+  it('should create the correct note objects', () => {
+    const result = tab.parseTab(rhythm, pattern, notes);
+    result.should.deepEqual([
+      { n: 60, s: 0.0,   l: 0.125 },
+      { n: 64, s: 0.5,   l: 0.125 },
+      { n: 67, s: 0.875, l: 0.0625 },
+    ]);
+  });
+
+  it('should also work with arrays of notes', ()=>{
+    const result = tab.parseTab(rhythm, pattern, chords);
+    result.should.deepEqual([
+      { n: 64, s: 0.0, l: 0.125 },
+      { n: 69, s: 0.0, l: 0.125 },
+      { n: 71, s: 0.0, l: 0.125 },
+      { n: 73, s: 0.0, l: 0.125 },
+
+      { n: 65, s: 0.5,   l: 0.125 },
+      { n: 67, s: 0.5,   l: 0.125 },
+      { n: 69, s: 0.5,   l: 0.125 },
+      { n: 72, s: 0.5,   l: 0.125 },
+
+      { n: 67, s: 0.875, l: 0.0625 },
+      { n: 69, s: 0.875, l: 0.0625 },
+      { n: 71, s: 0.875, l: 0.0625 },
+      { n: 74, s: 0.875, l: 0.0625 },
+    ]);
+  });
+
+  it('should throw if the pattern contains a symbol with no corresponding note/chord', () => {
+    should(() => {
+      padPattern = '0-......1-....9.';
+      tab.parseTab(rhythm, padPattern, chords);
+    }).throw();
+  });
+});

@@ -1,3 +1,5 @@
+const valueToMidiNoteNumber = require('./converters').valueToMidiNoteNumber;
+
 /**
  * Convert rhythm string to a cumulative array of durations.
  *
@@ -27,6 +29,51 @@ const parseRhythm = function(rhythm) {
   });
 
   return {totals, deltas};
+};
+
+/**
+ * Convert a rhythm, pattern, and note library to a collection of note objects.
+ *
+ * @param {string} rhythm
+ * @param {string} pattern
+ * @param {(number[]|number[][]|object)} noteLibrary - an indexable object
+ *        containing notes or arrays of notes. Can be an object or an array.
+ *        If it is an array, the pattern is limited symbols single digit
+ *        numbers 0-9.
+ *
+ *        All symbols in the pattern should reference values in the noteLibrary.
+ *
+ *        To create 'c' and 'd' quarter notes on beats 1 and 3 respectively:
+ *        rhythm  = '1234'
+ *        pattern = '0.1.'
+ *        noteLibrary = ['c4', 'd4']
+ */
+const parseTab = function(rhythm, pattern, noteLibrary) {
+  const rhythmObject = parseRhythm(rhythm);
+  const symbolsAndCounts = patternToSymbolsAndCounts(pattern);
+  let p = 0; // position (in the rhythmObject)
+  const results = [];
+
+  for (let sc of symbolsAndCounts) {
+    let symbol = sc[0];
+    let count = sc[1];
+    if (symbol !== '.') {
+      let notes = noteLibrary[symbol];
+      if (!notes) throw new Error(`noteLibrary has no note or chord for "${symbol}"`);
+      if (!Array.isArray(notes)) notes = [notes]
+      notes.forEach((note) => {
+        const start = (p === 0) ? 0 : rhythmObject.totals[p-1];
+        const end = rhythmObject.totals[p+count-1];
+        results.push({
+          n: valueToMidiNoteNumber(note),
+          s: start,
+          l: end - start,
+        });
+      });
+    }
+    p += count;
+  }
+  return results;
 };
 
 const isEmpty =   (char) => char === ' ' || char === '.';
@@ -75,7 +122,7 @@ const division = (char) => {
  * @returns {number[]}  - An array of durations for each character
  */
 const rhythmToAdvanceArray = function(rhythm) {
-  if (typeof rhythm === 'string') rhythm = rhythm.split('');
+  if (typeof rhythm === 'string') rhythm = Array.from(rhythm);
 
   const result = [];
 
@@ -169,7 +216,7 @@ const getSegmentStartTotals = function(advances) {
  * @param {string} pattern
  */
 const patternToSymbolsAndCounts = function(pattern) {
-  const chars = pattern.replace(/ /g, '.').split('');
+  const chars = Array.from(pattern.replace(/ /g, '.'));
   const results = [];
   // pattern: '0-......1-....22'
   // symbols:  0 .     1 .   22
@@ -196,6 +243,7 @@ const patternToSymbolsAndCounts = function(pattern) {
 }
 
 module.exports = {
+  parseTab,
   parseRhythm,
   rhythmToElapsedArray,
   rhythmToAdvanceArray,

@@ -19,7 +19,8 @@ const createMidiNoteMessage = function(noteNum, startTimeInWholeNotes, durationI
     (typeof durationInWholeNotes === 'number') ? durationInWholeNotes * 4 : 1;
   args.push({ type: 'float', value: durationInQuarterNotes });
 
-  if (typeof velocity === 'number') args.push({ type: 'integer', value: velocity });
+  if (typeof velocity === 'number')
+    args.push({ type: 'integer', value: velocity });
 
   return { address: '/midiclip/n', args }
 }
@@ -65,7 +66,6 @@ const valueToMidiNoteNumber = function(value) {
  *        { l: length, n: note, s: start } objects
  */
 const fluidObjToOsc = function(trackName, clipName, startBeats, lengthBeats, notes) {
-
   elements = [
     {
       address: '/audiotrack/select',
