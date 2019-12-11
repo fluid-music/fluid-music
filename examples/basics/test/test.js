@@ -72,7 +72,13 @@ describe('createMidiNoteMessage', () => {
 
 
 describe('fluidObjToOsc', () => {
-  const arpMessage = converters.fluidObjToOsc('track1', 'clip1', 1, 2, content.cMajArp);
+  const notes = [
+    { n: 60, s: 0.0, l: 0.25 },
+    { n: 64, s: 0.5, l: 0.25 },
+    { n: 67, s: 1.0, l: 0.25 },
+  ];
+
+  const arpMessage = converters.fluidObjToOsc('track1', 'clip1', 1, 2, notes);
 
   it('should have /audiotrack/select', () => {
     const trackSelect = arpMessage.elements[0];
@@ -125,18 +131,5 @@ describe('fluidObjToOsc', () => {
         { type: 'float',   value: 1 },
       ],
     }])
-  });
-
-  it('Should handle arrays of notes as well as single notes', () => {
-    const desiredNoteMessages = [
-      converters.createMidiNoteMessage(converters.valueToMidiNoteNumber('e4'), 0, 0.5),
-      converters.createMidiNoteMessage(converters.valueToMidiNoteNumber('a4'), 0, 0.5),
-      converters.createMidiNoteMessage(converters.valueToMidiNoteNumber('b4'), 0, 0.5),
-      converters.createMidiNoteMessage(converters.valueToMidiNoteNumber('c#5')  , 0, 0.5),
-    ];
-
-    const result = converters.fluidObjToOsc('supersaw', 'verse', 50, 8, content.noTearsLeftToCryVerse);
-    const firstChordMessages = result.elements.slice(3, 7);
-    firstChordMessages.should.deepEqual(desiredNoteMessages);
   });
 });

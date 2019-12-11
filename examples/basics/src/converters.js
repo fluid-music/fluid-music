@@ -55,12 +55,12 @@ const valueToMidiNoteNumber = function(value) {
 
 /**
  * Convert an  object to a fluid osc message
- * 
+ *
  * @param { string } trackName
  * @param { string } clipName
- * @param { Number } startBeats - Note start time in beats
- * @param { Number} lengthBeats - Note length in beats
- * @param { Array } steps - array of { l: length, n: note } objects
+ * @param { Number } startBeats - Clip start time in beats
+ * @param { Number} lengthBeats - Clip length in beats
+ * @param { Array } steps - array of { l: length, n: note, s: start } objects
  */
 const fluidObjToOsc = function(trackName, clipName, startBeats, lengthBeats, steps) {
 
@@ -80,22 +80,22 @@ const fluidObjToOsc = function(trackName, clipName, startBeats, lengthBeats, ste
     { address: '/midiclip/clear' },
   ];
 
-  let elapsed = 0;
-  const appendNote = (note, length) => { // add note, but do not advance elapsed Time
-    const noteNumber = valueToMidiNoteNumber(note);
-    const msg = createMidiNoteMessage(noteNumber, elapsed, length);
-    elements.push(msg);
-  }
-
   steps.forEach((step) => {
     // YAML files specify durations in whole notes, so '1/4' is a quarter note.
     // OSC spec specifies durations in quarter notes, so 1 is a quarter note
     const numWholeNotes = valueToWholeNotes(step.l);
     const numQuarterNotes = numWholeNotes * 4;
 
-    if (Array.isArray(step.n)) step.n.forEach((n) => appendNote(n, numQuarterNotes));
-    else if (step.n) appendNote(step.n, numQuarterNotes);
-    elapsed += numQuarterNotes;
+    const startTimeInWholeNotes = valueToWholeNotes(step.s);
+    const startTimeInQuarterNotes = startTimeInWholeNotes * 4;
+
+    if (typeof step.n !== 'number' ||
+        typeof step.s !== 'number' ||
+        typeof step.l !== 'number')
+        throw new Error('Got bad step: ' + JSON.stringify(step));
+
+    const noteMsg = createMidiNoteMessage(step.n, startTimeInQuarterNotes, numQuarterNotes, step.v);
+    elements.push(noteMsg);
   });
 
   return newClipMsg = {
