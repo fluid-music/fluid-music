@@ -312,7 +312,7 @@ void listPlugins(te::Engine& engine)
 
     std::cout << "Known Plugins:" << std::endl;
     for (auto type : engine.getPluginManager().knownPluginList.getTypes()) {
-        std::cout << type.descriptiveName << std::endl;
+        std::cout << type.pluginFormatName << ": " << type.descriptiveName << std::endl;
     }
     std::cout << std::endl;
 }
@@ -330,6 +330,26 @@ void listProjects(te::Engine& engine) {
         std::cout << project->getName() << " - " << project->getProjectFile().getFullPathName() << std::endl;
     }
     std::cout << std::endl;
+}
+
+void listPluginParameters(te::Engine& engine, const String pluginName) {
+    std::unique_ptr<te::Edit> edit(createEmptyEdit(File(), engine));
+    for (PluginDescription desc : engine.getPluginManager().knownPluginList.getTypes()) {
+        if (pluginName.compareIgnoreCase(desc.descriptiveName) == 0 || pluginName.compareIgnoreCase(desc.name) == 0) {
+            std::cout
+                << "Listing automatable parameters for "
+                << desc.pluginFormatName << ": "
+                << desc.descriptiveName << " - "
+                << desc.name << std::endl;
+            edit->ensureNumberOfAudioTracks(1);
+            te::AudioTrack* track = te::getFirstAudioTrack(*edit);
+            te::Plugin::Ptr plugin = edit->getPluginCache().createNewPlugin(te::ExternalPlugin::xmlTypeName, desc);
+            track->pluginList.insertPlugin(plugin, 0, nullptr);
+            for (te::AutomatableParameter* param : plugin->getAutomatableParameters()) {
+                std::cout << param->paramName << std::endl;
+            }
+        }
+    }
 }
 
 void printOscMessage(const OSCMessage& message) {

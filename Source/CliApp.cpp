@@ -112,9 +112,28 @@ void CLIApp::onRunning()
         "List available plugins",
         "Lists available plugins. This includes built-in plugins, and those\n\
         saved in the settings file. Run this after --scan-plugins to see\n\
-        which plugins were found.",
+        which plugins were found. For external plugins, the plugin type\n\
+        (ex. VST/VST3/AU) is also output even though it is not part of the\n\
+        plugin's name.",
         [this](auto&) { listPlugins(engine); }
         });
+
+    cApp.addCommand({
+        "--list-plugin-params",
+        "--list-plugin-params=name",
+        "List all the automatable parameters in the given plugin",
+        "Given a case insensite name for a plugin, print a list of all automatable\n\
+        parameters. To see a list of available plugins, use the --list-plugins\n\
+        option. NOTE: --list-plugins may output the type as well as the name. The\n\
+        type should not be included in the argument value for this argument.",
+        [this](const ArgumentList& args) {
+            String pluginName = args.getValueForOption("--list-plugin-params");
+            if (pluginName.isEmpty()) {
+                std::cout << "--list-plugin-params requires a plugin name";
+                return;
+            }
+            listPluginParameters(engine, pluginName);
+        }});
 
     cApp.addCommand({
         "--list-projects",
