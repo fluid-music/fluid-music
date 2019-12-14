@@ -21,6 +21,7 @@ void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
     }
     selectedMidiClip = nullptr;
     selectedAudioTrack = nullptr;
+    selectedPlugin = nullptr;
 }
 
 void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
@@ -40,6 +41,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/midiclip/n"})) return insertMidiNote(message);
     if (msgAddressPattern.matches({"/midiclip/select"})) return selectMidiClip(message);
     if (msgAddressPattern.matches({"/midiclip/clear"})) return clearMidiClip(message);
+    if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
     if (msgAddressPattern.matches({"/save"})) return saveActiveEdit(message);
 }
@@ -69,6 +71,13 @@ void FluidOscServer::selectAudioTrack(const juce::OSCMessage &message) {
     selectedAudioTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), trackName);
 }
 
+void FluidOscServer::selectPlugin(const OSCMessage& message) {
+    if (!message.size() || !message[0].isString()) return;
+    String pluginName = message[0].getString();
+    if (!selectedAudioTrack) return;
+    selectedPlugin = getOrCreatePluginByName(*selectedAudioTrack, pluginName);
+}
+
 void FluidOscServer::selectMidiClip(const juce::OSCMessage &message) {
     if (!selectedAudioTrack) return;
     if (!message.size() || !message[0].isString()) return;
@@ -95,7 +104,7 @@ void FluidOscServer::selectMidiClip(const juce::OSCMessage &message) {
 
 void FluidOscServer::clearMidiClip(const juce::OSCMessage &message) {
     if (!selectedMidiClip) return;
-    selectedMidiClip->clearTakes(); // I do not understand what clearTakes does
+    selectedMidiClip->clearTakes();
     selectedMidiClip->getSequence().clear(nullptr);
 }
 

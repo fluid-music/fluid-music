@@ -312,7 +312,7 @@ void listPlugins(te::Engine& engine)
 
     std::cout << "Known Plugins:" << std::endl;
     for (auto type : engine.getPluginManager().knownPluginList.getTypes()) {
-        std::cout << type.pluginFormatName << ": " << type.descriptiveName << std::endl;
+        std::cout << type.pluginFormatName << ": " << type.name << std::endl;
     }
     std::cout << std::endl;
 }
@@ -388,3 +388,43 @@ te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name
     te::MidiClip* clip = track.insertMIDIClip(name, {0, 4}, nullptr).get();
     return clip;
 }
+
+te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name) {
+    for (te::Plugin* checkPlugin : track.pluginList) {
+        if (name.compareIgnoreCase(checkPlugin->getName()) == 0) {
+            return checkPlugin;
+        }
+    }
+
+    if (!track.pluginList.canInsertPlugin()) {
+        std::cout << "Selected track cannot insert plugin: " << name << std::endl;
+        return nullptr;
+    }
+
+    for (PluginDescription desc : track.edit.engine.getPluginManager().knownPluginList.getTypes()) {
+        if (desc.name.compareIgnoreCase(name) == 0) {
+            std::cout << "inserting " << desc.name << " into track: " << track.getName() << std::endl;
+            te::Plugin::Ptr pluginPtr = track.edit.getPluginCache().createNewPlugin(te::ExternalPlugin::xmlTypeName, desc);
+
+            // insert it just before the volume. If no volume plugin is found, insert at the end
+            int insertPoint = 0;
+            bool found = false;
+            for (te::Plugin* checkPlugin : track.pluginList) {
+                std::cout << "checking plugin: " << checkPlugin->getName() << std::endl;
+                if (auto x = dynamic_cast<te::VolumeAndPanPlugin*>(checkPlugin)) {
+                    found = true;
+                    break;
+                }
+                insertPoint++;
+            }
+            if (!found) insertPoint = track.pluginList.size() - 1;
+            std::cout << "Plugin insert index: " << insertPoint << std::endl;
+            track.pluginList.insertPlugin(pluginPtr, insertPoint, nullptr);
+            return pluginPtr.get();
+        }
+    }
+
+    std::cout << "Plugin not found: " << name << std::endl;
+    return nullptr;
+}
+

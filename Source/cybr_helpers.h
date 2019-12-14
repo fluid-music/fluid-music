@@ -37,6 +37,7 @@ void printOscMessage(const OSCMessage& message);
 
 te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name);
 te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name);
+te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name);
 
 class CybrEdit;
 /** Create a copy of a the cybrEdit, suitable for playback and editing.
