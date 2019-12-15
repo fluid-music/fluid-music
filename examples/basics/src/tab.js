@@ -47,6 +47,7 @@ const parseRhythm = function(rhythm) {
  *        rhythm  = '1234'
  *        pattern = '0.1.'
  *        noteLibrary = ['c4', 'd4']
+ *        noteLibrary = {'0': 'c4', '1': 'd4' }
  */
 const parseTab = function(rhythm, pattern, noteLibrary) {
   const rhythmObject = parseRhythm(rhythm);

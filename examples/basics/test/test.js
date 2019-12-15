@@ -4,6 +4,7 @@ const should = require('should');
 const mocha = require('mocha');
 
 const converters = require('../src/converters');
+const fluid = require('../src/fluidOsc');
 const file = fs.readFileSync('./test/test-content.yaml', 'utf8');
 const content = YAML.parse(file);
 
@@ -62,13 +63,13 @@ describe('createMidiNoteMessage', () => {
   };
 
   it('Should create an object designed for osc.toBuffer()', () => {
-    converters.createMidiNoteMessage(noteNum, startTimeInWholeNotes, durationInWholeNotes)
+    fluid.midiclip.note(noteNum, startTimeInWholeNotes, durationInWholeNotes)
       .should.deepEqual(desiredResult);
   });
 
   it('should include an extra argument if a velocity is supplied', () => {
     desiredResult.args.push({ type: 'integer', value: velocity });
-    converters.createMidiNoteMessage(noteNum, startTimeInWholeNotes, durationInWholeNotes, velocity)
+    fluid.midiclip.note(noteNum, startTimeInWholeNotes, durationInWholeNotes, velocity)
       .should.deepEqual(desiredResult);
   });
 });
@@ -81,7 +82,7 @@ describe('fluidObjToOsc', () => {
     { n: 67, s: 1.0, l: 0.25 },
   ];
 
-  const arpMessage = converters.fluidObjToOsc('track1', 'clip1', 1, 2, notes);
+  const arpMessage = fluid.createMidiClip('track1', 'clip1', 1, 2, notes);
 
   it('should have /audiotrack/select', () => {
     const trackSelect = arpMessage.elements[0];
