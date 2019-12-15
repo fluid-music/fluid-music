@@ -335,7 +335,7 @@ void listProjects(te::Engine& engine) {
 void listPluginParameters(te::Engine& engine, const String pluginName) {
     std::unique_ptr<te::Edit> edit(createEmptyEdit(File(), engine));
     for (PluginDescription desc : engine.getPluginManager().knownPluginList.getTypes()) {
-        if (pluginName.compareIgnoreCase(desc.descriptiveName) == 0 || pluginName.compareIgnoreCase(desc.name) == 0) {
+        if (pluginName.equalsIgnoreCase(desc.descriptiveName) || pluginName.equalsIgnoreCase(desc.name)) {
             std::cout
                 << "Listing automatable parameters for "
                 << desc.pluginFormatName << ": "
@@ -389,10 +389,19 @@ te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name
     return clip;
 }
 
-te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name) {
+te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, const String type) {
     for (te::Plugin* checkPlugin : track.pluginList) {
-        if (name.compareIgnoreCase(checkPlugin->getName()) == 0) {
-            return checkPlugin;
+        if (name.equalsIgnoreCase(checkPlugin->getName())) {
+            if (type.isEmpty()) {
+                // any type is okay
+                return checkPlugin;
+            }
+            else {
+                // verify type
+                if (type.equalsIgnoreCase(checkPlugin->getPluginType())) {
+                    return checkPlugin;
+                }
+            }
         }
     }
 
@@ -402,8 +411,15 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name) {
     }
 
     for (PluginDescription desc : track.edit.engine.getPluginManager().knownPluginList.getTypes()) {
-        if (desc.name.compareIgnoreCase(name) == 0) {
-            std::cout << "inserting " << desc.name << " into track: " << track.getName() << std::endl;
+        if (desc.name.equalsIgnoreCase(name)) {
+            if (type.isNotEmpty()) {
+                if (!type.equalsIgnoreCase(desc.pluginFormatName)) {
+                    continue;
+                }
+            }
+            std::cout
+                << "Inserting \"" << desc.name << "\" (" << desc.pluginFormatName << ") "
+                << "into track: " << track.getName() << std::endl;
             te::Plugin::Ptr pluginPtr = track.edit.getPluginCache().createNewPlugin(te::ExternalPlugin::xmlTypeName, desc);
 
             // insert it just before the volume. If no volume plugin is found, insert at the end
@@ -424,7 +440,8 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name) {
         }
     }
 
-    std::cout << "Plugin not found: " << name << std::endl;
+    String typeName = type.isEmpty() ? "any plugin type" : type;
+    std::cout << "Plugin not found: " << name << " (" << typeName << ") " << std::endl;
     return nullptr;
 }
 

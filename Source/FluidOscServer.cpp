@@ -42,6 +42,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/midiclip/select"})) return selectMidiClip(message);
     if (msgAddressPattern.matches({"/midiclip/clear"})) return clearMidiClip(message);
     if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
+    if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
     if (msgAddressPattern.matches({"/save"})) return saveActiveEdit(message);
 }
@@ -74,8 +75,33 @@ void FluidOscServer::selectAudioTrack(const juce::OSCMessage &message) {
 void FluidOscServer::selectPlugin(const OSCMessage& message) {
     if (!message.size() || !message[0].isString()) return;
     String pluginName = message[0].getString();
+    String pluginFormat = String();
+
+    if (message.size() >= 2 && message[1].isString())
+        pluginFormat = message[1].getString();
+
     if (!selectedAudioTrack) return;
-    selectedPlugin = getOrCreatePluginByName(*selectedAudioTrack, pluginName);
+    selectedPlugin = getOrCreatePluginByName(*selectedAudioTrack, pluginName, pluginFormat);
+}
+
+void FluidOscServer::setPluginParam(const OSCMessage& message) {
+    if (message.size() > 2 ||
+        !message[0].isString() ||
+        !message[1].isFloat32()) return;
+
+    if (!selectedPlugin) return;
+
+    String paramName = message[0].getString();
+    float paramValue = message[1].getFloat32();
+    for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
+        if (param->paramName.equalsIgnoreCase(paramName)) {
+            param->beginParameterChangeGesture();
+            param->setNormalisedParameter(paramValue, NotificationType::dontSendNotification);
+            param->endParameterChangeGesture();
+            std::cout << "set " << paramName << " to " << paramValue << std::endl;
+            break;
+        }
+    }
 }
 
 void FluidOscServer::selectMidiClip(const juce::OSCMessage &message) {

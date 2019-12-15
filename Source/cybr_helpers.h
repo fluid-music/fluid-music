@@ -37,7 +37,9 @@ void printOscMessage(const OSCMessage& message);
 
 te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name);
 te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name);
-te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name);
+/** Add a plugin just before the VolumeAndPan plugin.
+ If type is an empty string, search all types. */
+te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, const String type = {});
 
 class CybrEdit;
 /** Create a copy of a the cybrEdit, suitable for playback and editing.

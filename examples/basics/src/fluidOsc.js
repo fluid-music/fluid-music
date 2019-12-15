@@ -94,13 +94,46 @@ const midiclip = {
 
 
 const plugin = {
-  select(pluginName) {
+  /**
+   * Creates an object that looks like this:
+   *  {
+   *    address: '/plugin/select',
+   *    args: [
+   *      { type: 'string', value: 'zebra2' },
+   *      { type: 'string', value: 'vst' },
+   *    ],
+   *  }
+   * @param {string} pluginName - the name of the vst plugin
+   * @param {[string]} pluginType - optional type, for example 'vst', 'vst3'.
+   *        If omitted, search all types.
+   */
+  select(pluginName, pluginType) {
     if (typeof pluginName !== 'string')
       throw new Error('plugin.select(pluginName) needs a string, got: ' + undefined);
+
+    const args = [{ type: 'string', value: pluginName}];
+    if (typeof pluginType === 'string') {
+      if (pluginType.toLowerCase() === 'vst2') {
+        throw new Error('"vst2" is not a valid plugin type, use "vst" instead');
+      }
+      args.push({ type: 'string', value: pluginType });
+    }
+
+    return { args, address: '/plugin/select' };
+  },
+
+  setParam(paramName, normalizedValue) {
+    if (typeof paramName !== 'string')
+      throw new Error('plugin.setParam needs a parameterName, got: ' + paramName);
+    if (typeof normalizedValue !== 'number')
+      throw new Error('plugin.setParam needs a value number, got ' + normalizedValue);
     return {
-      address: '/plugin/select',
-      args: [{ type: 'string', value: pluginName}],
-    };
+      address: '/plugin/param/set',
+      args: [
+        { type: 'string', value: paramName },
+        { type: 'float', value: normalizedValue },
+      ],
+    }
   }
 };
 

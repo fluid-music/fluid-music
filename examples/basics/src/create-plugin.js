@@ -11,9 +11,12 @@ const pattern = '0-......1-....2.';
 const noteObjects = tab.parseTab(rhythm, pattern, chords);
 const elements = [
   fluid.audiotrack.select('supersaw'),
-  fluid.plugin.select('zebra2'),
+  fluid.plugin.select('zebra2', 'vst'),
+  fluid.plugin.setParam('ENV1: Attack', 0.5),
+  fluid.plugin.setParam('VCF1: Cutoff', 0.5),
   fluid.plugin.select('zrev'),
-  fluid.midiclip.create('supersaw', 'CharlesClip', 0, 8, noteObjects),
+  fluid.midiclip.create('supersaw', 'p1', 0, 8, noteObjects),
+  fluid.midiclip.create('supersaw', 'p2', 8, 8, noteObjects),
   fluid.global.save('out.tracktionedit', false),
 ];
 

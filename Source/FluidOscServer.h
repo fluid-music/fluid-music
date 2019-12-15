@@ -29,6 +29,7 @@ public:
     void selectAudioTrack(const OSCMessage& message);
     void selectMidiClip(const OSCMessage& message);
     void selectPlugin(const OSCMessage& message);
+    void setPluginParam(const OSCMessage& message);
     void clearMidiClip(const OSCMessage& message);
     void insertMidiNote(const OSCMessage& message);
     void saveActiveEdit(const OSCMessage& message);
