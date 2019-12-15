@@ -12,10 +12,34 @@ module.exports = class FluidOscSender {
     this.client = dgram.createSocket('udp4');
   }
 
-  send(msgObject) {
+  /**
+   * Send an osc message or bundle.
+   * @param {object|object[]|Buffer} msgObject - The osc message to be sent.
+   *        If the type is:
+   *          - object - parse it with the osc-min npm module
+   *          - object[] - parse as a bundle. each object is an osc-min message
+   *          - Buffer - send the raw buffer
+   *        Expects objects to be in the npm osc-min format, which look like:
+   *        {
+   *          address: '/some/address',
+   *          args: [
+   *            { type: 'string', value: 'hi there' },
+   *            { type: 'integer', value: 100 },
+   *            { type: 'float', value: 3.14159 },
+   *          ]
+   *        }
+   * @param {[number]} [timetag = 0] - timetag is only used if first argument is
+   *        array.
+   */
+  send(msgObject, timetag) {
     let buffer;
     if (msgObject instanceof Buffer)
       buffer = msgObject;
+    else if (Array.isArray(msgObject))
+      buffer = osc.toBuffer({
+        oscType: 'bundle',
+        timetag: typeof timetag === 'number' ? timetag : 0,
+        elements: msgObject });
     else
       buffer = osc.toBuffer(msgObject);
 

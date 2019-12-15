@@ -104,8 +104,26 @@ const plugin = {
   }
 };
 
+const global = {
+  /**
+   * @param {string} filename - '.tracktionedit' or '.wav' filename
+   * @param {[bool]} absolute - If true use absolute paths for audio file
+   *        references. Else use relative paths.
+   */
+  save(filename, absolute) {
+    return {
+      address: '/save',
+      args: [
+        { type: 'string', value: filename },
+        { type: 'string', value: absolute ? 'absolute' : 'relative' },
+      ],
+    };
+  },
+}
+
 module.exports = {
   midiclip,
   audiotrack,
   plugin,
+  global,
 };
