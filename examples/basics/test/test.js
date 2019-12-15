@@ -75,14 +75,14 @@ describe('createMidiNoteMessage', () => {
 });
 
 
-describe('fluidObjToOsc', () => {
+describe('midiclip.create', () => {
   const notes = [
     { n: 60, s: 0.0, l: 0.25 },
     { n: 64, s: 0.5, l: 0.25 },
     { n: 67, s: 1.0, l: 0.25 },
   ];
 
-  const arpMessage = fluid.createMidiClip('track1', 'clip1', 1, 2, notes);
+  const arpMessage = fluid.midiclip.create('track1', 'clip1', 1, 2, notes);
 
   it('should have /audiotrack/select', () => {
     const trackSelect = arpMessage.elements[0];

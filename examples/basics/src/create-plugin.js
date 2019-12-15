@@ -24,7 +24,7 @@ const bundle = {
     fluid.audiotrack.select('Hahahaha'),
     fluid.plugin.select('zebra2'),
     fluid.plugin.select('zrev'),
-    fluid.createMidiClip('CharlezTrack', 'CharlesClip', 1, 8, noteObjects),
+    fluid.midiclip.create('CharlezTrack', 'CharlesClip', 1, 8, noteObjects),
     saveMsg
   ],
 };

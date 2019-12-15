@@ -53,7 +53,43 @@ const midiclip = {
       args.push({ type: 'integer', value: velocity });
 
     return { address: '/midiclip/n', args }
-  }
+  },
+
+  /**
+   * Build a OSC message that creates a clip with a bunch of midi notes
+   *
+   * @param { string } trackName
+   * @param { string } clipName
+   * @param { Number } startBeats - Clip start time in quarter notes
+   * @param { Number} lengthBeats - Clip length in quarter notes
+   * @param { {l:number, n: number, s: start}[] } notes - array of objects like:
+   *        { l: length, n: note, s: start } objects
+   */
+  create(trackName, clipName, startBeats, lengthBeats, notes) {
+    elements = [
+      audiotrack.select(trackName),
+      midiclip.select(clipName, startBeats, lengthBeats),
+      midiclip.clear(),
+    ];
+
+    notes.forEach((note) => {
+      if (typeof note.n !== 'number' ||
+          typeof note.s !== 'number' ||
+          typeof note.l !== 'number')
+          throw new Error('Got bad note: ' + JSON.stringify(note));
+
+      const length = converters.valueToWholeNotes(note.l);
+      const start = converters.valueToWholeNotes(note.s);
+      const noteMsg = midiclip.note(note.n, start, length, note.v);
+      elements.push(noteMsg);
+    });
+
+    return newClipMsg = {
+      oscType: 'bundle',
+      timetag: 0,
+      elements
+    };
+  },
 };
 
 
@@ -68,46 +104,8 @@ const plugin = {
   }
 };
 
-
-/**
- * Build a OSC message that creates a clip with a bunch of midi notes
- *
- * @param { string } trackName
- * @param { string } clipName
- * @param { Number } startBeats - Clip start time in quarter notes
- * @param { Number} lengthBeats - Clip length in quarter notes
- * @param { {l:number, n: number, s: start}[] } notes - array of objects like:
- *        { l: length, n: note, s: start } objects
- */
-const createMidiClip = function(trackName, clipName, startBeats, lengthBeats, notes) {
-  elements = [
-    audiotrack.select(trackName),
-    midiclip.select(clipName, startBeats, lengthBeats),
-    midiclip.clear(),
-  ];
-
-  notes.forEach((note) => {
-    if (typeof note.n !== 'number' ||
-        typeof note.s !== 'number' ||
-        typeof note.l !== 'number')
-        throw new Error('Got bad note: ' + JSON.stringify(note));
-
-    const length = converters.valueToWholeNotes(note.l);
-    const start = converters.valueToWholeNotes(note.s);
-    const noteMsg = midiclip.note(note.n, start, length, note.v);
-    elements.push(noteMsg);
-  });
-
-  return newClipMsg = {
-    oscType: 'bundle',
-    timetag: 0,
-    elements
-  };
-};
-
 module.exports = {
   midiclip,
   audiotrack,
   plugin,
-  createMidiClip,
 };
