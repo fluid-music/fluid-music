@@ -389,6 +389,27 @@ void printPreset(te::Plugin* plugin) {
     }
 }
 
+void saveTracktionPreset(te::Plugin* plugin, String name) {
+    if (!plugin) {
+        assert(false);
+        return;
+    }
+    File file = File::getCurrentWorkingDirectory().getChildFile(File::createLegalFileName(name)).withFileExtension(".trkpreset");
+    if (!file.hasWriteAccess()) {
+        std::cout << "Cannot write to file: does not have write access: " << file.getFullPathName() << std::endl;
+        return;
+    }
+    ValueTree state(te::IDs::PRESET);
+    plugin->flushPluginStateToValueTree();
+    state.appendChild(plugin->state.createCopy(), nullptr);
+    state.setProperty(te::IDs::name, name, nullptr);
+    state.setProperty(te::IDs::filename, file.getFileName(), nullptr);
+    state.setProperty(te::IDs::path, file.getParentDirectory().getFullPathName(), nullptr);
+    state.setProperty(te::IDs::tags, "cybr", nullptr);
+    state.createXml()->writeTo(file);
+    std::cout << "Wrote plugin to file: " << file.getFullPathName() << std::endl;
+}
+
 void printOscMessage(const OSCMessage& message) {
     std::cout << message.getAddressPattern().toString();
     for (const auto& arg : message) {

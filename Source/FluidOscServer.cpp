@@ -171,5 +171,6 @@ void FluidOscServer::insertMidiNote(const juce::OSCMessage &message) {
 
 void FluidOscServer::savePreset(const juce::OSCMessage& message) {
     if (!selectedPlugin) return;
-    printPreset(selectedPlugin);
+    if (message.size() < 1 || !message[0].isString()) return;
+    saveTracktionPreset(selectedPlugin, message[0].getString());
 }
