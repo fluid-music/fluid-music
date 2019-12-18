@@ -33,6 +33,7 @@ void scanVst3(te::Engine& engine);
 void listPlugins(te::Engine& engine);
 void listProjects(te::Engine& engine);
 void listPluginParameters(te::Engine& engine, const String pluginName);
+void listPluginPresets(te::Engine& engine, const String pluginName);
 void printOscMessage(const OSCMessage& message);
 
 te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name);

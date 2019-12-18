@@ -1,11 +1,5 @@
-const fs  = require('fs');
-const YAML = require('yaml');
-const converters = require('./converters');
 const tab = require('./tab');
 const fluid = require('./fluidOsc');
-
-const file = fs.readFileSync('basics.yaml', 'utf8');
-const result = YAML.parse(file);
 
 const chords = [
   ["e4", "a4", "b4", "c#5"],
@@ -15,10 +9,15 @@ const chords = [
 const rhythm  = '1e+a2e+a3e+a4e+a';
 const pattern = '0-......1-....2.';
 const noteObjects = tab.parseTab(rhythm, pattern, chords);
-const oscMsg = fluid.midiclip.create('supersaw', 'verse clip', 1, 8, noteObjects);
 
 const FluidClient = require('./FluidClient');
 const client = new FluidClient(9999);
 
-client.send(oscMsg);
-client.send(fluid.global.save('out.tracktionedit'));
+client.send([
+  fluid.audiotrack.select('supersaw'),
+  fluid.plugin.select('zebra2', 'vst'),
+  fluid.midiclip.create('supersaw', 'v1.1', 0, 8, noteObjects),
+  fluid.midiclip.create('supersaw', 'v2.2', 8, 8, noteObjects),
+  fluid.plugin.reverb.automate('wet', 10),
+  fluid.global.save('out.tracktionedit'),
+]);

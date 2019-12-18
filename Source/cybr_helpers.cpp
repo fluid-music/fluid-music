@@ -347,6 +347,33 @@ void listPluginParameters(te::Engine& engine, const String pluginName) {
     }
 }
 
+void listPluginPresets(te::Engine& engine, const String pluginName) {
+    std::unique_ptr<te::Edit> edit(createEmptyEdit(File(), engine));
+    edit->ensureNumberOfAudioTracks(1);
+    te::AudioTrack* track = te::getFirstAudioTrack(*edit);
+    te::Plugin* plugin = getOrCreatePluginByName(*track, pluginName);
+    if (!plugin) {
+        std::cout << "Plugin not found: " << pluginName << std::endl;
+        return;
+    }
+    if (!plugin) return;
+    if (auto extPlugin = dynamic_cast<te::ExternalPlugin*>(plugin)) {
+        std::cout << "ExternalPlugin::getProgramName(i) for " << extPlugin->getName() << std::endl;
+        int numPrograms = extPlugin->getNumPrograms();
+        for (int i = 0; i < numPrograms; i++)
+            std::cout << i << " - " << extPlugin->getProgramName(i) << std::endl;
+        if (auto vst2 = dynamic_cast<te::Plugin::Vs>(<#expression#>))
+    }
+    {
+        std::cout << "Plugin::hasNameForMidiProgram for " << plugin->getName() << std::endl;
+        for (int i = 0; i <= 127; i++) {
+            String programName;
+            if (plugin->hasNameForMidiProgram(i, 0, programName))
+                std::cout << "Program: (" << i << ") " << programName << std::endl;
+        }
+    }
+}
+
 void printOscMessage(const OSCMessage& message) {
     std::cout << message.getAddressPattern().toString();
     for (const auto& arg : message) {
@@ -390,7 +417,7 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
         // checkPlugin->getPluginType();   // "volume" - this is the "type" XML parameter
         // checkPlugin->getName();         // "Volume & Pan Plugin"
         // External plugins like "zebra 2"
-        // checkPlugin->getPluginType();   // "vst"
+        // checkPlugin->getPluginType();   // "VST" or "VST3" of "AudioUnit"
         // checkPlugin->getName();         // "Zebra2"
         bool match = false;
         if (auto x = dynamic_cast<te::ExternalPlugin*>(checkPlugin)) {

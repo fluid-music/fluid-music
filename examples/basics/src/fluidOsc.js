@@ -104,8 +104,8 @@ const plugin = {
    *    ],
    *  }
    * @param {string} pluginName - the name of the vst plugin
-   * @param {[string]} pluginType - optional type, for example 'vst', 'vst3'.
-   *        If omitted, search all types.
+   * @param {[string]} pluginType - optional type, for example 'VST', 'VST3',
+   *        'AudioUnit'. If omitted, search all types.
    */
   select(pluginName, pluginType) {
     if (typeof pluginName !== 'string')
