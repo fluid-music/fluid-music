@@ -362,7 +362,6 @@ void listPluginPresets(te::Engine& engine, const String pluginName) {
         int numPrograms = extPlugin->getNumPrograms();
         for (int i = 0; i < numPrograms; i++)
             std::cout << i << " - " << extPlugin->getProgramName(i) << std::endl;
-        if (auto vst2 = dynamic_cast<te::Plugin::Vs>(<#expression#>))
     }
     {
         std::cout << "Plugin::hasNameForMidiProgram for " << plugin->getName() << std::endl;

@@ -128,7 +128,7 @@ void CLIApp::onRunning()
         type should not be included in the argument value for this argument.\n\
         \n\
         IMPORTANT: For internal plugins, the plugin name is case sensitive.\n\
-        for external plugins (VST/VST2/AudioUnit) the name is case insensitive.",
+        for external plugins (VST/VST3/AudioUnit) the name is case insensitive.",
         [this](const ArgumentList& args) {
             String pluginName = args.getValueForOption("--list-plugin-params");
             if (pluginName.isEmpty()) {
@@ -143,9 +143,8 @@ void CLIApp::onRunning()
         "--list-plugin-presets=name",
         "Print all presets (programs) for a named plugin",
         "Print all presets (programs) for a named plugin\n\
-        \n\
         IMPORTANT: For internal plugins, the plugin name is case sensitive.\n\
-        for external plugins (VST/VST2/AudioUnit) the name is case insensitive.",
+        for external plugins (VST/VST3/AudioUnit) the name is case insensitive.",
         [this](const ArgumentList& args) {
             String pluginName = args.getValueForOption("--list-plugin-presets");
             if (pluginName.isEmpty()) {
