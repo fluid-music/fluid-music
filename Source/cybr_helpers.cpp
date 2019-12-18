@@ -356,7 +356,6 @@ void listPluginPresets(te::Engine& engine, const String pluginName) {
         std::cout << "Plugin not found: " << pluginName << std::endl;
         return;
     }
-    if (!plugin) return;
     if (auto extPlugin = dynamic_cast<te::ExternalPlugin*>(plugin)) {
         std::cout << "ExternalPlugin::getProgramName(i) for " << extPlugin->getName() << std::endl;
         int numPrograms = extPlugin->getNumPrograms();
@@ -370,6 +369,23 @@ void listPluginPresets(te::Engine& engine, const String pluginName) {
             if (plugin->hasNameForMidiProgram(i, 0, programName))
                 std::cout << "Program: (" << i << ") " << programName << std::endl;
         }
+    }
+}
+
+void printPreset(te::Plugin* plugin) {
+    if (!plugin) return;
+    if (auto extPlugin = dynamic_cast<te::ExternalPlugin*>(plugin)) {
+        AudioPluginInstance*  jucePlugin = extPlugin->getAudioPluginInstance();
+        MemoryBlock mb;
+        jucePlugin->suspendProcessing(true);
+        if (extPlugin->isVST()) VSTPluginFormat::saveToFXBFile(jucePlugin, mb, false);
+        else jucePlugin->getStateInformation(mb); // works for vst3 and tracktion plugins
+        jucePlugin->suspendProcessing(false);
+        std::cout << "Plugin state: " << std::endl << mb.toBase64Encoding() << std::endl;
+    } else {
+        plugin->flushPluginStateToValueTree(); // FluishPlugin State helped me figure out how to access state in a thread-safe way
+        std::cout << "Showing xml state, because " << plugin->getName() << " is not an external plugin" << std::endl;
+        std::cout << plugin->state.toXmlString() << std::endl;
     }
 }
 

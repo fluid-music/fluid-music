@@ -43,6 +43,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/midiclip/clear"})) return clearMidiClip(message);
     if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
     if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
+    if (msgAddressPattern.matches({"/plugin/save"})) return savePreset(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
     if (msgAddressPattern.matches({"/save"})) return saveActiveEdit(message);
 }
@@ -166,4 +167,9 @@ void FluidOscServer::insertMidiNote(const juce::OSCMessage &message) {
 
     te::MidiList& notes = selectedMidiClip->getSequence();
     notes.addNote(noteNumber, startBeat, lengthInBeats, velocity, colorIndex, nullptr);
+}
+
+void FluidOscServer::savePreset(const juce::OSCMessage& message) {
+    if (!selectedPlugin) return;
+    printPreset(selectedPlugin);
 }

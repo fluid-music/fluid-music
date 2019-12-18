@@ -35,6 +35,7 @@ void listProjects(te::Engine& engine);
 void listPluginParameters(te::Engine& engine, const String pluginName);
 void listPluginPresets(te::Engine& engine, const String pluginName);
 void printOscMessage(const OSCMessage& message);
+void printPreset(te::Plugin* plugin);
 
 te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name);
 te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name);
