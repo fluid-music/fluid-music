@@ -245,10 +245,10 @@ void CLIApp::onRunning()
         } });
 
     cApp.addCommand({
-        "--print-config-path",
-        "--print-config-path",
-        "Print full settings file name",
-        "Find the config settings file",
+        "--print-config-filename",
+        "--print-config-filename",
+        "Print the complete settings filename.",
+        "Print the complete path and filename of the settings file",
         [](const ArgumentList&) {
             std::cout << te::getApplicationSettings()->getFile().getFullPathName() << std::endl;
         } });
