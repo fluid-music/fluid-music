@@ -46,12 +46,12 @@ void CLIApp::shutdown()
 
 const String CLIApp::getApplicationName() 
 {
-    return "Cybernetic Production";
+    return "cybr";
 }
 
 const String CLIApp::getApplicationVersion() 
 {
-    return "0.0.1";
+    return "0.1.0";
 }
 
 

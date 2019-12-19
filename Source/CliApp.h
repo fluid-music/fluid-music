@@ -19,6 +19,22 @@
 #include "OscInputDevice.h"
 #include "FluidOscServer.h"
 
+class CybrProps : public te::PropertyStorage {
+public:
+    CybrProps(const String appname) : te::PropertyStorage(appname) {};
+    File getAppPrefsFolder() override {
+        // Using juce::PropertiesFile only to get a nice cross-platform application
+        // data directory. te::ApplicationSettings and te::PropertyStorage handle
+        // everything else.
+        PropertiesFile::Options jucePropOpts;
+        jucePropOpts.osxLibrarySubFolder = "Application Support";
+        jucePropOpts.folderName = getApplicationName();
+        jucePropOpts.applicationName = getApplicationName();
+        PropertiesFile juceProps(jucePropOpts);
+
+        return juceProps.getFile().getParentDirectory();
+    }
+};
 
 class CLIApp : public JUCEApplicationBase, ChangeListener {
 
@@ -110,7 +126,7 @@ private:
         bool helpModeFlag = false;
     } options;
 
-    tracktion_engine::Engine engine{ getApplicationName(), std::make_unique<CliUiBehaviour>(), nullptr };
+    tracktion_engine::Engine engine{ std::make_unique<CybrProps>(getApplicationName()), std::make_unique<CliUiBehaviour>(), nullptr };
     AppJobs appJobs;
 
     // cybrEdit is a wrapper around edit.
