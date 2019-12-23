@@ -394,7 +394,12 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
         assert(false);
         return;
     }
-    File file = File::getCurrentWorkingDirectory().getChildFile(File::createLegalFileName(name)).withFileExtension(".trkpreset");
+
+    if (!name.endsWithIgnoreCase(".trkpreset")) name.append(".trkpreset", 10);
+
+    File file = File::getCurrentWorkingDirectory()
+        .getChildFile(File::createLegalFileName(name));
+
     if (!file.hasWriteAccess()) {
         std::cout << "Cannot write to file: does not have write access: " << file.getFullPathName() << std::endl;
         return;
@@ -408,6 +413,18 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
     state.setProperty(te::IDs::tags, "cybr", nullptr);
     state.createXml()->writeTo(file);
     std::cout << "Wrote plugin to file: " << file.getFullPathName() << std::endl;
+}
+
+ValueTree loadXmlFile(File file) {
+    ValueTree result{};
+
+    if (file.existsAsFile()) {
+        if (auto xml = XmlDocument::parse(file)) result = ValueTree::fromXml(*xml.get());
+        else std::cout << "Failed to parse xml in: " << file.getFullPathName() << std::endl;
+    } else {
+        std::cout << "File does not exist!" << std::endl;
+    }
+    return result;
 }
 
 void printOscMessage(const OSCMessage& message) {

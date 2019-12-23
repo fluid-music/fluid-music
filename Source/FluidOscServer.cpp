@@ -43,7 +43,8 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/midiclip/clear"})) return clearMidiClip(message);
     if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
     if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
-    if (msgAddressPattern.matches({"/plugin/save"})) return savePreset(message);
+    if (msgAddressPattern.matches({"/plugin/save"})) return savePluginPreset(message);
+    if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
     if (msgAddressPattern.matches({"/save"})) return saveActiveEdit(message);
 }
@@ -105,6 +106,74 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
     }
 }
 
+void FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
+    if (!selectedPlugin) return;
+    if (message.size() < 1 || !message[0].isString()) return;
+    saveTracktionPreset(selectedPlugin, message[0].getString());
+}
+
+void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
+    if (!selectedAudioTrack) {
+        std::cout << "Cannot load plugin preset: No audio track selected" << std::endl;
+        return;
+    }
+
+    if (message.size() < 1 || !message[0].isString()) {
+        std::cout << "Cannot load plugin preset: Message has no preset name" << std::endl;
+        return;
+    }
+
+    String filename = message[0].getString();
+    if (!filename.endsWithIgnoreCase(".trkpreset")) filename.append(".trkpreset", 10);
+    File file = File::getCurrentWorkingDirectory().getChildFile(filename);
+    ValueTree v = loadXmlFile(file);
+
+    if (!v.isValid()) {
+        std::cout << "Cannot load plugin preset: Failed to load and parse file" << std::endl;
+        return;
+    }
+
+    for (auto child : v) {
+        if (!child.hasType(te::IDs::PLUGIN)) continue;
+        if (!child.hasProperty(te::IDs::name) || !child.hasProperty(te::IDs::type)) continue;
+        const String type = child[te::IDs::type];
+        const String name = child[te::IDs::name];
+        const var state = child[te::IDs::state];
+
+        if (!child[te::IDs::type].isString() || !child[te::IDs::name].isString()) {
+            std::cout << "Cannot load plugin preset: plugin has invalid type/name: " << name <<  "/" << type << std::endl;
+            continue;
+        }
+        if (state.isVoid() || !state.isString()) {
+            std::cout << "Cannot load plugin preset: plugin preset has invalid state property" << std::endl;
+            continue;
+        }
+
+        std::cout << "Found preset: " << name << " - " << type << std::endl;
+
+        if (te::Plugin* plugin = getOrCreatePluginByName(*selectedAudioTrack, name, type)) {
+            // Here I copy the state over, but note that there are other properties
+            // that might be worth copying as well. However, we probably do not want
+            // to copy everything, for example the "name" and "type" should already
+            // be valid, because they were retrieved with getOrCreatePluginByName.
+            // We definitely do not want to copy the "uid", because if we use the one
+            // that was created for us it will definitely be unique.
+            // The "filename" we definitely do not want to copy, becasue it may be
+            // different on this machine than on others.
+            //
+            // Things that we should maybe consider copying:
+            // windowLocked="1" enabled="1" programNum="0"
+            plugin->state.setProperty(te::IDs::state, state, nullptr);
+            std::cout
+                << "Track: " << selectedAudioTrack->getName()
+                << " loaded preset: " << file.getFullPathName() << std::endl;
+        } else {
+            std::cout << "Cannot load plugin preset: failed to create plugin with type/name" << name <<  "/" << type << std::endl;
+            continue;
+        };
+    }
+}
+
 void FluidOscServer::selectMidiClip(const juce::OSCMessage &message) {
     if (!selectedAudioTrack) return;
     if (!message.size() || !message[0].isString()) return;
@@ -117,7 +186,6 @@ void FluidOscServer::selectMidiClip(const juce::OSCMessage &message) {
         double startBeats = message[1].getFloat32();
         double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
         selectedMidiClip->setStart(startSeconds, false, true);
-
     }
     // Clip length
     if (message.size() >= 3 && message[2].isFloat32()) {
@@ -169,8 +237,3 @@ void FluidOscServer::insertMidiNote(const juce::OSCMessage &message) {
     notes.addNote(noteNumber, startBeat, lengthInBeats, velocity, colorIndex, nullptr);
 }
 
-void FluidOscServer::savePreset(const juce::OSCMessage& message) {
-    if (!selectedPlugin) return;
-    if (message.size() < 1 || !message[0].isString()) return;
-    saveTracktionPreset(selectedPlugin, message[0].getString());
-}
