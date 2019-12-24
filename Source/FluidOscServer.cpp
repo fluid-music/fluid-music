@@ -133,42 +133,51 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
         return;
     }
 
-    for (auto child : v) {
-        if (!child.hasType(te::IDs::PLUGIN)) continue;
-        if (!child.hasProperty(te::IDs::name) || !child.hasProperty(te::IDs::type)) continue;
-        const String type = child[te::IDs::type];
-        const String name = child[te::IDs::name];
-        const var state = child[te::IDs::state];
+    for (ValueTree preset : v) {
+        if (!preset.hasType(te::IDs::PLUGIN)) continue;
+        if (!preset.hasProperty(te::IDs::type)) continue;
+        String type = preset[te::IDs::type];
+        String name = preset[te::IDs::name];
 
-        if (!child[te::IDs::type].isString() || !child[te::IDs::name].isString()) {
-            std::cout << "Cannot load plugin preset: plugin has invalid type/name: " << name <<  "/" << type << std::endl;
+        // Tracktion plugins have a type property but no name property.
+        // getOrCreatePluginByName expect 'name' to be the name of the vst or
+        // 'type' of the tracktion plugin (which does not have a name).
+        // This sillyness allows us to get a plugin from a preset
+        if (!preset.hasProperty(te::IDs::name)) {
+            name = type;
+            type = String();
+        }
+
+        if (name.isEmpty()) {
+            std::cout << "Cannot load plugin preset: plugin has invalid type: " << type << std::endl;
             continue;
         }
-        if (state.isVoid() || !state.isString()) {
-            std::cout << "Cannot load plugin preset: plugin preset has invalid state property" << std::endl;
-            continue;
-        }
 
-        std::cout << "Found preset: " << name << " - " << type << std::endl;
+        std::cout << "Found preset: " << type << "/" << name << std::endl;
 
         if (te::Plugin* plugin = getOrCreatePluginByName(*selectedAudioTrack, name, type)) {
-            // Here I copy the state over, but note that there are other properties
-            // that might be worth copying as well. However, we probably do not want
-            // to copy everything, for example the "name" and "type" should already
-            // be valid, because they were retrieved with getOrCreatePluginByName.
-            // We definitely do not want to copy the "uid", because if we use the one
-            // that was created for us it will definitely be unique.
-            // The "filename" we definitely do not want to copy, becasue it may be
-            // different on this machine than on others.
-            //
-            // Things that we should maybe consider copying:
-            // windowLocked="1" enabled="1" programNum="0"
-            plugin->state.setProperty(te::IDs::state, state, nullptr);
+            ValueTree currentConfig = plugin->state;
+            // These should be correct on the preset, but just in case, get the ones
+            // returned by getOrCreatePluginByName, so we will be sure that we are not
+            // changing them.
+            preset.setProperty(te::IDs::type, currentConfig[te::IDs::type], nullptr);
+            preset.setProperty(te::IDs::name, currentConfig[te::IDs::name], nullptr);
+            preset.setProperty(te::IDs::uid, currentConfig[te::IDs::uid], nullptr);
+            preset.setProperty(te::IDs::filename, currentConfig[te::IDs::filename], nullptr);
+            preset.setProperty(te::IDs::id, currentConfig[te::IDs::id], nullptr);
+            preset.setProperty(te::IDs::manufacturer, currentConfig[te::IDs::manufacturer], nullptr);
+            preset.setProperty(te::IDs::programNum, currentConfig[te::IDs::programNum], nullptr);
+
+            // Now copy over everything else from the preset. This should inlude the
+            // all-important 'state' property of external plugins. External plugins also
+            // have some mundate properties like windowLocked="1", enabled="1"
+            plugin->state.copyPropertiesAndChildrenFrom(preset, nullptr);
+
             std::cout
                 << "Track: " << selectedAudioTrack->getName()
                 << " loaded preset: " << file.getFullPathName() << std::endl;
         } else {
-            std::cout << "Cannot load plugin preset: failed to create plugin with type/name" << name <<  "/" << type << std::endl;
+            std::cout << "Cannot load plugin preset: failed to create plugin with type/name: " << type << "/" << name << std::endl;
             continue;
         };
     }
