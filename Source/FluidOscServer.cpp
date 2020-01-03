@@ -47,6 +47,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
     if (msgAddressPattern.matches({"/save"})) return saveActiveEdit(message);
+    if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
 }
 
 void FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
@@ -95,12 +96,13 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
 
     String paramName = message[0].getString();
     float paramValue = message[1].getFloat32();
+
     for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
         if (param->paramName.equalsIgnoreCase(paramName)) {
             param->beginParameterChangeGesture();
-            param->setNormalisedParameter(paramValue, NotificationType::dontSendNotification);
+            param->setNormalisedParameter(paramValue, NotificationType::sendNotification); 
             param->endParameterChangeGesture();
-            std::cout << "set " << paramName << " to " << paramValue << std::endl;
+            std::cout << "set " << paramName << " to " << paramValue << " explicitvalue: " << param->getCurrentExplicitValue() << " value: " << param->getCurrentValue() << std::endl;
             break;
         }
     }
@@ -160,18 +162,23 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
             // These should be correct on the preset, but just in case, get the ones
             // returned by getOrCreatePluginByName, so we will be sure that we are not
             // changing them.
-            preset.setProperty(te::IDs::type, currentConfig[te::IDs::type], nullptr);
-            preset.setProperty(te::IDs::name, currentConfig[te::IDs::name], nullptr);
-            preset.setProperty(te::IDs::uid, currentConfig[te::IDs::uid], nullptr);
-            preset.setProperty(te::IDs::filename, currentConfig[te::IDs::filename], nullptr);
-            preset.setProperty(te::IDs::id, currentConfig[te::IDs::id], nullptr);
-            preset.setProperty(te::IDs::manufacturer, currentConfig[te::IDs::manufacturer], nullptr);
-            preset.setProperty(te::IDs::programNum, currentConfig[te::IDs::programNum], nullptr);
+            if (currentConfig.hasProperty(te::IDs::type)) preset.setProperty(te::IDs::type, currentConfig[te::IDs::type], nullptr);
+            if (currentConfig.hasProperty(te::IDs::name)) preset.setProperty(te::IDs::name, currentConfig[te::IDs::name], nullptr);
+            if (currentConfig.hasProperty(te::IDs::uid)) preset.setProperty(te::IDs::uid, currentConfig[te::IDs::uid], nullptr);
+            if (currentConfig.hasProperty(te::IDs::filename)) preset.setProperty(te::IDs::filename, currentConfig[te::IDs::filename], nullptr);
+            if (currentConfig.hasProperty(te::IDs::id)) preset.setProperty(te::IDs::id, currentConfig[te::IDs::id], nullptr);
+            if (currentConfig.hasProperty(te::IDs::manufacturer)) preset.setProperty(te::IDs::manufacturer, currentConfig[te::IDs::manufacturer], nullptr);
+            if (currentConfig.hasProperty(te::IDs::programNum)) preset.setProperty(te::IDs::programNum, currentConfig[te::IDs::programNum], nullptr);
 
+            std::cout << "Current Config: " << currentConfig.toXmlString() << std::endl;
+            std::cout << "Preset  Config: " << preset.toXmlString() << std::endl;
+            std::cout << "Before loading: " << plugin->state.toXmlString() << std::endl;
             // Now copy over everything else from the preset. This should inlude the
             // all-important 'state' property of external plugins. External plugins also
-            // have some mundate properties like windowLocked="1", enabled="1"
-            plugin->state.copyPropertiesAndChildrenFrom(preset, nullptr);
+            // have some mundane properties like windowLocked="1", enabled="1"
+            plugin->restorePluginStateFromValueTree(preset);
+
+            std::cout << "After loading: " << plugin->state.toXmlString() << std::endl;
 
             std::cout
                 << "Track: " << selectedAudioTrack->getName()
@@ -246,3 +253,52 @@ void FluidOscServer::insertMidiNote(const juce::OSCMessage &message) {
     notes.addNote(noteNumber, startBeat, lengthInBeats, velocity, colorIndex, nullptr);
 }
 
+void FluidOscServer::handleTransportMessage(const OSCMessage& message) {
+    if (!activeCybrEdit) return;
+    te::TransportControl& transport = activeCybrEdit->getEdit().getTransport();
+
+    const OSCAddressPattern pattern = message.getAddressPattern();
+    if (pattern.matches({"/transport/play"})) {
+        std::cout << "Play!" << std::endl;
+        transport.play(false);
+    } else if (pattern.matches({"/transport/stop"})) {
+        std::cout << "Stop!" << std::endl;
+        transport.stop(false, false);
+    } else if (pattern.matches({"/transport/to/seconds"})) {
+        if (message.size() < 1 || !message[0].isFloat32()) return;
+        transport.setCurrentPosition(message[0].getFloat32());
+    } else if (pattern.matches({"/transport/to"})) {
+        if (message.size() < 1 || !message[0].isFloat32()) return;
+        double beats = message[0].getFloat32();
+        double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(beats);
+        transport.setCurrentPosition(startSeconds);
+    } else if (pattern.matches({"/transport/loop"})) {
+        if (message.size() < 2 || !message[0].isFloat32() || !message[1].isFloat32()) {
+            std::cout << "/transport/loop failed - requires loop start and duration" << std::endl;
+            return;
+        }
+
+        double startBeats = message[0].getFloat32();
+        double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
+        double durationBeats = message[1].getFloat32();
+        double endBeats = startBeats + durationBeats;
+        double endSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeats);
+
+        if (durationBeats == 0) {
+            // To disable looping specify duration of 0
+            std::cout << "Looping disabled!" << std::endl;
+            transport.looping.setValue(false, nullptr);
+            return;
+        }
+
+        std::cout << "Looping start|length: " << startBeats << ":" << endBeats << std::endl;
+        transport.setLoopIn(startSeconds);
+        transport.setLoopOut(endSeconds);
+        // If looping was previously disabled, setting looping to true seems to move the playhead
+        // to the start of the loop. This surprised me, but is okay for now. It is probably not the
+        // ideal behavior. Setting the loop point should probably never change playback (currently
+        // it probably only changes the playback iff we are not already looping, but if we are looping
+        // a different region, playback will be unaffected).
+        transport.looping.setValue(true, nullptr);
+    }
+};

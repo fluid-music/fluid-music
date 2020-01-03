@@ -51,7 +51,7 @@ te::Edit* createEdit(File inputFile, te::Engine& engine) {
             std::cout << "WARNING! Edit contains this plugin, which is missing from the host: " << plugin->getName() << std::endl;
         }
     }
-    std::cout << "Loaded file: " << inputFile.getFullPathName() << std::endl << std::endl;
+    std::cout << "Loaded edit file: " << inputFile.getFullPathName() << std::endl << std::endl;
     return newEdit;
 }
 
@@ -412,7 +412,7 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
     state.setProperty(te::IDs::path, file.getParentDirectory().getFullPathName(), nullptr);
     state.setProperty(te::IDs::tags, "cybr", nullptr);
     state.createXml()->writeTo(file);
-    std::cout << "Wrote plugin to file: " << file.getFullPathName() << std::endl;
+    std::cout << "Save tracktion preset: " << file.getFullPathName() << std::endl;
 }
 
 ValueTree loadXmlFile(File file) {
