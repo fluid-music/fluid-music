@@ -57,10 +57,10 @@
         <MODULEPATH id="juce_gui_basics" path="../../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../../JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../../JUCE/modules"/>
-        <MODULEPATH id="tracktion_engine" path="../../tracktion_engine/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../../tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_dsp" path="../../tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_osc" path="../../tracktion_engine/modules/juce/modules"/>
+        <MODULEPATH id="tracktion_engine" path="../tracktion_engine/modules"/>
       </MODULEPATHS>
     </VS2017>
     <XCODE_MAC targetFolder="Builds/MacOSX">
@@ -69,7 +69,6 @@
         <CONFIGURATION isDebug="0" name="Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="tracktion_engine" path="../../juce"/>
         <MODULEPATH id="juce_osc" path="../../juce"/>
         <MODULEPATH id="juce_opengl" path="../../juce"/>
         <MODULEPATH id="juce_gui_extra" path="../../juce"/>
@@ -85,6 +84,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../juce"/>
         <MODULEPATH id="juce_audio_devices" path="../../juce"/>
         <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+        <MODULEPATH id="tracktion_engine" path="../tracktion_engine/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
@@ -104,7 +104,7 @@
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="tracktion_engine" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="tracktion_engine" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
   <LIVE_SETTINGS>
     <WINDOWS/>
