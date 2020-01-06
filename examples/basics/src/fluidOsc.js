@@ -56,7 +56,7 @@ const midiclip = {
   },
 
   /**
-   * Build a OSC message that creates a clip with a bunch of midi notes
+   * Build an OSC message that creates a clip with a bunch of midi notes
    *
    * @param { string } trackName
    * @param { string } clipName

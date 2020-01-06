@@ -291,7 +291,7 @@ void FluidOscServer::handleTransportMessage(const OSCMessage& message) {
             return;
         }
 
-        std::cout << "Looping start|length: " << startBeats << ":" << endBeats << std::endl;
+        std::cout << "Looping start|length: " << startBeats << "|" << endBeats << std::endl;
         transport.setLoopIn(startSeconds);
         transport.setLoopOut(endSeconds);
         // If looping was previously disabled, setting looping to true seems to move the playhead
