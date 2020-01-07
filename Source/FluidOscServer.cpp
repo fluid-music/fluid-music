@@ -275,6 +275,7 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
         // Optional:
         // 3 - gain (float, default = 0)
         // 4 - pan (float, default = 0)
+        // 5 - oneShot (int, default = 0/false)
 
         if (message.size() < 3) {
             std::cout << "Cannot add sampler sound: Not enough arguments" << std::endl;
@@ -292,6 +293,7 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
         int noteNumber = message[2].getInt32();
         double gain = (message.size() >= 4 && message[3].isFloat32()) ? message[3].getFloat32() : 0;
         double pan = (message.size() >= 5 && message[4].isFloat32()) ? message[4].getFloat32() : 0;
+        double oneShot = (message.size() >= 6 && message[5].isInt32()) ? message[5].getInt32() : 0;
 
         if (!selectedPlugin->edit.filePathResolver(filePath).existsAsFile()) {
             std::cout << "Warning: sampler trying to add sound, but file not found" << std::endl;
@@ -300,6 +302,9 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
         sampler->addSound(filePath, soundName, 0, 0, gain);
         sampler->setSoundGains(index, gain, pan);
         sampler->setSoundParams(index, noteNumber, noteNumber, noteNumber);
+        sampler->setSoundOpenEnded(index, oneShot);
+    } else if (pattern.matches({"/plugin/sampler/clear-all"})) {
+        sampler->state.removeAllChildren(nullptr);
     }
 }
 

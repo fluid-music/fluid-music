@@ -225,8 +225,9 @@ sampler = {
    * @param {Number} noteNum - the Midi note number to add the sample to
    * @param {[Number=0]} gain - Gain in DBFS (0 is unity)
    * @param {[Number=0]} pan - pan (-1 = hard left, 1 = hard right)
+   * @param {[Bool=false]} - oneShot
    */
-  add(name, filename, noteNum, gain, pan) {
+  add(name, filename, noteNum, gain, pan, oneShot) {
     if (typeof name !== 'string')
       throw new Error('sampler.add needs a string note name');
     if (typeof filename !== 'string')
@@ -247,11 +248,16 @@ sampler = {
       ],
     };
 
-    if (typeof gain === 'number') msg.args.push({ type: 'float', value: gain });
-    if (typeof gain === 'number') msg.args.push({ type: 'float', value: pan });
+    msg.args.push((typeof gain === 'number') ? { type: 'float', value: gain } : { type: 'string', value: '' });
+    msg.args.push((typeof pan === 'number') ? { type: 'float', value : pan } : { type: 'string', value: '' });
+    msg.args.push((typeof oneShot === 'boolean') ? { type: 'integer', value: oneShot ? 1 : 0 } : { type: null });
 
     return msg;
-  }
+  },
+
+  clearAll() {
+    return { address: '/plugin/sampler/clear-all' };
+  },
 };
 
 module.exports = {
