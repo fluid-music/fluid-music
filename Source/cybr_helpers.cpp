@@ -119,6 +119,29 @@ void setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelative
             }
         }
     }
+
+    for (auto plugin : changeEdit.getPluginCache().getPlugins()) {
+        if (auto sampler = dynamic_cast<te::SamplerPlugin*>(plugin)) {
+            // Annoyingly it does not work to use the sampler interface, because setters like
+            // sampler->setSoundMedia(...) update asynchronously. If we just changed the
+            // source file recently, its updated values will not yet be returned by the
+            // sampler's getter methods.
+            for (auto child : sampler->state) {
+                if (!child.hasType(te::IDs::SOUND)) continue;
+                String oldPath = child.getProperty(te::IDs::source);
+                if (oldPath.isEmpty()) continue;
+                File soundFile = changeEdit.filePathResolver(oldPath);
+                String newPath = te::SourceFileReference::findPathFromFile(changeEdit, soundFile, useRelativePath);
+                if (oldPath != newPath && newPath.isNotEmpty()) {
+                    child.setProperty(te::IDs::source, newPath, nullptr);
+                    if (verbose) std::cout
+                        << "Updated sampler plugin source \"" << oldPath
+                        << "\" to \""  << newPath << "\"" << std::endl;
+                }
+            }
+        }
+    }
+
     if (failures > 0) {
         std::cerr
         << "ERROR: not all source clips could be identified!" << std::endl

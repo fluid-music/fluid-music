@@ -217,10 +217,48 @@ const transport = {
   },
 };
 
+sampler = {
+  /**
+   * Add a sample to the currently selected sampler.
+   * @param {string} name - the name of the sample to add
+   * @param {string} filename - the filename (relative to server WD, or absolute)
+   * @param {Number} noteNum - the Midi note number to add the sample to
+   * @param {[Number=0]} gain - Gain in DBFS (0 is unity)
+   * @param {[Number=0]} pan - pan (-1 = hard left, 1 = hard right)
+   */
+  add(name, filename, noteNum, gain, pan) {
+    if (typeof name !== 'string')
+      throw new Error('sampler.add needs a string note name');
+    if (typeof filename !== 'string')
+      throw new Error('sampler.add needs a string filename');
+    if (typeof noteNum !== 'number')
+      throw new Error('sampler.add needs noteNum integer');
+    if (gain && typeof gain !== 'number')
+      throw new Error('sampler.add gain must be a number');
+    if (pan && typeof pan !== 'number')
+      throw new Error('sampler.add pan must be a number');
+
+    const msg = {
+      address: '/plugin/sampler/add',
+      args: [
+        { type: 'string', value: name },
+        { type: 'string', value: filename },
+        { type: 'integer', value: noteNum },
+      ],
+    };
+
+    if (typeof gain === 'number') msg.args.push({ type: 'float', value: gain });
+    if (typeof gain === 'number') msg.args.push({ type: 'float', value: pan });
+
+    return msg;
+  }
+};
+
 module.exports = {
   midiclip,
   audiotrack,
   plugin,
   global,
-  transport
+  transport,
+  sampler,
 };

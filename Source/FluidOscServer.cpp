@@ -45,6 +45,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
     if (msgAddressPattern.matches({"/plugin/save"})) return savePluginPreset(message);
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
+    if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
     if (msgAddressPattern.matches({"/save"})) return saveActiveEdit(message);
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
@@ -251,6 +252,55 @@ void FluidOscServer::insertMidiNote(const juce::OSCMessage &message) {
 
     te::MidiList& notes = selectedMidiClip->getSequence();
     notes.addNote(noteNumber, startBeat, lengthInBeats, velocity, colorIndex, nullptr);
+}
+
+void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
+    if (!selectedPlugin) {
+        std::cout << "Cannot update sampler. No plugin selected." << std::endl;
+        return;
+    }
+
+    te::SamplerPlugin* sampler = dynamic_cast<te::SamplerPlugin*>(selectedPlugin);
+    if (!sampler) {
+        std::cout << "Cannot update sampler. No sampler selected." << std::endl;
+        return;
+    }
+
+    const OSCAddressPattern pattern = message.getAddressPattern();
+    if (pattern.matches({"/plugin/sampler/add"})) {
+        // Required:
+        // 0 - (string) name
+        // 1 - (string) filepath
+        // 2 - (int) note number
+        // Optional:
+        // 3 - gain (float, default = 0)
+        // 4 - pan (float, default = 0)
+
+        if (message.size() < 3) {
+            std::cout << "Cannot add sampler sound: Not enough arguments" << std::endl;
+            return;
+        }
+
+        if (!message[0].isString() || !message[1].isString() || ! message[2].isInt32()) {
+            std::cout << "Cannot add sampler sound: incorrect arguments" << std::endl;
+            return;
+        }
+
+        int index = sampler->getNumSounds();
+        String soundName = message[0].getString();
+        String filePath = message[1].getString();
+        int noteNumber = message[2].getInt32();
+        double gain = (message.size() >= 4 && message[3].isFloat32()) ? message[3].getFloat32() : 0;
+        double pan = (message.size() >= 5 && message[4].isFloat32()) ? message[4].getFloat32() : 0;
+
+        if (!selectedPlugin->edit.filePathResolver(filePath).existsAsFile()) {
+            std::cout << "Warning: sampler trying to add sound, but file not found" << std::endl;
+        }
+
+        sampler->addSound(filePath, soundName, 0, 0, gain);
+        sampler->setSoundGains(index, gain, pan);
+        sampler->setSoundParams(index, noteNumber, noteNumber, noteNumber);
+    }
 }
 
 void FluidOscServer::handleTransportMessage(const OSCMessage& message) {
