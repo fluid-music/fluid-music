@@ -1,10 +1,11 @@
 const fluid = require('../src/fluidOsc');
 const FluidClient = require('../src/FluidClient');
+const tabs = require('./tab-examples');
 
-const s1 = { path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD A SP 909 09.wav', name: 's1' };
-const s2 = { path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD B SP 909 09.wav', name: 's2' };
-const s3 = { path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD B SP 909 09.wav', name: 's3' };
-const s4 = { path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD B SP 909 09.wav', name: 's4' };
+const s1 = { name: 's1', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD A SP 909 09.wav' };
+const s2 = { name: 's2', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD B SP 909 09.wav' };
+const s3 = { name: 's3', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD B SP 909 09.wav' };
+const s4 = { name: 's4', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD B SP 909 09.wav' };
 
 const kit = {
   '35': { name: 'k1', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/BD C SP 909 09.wav' },
@@ -23,7 +24,7 @@ const kit = {
   '51': { name: 'ride', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/Ride SP 909 09.wav' },
 };
 
-const drumMessages = Object.entries(kit).map(v => {
+const drumSamplerConfig = Object.entries(kit).map(v => {
   const noteNum = parseInt(v[0]);
   const name = v[1].name;
   const path = v[1].path;
@@ -32,9 +33,10 @@ const drumMessages = Object.entries(kit).map(v => {
 
 const client = new FluidClient(9999);
 client.send([
-  fluid.audiotrack.select('sampler'),
+  fluid.audiotrack.select('drums'),
   fluid.plugin.select('sampler'),
   fluid.sampler.clearAll(),
-  ...drumMessages,
+  ...drumSamplerConfig,
+  fluid.midiclip.create('drums', 'simple', 0, 4, tabs.drumNotes),
   fluid.global.save('out.tracktionedit'),
 ]);
