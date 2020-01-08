@@ -171,15 +171,10 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
             if (currentConfig.hasProperty(te::IDs::manufacturer)) preset.setProperty(te::IDs::manufacturer, currentConfig[te::IDs::manufacturer], nullptr);
             if (currentConfig.hasProperty(te::IDs::programNum)) preset.setProperty(te::IDs::programNum, currentConfig[te::IDs::programNum], nullptr);
 
-            std::cout << "Current Config: " << currentConfig.toXmlString() << std::endl;
-            std::cout << "Preset  Config: " << preset.toXmlString() << std::endl;
-            std::cout << "Before loading: " << plugin->state.toXmlString() << std::endl;
             // Now copy over everything else from the preset. This should inlude the
             // all-important 'state' property of external plugins. External plugins also
             // have some mundane properties like windowLocked="1", enabled="1"
             plugin->restorePluginStateFromValueTree(preset);
-
-            std::cout << "After loading: " << plugin->state.toXmlString() << std::endl;
 
             std::cout
                 << "Track: " << selectedAudioTrack->getName()
