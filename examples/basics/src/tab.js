@@ -60,7 +60,7 @@ const parseTab = function(rhythm, pattern, noteLibrary) {
     let count = sc[1];
     if (symbol !== '.') {
       let notes = noteLibrary[symbol];
-      if (!notes) throw new Error(`noteLibrary has no note or chord for "${symbol}"`);
+      if (notes === undefined) throw new Error(`noteLibrary has no note or chord for "${symbol}"`);
       if (!Array.isArray(notes)) notes = [notes]
       notes.forEach((note) => {
         const start = (p === 0) ? 0 : rhythmObject.totals[p-1];
@@ -243,7 +243,49 @@ const patternToSymbolsAndCounts = function(pattern) {
   return results;
 }
 
+/**
+ * Created noteObject arrays from deeply nested objects.
+ *
+ * @param {Object|Array} object - The only required argument. If a rhythm and
+ *        noteLibrary
+ * @param {[string]} rhythm - rhythm string, if not specified, main `object`
+ *        must have a `.r` property.
+ * @param {[object|Array]} noteLibrary - An object or array noteLibrary (see
+ *        parseTab for details). If not specified, the main `object` must have
+ *        a `.noteLibrary` property.
+ * @param {[number]} startTime - offset all the notes by this much
+ */
+const parse = function(object, rhythm, noteLibrary, startTime) {
+  let notes = [];
+  if (typeof startTime !== 'number') startTime = 0;
+  if (object.hasOwnProperty('noteLibrary')) noteLibrary = object.noteLibrary;
+  if (object.hasOwnProperty('r')) rhythm = object.r;
+
+  let total = startTime;
+  if (Array.isArray(object)) {
+    for (let o of object) {
+      let a = parseRhythm(rhythm);
+      notes.push(...parse(o, rhythm, noteLibrary, total));
+      total += a.totals[a.totals.length - 1];
+    }
+  } else if (typeof object !== 'string') {
+    for (let [key, val] of Object.entries(object)) {
+      if (key === 'noteLibrary' || key === 'r') continue;
+      notes.push(...parse(val, rhythm, noteLibrary, startTime));
+    }
+  } else {
+    const result = parseTab(rhythm, object, noteLibrary).map((n) => {
+      n.s += startTime;
+      return n;
+    });
+    notes = notes.concat(result);
+  }
+
+  return notes;
+}
+
 module.exports = {
+  parse,
   parseTab,
   parseRhythm,
   rhythmToElapsedArray,

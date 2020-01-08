@@ -17,7 +17,7 @@ noTearsVerseNotes = tab.parseTab(verse.rhythm, verse.pattern, verse.chords);
 const beat = {
   notes: { k: 36, h: 42, s: 38 }, // general midi drum convention
   r:  '1 + 2 + 3 + 4 + ',
-  ks: 'k   s       s k ',
+  ks: 'k . s . . . s k ',
   hh: 'h h h h h h h h ',
 };
 beatNotes = [
