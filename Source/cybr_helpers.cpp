@@ -435,23 +435,6 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
     state.setProperty(te::IDs::path, file.getParentDirectory().getFullPathName(), nullptr);
     state.setProperty(te::IDs::tags, "cybr", nullptr);
 
-    // If the preset has plugins, and those plugins have sound sources,
-    // save those sound sources with realtive paths (to the preset file).
-    for (auto plugin : state) {
-        if (!plugin.hasType(te::IDs::PLUGIN)) continue;
-        for (auto sound : plugin) {
-            if (!sound.hasType(te::IDs::SOUND)) continue;
-            if (sound.hasProperty(te::IDs::source)) {
-                String source = sound.getProperty(te::IDs::source);
-                if (source.isEmpty()) continue;
-                File sourceFile(source);
-                if (sourceFile.isAChildOf(saveDir)) {
-                    String relativePath = sourceFile.getRelativePathFrom(file.getParentDirectory());
-                    sound.setProperty(te::IDs::source, relativePath, nullptr);
-                }
-            }
-        }
-    }
     state.createXml()->writeTo(file);
     std::cout << "Save tracktion preset: " << file.getFullPathName() << std::endl;
 }
