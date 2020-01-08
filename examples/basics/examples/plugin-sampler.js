@@ -37,6 +37,10 @@ client.send([
   fluid.plugin.select('sampler'),
   fluid.sampler.clearAll(),
   ...drumSamplerConfig,
-  fluid.midiclip.create('drums', 'simple', 0, 4, tabs.drumNotes),
+  fluid.midiclip.create('drums', 'simple', 0, 4, tabs.beatNotes),
+  fluid.audiotrack.select('drums'),
+  fluid.plugin.load('delay-preset-1'),
   fluid.global.save('out.tracktionedit'),
+  fluid.transport.loop(0, 8),
+  fluid.transport.play(),
 ]);

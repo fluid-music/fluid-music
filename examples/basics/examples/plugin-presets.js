@@ -9,7 +9,6 @@ const elements = [
   fluid.plugin.setParam('VCF1: Cutoff', 0.0),
   fluid.plugin.setParam('VCF2: Cutoff', 1.0),
   fluid.plugin.save('zebra2.vst'),
-
   // load the zebra2 vst
   fluid.audiotrack.select('loadpreset'),
   fluid.plugin.load('zebra2.vst'),
@@ -19,6 +18,9 @@ const elements = [
   fluid.plugin.select('delay'),
   fluid.plugin.setParam('feedback', .10),
   fluid.plugin.save('delay-preset-1'),
+  fluid.plugin.setParam('feedback', 0.9),
+  fluid.plugin.setParam('mix proportion', 0.75),
+  fluid.plugin.save('delay-preset-2'),
   // load that preset on a new track
   fluid.audiotrack.select('loadpreset'),
   fluid.plugin.load('delay-preset-1'),
