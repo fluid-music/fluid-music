@@ -172,6 +172,20 @@ const global = {
       ],
     };
   },
+
+  /**
+   * Request that the server change its working directory.
+   * @param {String} path - target working directory
+   */
+  cd(path) {
+    if (typeof path !== 'string')
+      throw new Error('cd (change directory) requires a string pathname');
+
+    return {
+      address: '/cd',
+      args: { type: 'string', value: path },
+    };
+  },
 };
 
 const transport = {

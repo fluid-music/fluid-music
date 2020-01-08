@@ -35,6 +35,7 @@ public:
     void clearMidiClip(const OSCMessage& message);
     void insertMidiNote(const OSCMessage& message);
     void saveActiveEdit(const OSCMessage& message);
+    void changeWorkingDirectory(const OSCMessage& message);
     void handleSamplerMessage(const OSCMessage& message);
     void handleTransportMessage(const OSCMessage& message);
     std::unique_ptr<CybrEdit> activeCybrEdit = nullptr;

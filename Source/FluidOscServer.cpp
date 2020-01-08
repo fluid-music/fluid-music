@@ -33,7 +33,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     }
 
     if (!activeCybrEdit) {
-        std::cout << "NOTE:  message failed , because there is no active CybrEdit: ";
+        std::cout << "NOTE: message failed, because there is no active CybrEdit: ";
         printOscMessage(message);
         return;
     }
@@ -48,6 +48,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
     if (msgAddressPattern.matches({"/save"})) return saveActiveEdit(message);
+    if (msgAddressPattern.matches({"/cd"})) return changeWorkingDirectory(message);
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
 }
 
@@ -69,7 +70,23 @@ void FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
     activeCybrEdit->saveActiveEdit(file, useRelativePaths);
 }
 
-void FluidOscServer::selectAudioTrack(const juce::OSCMessage &message) {
+void FluidOscServer::changeWorkingDirectory(const OSCMessage& message) {
+    if (!message.size() || !message[0].isString()) {
+        std::cout << "ERROR: request to change directory without a path string" << std::endl;
+        return;
+    }
+
+    String path = message[0].getString();
+    File newWorkingDir = File::getCurrentWorkingDirectory().getChildFile(path);
+
+    if (!newWorkingDir.isDirectory() || !newWorkingDir.setAsCurrentWorkingDirectory()) {
+        std::cout << "ERROR: Cannot change directory: " << newWorkingDir.getFullPathName() << std::endl;
+    } else {
+        std::cout << "Current Working Directory: " << newWorkingDir.getFullPathName() << std::endl;
+    }
+}
+
+void FluidOscServer::selectAudioTrack(const juce::OSCMessage& message) {
     if (!message.size() || !message[0].isString()) return;
 
     String trackName = message[0].getString();
@@ -186,7 +203,7 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     }
 }
 
-void FluidOscServer::selectMidiClip(const juce::OSCMessage &message) {
+void FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
     if (!selectedAudioTrack) return;
     if (!message.size() || !message[0].isString()) return;
 
@@ -209,13 +226,13 @@ void FluidOscServer::selectMidiClip(const juce::OSCMessage &message) {
     }
 }
 
-void FluidOscServer::clearMidiClip(const juce::OSCMessage &message) {
+void FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
     if (!selectedMidiClip) return;
     selectedMidiClip->clearTakes();
     selectedMidiClip->getSequence().clear(nullptr);
 }
 
-void FluidOscServer::insertMidiNote(const juce::OSCMessage &message) {
+void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
     if (!selectedMidiClip) return;
     if (message.size() < 3) return;
 
