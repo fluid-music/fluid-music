@@ -15,14 +15,14 @@
 namespace te = tracktion_engine;
 
 /** Create and activate an empty edit */
-te::Edit* createEmptyEdit(File inputFile, te::Engine& engine);
+te::Edit* createEmptyEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role = te::Edit::forRendering);
 
 /** Load and activate  an edit from a .tracktionedit file */
-te::Edit* createEdit(File inputFile, te::Engine& engine);
+te::Edit* createEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role = te::Edit::forRendering);
 
 /** For each audio clip with a source that references a project ID, update
  that source so it uses a filepath instead. */
-void setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose);
+void setClipAndSamplerSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose);
 
 /** Try to lookup and add the project manager settings from Tracktion Waveform. */
 void autodetectPmSettings(te::Engine& engine);

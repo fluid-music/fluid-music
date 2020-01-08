@@ -31,6 +31,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
         printOscMessage(message);
         return;
     }
+    if (msgAddressPattern.matches({"/file/activate"})) return activateEditFile(message);
 
     if (!activeCybrEdit) {
         std::cout << "NOTE: message failed, because there is no active CybrEdit: ";
@@ -47,18 +48,25 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
-    if (msgAddressPattern.matches({"/save"})) return saveActiveEdit(message);
+    if (msgAddressPattern.matches({"/file/save"})) return saveActiveEdit(message);
     if (msgAddressPattern.matches({"/cd"})) return changeWorkingDirectory(message);
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
+
+    std::cout << "Unhandled message: ";
+    printOscMessage(message);
 }
 
 void FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
     if (!activeCybrEdit) return;
 
+    String filename = (message.size() && message[0].isString())
+        ? message[0].getString()
+        : String();
+
     // If the first argument is string it is a filename
-    File file = (message.size() && message[0].isString())
-    ? File::getCurrentWorkingDirectory().getChildFile(message[0].getString())
-    : activeCybrEdit->getEdit().editFileRetriever();
+    File file = (filename.isNotEmpty() && filename != "")
+        ? File::getCurrentWorkingDirectory().getChildFile(message[0].getString())
+        : activeCybrEdit->getEdit().editFileRetriever();
 
     // By default use relative file paths. If the second arg begins with 'a', use absolute paths
     bool useRelativePaths = true;
@@ -68,6 +76,32 @@ void FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
         useRelativePaths = false;
 
     activeCybrEdit->saveActiveEdit(file, useRelativePaths);
+}
+
+void FluidOscServer::activateEditFile(File file, bool forceEmptyEdit) {
+    if (forceEmptyEdit || !file.existsAsFile()) {
+        std::cout << "Creating new edit: " << file.getFullPathName() << std::endl;
+        activeCybrEdit = std::make_unique<CybrEdit>(createEmptyEdit(file, te::Engine::getInstance(), te::Edit::forEditing));
+        if (!file.existsAsFile()) activeCybrEdit->saveActiveEdit(file);
+    } else {
+        std::cout << "Loading edit: " << file.getFullPathName() << std::endl;
+        activeCybrEdit = std::make_unique<CybrEdit>(createEdit(file, te::Engine::getInstance(), te::Edit::forEditing));
+    }
+}
+
+void FluidOscServer::activateEditFile(const juce::OSCMessage &message) {
+    if (!message.size() || !message[0].isString()) {
+        std::cout << "ERROR: /file/activate missing message argument" << std::endl;
+        return;
+    }
+    
+    File file = File::getCurrentWorkingDirectory().getChildFile(message[0].getString());
+    if (!file.hasFileExtension(".tracktionedit")) {
+        std::cout << "WARNING: /file/activate argument does not have .tracktionedit extention: " << file.getFileName() << std::endl;
+    }
+    
+    bool forceEmptyEdit = (message.size() >= 2 && message[1].isInt32()) ? message[1].getInt32() : false;
+    return activateEditFile(file, forceEmptyEdit);
 }
 
 void FluidOscServer::changeWorkingDirectory(const OSCMessage& message) {
@@ -228,8 +262,10 @@ void FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
 
 void FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
     if (!selectedMidiClip) return;
-    selectedMidiClip->clearTakes();
-    selectedMidiClip->getSequence().clear(nullptr);
+    
+    auto exisiting = selectedMidiClip->state.getChildWithName(te::IDs::SEQUENCE);
+    if (!exisiting.isValid()) selectedMidiClip->clearTakes();
+    selectedMidiClip->getSequence().clear(nullptr); // is this needed?
 }
 
 void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
@@ -288,7 +324,12 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
         // 3 - gain (float, default = 0)
         // 4 - pan (float, default = 0)
         // 5 - oneShot (int, default = 0/false)
-
+        //
+        // The filepath can be
+        // 1) relative relative to the .tracktionedit file
+        // 2) relativeto the server's working directory
+        // 3) absolute
+        // If the file is not found, it will still be added, but it will not play.
         if (message.size() < 3) {
             std::cout << "Cannot add sampler sound: Not enough arguments" << std::endl;
             return;
@@ -307,9 +348,12 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
         double pan = (message.size() >= 5 && message[4].isFloat32()) ? message[4].getFloat32() : 0;
         double oneShot = (message.size() >= 6 && message[5].isInt32()) ? message[5].getInt32() : 0;
 
-        if (!selectedPlugin->edit.filePathResolver(filePath).existsAsFile()) {
-            std::cout << "Warning: sampler trying to add sound, but file not found" << std::endl;
-        }
+        File check1 = File::getCurrentWorkingDirectory().getChildFile(filePath);
+        File check2 = selectedPlugin->edit.filePathResolver(filePath);
+
+        if (check1.existsAsFile()) filePath = check1.getFullPathName();
+        else if (check2.existsAsFile()) filePath = check2.getFullPathName();
+        else std::cout << "Warning: sampler trying to add sound, but file not found" << std::endl;
 
         sampler->addSound(filePath, soundName, 0, 0, gain);
         sampler->setSoundGains(index, gain, pan);

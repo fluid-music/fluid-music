@@ -156,7 +156,7 @@ void CybrEdit::saveActiveEdit(File outputFile, bool useRelativePaths) {
         std::cout << "Saving: " << outputFile.getFullPathName() << std::endl;
         // When edit files are saved, prefer relative paths.
         edit->editFileRetriever = [outputFile] { return outputFile; };
-        setClipSourcesToDirectFileReferences(*edit, useRelativePaths, true);
+        setClipAndSamplerSourcesToDirectFileReferences(*edit, useRelativePaths, false);
         // .save and .saveAs may be silent no-ops unless we markAsChanged()
         edit->markAsChanged();
         te::EditFileOperations(*edit).saveAs(outputFile, true);

@@ -11,20 +11,20 @@
 #include "cybr_helpers.h"
 
 // Creates a new edit, and leaves deletion up to you
-te::Edit* createEmptyEdit(File inputFile, te::Engine& engine)
+te::Edit* createEmptyEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role)
 {
     std::cout << "Creating Edit Object" << std::endl;
     te::Edit::Options editOptions{ engine };
     editOptions.editProjectItemID = te::ProjectItemID::createNewID(0);
     editOptions.editState = te::createEmptyEdit();
     editOptions.numUndoLevelsToStore = 0;
-    editOptions.role = te::Edit::forRendering;
+    editOptions.role = role;
     editOptions.editFileRetriever = [inputFile] { return inputFile; };
     return new te::Edit(editOptions);
 }
 
 // Creates a new edit, and leaves deletion up to you
-te::Edit* createEdit(File inputFile, te::Engine& engine) {
+te::Edit* createEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role) {
     // we are assuming the file exists.
     ValueTree valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
     
@@ -36,14 +36,14 @@ te::Edit* createEdit(File inputFile, te::Engine& engine) {
     editOptions.editProjectItemID = te::ProjectItemID::createNewID(0);
     editOptions.editState = valueTree;
     editOptions.numUndoLevelsToStore = 0;
-    editOptions.role = te::Edit::forRendering;
+    editOptions.role = role;
     editOptions.editFileRetriever = [inputFile] { return inputFile; };
     te::Edit* newEdit = new te::Edit(editOptions);
     
     // By default (and for simplicity), all clips in an in-memory edit should
     // have a source property with an absolute path value. We want to avoid
     // clip sources with project ids or relative path values.
-    setClipSourcesToDirectFileReferences(*newEdit, false, true);
+    setClipAndSamplerSourcesToDirectFileReferences(*newEdit, false, false);
     
     // List any missing plugins
     for (auto plugin : newEdit->getPluginCache().getPlugins()) {
@@ -73,7 +73,7 @@ CybrEdit* copyCybrEditForPlayback(CybrEdit& cybrEdit) {
     return newCybrEdit;
 }
 
-void setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose = true)
+void setClipAndSamplerSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose = true)
 {
     int failures = 0;
     if (verbose) std::cout << "Searching for audio clips and updating their sources to "
@@ -420,8 +420,8 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
 
     if (!name.endsWithIgnoreCase(".trkpreset")) name.append(".trkpreset", 10);
 
-    File file = File::getCurrentWorkingDirectory()
-        .getChildFile(File::createLegalFileName(name));
+    File file = File::getCurrentWorkingDirectory().getChildFile(File::createLegalFileName(name));
+    File saveDir = file.getParentDirectory();
 
     if (!file.hasWriteAccess()) {
         std::cout << "Cannot write to file: does not have write access: " << file.getFullPathName() << std::endl;
@@ -434,6 +434,24 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
     state.setProperty(te::IDs::filename, file.getFileName(), nullptr);
     state.setProperty(te::IDs::path, file.getParentDirectory().getFullPathName(), nullptr);
     state.setProperty(te::IDs::tags, "cybr", nullptr);
+
+    // If the preset has plugins, and those plugins have sound sources,
+    // save those sound sources with realtive paths (to the preset file).
+    for (auto plugin : state) {
+        if (!plugin.hasType(te::IDs::PLUGIN)) continue;
+        for (auto sound : plugin) {
+            if (!sound.hasType(te::IDs::SOUND)) continue;
+            if (sound.hasProperty(te::IDs::source)) {
+                String source = sound.getProperty(te::IDs::source);
+                if (source.isEmpty()) continue;
+                File sourceFile(source);
+                if (sourceFile.isAChildOf(saveDir)) {
+                    String relativePath = sourceFile.getRelativePathFrom(file.getParentDirectory());
+                    sound.setProperty(te::IDs::source, relativePath, nullptr);
+                }
+            }
+        }
+    }
     state.createXml()->writeTo(file);
     std::cout << "Save tracktion preset: " << file.getFullPathName() << std::endl;
 }

@@ -159,15 +159,17 @@ const plugin = {
 
 const global = {
   /**
-   * @param {string} filename - '.tracktionedit' or '.wav' filename
+   * @param {[string]} filename - '.tracktionedit' or '.wav' filename. If no
+   *        filename is provided, an empty string will be used, which implies
+   *        'save' as opposed to 'save as'.
    * @param {[bool]} absolute - If true use absolute paths for audio file
    *        references. Else use relative paths.
    */
   save(filename, absolute) {
     return {
-      address: '/save',
+      address: '/file/save',
       args: [
-        { type: 'string', value: filename },
+        { type: 'string', value: filename || ''},
         { type: 'string', value: absolute ? 'absolute' : 'relative' },
       ],
     };
@@ -186,6 +188,28 @@ const global = {
       args: { type: 'string', value: path },
     };
   },
+
+  /**
+   * Select an session file, loading it if it exists.
+   * @param {String} filename - the edit filename to activate
+   * @param {boolean} [forceEmptyEdit=false] - If true, activate an empty edit,
+   *        overwriting any existing edit if one exists.
+   */
+  activate(filename, forceEmptyEdit) {
+    if (typeof filename !== 'string')
+      throw new Error('activate requires a string pathname');
+
+    if (!filename.toLowerCase().endsWith('.tracktionedit'))
+      console.warn('WARNING: trying to activate a file with an unexpected file extension');
+
+    return {
+      address: '/file/activate',
+      args: [
+        { type: 'string', value: filename },
+        { type: 'integer', value: forceEmptyEdit ? 1 : 0 },
+      ],
+    };
+  }
 };
 
 const transport = {
@@ -194,7 +218,7 @@ const transport = {
 
   /**
    * Set loop points, and enable looping.
-   * @param {Number|false} startQuarterNotes - The number of quarter notes at 
+   * @param {Number|false} startQuarterNotes - The number of quarter notes at
    *        which the loop should begin. Or `false`, which disables looping.
    * @param {Number} lengthQuarterNotes - The length of the loop, measured in
    *        quarter notes.
