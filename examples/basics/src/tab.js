@@ -271,7 +271,8 @@ const patternToSymbolsAndCounts = function(pattern) {
  *   is an object sub-pattern, in which case it may optionally specify its own.
  *
  * The following example contains has an pattern object, with two layers. One
- * for hi-hat, and one for kick and snare:
+ * for hi-hat, and one for kick and snare. Note that unlike the pattern array
+ * example above, the two layers in the pattern object occur simultaneously.
  * ```json
  * {
  *  noteLibrary: { k: 36, h: 42, s: 38 },

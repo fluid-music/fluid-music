@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "watch": "nodemon -e .js,.mjs,.json,.yaml,.yml src/index.js",
-    "test": "mocha"
+    "test": "mocha",
+    "test-debug": "mocha --reporter spec --inspect-brk"
   },
   "author": "",
   "license": "UNLICENSED",
