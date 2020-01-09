@@ -170,7 +170,7 @@ describe('parse', () => {
       p: '.0..',
     };
 
-    tab.parse(obj).should.deepEqual([
+    tab.parse(obj).should.containDeep([
       { n: 0, s: 0.25, l: 0.25 },
     ]);
   });
@@ -245,6 +245,47 @@ describe('parse', () => {
       { n: 30, s: 1.0, l: 0.25 },
       { n: 4, s: 2.00, l: 0.25 },
       { n: 5, s: 0.75, l: 0.25 },
+    ]);
+  });
+
+  it('should handle nested arrays', () => {
+    const obj = {
+      noteLibrary,
+      r: '12',
+      p: [
+        [{p: '0.'}, { p: '1.'}],
+        [{p: '2.'}, { p: '3.'}],
+        [{p: '4.'}, { p: '56'}],
+      ],
+    };
+    debugger;
+    const result = tab.parse(obj);
+    result.should.containDeep([
+      { n: 0, s: 0.0, l: 0.25 },
+      { n: 1, s: 0.5, l: 0.25 },
+    ]);
+    result.should.containDeep([
+      { n: 2, s: 1.0, l: 0.25 },
+      { n: 3, s: 1.5, l: 0.25 },
+    ]);
+    result.should.containDeep([
+      { n: 4, s: 2.0, l: 0.25 },
+      { n: 5, s: 2.5, l: 0.25 },
+      { n: 6, s: 2.75, l: 0.25 },
+    ]);
+  });
+
+  it('should handle arrays of strings', () => {
+    const obj = {
+      noteLibrary,
+      r: '12',
+      p: ['01', '23']
+    };
+    tab.parse(obj).should.containDeep([
+      { n: 0, s: 0.00, l: 0.25 },
+      { n: 1, s: 0.25, l: 0.25 },
+      { n: 2, s: 0.50, l: 0.25 },
+      { n: 3, s: 0.75, l: 0.25 },
     ]);
   });
 });

@@ -59,8 +59,9 @@ const parseTab = function(rhythm, pattern, noteLibrary) {
     let symbol = sc[0];
     let count = sc[1];
     if (symbol !== '.') {
+      if (!noteLibrary.hasOwnProperty(symbol))
+        throw new Error(`noteLibrary has no note or chord for "${symbol}"`);
       let notes = noteLibrary[symbol];
-      if (notes === undefined) throw new Error(`noteLibrary has no note or chord for "${symbol}"`);
       if (!Array.isArray(notes)) notes = [notes]
       notes.forEach((note) => {
         const start = (p === 0) ? 0 : rhythmObject.totals[p-1];
@@ -244,41 +245,86 @@ const patternToSymbolsAndCounts = function(pattern) {
 }
 
 /**
- * Created noteObject arrays from deeply nested objects.
+ * Creates noteObject arrays from deeply nested objects. Takes a deeply nested
+ * Object or Array, and converts it to an array of notes. The following example
+ * will generate four eighth notes separated by eighth note rests.
+ * ```json
+ *  {
+ *    noteLibrary: [1, 2, 3, 4],
+ *    r: '1+2+',
+ *    p: [
+ *      '1.3.',
+ *      '3.4.'
+ *    ]
+ *  }
+ * ```
+ * The `.p` field in the object above is a pattern. Each character in the string
+ * indexes the note library (for details, see the parseTab documentation).
  *
- * @param {Object|Array} object - The only required argument. If a rhythm and
- *        noteLibrary
- * @param {[string]} rhythm - rhythm string, if not specified, main `object`
+ * Several important things to understand:
+ * - The example above contains a sub pattern specified in the `.p' field. The
+ *   key (`.p`) is arbitrary. It could also `.b`, `.c`, or `.pattern`. However,
+ *   it must not be one of the reserved keys such as `.noteLibrary` or `.r`.
+ * - Pattern arrays imply a sequence of events
+ * - Pattern objects imply layering of events
+ * - Sub-patterns inherit their parent's `.r`hythm and `.noteLibrary` unless it
+ *   is an object sub-pattern, in which case it may optionally specify its own.
+ *
+ * The following example contains has an pattern object, with two layers. One
+ * for hi-hat, and one for kick and snare:
+ * ```json
+ * {
+ *  noteLibrary: { k: 36, h: 42, s: 38 },
+ *  r:  '1 + 2 + 3 + 4 + ',
+ *  ks: 'k . s . . . s k ',
+ *  hh: 'h h h h h h h h '
+ * }
+ * ```
+ * For more diverse examples, see at the tests.
+ *
+ * @param {Object|Array|String} object - The only required argument.
+ * @param {String} [rhythm] - rhythm string, if not specified, `object`
  *        must have a `.r` property.
- * @param {[object|Array]} noteLibrary - An object or array noteLibrary (see
- *        parseTab for details). If not specified, the main `object` must have
- *        a `.noteLibrary` property.
- * @param {[number]} startTime - offset all the notes by this much
+ * @param {Object|Array} [noteLibrary] - An object or array noteLibrary (see
+ *        parseTab for details). If not specified, `object` must have a
+ *        `.noteLibrary` property.
+ * @param {Number} [startTime] - offset all the notes by this much
  */
 const parse = function(object, rhythm, noteLibrary, startTime) {
   let notes = [];
+  notes.duration = 0;
   if (typeof startTime !== 'number') startTime = 0;
   if (object.hasOwnProperty('noteLibrary')) noteLibrary = object.noteLibrary;
   if (object.hasOwnProperty('r')) rhythm = object.r;
+  if (object.hasOwnProperty('startTime'))
+    throw new Error('parse: startTime is not a legal pattern key');
+  if (rhythm === undefined || noteLibrary === undefined)
+    throw new Error('tab.parse could not find rhythm AND a noteLibrary');
 
-  let total = startTime;
   if (Array.isArray(object)) {
     for (let o of object) {
       let a = parseRhythm(rhythm);
-      notes.push(...parse(o, rhythm, noteLibrary, total));
-      total += a.totals[a.totals.length - 1];
+      let newNotes = parse(o, rhythm, noteLibrary, startTime);
+      notes.push(...newNotes);
+      notes.duration += newNotes.duration;
+      startTime += newNotes.duration; // NOTE: must be '+=', not '='
     }
   } else if (typeof object !== 'string') {
     for (let [key, val] of Object.entries(object)) {
-      if (key === 'noteLibrary' || key === 'r') continue;
-      notes.push(...parse(val, rhythm, noteLibrary, startTime));
+      if (key === 'noteLibrary' || key === 'r' || key === 'duration' || key === 'startTime') continue;
+      let newNotes = parse(val, rhythm, noteLibrary, startTime);
+      notes.push(...newNotes);
+      notes.duration = newNotes.duration; // NOTE: must be '=', NOT '+='
     }
   } else {
+    // We have a string that can be parsed with parseTab
     const result = parseTab(rhythm, object, noteLibrary).map((n) => {
       n.s += startTime;
       return n;
     });
     notes = notes.concat(result);
+    const a = parseRhythm(rhythm);
+    notes.duration = a.totals[a.totals.length-1];
   }
 
   return notes;

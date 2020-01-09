@@ -83,9 +83,10 @@ describe('midiclip.create', () => {
   ];
 
   const arpMessage = fluid.midiclip.create('track1', 'clip1', 1, 2, notes);
+  console.log(arpMessage);
 
   it('should have /audiotrack/select', () => {
-    const trackSelect = arpMessage.elements[0];
+    const trackSelect = arpMessage[0];
     trackSelect.should.deepEqual({
       address: '/audiotrack/select',
       args: [{ type: 'string', value: 'track1' }], // no way to know if its array or not
@@ -93,7 +94,7 @@ describe('midiclip.create', () => {
   });
 
   it('should have /midiclip/select', () => {
-    const clipSelect = arpMessage.elements[1];
+    const clipSelect = arpMessage[1];
     clipSelect.should.deepEqual({
       address: '/midiclip/select',
       args: [
@@ -105,14 +106,14 @@ describe('midiclip.create', () => {
   });
 
   it('should have /midiclip/clear', () => {
-    const clipClear = arpMessage.elements[2];
+    const clipClear = arpMessage[2];
     clipClear.should.deepEqual({
       address: '/midiclip/clear',
     });
   });
 
   it('should have /midiclip/n messages (x3)', () => {
-    const notes = arpMessage.elements.slice(3);
+    const notes = arpMessage.slice(3);
     notes.should.deepEqual([{
       address: '/midiclip/n',
       args: [
