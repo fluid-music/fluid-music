@@ -84,11 +84,7 @@ const midiclip = {
       elements.push(noteMsg);
     });
 
-    return newClipMsg = {
-      oscType: 'bundle',
-      timetag: 0,
-      elements
-    };
+    return elements;
   },
 };
 

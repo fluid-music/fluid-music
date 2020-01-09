@@ -1,6 +1,17 @@
 const dgram = require('dgram');
 const osc = require('osc-min');
 
+// Helper to allow arrays of arrays to convert to bundles
+const prepareObjectForOsc = function(msgObject, timetag) {
+  if (Array.isArray(msgObject))
+    return {
+      oscType: 'bundle',
+      timetag: typeof timetag === 'number' ? timetag : 0,
+      elements: msgObject.map((v) => prepareObjectForOsc(v, timetag))
+    };
+  else return msgObject;
+}
+
 /**
  * FluidOscSender will close instantly after all messages were sent.
  */
@@ -32,16 +43,9 @@ module.exports = class FluidOscSender {
    *        array.
    */
   send(msgObject, timetag) {
-    let buffer;
-    if (msgObject instanceof Buffer)
-      buffer = msgObject;
-    else if (Array.isArray(msgObject))
-      buffer = osc.toBuffer({
-        oscType: 'bundle',
-        timetag: typeof timetag === 'number' ? timetag : 0,
-        elements: msgObject });
-    else
-      buffer = osc.toBuffer(msgObject);
+    const buffer = (msgObject instanceof Buffer)
+      ? msgObject
+      : osc.toBuffer(prepareObjectForOsc(msgObject, timetag));
 
     this.pendingMsgCount++;
     this.client.send(buffer, this.targetPort, (err) => {
