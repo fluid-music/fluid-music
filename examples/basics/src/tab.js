@@ -290,6 +290,8 @@ const patternToSymbolsAndCounts = function(pattern) {
  *        parseTab for details). If not specified, `object` must have a
  *        `.noteLibrary` property.
  * @param {Number} [startTime] - offset all the notes by this much
+ * @returns {Object[]} An array of noteObjects. The array will have an
+ *          additional `.duration` parameter.
  */
 const parse = function(object, rhythm, noteLibrary, startTime) {
   let notes = [];
@@ -310,14 +312,7 @@ const parse = function(object, rhythm, noteLibrary, startTime) {
       notes.duration += newNotes.duration;
       startTime += newNotes.duration; // NOTE: must be '+=', not '='
     }
-  } else if (typeof object !== 'string') {
-    for (let [key, val] of Object.entries(object)) {
-      if (key === 'noteLibrary' || key === 'r' || key === 'duration' || key === 'startTime') continue;
-      let newNotes = parse(val, rhythm, noteLibrary, startTime);
-      notes.push(...newNotes);
-      notes.duration = newNotes.duration; // NOTE: must be '=', NOT '+='
-    }
-  } else {
+  } else if (typeof object === 'string') {
     // We have a string that can be parsed with parseTab
     const result = parseTab(rhythm, object, noteLibrary).map((n) => {
       n.s += startTime;
@@ -326,6 +321,16 @@ const parse = function(object, rhythm, noteLibrary, startTime) {
     notes = notes.concat(result);
     const a = parseRhythm(rhythm);
     notes.duration = a.totals[a.totals.length-1];
+  } else {
+    let duration = 0;
+    for (let [key, val] of Object.entries(object)) {
+      if (key === 'noteLibrary' || key === 'r' || key === 'duration' || key === 'startTime') continue;
+      let newNotes = parse(val, rhythm, noteLibrary, startTime);
+      notes.push(...newNotes);
+      if (newNotes.duration > duration) duration = newNotes.duration;
+      notes.duration = newNotes.duration; // NOTE: must be '=', NOT '+='
+    }
+    notes.duration = duration;
   }
 
   return notes;

@@ -258,7 +258,7 @@ describe('parse', () => {
         [{p: '4.'}, { p: '56'}],
       ],
     };
-    debugger;
+
     const result = tab.parse(obj);
     result.should.containDeep([
       { n: 0, s: 0.0, l: 0.25 },
@@ -286,6 +286,22 @@ describe('parse', () => {
       { n: 1, s: 0.25, l: 0.25 },
       { n: 2, s: 0.50, l: 0.25 },
       { n: 3, s: 0.75, l: 0.25 },
+    ]);
+  });
+
+  it('Nested children should use the longest child', () => {
+    const obj = {
+      noteLibrary,
+      r:'w',
+      p: [
+        { a1: {r: 'w', p: '0'}, a2: {r:'h', p:'1'} },
+        '2' // Should start after the longest pattern in the previous element
+      ]
+    };
+    tab.parse(obj).should.containDeep([
+      { n: 0, s: 0.00, l: 1.0 },
+      { n: 1, s: 0.00, l: 0.5 },
+      { n: 2, s: 1.00, l: 1.0 },
     ]);
   });
 });
