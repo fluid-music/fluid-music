@@ -402,9 +402,12 @@ void FluidOscServer::handleTransportMessage(const OSCMessage& message) {
             return;
         }
 
-        std::cout << "Looping start|length: " << startBeats << "|" << endBeats << std::endl;
-        transport.setLoopIn(startSeconds);
-        transport.setLoopOut(endSeconds);
+        te::EditTimeRange range = transport.getLoopRange();
+        if (range != te::EditTimeRange(startSeconds, endSeconds)) {
+            if (range.getStart() != startSeconds) transport.setLoopIn(startSeconds);
+            if (range.getEnd() != endSeconds) transport.setLoopOut(endSeconds);
+            std::cout << "Looping start|length: " << startBeats << "|" << endBeats << std::endl;
+        }
         // If looping was previously disabled, setting looping to true seems to move the playhead
         // to the start of the loop. This surprised me, but is okay for now. It is probably not the
         // ideal behavior. Setting the loop point should probably never change playback (currently
