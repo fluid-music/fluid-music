@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const process = require('process');
 const fluid = require('../src/fluidOsc');
 const FluidClient = require('../src/FluidClient');

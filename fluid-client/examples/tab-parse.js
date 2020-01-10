@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const path = require('path');
 const tab = require('../src/tab');
 const fluid = require('../src/fluidOsc');
