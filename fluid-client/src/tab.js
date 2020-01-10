@@ -250,11 +250,11 @@ const patternToSymbolsAndCounts = function(pattern) {
  * will generate four eighth notes separated by eighth note rests.
  * ```json
  *  {
- *    noteLibrary: [1, 2, 3, 4],
- *    r: '1+2+',
- *    p: [
- *      '1.3.',
- *      '3.4.'
+ *    "noteLibrary": [1, 2, 3, 4],
+ *    "r": "1+2+",
+ *    "p": [
+ *      "1.3.",
+ *      "3.4."
  *    ]
  *  }
  * ```
@@ -275,13 +275,13 @@ const patternToSymbolsAndCounts = function(pattern) {
  * example above, the two layers in the pattern object occur simultaneously.
  * ```json
  * {
- *  noteLibrary: { k: 36, h: 42, s: 38 },
- *  r:  '1 + 2 + 3 + 4 + ',
- *  ks: 'k . s . . . s k ',
- *  hh: 'h h h h h h h h '
+ *  "noteLibrary": { "k": 36, "h": 42, "s": 38 },
+ *  "r":  "1 + 2 + 3 + 4 + ",
+ *  "ks": "k . s . . . s k ",
+ *  "hh": "h h h h h h h h "
  * }
  * ```
- * For more diverse examples, see at the tests.
+ * For more diverse examples (and more deeply nested objects), see the tests.
  *
  * @param {Object|Array|String} object - The only required argument.
  * @param {String} [rhythm] - rhythm string, if not specified, `object`
