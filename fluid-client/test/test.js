@@ -83,7 +83,6 @@ describe('midiclip.create', () => {
   ];
 
   const arpMessage = fluid.midiclip.create('track1', 'clip1', 1, 2, notes);
-  console.log(arpMessage);
 
   it('should have /audiotrack/select', () => {
     const trackSelect = arpMessage[0];

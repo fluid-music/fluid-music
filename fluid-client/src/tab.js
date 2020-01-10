@@ -108,7 +108,7 @@ const division = (char) => {
 
 /**
  * Convert each character in an string to an duration.
- * In the following examples, q=1/4 and e=1/8
+ * In the following examples, q=1/4 and e=1/8 and h=1/2
  * Quarter notes:
  *   rhythm - '1+2+'
  *   result - [e,e,e,e]
@@ -118,7 +118,9 @@ const division = (char) => {
  * Eighth and quarter notes:
  *   rhythm - '1234+'
  *   result - [q,q,q,e,e]
- *
+ * Whole notes always 1. Half notes always get 0.5
+ *   rhythm - 'h34'
+ *   result - [h,q,q]
  * See tests for more examples.
  * @param {string} rhythm - String representing of a rhythm
  * @returns {number[]}  - An array of durations for each character
@@ -137,13 +139,9 @@ const rhythmToAdvanceArray = function(rhythm) {
       }
     }
 
-    let amount = null;
-    if (isEmpty(char))
-      amount = 0;
-    else if (next === null)
-      amount = division(char);
-    else
-      amount = Math.min(division(char), division(next));
+    let amount = division(char);
+    if ((amount > 0) && (amount < 0.5) && next !== null)
+      amount = Math.min(amount, division(next));
 
     result.push(amount);
   });

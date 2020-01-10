@@ -14,6 +14,7 @@ A `rhythm` is a string that encodes a sequence of durations. Examples:
 - `'1 + 2 + '` is eight characters and represents eight consecutive 16th notes
 - `'1e+a2e+a'` is identical to `'1 + 2 + '`
 - `'1....'` represents five quintuplets (any number of subdivision are possible)
+- `'h34'` represents a half note and two quarter notes. `'h'` always represents a half note, and `'w'` always represents a whole note. Notice that this works a little differently than quarter notes: the duration of a `'1'` symbol may be diminished by a character that follows it (`'1+'` represents two eighth notes, not a quarter *and* an eighth note). While `'w'` and `'h'` my be divided into subdivisions like any other value (`'w...'`), the total duration incurred by `'w'` and `'h'` is never affected by subsequent characters.
 
 ## Advances
 

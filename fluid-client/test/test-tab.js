@@ -5,6 +5,7 @@ const tab = require('../src/tab');
 const q = 1/4;  // quarter note
 const e = 1/8;  // eighth note
 const s = 1/16; // sixteenth note
+const h = 1/2;  // half note
 
 describe('tab.parseRhythm', () => {
   it(`should parse '1 2 ' as four eighth notes`, () => {
@@ -53,6 +54,21 @@ describe('tab.rhythmToAdvanceArray', () => {
   const mixedRhythm = '1e+a2+'
   it(`should interpret '${mixedRhythm}' as four sixteenths and two quarters`, () => {
     tab.rhythmToAdvanceArray(mixedRhythm).should.deepEqual([s,s,s,s,e,e]);
+  });
+
+  describe('Sequences with quarters vs. halves', () => {
+    const quarterPlus = '12e+a';
+    it(`should interpret '${quarterPlus} as a quarter and four 16th notes`, () => {
+      tab.rhythmToAdvanceArray(quarterPlus).should.deepEqual([q,s,s,s,s]);
+    });
+    const halfPlus = 'h3e+a';
+    it(`should interpret '${halfPlus} as a half and four 16th notes`, () => {
+      tab.rhythmToAdvanceArray(halfPlus).should.deepEqual([h,s,s,s,s]);
+    });
+    const half34 = 'h34';
+    it(`should interpret '${half34} as a half and two quarters`, () => {
+      tab.rhythmToAdvanceArray(half34).should.deepEqual([h,q,q]);
+    });
   });
 });
 
