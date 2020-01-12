@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PRESET name="4OSC: Modified Default Lead" tags="Plugin" path="/Users/zhiweigan/Library/Application Support/Tracktion/Waveform/Presets"
+        filename="4OSC Modified Default Lead.trkpreset">
+  <PLUGIN id="1004" type="4osc" windowLocked="1" enabled="1" filterType="1"
+          ampAttack="0.00100000004749745131" ampDecay="3.71682882308959960938"
+          ampSustain="89.39393615722656250000" waveShape1="3" ampVelocity="74.32187652587890625000"
+          masterLevel="-5.75122833251953125000" filterAmount="0.21899998188018798828"
+          filterAttack="0.00000000000000000000" filterDecay="0.07040189951658248901"
+          filterSustain="41.66666793823242187500" filterRelease="1.11272156238555908203"
+          ampRelease="0.01629147119820117950" filterFreq="114.50802612304687500000">
+    <MACROPARAMETERS id="1004"/>
+    <MODIFIERASSIGNMENTS/>
+    <FACEPLATE width="8.0" height="4.0" autoSize="1">
+      <RESOURCES/>
+    </FACEPLATE>
+    <MODMATRIX/>
+  </PLUGIN>
+</PRESET>

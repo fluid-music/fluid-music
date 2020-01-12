@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const fluid = require('../src/fluidOsc');
 const FluidClient = require('../src/FluidClient');
 const tab = require('../src/tab');
@@ -6,12 +8,6 @@ const drums909 = require('../recipes/track-drums909');
 const drumTrackName = '909';
 const sampleDir =  path.join(__dirname, '909kit');
 const drumsMsg = drums909(sampleDir, drumTrackName);
-
-const bassline_bar1 = {
-    notes:['f3','e3', 'a3','c4'],
-    rhythm: '1e+a2e+a3e+a4+',
-    pattern:'0---...1002-32',
-};
 
 const build =   '0-..1-..2-......'
 const BbChord = '0-.0............'
@@ -76,24 +72,16 @@ const drums_parsed = tab.parse(drums_notes);
 
 const client = new FluidClient(9999);
 client.send([
-    
+    fluid.global.cd('/Users/zhiweigan/Documents/'),
+    fluid.global.activate('out.tracktionedit'),
     fluid.audiotrack.select('chorus'),
-    fluid.plugin.select('4osc'),
     fluid.global.cd('/Users/zhiweigan/Library/Application Support/Tracktion/Waveform/Presets/'),
-    fluid.plugin.load('4OSC: Modified Default Lead'),
+    fluid.plugin.load('4OSC Modified Default Lead'),
     fluid.midiclip.create('chorus', 'v1.1', 0, 8*4, chorus_parsed)
 ]);
 client.send([
     drumsMsg,
     fluid.midiclip.create(drumTrackName, 'drums', 0, 4*9, drums_parsed),
+    fluid.global.cd('/Users/zhiweigan/Documents/'),
     fluid.global.save('out.tracktionedit')
 ]);
-
-// client.send([
-//     fluid.audiotrack.select('Track 1'),
-//     fluid.plugin.select('4osc'),
-//     // fluid.plugin.setParam('Level', .10),
-//     fluid.global.cd('/Users/zhiweigan/Library/Application Support/Tracktion/Waveform/Presets/'),
-//     fluid.plugin.load('4OSC Default Lead'),
-//     //fluid.plugin.save('testpreset')
-// ])

@@ -22,6 +22,7 @@ class FluidOscServer :
 {
 public:
     FluidOscServer();
+    ~FluidOscServer();
     virtual void oscMessageReceived (const OSCMessage& message) override;
     virtual void oscBundleReceived (const OSCBundle& bundle) override;
 
@@ -30,6 +31,7 @@ public:
     void selectMidiClip(const OSCMessage& message);
     void selectPlugin(const OSCMessage& message);
     void setPluginParam(const OSCMessage& message);
+    void addPluginPresetSearchPath(const OSCMessage& message);
     void savePluginPreset(const OSCMessage& message);
     void loadPluginPreset(const OSCMessage& message);
     void clearMidiClip(const OSCMessage& message);
@@ -48,4 +50,6 @@ private:
     te::AudioTrack* selectedAudioTrack = nullptr;
     te::MidiClip* selectedMidiClip = nullptr;
     te::Plugin* selectedPlugin = nullptr;
+    FileSearchPath* searchPath = nullptr;
+    WildcardFileFilter* fileFilter = nullptr;
 };

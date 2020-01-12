@@ -12,6 +12,12 @@
 
 FluidOscServer::FluidOscServer() {
     addListener (this);
+    searchPath = new FileSearchPath();
+    fileFilter = new WildcardFileFilter("","Tracktion", "Tracktion Presets");
+}
+
+FluidOscServer::~FluidOscServer(){
+    delete searchPath;
 }
 
 void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
@@ -44,6 +50,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/midiclip/clear"})) return clearMidiClip(message);
     if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
     if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
+    if (msgAddressPattern.matches({"/plugin/preset/addpath"})) return addPluginPresetSearchPath(message);
     if (msgAddressPattern.matches({"/plugin/save"})) return savePluginPreset(message);
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
@@ -160,6 +167,16 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
     }
 }
 
+void FluidOscServer::addPluginPresetSearchPath(const juce::OSCMessage& message) {
+    if (message.size() < 1 || !message[0].isString()) return;
+    File directoryToAdd = message[0].getString();
+    if (!directoryToAdd.exists()) {
+        std::cout << "Cannot add search path: Not a valid directory" << std::endl;
+        return;
+    }
+    searchPath->addIfNotAlreadyThere(directoryToAdd);
+}
+
 void FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
     if (!selectedPlugin) return;
     if (message.size() < 1 || !message[0].isString()) return;
@@ -179,7 +196,24 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
 
     String filename = message[0].getString();
     if (!filename.endsWithIgnoreCase(".trkpreset")) filename.append(".trkpreset", 10);
-    File file = File::getCurrentWorkingDirectory().getChildFile(filename);
+    
+    Array<File> potentialFiles = searchPath->findChildFiles(File::TypesOfFileToFind::findFiles, true, filename);
+    
+    if(!potentialFiles.size()){
+        std::cout << "Cannot load plugin preset: Failed to load and parse file" << std::endl;
+        return;
+    }
+    
+    File file = potentialFiles[0];
+    
+    for(File fileIter: potentialFiles){
+        if(!fileIter.getFullPathName().contains("Tracktion")){
+            file = fileIter;
+            std::cout<<"Found plugin preset file outside of tracktion default presets"<<std::endl;
+            break;
+        }
+    }
+    
     ValueTree v = loadXmlFile(file);
 
     if (!v.isValid()) {

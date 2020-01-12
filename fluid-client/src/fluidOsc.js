@@ -150,6 +150,15 @@ const plugin = {
       address: '/plugin/load',
       args: { type: 'string', value: presetName },
     };
+  },
+
+  addpath(presetDir){
+    if (typeof presetDir !== 'string')
+      throw new Error('plugin.addpath requires preset directory as argument');
+    return {
+        address: '/plugin/preset/addpath',
+        args: { type: 'string', value: presetDir },
+    };
   }
 };
 
