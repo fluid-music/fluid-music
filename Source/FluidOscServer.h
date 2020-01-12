@@ -51,5 +51,4 @@ private:
     te::MidiClip* selectedMidiClip = nullptr;
     te::Plugin* selectedPlugin = nullptr;
     FileSearchPath* searchPath = nullptr;
-    WildcardFileFilter* fileFilter = nullptr;
 };

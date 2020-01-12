@@ -13,9 +13,9 @@
 FluidOscServer::FluidOscServer() {
     addListener (this);
     searchPath = new FileSearchPath();
-    fileFilter = new WildcardFileFilter("","Tracktion", "Tracktion Presets");
 }
 
+//Deletes instance of FileSearchPath
 FluidOscServer::~FluidOscServer(){
     delete searchPath;
 }
@@ -197,8 +197,10 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     String filename = message[0].getString();
     if (!filename.endsWithIgnoreCase(".trkpreset")) filename.append(".trkpreset", 10);
     
+    //Finds files within the search path that match the file name provided
     Array<File> potentialFiles = searchPath->findChildFiles(File::TypesOfFileToFind::findFiles, true, filename);
     
+    //Checks if any files were found
     if(!potentialFiles.size()){
         std::cout << "Cannot load plugin preset: Failed to load and parse file" << std::endl;
         return;
@@ -206,6 +208,7 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     
     File file = potentialFiles[0];
     
+    //Checks for any conflicts, prioritizing user path names over default tracktion presets
     for(File fileIter: potentialFiles){
         if(!fileIter.getFullPathName().contains("Tracktion")){
             file = fileIter;
