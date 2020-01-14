@@ -22,7 +22,6 @@ void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
     selectedMidiClip = nullptr;
     selectedAudioTrack = nullptr;
     selectedPlugin = nullptr;
-    selectedWaveClip = nullptr;
 }
 
 void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
@@ -166,8 +165,8 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
 void FluidOscServer::addPluginPresetSearchPath(const juce::OSCMessage& message) {
     if (message.size() < 1 || !message[0].isString()) return;
     File directoryToAdd = message[0].getString();
-    if (!directoryToAdd.exists()) {
-        std::cout << "Cannot add search path: Not a valid directory" << std::endl;
+    if (!directoryToAdd.isDirectory()) {
+        std::cout << "Cannot add search path: Directory does note exist: " << directoryToAdd.getFullPathName() << std::endl;
         return;
     }
     searchPath.addIfNotAlreadyThere(directoryToAdd);
@@ -194,7 +193,7 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     if (!filename.endsWithIgnoreCase(".trkpreset")) filename.append(".trkpreset", 10);
     //TODO: Test this functionality
     //Finds files within the search path that match the file name provided
-    searchPath.addIfNotAlreadyThere(File::getCurrentWorkingDirectory());
+    searchPath.add(File::getCurrentWorkingDirectory());
     Array<File> potentialFiles = searchPath.findChildFiles(File::TypesOfFileToFind::findFiles, true, filename);
     searchPath.remove(-1);
 
@@ -355,7 +354,7 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     String fileName = message[1].getString();
     
     double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeat);
-    
+
     File file = fileName;
     te::AudioFile audiofile(file);
     if(!audiofile.isWavFile()){
@@ -363,10 +362,10 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
         return;
     }
     
-    te::EditTimeRange _time = te::EditTimeRange(startSeconds, startSeconds+audiofile.getLength());
+    te::EditTimeRange timeRange = te::EditTimeRange(startSeconds, startSeconds+audiofile.getLength());
     
     te::ClipPosition pos;
-    pos.time = _time;
+    pos.time = timeRange;
     selectedAudioTrack->insertWaveClip(clipName, file, pos, false);
 }
 
