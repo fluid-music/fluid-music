@@ -22,7 +22,6 @@ class FluidOscServer :
 {
 public:
     FluidOscServer();
-    ~FluidOscServer();
     virtual void oscMessageReceived (const OSCMessage& message) override;
     virtual void oscBundleReceived (const OSCBundle& bundle) override;
 

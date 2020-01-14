@@ -22,7 +22,6 @@ void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
     selectedMidiClip = nullptr;
     selectedAudioTrack = nullptr;
     selectedPlugin = nullptr;
-    selectedWaveClip = nullptr;
 }
 
 void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
