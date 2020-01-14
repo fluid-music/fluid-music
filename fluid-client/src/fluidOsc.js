@@ -11,7 +11,6 @@ const audiotrack = {
   },
 }
 
-
 const midiclip = {
   clear() { return { address: '/midiclip/clear' } },
 
@@ -91,13 +90,12 @@ const midiclip = {
 
 
 const sample = {
-  insertWAV (trackName, clipName, startBeats, fileName, desc){
+  insertWav (trackName, clipName, startBeats, fileName){
 
     const args = [
       {type: 'string', value: clipName}, 
       {type: 'string', value: fileName}, 
       {type: 'float', value: startBeats},
-      {type: 'string', value: desc}
   ]
 
     elements = [

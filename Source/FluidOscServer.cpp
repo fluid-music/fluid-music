@@ -12,12 +12,6 @@
 
 FluidOscServer::FluidOscServer() {
     addListener (this);
-    searchPath = new FileSearchPath();
-}
-
-//Deletes instance of FileSearchPath
-FluidOscServer::~FluidOscServer(){
-    delete searchPath;
 }
 
 void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
@@ -176,7 +170,7 @@ void FluidOscServer::addPluginPresetSearchPath(const juce::OSCMessage& message) 
         std::cout << "Cannot add search path: Not a valid directory" << std::endl;
         return;
     }
-    searchPath->addIfNotAlreadyThere(directoryToAdd);
+    searchPath.addIfNotAlreadyThere(directoryToAdd);
 }
 
 void FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
@@ -200,9 +194,9 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     if (!filename.endsWithIgnoreCase(".trkpreset")) filename.append(".trkpreset", 10);
     //TODO: Test this functionality
     //Finds files within the search path that match the file name provided
-    searchPath->addIfNotAlreadyThere(File::getCurrentWorkingDirectory());
-    Array<File> potentialFiles = searchPath->findChildFiles(File::TypesOfFileToFind::findFiles, true, filename);
-    searchPath->remove(-1);
+    searchPath.addIfNotAlreadyThere(File::getCurrentWorkingDirectory());
+    Array<File> potentialFiles = searchPath.findChildFiles(File::TypesOfFileToFind::findFiles, true, filename);
+    searchPath.remove(-1);
 
     
     //Checks if any files were found
@@ -345,16 +339,20 @@ void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
 }
 
 void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
-    if(!selectedAudioTrack) return;
-    if(message.size() < 3) return;
+    if(!selectedAudioTrack){
+        std::cout << "Cannot load Audio Track: Must select Audio Track before inserting" << std::endl;
+        return;
+    }
+    if(message.size() < 3){
+        std::cout << "Expected 3 arguments, only recieved " << message.size() << "." << std::endl;
+        return;
+    }
     
     double startBeat = 0;
     if (message[2].isFloat32()) startBeat = message[2].getFloat32();
     else if (message[2].isInt32()) startBeat = message[2].getInt32();
     String clipName = message[0].getString();
     String fileName = message[1].getString();
-    String desc = message[3].getString();
-    
     
     double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeat);
     

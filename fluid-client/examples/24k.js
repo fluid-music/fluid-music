@@ -9,6 +9,8 @@ const drumTrackName = '909';
 const sampleDir =  path.join(__dirname, '909kit');
 const drumsMsg = drums909(sampleDir, drumTrackName);
 
+const sessionPath = path.join(__dirname, 'sessions/24kmagic.tracktionedit')
+
 const build =   '0-..1-..2-......'
 const BbChord = '0-.0............'
 const FmChord = '3-.3............'
@@ -57,7 +59,7 @@ const drum_end = {drum_end_hihat, drum_end_basshp}
 
 const drums_notes = {
     noteLibrary: {k: 36, h: 42, s: 38, S: 40, c: 49, t: 41, o:46, p:44},
-    r: '1e+a2e+a3e+a4e+a',
+    r: rhythm,
     p: [drum_build, drum_rep, 
         drum_mid2, drum_rep,
         drum_mid1, drum_rep,
@@ -70,16 +72,14 @@ const drums_parsed = tab.parse(drums_notes);
 
 const client = new FluidClient(9999);
 client.send([
-    fluid.global.cd('~'),
-    fluid.global.activate('24kmagic.tracktionedit'),
+    fluid.global.activate(sessionPath),
     fluid.audiotrack.select('chorus'),
-    fluid.global.cd('~/Application Support/Tracktion/Waveform/Presets/'),
+    fluid.global.cd('~/Library/Application Support/Tracktion/Waveform/Presets/'),
     fluid.plugin.load('4OSC Saw Lead'),
     fluid.midiclip.create('chorus', 'v1.1', 0, 8*4, chorus_parsed)
 ]);
 client.send([
     drumsMsg,
     fluid.midiclip.create(drumTrackName, 'drums', 0, 4*9, drums_parsed),
-    fluid.global.cd('~'),
-    fluid.global.save('24kmagic.tracktionedit')
+    fluid.global.save(sessionPath)
 ]);

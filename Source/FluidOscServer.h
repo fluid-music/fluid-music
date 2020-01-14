@@ -51,7 +51,5 @@ private:
     te::AudioTrack* selectedAudioTrack = nullptr;
     te::MidiClip* selectedMidiClip = nullptr;
     te::Plugin* selectedPlugin = nullptr;
-    te::WaveAudioClip* selectedWaveClip = nullptr;
-    FileSearchPath* searchPath = nullptr;
-//    FileSearchPath searchPath;
+    FileSearchPath searchPath;
 };

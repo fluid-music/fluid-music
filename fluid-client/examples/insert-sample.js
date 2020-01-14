@@ -2,11 +2,14 @@
 
 const fluid = require('../src/fluidOsc');
 const FluidClient = require('../src/FluidClient');
+const path = require('path');
+
+const sessionPath = path.join(__dirname, 'sessions/out.tracktionedit')
 
 const client = new FluidClient(9999);
 client.send([
-        fluid.global.activate('~/Documents/out.tracktionedit'),
+        fluid.global.activate(sessionPath),
         fluid.audiotrack.select('sample-track'),
-        fluid.sample.insertWAV('sample-track', 'sample', 0, '~/Documents/file.wav', 'Inserted Sample'),
-        fluid.global.save('~/Documents/out.tracktionedit')
-        ])
+        fluid.sample.insertWav('sample-track', 'sample', 0, 'file.wav'),
+        fluid.global.save(sessionPath)
+        ]);

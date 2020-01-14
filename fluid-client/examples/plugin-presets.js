@@ -1,5 +1,8 @@
 const FluidClient = require('../src/FluidClient');
 const fluid = require('../src/fluidOsc');
+const path = require('path');
+
+const sessionPath = path.join(__dirname, 'sessions/out.tracktionedit')
 
 const elements = [
   // create preset for vst2
@@ -33,7 +36,7 @@ const elements = [
   fluid.plugin.save('comp-preset-1'),
 
   // save the edit file
-  fluid.global.save('out.tracktionedit', false),
+  fluid.global.save(sessionPath, false),
 ];
 
 const client = new FluidClient(9999);
