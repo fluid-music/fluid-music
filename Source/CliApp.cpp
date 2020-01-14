@@ -254,14 +254,27 @@ void CLIApp::onRunning()
         } });
 
     cApp.addCommand({
-        "--print-default-dir",
-        "--print-default-dir=trkpreset",
-        "Print the default load/save dir for a particular file type",
-        "Shows the default directory for loading and saving a particular file type.\n\
-        With no arguments, shows the fallback directory.",
+        "--preset-dir",
+        "--preset-dir[=./path|!]",
+        "Get or set the path to which presets will be saved",
+        "With no arguments, print the path where the engine should look for presets.\n\
+        With an argument, attempt to update configuration files specifying a new\n\
+        search path. The argument can be absolute, or relative to the current working\n\
+        directory. Relative paths will be resolved before being saved to the\n\
+        configuration file. To reset to the default value, use --preset-dir=!",
         [](const ArgumentList& args) {
-            String type = args.getValueForOption("--print-default-dir").toLowerCase().trimCharactersAtStart(".");
-            std::cout << te::Engine::getInstance().getPropertyStorage().getDefaultLoadSaveDirectory(type).getFullPathName() << std::endl;
+            String newPath = args.getValueForOption("--preset-dir");
+            if (newPath.isNotEmpty()) {
+                if (newPath == "!") {
+                    CybrProps::resetPresetSaveLoadDir();
+                    std::cout << "Preset path reset to: ";
+                } else {
+                    File dir = File::getCurrentWorkingDirectory().getChildFile(newPath);
+                    if (CybrProps::setPresetSaveLoadDir(dir))
+                        std::cout << "Preset path set to: ";
+                }
+            }
+            std::cout << CybrProps::getPresetSaveLoadDir().getFullPathName() << std::endl;
         } });
 
     cApp.addCommand({
