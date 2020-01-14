@@ -370,6 +370,7 @@ void listPluginParameters(te::Engine& engine, const String pluginName) {
     }
 }
 
+//TODO: Internal plugin will always return no midi programs
 void listPluginPresets(te::Engine& engine, const String pluginName) {
     std::unique_ptr<te::Edit> edit(createEmptyEdit(File(), engine));
     edit->ensureNumberOfAudioTracks(1);
@@ -389,6 +390,7 @@ void listPluginPresets(te::Engine& engine, const String pluginName) {
         std::cout << "Plugin::hasNameForMidiProgram for " << plugin->getName() << std::endl;
         for (int i = 0; i <= 127; i++) {
             String programName;
+            //Always returns false
             if (plugin->hasNameForMidiProgram(i, 0, programName))
                 std::cout << "Program: (" << i << ") " << programName << std::endl;
         }

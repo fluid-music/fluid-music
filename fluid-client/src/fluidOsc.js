@@ -89,6 +89,25 @@ const midiclip = {
 };
 
 
+const sample = {
+  insertWav (trackName, clipName, startBeats, fileName){
+
+    const args = [
+      {type: 'string', value: clipName}, 
+      {type: 'string', value: fileName}, 
+      {type: 'float', value: startBeats},
+  ]
+
+    elements = [
+      audiotrack.select(trackName),
+      {address: '/sample/insert', args}
+    ]
+
+    return elements;
+  }
+}
+
+
 const plugin = {
   /**
    * Creates an object that looks like this:
@@ -149,6 +168,15 @@ const plugin = {
     return {
       address: '/plugin/load',
       args: { type: 'string', value: presetName },
+    };
+  },
+
+  addpath(presetDir){
+    if (typeof presetDir !== 'string')
+      throw new Error('plugin.addpath requires preset directory as argument');
+    return {
+        address: '/plugin/preset/addpath',
+        args: { type: 'string', value: presetDir },
     };
   }
 };
@@ -296,6 +324,7 @@ sampler = {
 
 module.exports = {
   midiclip,
+  sample,
   audiotrack,
   plugin,
   global,

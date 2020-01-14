@@ -2,6 +2,9 @@
 const fluid = require('../src/fluidOsc');
 const FluidClient = require('../src/FluidClient');
 const tabs = require('./tab-examples');
+const path = require('path');
+
+const sessionPath = path.join(__dirname, 'sessions/out.tracktionedit')
 
 const client = new FluidClient(9999);
 client.send([
@@ -9,5 +12,5 @@ client.send([
   fluid.plugin.select('4osc'),
   fluid.midiclip.create('stabs', 'v1.1', 0, 8, tabs.noTearsVerseNotes),
   fluid.midiclip.create('stabs', 'v1.2', 8, 8, tabs.noTearsVerseNotes),
-  fluid.global.save('out.tracktionedit'),
+  fluid.global.save(sessionPath),
 ]);

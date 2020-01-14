@@ -8,5 +8,8 @@ const sessionPath = path.join(__dirname, 'sessions/out.tracktionedit')
 
 const client = new FluidClient(9999);
 client.send([
-  fluid.global.save(sessionPath, false),
-]);
+        fluid.global.activate(sessionPath),
+        fluid.audiotrack.select('sample-track'),
+        fluid.sample.insertWav('sample-track', 'sample', 0, 'file.wav'),
+        fluid.global.save(sessionPath)
+        ]);
