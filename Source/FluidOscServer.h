@@ -36,6 +36,7 @@ public:
     void loadPluginPreset(const OSCMessage& message);
     void clearMidiClip(const OSCMessage& message);
     void insertMidiNote(const OSCMessage& message);
+    void insertWaveSample(const OSCMessage& message);
     void saveActiveEdit(const OSCMessage& message);
     void activateEditFile(const OSCMessage& message);
     void changeWorkingDirectory(const OSCMessage& message);
@@ -50,5 +51,7 @@ private:
     te::AudioTrack* selectedAudioTrack = nullptr;
     te::MidiClip* selectedMidiClip = nullptr;
     te::Plugin* selectedPlugin = nullptr;
+    te::WaveAudioClip* selectedWaveClip = nullptr;
     FileSearchPath* searchPath = nullptr;
+//    FileSearchPath searchPath;
 };

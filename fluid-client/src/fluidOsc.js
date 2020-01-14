@@ -11,6 +11,7 @@ const audiotrack = {
   },
 }
 
+
 const midiclip = {
   clear() { return { address: '/midiclip/clear' } },
 
@@ -87,6 +88,26 @@ const midiclip = {
     return elements;
   },
 };
+
+
+const sample = {
+  insertWAV (trackName, clipName, startBeats, fileName, desc){
+
+    const args = [
+      {type: 'string', value: clipName}, 
+      {type: 'string', value: fileName}, 
+      {type: 'float', value: startBeats},
+      {type: 'string', value: desc}
+  ]
+
+    elements = [
+      audiotrack.select(trackName),
+      {address: '/sample/insert', args}
+    ]
+
+    return elements;
+  }
+}
 
 
 const plugin = {
@@ -305,6 +326,7 @@ sampler = {
 
 module.exports = {
   midiclip,
+  sample,
   audiotrack,
   plugin,
   global,

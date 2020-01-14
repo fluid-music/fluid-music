@@ -28,6 +28,7 @@ void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
     selectedMidiClip = nullptr;
     selectedAudioTrack = nullptr;
     selectedPlugin = nullptr;
+    selectedWaveClip = nullptr;
 }
 
 void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
@@ -48,6 +49,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/midiclip/n"})) return insertMidiNote(message);
     if (msgAddressPattern.matches({"/midiclip/select"})) return selectMidiClip(message);
     if (msgAddressPattern.matches({"/midiclip/clear"})) return clearMidiClip(message);
+    if (msgAddressPattern.matches({"/sample/insert"})) return insertSample(message);
     if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
     if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
     if (msgAddressPattern.matches({"/plugin/preset/addpath"})) return addPluginPresetSearchPath(message);
@@ -196,9 +198,12 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
 
     String filename = message[0].getString();
     if (!filename.endsWithIgnoreCase(".trkpreset")) filename.append(".trkpreset", 10);
-    
+    //TODO: Test this functionality
     //Finds files within the search path that match the file name provided
+    searchPath->addIfNotAlreadyThere(File::getCurrentWorkingDirectory());
     Array<File> potentialFiles = searchPath->findChildFiles(File::TypesOfFileToFind::findFiles, true, filename);
+    searchPath->remove(-1);
+
     
     //Checks if any files were found
     if(!potentialFiles.size()){
@@ -337,6 +342,34 @@ void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
 
     te::MidiList& notes = selectedMidiClip->getSequence();
     notes.addNote(noteNumber, startBeat, lengthInBeats, velocity, colorIndex, nullptr);
+}
+
+void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
+    if(!selectedAudioTrack) return;
+    if(message.size() < 3) return;
+    
+    double startBeat = 0;
+    if (message[2].isFloat32()) startBeat = message[2].getFloat32();
+    else if (message[2].isInt32()) startBeat = message[2].getInt32();
+    String clipName = message[0].getString();
+    String fileName = message[1].getString();
+    String desc = message[3].getString();
+    
+    
+    double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeat);
+    
+    File file = fileName;
+    te::AudioFile audiofile(file);
+    if(!audiofile.isWavFile()){
+        std::cout << "Cannot load sample: Must be valid WAV file." << std::endl;
+        return;
+    }
+    
+    te::EditTimeRange _time = te::EditTimeRange(startSeconds, startSeconds+audiofile.getLength());
+    
+    te::ClipPosition pos;
+    pos.time = _time;
+    selectedAudioTrack->insertWaveClip(clipName, file, pos, false);
 }
 
 void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {

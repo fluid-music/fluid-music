@@ -15,12 +15,12 @@ const FmChord = '3-.3............'
 const Bb_extended_Chord='0-.0....4-..5-..'
 const chorus_notes = {
     noteLibrary: [
-        ['bb4', 'c#5', 'f5'], //Bbm
-        ['c4', 'd#5', 'g5'], //Cm
-        ['c#5', 'f5', 'g#5'], //C#
-        ['f5', 'g#5', 'c6'], //Fm
-        ['f#5', 'a#5', 'c#6'], //F#
-        ['d#5', 'f#5', 'a#5'], //D#m
+        ['Bb4', 'Db5', 'F5', 'Bb5'], //Bbm
+        ['Ab4', 'C5', 'Eb5', 'G5'], //Cm
+        ['Db5', 'F5', 'Ab5'], //Db
+        ['F5', 'Ab5', 'C6'], //Fm
+        ['Gb5', 'Bb5', 'Db6'], //Gb
+        ['Eb5', 'Gb5', 'Bb5'], //Ebm
     ],
     r: '1e+a2e+a3e+a4e+a',
     p: [build, FmChord, 
@@ -65,23 +65,21 @@ const drums_notes = {
         drum_end]
 }
 
-
-
 const chorus_parsed = tab.parse(chorus_notes);
 const drums_parsed = tab.parse(drums_notes);
 
 const client = new FluidClient(9999);
 client.send([
-    fluid.global.cd('/Users/zhiweigan/Documents/'),
-    fluid.global.activate('out.tracktionedit'),
+    fluid.global.cd('~'),
+    fluid.global.activate('24kmagic.tracktionedit'),
     fluid.audiotrack.select('chorus'),
-    fluid.global.cd('/Users/zhiweigan/Library/Application Support/Tracktion/Waveform/Presets/'),
-    fluid.plugin.load('4OSC Modified Default Lead'),
+    fluid.global.cd('~/Application Support/Tracktion/Waveform/Presets/'),
+    fluid.plugin.load('4OSC Saw Lead'),
     fluid.midiclip.create('chorus', 'v1.1', 0, 8*4, chorus_parsed)
 ]);
 client.send([
     drumsMsg,
     fluid.midiclip.create(drumTrackName, 'drums', 0, 4*9, drums_parsed),
-    fluid.global.cd('/Users/zhiweigan/Documents/'),
-    fluid.global.save('out.tracktionedit')
+    fluid.global.cd('~'),
+    fluid.global.save('24kmagic.tracktionedit')
 ]);
