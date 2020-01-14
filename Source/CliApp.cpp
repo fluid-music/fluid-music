@@ -254,6 +254,17 @@ void CLIApp::onRunning()
         } });
 
     cApp.addCommand({
+        "--print-default-dir",
+        "--print-default-dir=trkpreset",
+        "Print the default load/save dir for a particular file type",
+        "Shows the default directory for loading and saving a particular file type.\n\
+        With no arguments, shows the fallback directory.",
+        [](const ArgumentList& args) {
+            String type = args.getValueForOption("--print-default-dir").toLowerCase().trimCharactersAtStart(".");
+            std::cout << te::Engine::getInstance().getPropertyStorage().getDefaultLoadSaveDirectory(type).getFullPathName() << std::endl;
+        } });
+
+    cApp.addCommand({
         "-p",
         "-p",
         "Play the active edit",

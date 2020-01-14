@@ -34,6 +34,10 @@ public:
 
         return juceProps.getFile().getParentDirectory();
     }
+
+    File getDefaultLoadSaveDirectory(StringRef label) override {
+        return getAppPrefsFolder().getChildFile(File::createLegalFileName(label));
+    }
 };
 
 class CLIApp : public JUCEApplicationBase, ChangeListener {
