@@ -47,6 +47,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
     if (msgAddressPattern.matches({"/plugin/preset/addpath"})) return addPluginPresetSearchPath(message);
     if (msgAddressPattern.matches({"/plugin/save"})) return savePluginPreset(message);
+    if (msgAddressPattern.matches({"/plugin/load/trkpreset"})) return loadPluginTrkpreset(message);
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
@@ -178,6 +179,35 @@ void FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
     saveTracktionPreset(selectedPlugin, message[0].getString());
 }
 
+void FluidOscServer::loadPluginTrkpreset(const juce::OSCMessage &message) {
+
+    if (!selectedAudioTrack) {
+        std::cout << "Cannot load plugin preset: No audio track selected" << std::endl;
+        return;
+    }
+
+    if (!message.size() || !message[0].isBlob()) {
+        std::cout << "Cannot load trkpreset data: mising blob" << std::endl;
+        return;
+    }
+
+    MemoryBlock blob = message[0].getBlob();
+    String string = String::createStringFromData(blob.getData(), (int)blob.getSize());
+    std::unique_ptr<XmlElement> xml = parseXML(string);
+    if (!xml) {
+        std::cout << "Cannot load trkpreset data: XML parser error" << std::endl;
+        return;
+    }
+
+    ValueTree v = ValueTree::fromXml(*xml.get());
+    if (!v.isValid()) {
+        std::cout << "Cannot load trkpreset data: Invalid ValueTree" << std::endl;
+        return;
+    }
+
+    loadTracktionPreset(*selectedAudioTrack, v);
+}
+
 void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     if (!selectedAudioTrack) {
         std::cout << "Cannot load plugin preset: No audio track selected" << std::endl;
@@ -222,54 +252,7 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
         return;
     }
 
-    for (ValueTree preset : v) {
-        if (!preset.hasType(te::IDs::PLUGIN)) continue;
-        if (!preset.hasProperty(te::IDs::type)) continue;
-        String type = preset[te::IDs::type];
-        String name = preset[te::IDs::name];
-
-        // Tracktion plugins have a type property but no name property.
-        // getOrCreatePluginByName expect 'name' to be the name of the vst or
-        // 'type' of the tracktion plugin (which does not have a name).
-        // This sillyness allows us to get a plugin from a preset
-        if (!preset.hasProperty(te::IDs::name)) {
-            name = type;
-            type = String();
-        }
-
-        if (name.isEmpty()) {
-            std::cout << "Cannot load plugin preset: plugin has invalid type: " << type << std::endl;
-            continue;
-        }
-
-        std::cout << "Found preset: " << type << "/" << name << std::endl;
-
-        if (te::Plugin* plugin = getOrCreatePluginByName(*selectedAudioTrack, name, type)) {
-            ValueTree currentConfig = plugin->state;
-            // These should be correct on the preset, but just in case, get the ones
-            // returned by getOrCreatePluginByName, so we will be sure that we are not
-            // changing them.
-            if (currentConfig.hasProperty(te::IDs::type)) preset.setProperty(te::IDs::type, currentConfig[te::IDs::type], nullptr);
-            if (currentConfig.hasProperty(te::IDs::name)) preset.setProperty(te::IDs::name, currentConfig[te::IDs::name], nullptr);
-            if (currentConfig.hasProperty(te::IDs::uid)) preset.setProperty(te::IDs::uid, currentConfig[te::IDs::uid], nullptr);
-            if (currentConfig.hasProperty(te::IDs::filename)) preset.setProperty(te::IDs::filename, currentConfig[te::IDs::filename], nullptr);
-            if (currentConfig.hasProperty(te::IDs::id)) preset.setProperty(te::IDs::id, currentConfig[te::IDs::id], nullptr);
-            if (currentConfig.hasProperty(te::IDs::manufacturer)) preset.setProperty(te::IDs::manufacturer, currentConfig[te::IDs::manufacturer], nullptr);
-            if (currentConfig.hasProperty(te::IDs::programNum)) preset.setProperty(te::IDs::programNum, currentConfig[te::IDs::programNum], nullptr);
-
-            // Now copy over everything else from the preset. This should inlude the
-            // all-important 'state' property of external plugins. External plugins also
-            // have some mundane properties like windowLocked="1", enabled="1"
-            plugin->restorePluginStateFromValueTree(preset);
-
-            std::cout
-                << "Track: " << selectedAudioTrack->getName()
-                << " loaded preset: " << file.getFullPathName() << std::endl;
-        } else {
-            std::cout << "Cannot load plugin preset: failed to create plugin with type/name: " << type << "/" << name << std::endl;
-            continue;
-        };
-    }
+    loadTracktionPreset(*selectedAudioTrack, v);
 }
 
 void FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
