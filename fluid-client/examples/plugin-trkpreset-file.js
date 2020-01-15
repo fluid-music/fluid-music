@@ -14,8 +14,5 @@ if (!presetBlob) console.log("Failed to load preset blob");
 const client = new FluidClient(9999);
 client.send([
   fluid.audiotrack.select('synth'),
-  {
-    address: '/plugin/load/trkpreset', 
-    args: [ { type: 'blob', value: presetBlob } ]
-  }
+  fluid.plugin.loadTrkpreset(presetFilename),
 ]);

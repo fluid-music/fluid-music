@@ -1,4 +1,6 @@
 const converters = require('./converters');
+const plugin = require('./fluid/plugin');
+const sampler = require('./fluid/sampler.js');
 
 const audiotrack = {
   select(trackName) {
@@ -107,80 +109,6 @@ const sample = {
   }
 }
 
-
-const plugin = {
-  /**
-   * Creates an object that looks like this:
-   *  {
-   *    address: '/plugin/select',
-   *    args: [
-   *      { type: 'string', value: 'zebra2' },
-   *      { type: 'string', value: 'vst' },
-   *    ],
-   *  }
-   * @param {string} pluginName - the name of the vst plugin
-   * @param {[string]} pluginType - optional type, for example 'VST', 'VST3',
-   *        'AudioUnit'. If omitted, search all types.
-   */
-  select(pluginName, pluginType) {
-    if (typeof pluginName !== 'string')
-      throw new Error('plugin.select(pluginName) needs a string, got: ' + undefined);
-
-    const args = [{ type: 'string', value: pluginName}];
-    if (typeof pluginType === 'string') {
-      if (pluginType.toLowerCase() === 'vst2') {
-        throw new Error('"vst2" is not a valid plugin type, use "vst" instead');
-      }
-      args.push({ type: 'string', value: pluginType });
-    }
-
-    return { args, address: '/plugin/select' };
-  },
-
-  setParam(paramName, normalizedValue) {
-    if (typeof paramName !== 'string')
-      throw new Error('plugin.setParam needs a parameterName, got: ' + paramName);
-    if (typeof normalizedValue !== 'number')
-      throw new Error('plugin.setParam needs a value number, got ' + normalizedValue);
-    return {
-      address: '/plugin/param/set',
-      args: [
-        { type: 'string', value: paramName },
-        { type: 'float', value: normalizedValue },
-      ],
-    }
-  },
-
-  save(presetName) {
-    if (typeof presetName !== 'string')
-      throw new Error('plugin.save requires preset name as argument');
-
-    return {
-      address: '/plugin/save',
-      args: { type: 'string', value: presetName },
-    };
-  },
-
-  load(presetName) {
-    if (typeof presetName !== 'string')
-      throw new Error('plugin.load requires preset name as argument');
-
-    return {
-      address: '/plugin/load',
-      args: { type: 'string', value: presetName },
-    };
-  },
-
-  addpath(presetDir){
-    if (typeof presetDir !== 'string')
-      throw new Error('plugin.addpath requires preset directory as argument');
-    return {
-        address: '/plugin/preset/addpath',
-        args: { type: 'string', value: presetDir },
-    };
-  }
-};
-
 const global = {
   /**
    * @param {string} [filename] - '.tracktionedit' or '.wav' filename. If no
@@ -282,48 +210,7 @@ const transport = {
   },
 };
 
-const sampler = {
-  /**
-   * Add a sample to the currently selected sampler.
-   * @param {string} name - the name of the sample to add
-   * @param {string} filename - the filename (relative to server WD, or absolute)
-   * @param {Number} noteNum - the Midi note number to add the sample to
-   * @param {[Number=0]} gain - Gain in DBFS (0 is unity)
-   * @param {[Number=0]} pan - pan (-1 = hard left, 1 = hard right)
-   * @param {[Bool=false]} - oneShot
-   */
-  add(name, filename, noteNum, gain, pan, oneShot) {
-    if (typeof name !== 'string')
-      throw new Error('sampler.add needs a string note name');
-    if (typeof filename !== 'string')
-      throw new Error('sampler.add needs a string filename');
-    if (typeof noteNum !== 'number')
-      throw new Error('sampler.add needs noteNum integer');
-    if (gain && typeof gain !== 'number')
-      throw new Error('sampler.add gain must be a number');
-    if (pan && typeof pan !== 'number')
-      throw new Error('sampler.add pan must be a number');
 
-    const msg = {
-      address: '/plugin/sampler/add',
-      args: [
-        { type: 'string', value: name },
-        { type: 'string', value: filename },
-        { type: 'integer', value: noteNum },
-      ],
-    };
-
-    msg.args.push((typeof gain === 'number') ? { type: 'float', value: gain } : { type: 'string', value: '' });
-    msg.args.push((typeof pan === 'number') ? { type: 'float', value : pan } : { type: 'string', value: '' });
-    msg.args.push((typeof oneShot === 'boolean') ? { type: 'integer', value: oneShot ? 1 : 0 } : { type: null });
-
-    return msg;
-  },
-
-  clearAll() {
-    return { address: '/plugin/sampler/clear-all' };
-  },
-};
 
 module.exports = {
   midiclip,
