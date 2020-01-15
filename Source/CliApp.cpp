@@ -40,8 +40,6 @@ void CLIApp::shutdown()
     // needed; the Project Manager settings will be saved anyway. I'm not %100
     // sure that this is the right way to do it, but for now I'm leaving it in.
     te::getApplicationSettings()->dispatchPendingMessages();
-
-    std::cout << "Shutdown!" << std::endl << std::endl;
 }
 
 const String CLIApp::getApplicationName() 
@@ -251,6 +249,54 @@ void CLIApp::onRunning()
         "Print the complete path and filename of the settings file",
         [](const ArgumentList&) {
             std::cout << te::getApplicationSettings()->getFile().getFullPathName() << std::endl;
+        } });
+
+    cApp.addCommand({
+        "--preset-dir",
+        "--preset-dir[=./path|!]",
+        "Get or set the path to which presets will be saved",
+        "With no arguments, print the path where the engine should look for presets.\n\
+        With an argument, attempt to update configuration files specifying a new\n\
+        search path. The argument can be absolute, or relative to the current working\n\
+        directory. Relative paths will be resolved before being saved to the\n\
+        configuration file. To reset to the default value, use --preset-dir=!",
+        [](const ArgumentList& args) {
+            String newPath = args.getValueForOption("--preset-dir");
+            if (newPath.isNotEmpty()) {
+                if (newPath == "!") {
+                    CybrProps::resetPresetSaveLoadDir();
+                    std::cout << "Preset path reset to: ";
+                } else {
+                    File dir = File::getCurrentWorkingDirectory().getChildFile(newPath);
+                    if (CybrProps::setPresetSaveLoadDir(dir))
+                        std::cout << "Preset path set to: ";
+                }
+            }
+            std::cout << CybrProps::getPresetSaveLoadDir().getFullPathName() << std::endl;
+        } });
+
+    cApp.addCommand({
+        "--sample-dir",
+        "--sample-dir[=./path|!]",
+        "Get or set the path to load samples from",
+        "With no arguments, print the path where the engine should look for samples.\n\
+        With an argument, attempt to update configuration files specifying a new\n\
+        search path. The argument can be absolute, or relative to the current working\n\
+        directory. Relative paths will be resolved before being saved to the\n\
+        configuration file. To reset to the default value, use --samples-dir=!",
+        [](const ArgumentList& args) {
+            String newPath = args.getValueForOption("--sample-dir");
+            if (newPath.isNotEmpty()) {
+                if (newPath == "!") {
+                    CybrProps::resetSamplesDir();
+                    std::cout << "Samples path reset to: ";
+                } else {
+                    File dir = File::getCurrentWorkingDirectory().getChildFile(newPath);
+                    if (CybrProps::setSamplesDir(dir))
+                        std::cout << "Samples path set to: ";
+                }
+            }
+            std::cout << CybrProps::getSamplesDir().getFullPathName() << std::endl;
         } });
 
     cApp.addCommand({

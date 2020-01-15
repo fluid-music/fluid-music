@@ -29,7 +29,7 @@ te::Edit* createEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role
     ValueTree valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
     
     // Create the edit object.
-    // Note we cannot save an edit file without and ediit file retriever. It is
+    // Note we cannot save an edit file without and edit file retriever. It is
     // also used resolves audioclips that have source='./any/relative/path.wav'.
     std::cout << "Creating Edit Object" << std::endl;
     te::Edit::Options editOptions{ engine };
@@ -43,7 +43,7 @@ te::Edit* createEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role
     // By default (and for simplicity), all clips in an in-memory edit should
     // have a source property with an absolute path value. We want to avoid
     // clip sources with project ids or relative path values.
-    setClipAndSamplerSourcesToDirectFileReferences(*newEdit, false, false);
+    setClipAndSamplerSourcesToDirectFileReferences(*newEdit, SamplePathMode::absolute, false);
     
     // List any missing plugins
     for (auto plugin : newEdit->getPluginCache().getPlugins()) {
@@ -73,12 +73,15 @@ CybrEdit* copyCybrEditForPlayback(CybrEdit& cybrEdit) {
     return newCybrEdit;
 }
 
-void setClipAndSamplerSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose = true)
+void setClipAndSamplerSourcesToDirectFileReferences(te::Edit& changeEdit, SamplePathMode mode, bool verbose)
 {
     int failures = 0;
-    if (verbose) std::cout << "Searching for audio clips and updating their sources to "
-        << (useRelativePath ? "relative" : "absolute")
-        << " file paths" << std::endl;
+    if (verbose) {
+        std::cout << "Searching for audio clips and updating their sources ";
+        if (mode == SamplePathMode::absolute) std::cout << "to absolute paths" << std::endl;
+        if (mode == SamplePathMode::relative) std::cout << "to relative paths" << std::endl;
+        if (mode == SamplePathMode::decide) std::cout << "to absolute paths, if sample is not in a subdirectory" << std::endl;
+    }
     
     for (auto track : te::getClipTracks(changeEdit)) { // for each track
         for (auto clip : track->getClips()) { // inspect each clip
@@ -88,11 +91,18 @@ void setClipAndSamplerSourcesToDirectFileReferences(te::Edit& changeEdit, bool u
                 if (file == File()) {
                     // We failed to get the filepath from the project manager
                     failures++;
-                    std::cerr
-                    << "ERROR: Failed to find and update source clip: " << audioClip->getName()
-                    << " source=\"" << sourceFileRef.source << "\"" << std::endl;
+                    std::cout
+                        << "ERROR: Failed to find and update source clip: " << audioClip->getName()
+                        << " source=\"" << sourceFileRef.source << "\"" << std::endl;
                 }
                 else {
+                    bool useRelativePath;
+                    if (mode == SamplePathMode::relative) useRelativePath = true;
+                    else if (mode == SamplePathMode::absolute) useRelativePath = false;
+                    else {
+                        File editFileDir = changeEdit.editFileRetriever().getParentDirectory();
+                        useRelativePath = file.isAChildOf(editFileDir) ? true : false;
+                    }
                     // We have a filepath. We are not certain the file exists.
                     // Even if the file does not exists, we may be able to
                     // update the source property.
@@ -131,6 +141,13 @@ void setClipAndSamplerSourcesToDirectFileReferences(te::Edit& changeEdit, bool u
                 String oldPath = child.getProperty(te::IDs::source);
                 if (oldPath.isEmpty()) continue;
                 File soundFile = changeEdit.filePathResolver(oldPath);
+                bool useRelativePath;
+                if (mode == SamplePathMode::relative) useRelativePath = true;
+                else if (mode == SamplePathMode::absolute) useRelativePath = false;
+                else {
+                    File editFileDir = changeEdit.editFileRetriever().getParentDirectory();
+                    useRelativePath = soundFile.isAChildOf(editFileDir) ? true : false;
+                }
                 String newPath = te::SourceFileReference::findPathFromFile(changeEdit, soundFile, useRelativePath);
                 if (oldPath != newPath && newPath.isNotEmpty()) {
                     child.setProperty(te::IDs::source, newPath, nullptr);
@@ -439,6 +456,60 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
 
     state.createXml()->writeTo(file);
     std::cout << "Save tracktion preset: " << file.getFullPathName() << std::endl;
+}
+
+void loadTracktionPreset(te::AudioTrack& audioTrack, ValueTree v) {
+    bool loaded = false;
+    for (ValueTree preset : v) {
+        if (!preset.hasType(te::IDs::PLUGIN)) continue;
+        if (!preset.hasProperty(te::IDs::type)) continue;
+        String type = preset[te::IDs::type];
+        String name = preset[te::IDs::name];
+
+        // Tracktion plugins have a type property but no name property.
+        // getOrCreatePluginByName expect 'name' to be the name of the vst or
+        // 'type' of the tracktion plugin (which does not have a name).
+        // This sillyness allows us to get a plugin from a preset
+        if (!preset.hasProperty(te::IDs::name)) {
+            name = type;
+            type = String();
+        }
+
+        if (name.isEmpty()) {
+            std::cout << "Cannot load plugin preset: plugin has invalid type: " << type << std::endl;
+            continue;
+        }
+
+        std::cout << "Found preset: " << type << "/" << name << std::endl;
+
+        if (te::Plugin* plugin = getOrCreatePluginByName(audioTrack, name, type)) {
+            ValueTree currentConfig = plugin->state;
+            // These should be correct on the preset, but just in case, get the ones
+            // returned by getOrCreatePluginByName, so we will be sure that we are not
+            // changing them.
+            if (currentConfig.hasProperty(te::IDs::type)) preset.setProperty(te::IDs::type, currentConfig[te::IDs::type], nullptr);
+            if (currentConfig.hasProperty(te::IDs::name)) preset.setProperty(te::IDs::name, currentConfig[te::IDs::name], nullptr);
+            if (currentConfig.hasProperty(te::IDs::uid)) preset.setProperty(te::IDs::uid, currentConfig[te::IDs::uid], nullptr);
+            if (currentConfig.hasProperty(te::IDs::filename)) preset.setProperty(te::IDs::filename, currentConfig[te::IDs::filename], nullptr);
+            if (currentConfig.hasProperty(te::IDs::id)) preset.setProperty(te::IDs::id, currentConfig[te::IDs::id], nullptr);
+            if (currentConfig.hasProperty(te::IDs::manufacturer)) preset.setProperty(te::IDs::manufacturer, currentConfig[te::IDs::manufacturer], nullptr);
+            if (currentConfig.hasProperty(te::IDs::programNum)) preset.setProperty(te::IDs::programNum, currentConfig[te::IDs::programNum], nullptr);
+
+            // Now copy over everything else from the preset. This should inlude the
+            // all-important 'state' property of external plugins. External plugins also
+            // have some mundane properties like windowLocked="1", enabled="1"
+            plugin->restorePluginStateFromValueTree(preset);
+
+            std::cout << "Loaded preset: " << name << std::endl;
+            loaded = true;
+        } else {
+            std::cout << "Cannot load plugin preset: failed to create plugin with type/name: " << type << "/" << name << std::endl;
+            continue;
+        };
+    }
+    if (loaded) std::cout
+        << "Loaded " << v[te::IDs::name].toString()
+        << " on " << audioTrack.getName() << std::endl;
 }
 
 ValueTree loadXmlFile(File file) {

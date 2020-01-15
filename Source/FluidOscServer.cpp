@@ -47,6 +47,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
     if (msgAddressPattern.matches({"/plugin/preset/addpath"})) return addPluginPresetSearchPath(message);
     if (msgAddressPattern.matches({"/plugin/save"})) return savePluginPreset(message);
+    if (msgAddressPattern.matches({"/plugin/load/trkpreset"})) return loadPluginTrkpreset(message);
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
@@ -71,13 +72,17 @@ void FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
         : activeCybrEdit->getEdit().editFileRetriever();
 
     // By default use relative file paths. If the second arg begins with 'a', use absolute paths
-    bool useRelativePaths = true;
-    if (message.size() >= 2
-        && message[1].isString()
-        && message[1].getString().startsWithIgnoreCase({"a"}))
-        useRelativePaths = false;
+    auto mode = SamplePathMode::decide;
 
-    activeCybrEdit->saveActiveEdit(file, useRelativePaths);
+    if (message.size() >= 2 && message[1].isString()) {
+        String arg1 = message[1].getString();
+        if (arg1.startsWith("a")) mode = SamplePathMode::absolute;
+        else if (arg1.startsWith("r")) mode = SamplePathMode::relative;
+        else if (arg1.startsWith("d")) mode = SamplePathMode::decide;
+        else std::cout << "Save - unknown SamplePathMode: " << arg1 << std::endl;
+    }
+
+    activeCybrEdit->saveActiveEdit(file, mode);
 }
 
 void FluidOscServer::activateEditFile(File file, bool forceEmptyEdit) {
@@ -165,8 +170,8 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
 void FluidOscServer::addPluginPresetSearchPath(const juce::OSCMessage& message) {
     if (message.size() < 1 || !message[0].isString()) return;
     File directoryToAdd = message[0].getString();
-    if (!directoryToAdd.exists()) {
-        std::cout << "Cannot add search path: Not a valid directory" << std::endl;
+    if (!directoryToAdd.isDirectory()) {
+        std::cout << "Cannot add search path: Directory does note exist: " << directoryToAdd.getFullPathName() << std::endl;
         return;
     }
     searchPath.addIfNotAlreadyThere(directoryToAdd);
@@ -176,6 +181,35 @@ void FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
     if (!selectedPlugin) return;
     if (message.size() < 1 || !message[0].isString()) return;
     saveTracktionPreset(selectedPlugin, message[0].getString());
+}
+
+void FluidOscServer::loadPluginTrkpreset(const juce::OSCMessage &message) {
+
+    if (!selectedAudioTrack) {
+        std::cout << "Cannot load plugin preset: No audio track selected" << std::endl;
+        return;
+    }
+
+    if (!message.size() || !message[0].isBlob()) {
+        std::cout << "Cannot load trkpreset data: mising blob" << std::endl;
+        return;
+    }
+
+    MemoryBlock blob = message[0].getBlob();
+    String string = String::createStringFromData(blob.getData(), (int)blob.getSize());
+    std::unique_ptr<XmlElement> xml = parseXML(string);
+    if (!xml) {
+        std::cout << "Cannot load trkpreset data: XML parser error" << std::endl;
+        return;
+    }
+
+    ValueTree v = ValueTree::fromXml(*xml.get());
+    if (!v.isValid()) {
+        std::cout << "Cannot load trkpreset data: Invalid ValueTree" << std::endl;
+        return;
+    }
+
+    loadTracktionPreset(*selectedAudioTrack, v);
 }
 
 void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
@@ -193,7 +227,7 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     if (!filename.endsWithIgnoreCase(".trkpreset")) filename.append(".trkpreset", 10);
     //TODO: Test this functionality
     //Finds files within the search path that match the file name provided
-    searchPath.addIfNotAlreadyThere(File::getCurrentWorkingDirectory());
+    searchPath.add(File::getCurrentWorkingDirectory());
     Array<File> potentialFiles = searchPath.findChildFiles(File::TypesOfFileToFind::findFiles, true, filename);
     searchPath.remove(-1);
 
@@ -222,54 +256,7 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
         return;
     }
 
-    for (ValueTree preset : v) {
-        if (!preset.hasType(te::IDs::PLUGIN)) continue;
-        if (!preset.hasProperty(te::IDs::type)) continue;
-        String type = preset[te::IDs::type];
-        String name = preset[te::IDs::name];
-
-        // Tracktion plugins have a type property but no name property.
-        // getOrCreatePluginByName expect 'name' to be the name of the vst or
-        // 'type' of the tracktion plugin (which does not have a name).
-        // This sillyness allows us to get a plugin from a preset
-        if (!preset.hasProperty(te::IDs::name)) {
-            name = type;
-            type = String();
-        }
-
-        if (name.isEmpty()) {
-            std::cout << "Cannot load plugin preset: plugin has invalid type: " << type << std::endl;
-            continue;
-        }
-
-        std::cout << "Found preset: " << type << "/" << name << std::endl;
-
-        if (te::Plugin* plugin = getOrCreatePluginByName(*selectedAudioTrack, name, type)) {
-            ValueTree currentConfig = plugin->state;
-            // These should be correct on the preset, but just in case, get the ones
-            // returned by getOrCreatePluginByName, so we will be sure that we are not
-            // changing them.
-            if (currentConfig.hasProperty(te::IDs::type)) preset.setProperty(te::IDs::type, currentConfig[te::IDs::type], nullptr);
-            if (currentConfig.hasProperty(te::IDs::name)) preset.setProperty(te::IDs::name, currentConfig[te::IDs::name], nullptr);
-            if (currentConfig.hasProperty(te::IDs::uid)) preset.setProperty(te::IDs::uid, currentConfig[te::IDs::uid], nullptr);
-            if (currentConfig.hasProperty(te::IDs::filename)) preset.setProperty(te::IDs::filename, currentConfig[te::IDs::filename], nullptr);
-            if (currentConfig.hasProperty(te::IDs::id)) preset.setProperty(te::IDs::id, currentConfig[te::IDs::id], nullptr);
-            if (currentConfig.hasProperty(te::IDs::manufacturer)) preset.setProperty(te::IDs::manufacturer, currentConfig[te::IDs::manufacturer], nullptr);
-            if (currentConfig.hasProperty(te::IDs::programNum)) preset.setProperty(te::IDs::programNum, currentConfig[te::IDs::programNum], nullptr);
-
-            // Now copy over everything else from the preset. This should inlude the
-            // all-important 'state' property of external plugins. External plugins also
-            // have some mundane properties like windowLocked="1", enabled="1"
-            plugin->restorePluginStateFromValueTree(preset);
-
-            std::cout
-                << "Track: " << selectedAudioTrack->getName()
-                << " loaded preset: " << file.getFullPathName() << std::endl;
-        } else {
-            std::cout << "Cannot load plugin preset: failed to create plugin with type/name: " << type << "/" << name << std::endl;
-            continue;
-        };
-    }
+    loadTracktionPreset(*selectedAudioTrack, v);
 }
 
 void FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
@@ -354,7 +341,7 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     String fileName = message[1].getString();
     
     double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeat);
-    
+
     File file = fileName;
     te::AudioFile audiofile(file);
     if(!audiofile.isWavFile()){
@@ -362,10 +349,10 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
         return;
     }
     
-    te::EditTimeRange _time = te::EditTimeRange(startSeconds, startSeconds+audiofile.getLength());
+    te::EditTimeRange timeRange = te::EditTimeRange(startSeconds, startSeconds+audiofile.getLength());
     
     te::ClipPosition pos;
-    pos.time = _time;
+    pos.time = timeRange;
     selectedAudioTrack->insertWaveClip(clipName, file, pos, false);
 }
 
@@ -415,12 +402,12 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
         double pan = (message.size() >= 5 && message[4].isFloat32()) ? message[4].getFloat32() : 0;
         double oneShot = (message.size() >= 6 && message[5].isInt32()) ? message[5].getInt32() : 0;
 
-        File check1 = File::getCurrentWorkingDirectory().getChildFile(filePath);
-        File check2 = selectedPlugin->edit.filePathResolver(filePath);
+        File editDirectory = selectedPlugin->edit.editFileRetriever().getParentDirectory();
+        File file = CybrProps::resolveAudioFilepath(filePath, editDirectory);
+        filePath = file.getFullPathName();
 
-        if (check1.existsAsFile()) filePath = check1.getFullPathName();
-        else if (check2.existsAsFile()) filePath = check2.getFullPathName();
-        else std::cout << "Warning: sampler trying to add sound, but file not found" << std::endl;
+        if (!file.existsAsFile())
+            std::cout << "Warning: sampler trying to add sound, but file not found" << std::endl;
 
         sampler->addSound(filePath, soundName, 0, 0, gain);
         sampler->setSoundGains(index, gain, pan);

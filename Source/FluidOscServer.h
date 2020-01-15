@@ -13,6 +13,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "cybr_helpers.h"
 #include "CybrEdit.h"
+#include "CybrProps.h"
 
 typedef void (*OscHandlerFunc)(const OSCMessage&);
 
@@ -33,6 +34,7 @@ public:
     void addPluginPresetSearchPath(const OSCMessage& message);
     void savePluginPreset(const OSCMessage& message);
     void loadPluginPreset(const OSCMessage& message);
+    void loadPluginTrkpreset(const OSCMessage& message);
     void clearMidiClip(const OSCMessage& message);
     void insertMidiNote(const OSCMessage& message);
     void insertWaveSample(const OSCMessage& message);

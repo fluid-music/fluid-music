@@ -22,6 +22,8 @@
             file="Source/cybr_helpers.cpp"/>
       <FILE id="xIuzOx" name="CybrEdit.h" compile="0" resource="0" file="Source/CybrEdit.h"/>
       <FILE id="pjj3ve" name="CybrEdit.cpp" compile="1" resource="0" file="Source/CybrEdit.cpp"/>
+      <FILE id="cwpENf" name="CybrProps.h" compile="0" resource="0" file="Source/CybrProps.h"/>
+      <FILE id="EGF9HK" name="CybrProps.cpp" compile="1" resource="0" file="Source/CybrProps.cpp"/>
       <FILE id="WTPBIq" name="CybrTrackList.h" compile="0" resource="0" file="Source/CybrTrackList.h"/>
       <FILE id="jUxSKN" name="OscInputDevice.h" compile="0" resource="0"
             file="Source/OscInputDevice.h"/>
@@ -36,6 +38,8 @@
             file="Source/OpenFrameworksPlugin.h"/>
       <FILE id="xeKpc6" name="OpenFrameworksPlugin.cpp" compile="1" resource="0"
             file="Source/OpenFrameworksPlugin.cpp"/>
+      <FILE id="HfQVk6" name="SamplePathMode.h" compile="0" resource="0"
+            file="Source/SamplePathMode.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

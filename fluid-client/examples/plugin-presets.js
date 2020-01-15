@@ -2,9 +2,12 @@ const FluidClient = require('../src/FluidClient');
 const fluid = require('../src/fluidOsc');
 const path = require('path');
 
-const sessionPath = path.join(__dirname, 'sessions/out.tracktionedit')
+const sessionsDir = path.join(__dirname, 'sessions/')
+const sessionPath = path.join(sessionsDir, 'out.tracktionedit')
 
 const elements = [
+  fluid.global.cd(sessionsDir),
+
   // create preset for vst2
   fluid.audiotrack.select('Track 1'),
   fluid.plugin.select('zebra2', 'vst'),
@@ -20,13 +23,12 @@ const elements = [
   fluid.audiotrack.select('Track 1'),
   fluid.plugin.select('delay'),
   fluid.plugin.setParam('feedback', .10),
-  fluid.plugin.save('delay-preset-1'),
   fluid.plugin.setParam('feedback', 0.9),
   fluid.plugin.setParam('mix proportion', 0.75),
-  fluid.plugin.save('delay-preset-2'),
+  fluid.plugin.save('delay-preset'),
   // load that preset on a new track
   fluid.audiotrack.select('loadpreset'),
-  fluid.plugin.load('delay-preset-1'),
+  fluid.plugin.load('delay-preset'),
 
   // save a preset for tracktion's compressor plugin
   fluid.audiotrack.select('track 1'),
