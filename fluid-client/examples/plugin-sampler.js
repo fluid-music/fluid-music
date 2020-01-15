@@ -10,6 +10,6 @@ const client = new FluidClient(9999);
 client.send([
   fluid.global.activate(sessionPath, true),
   fluid.midiclip.create('drums', 'beat1', 0, 4, tabs.beatNotes),
-  sampler909('drums'),
+  sampler909(),
   fluid.global.save(),
 ]);
