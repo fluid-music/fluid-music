@@ -38,6 +38,8 @@
             file="Source/OpenFrameworksPlugin.h"/>
       <FILE id="xeKpc6" name="OpenFrameworksPlugin.cpp" compile="1" resource="0"
             file="Source/OpenFrameworksPlugin.cpp"/>
+      <FILE id="HfQVk6" name="SamplePathMode.h" compile="0" resource="0"
+            file="Source/SamplePathMode.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

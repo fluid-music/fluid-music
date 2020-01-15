@@ -183,20 +183,23 @@ const plugin = {
 
 const global = {
   /**
-   * @param {[string]} filename - '.tracktionedit' or '.wav' filename. If no
+   * @param {string} [filename] - '.tracktionedit' or '.wav' filename. If no
    *        filename is provided, an empty string will be used, which implies
    *        'save' as opposed to 'save as'.
-   * @param {[bool]} absolute - If true use absolute paths for audio file
-   *        references. Else use relative paths.
+   * @param {string} [samplePathMode='decide'] - How should file references to
+   *        samples be saved? 'a' = absolute, 'r' = relative, d = save samples
+   *        that are in a child folder of the edit as relative, and everything
+   *        else as absolute.
    */
-  save(filename, absolute) {
-    return {
-      address: '/file/save',
-      args: [
-        { type: 'string', value: filename || ''},
-        { type: 'string', value: absolute ? 'absolute' : 'relative' },
-      ],
-    };
+  save(filename, samplePathMode) {
+    if (samplePathMode && typeof samplePathMode !== 'string')
+      throw new Error('global.save samplePathMode argument must be a string');
+
+    const args = [ { type: 'string', value: filename || ''} ];
+
+    if (samplePathMode) args.push({ type: 'string', value: samplePathMode });
+
+    return { address: '/file/save', args };
   },
 
   /**

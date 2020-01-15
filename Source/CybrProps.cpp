@@ -69,6 +69,26 @@ void CybrProps::resetSamplesDir() {
     te::getApplicationSettings()->removeValue(keySampleDir);
 }
 
+// Resolvers =============================================================
+
+File CybrProps::resolveAudioFilepath(const StringRef path, File optionalExtraDir) {
+    if (File::isAbsolutePath(path)) return File(path);
+    File file = File();
+    File check1 = File();
+
+    if (optionalExtraDir != file)
+         check1 = optionalExtraDir.getChildFile(path);
+    File check2 = CybrProps::getSamplesDir().getChildFile(path);
+    File check3 = File::getCurrentWorkingDirectory().getChildFile(path);
+
+    if (check1.existsAsFile()) file = check1;
+    else if (check2.existsAsFile()) file = check2;
+    else if (check3.existsAsFile()) file = check3;
+    else file = check2;
+
+    return file;
+}
+
 // Private ===============================================================
 
 File CybrProps::getDefaultPresetSaveLoadDir() {

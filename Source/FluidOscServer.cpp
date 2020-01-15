@@ -72,13 +72,17 @@ void FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
         : activeCybrEdit->getEdit().editFileRetriever();
 
     // By default use relative file paths. If the second arg begins with 'a', use absolute paths
-    bool useRelativePaths = true;
-    if (message.size() >= 2
-        && message[1].isString()
-        && message[1].getString().startsWithIgnoreCase({"a"}))
-        useRelativePaths = false;
+    auto mode = SamplePathMode::decide;
 
-    activeCybrEdit->saveActiveEdit(file, useRelativePaths);
+    if (message.size() >= 2 && message[1].isString()) {
+        String arg1 = message[1].getString();
+        if (arg1.startsWith("a")) mode = SamplePathMode::absolute;
+        else if (arg1.startsWith("r")) mode = SamplePathMode::relative;
+        else if (arg1.startsWith("d")) mode = SamplePathMode::decide;
+        else std::cout << "Save - unknown SamplePathMode: " << arg1 << std::endl;
+    }
+
+    activeCybrEdit->saveActiveEdit(file, mode);
 }
 
 void FluidOscServer::activateEditFile(File file, bool forceEmptyEdit) {
@@ -398,14 +402,12 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
         double pan = (message.size() >= 5 && message[4].isFloat32()) ? message[4].getFloat32() : 0;
         double oneShot = (message.size() >= 6 && message[5].isInt32()) ? message[5].getInt32() : 0;
 
-        File check1 = selectedPlugin->edit.filePathResolver(filePath);
-        File check2 = CybrProps::getSamplesDir().getChildFile(filePath);
-        File check3 = File::getCurrentWorkingDirectory().getChildFile(filePath);
+        File editDirectory = selectedPlugin->edit.editFileRetriever().getParentDirectory();
+        File file = CybrProps::resolveAudioFilepath(filePath, editDirectory);
+        filePath = file.getFullPathName();
 
-        if (check1.existsAsFile()) filePath = check1.getFullPathName();
-        else if (check2.existsAsFile()) filePath = check2.getFullPathName();
-        else if (check3.existsAsFile()) filePath = check3.getFullPathName();
-        else std::cout << "Warning: sampler trying to add sound, but file not found" << std::endl;
+        if (!file.existsAsFile())
+            std::cout << "Warning: sampler trying to add sound, but file not found" << std::endl;
 
         sampler->addSound(filePath, soundName, 0, 0, gain);
         sampler->setSoundGains(index, gain, pan);

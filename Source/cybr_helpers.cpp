@@ -29,7 +29,7 @@ te::Edit* createEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role
     ValueTree valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
     
     // Create the edit object.
-    // Note we cannot save an edit file without and ediit file retriever. It is
+    // Note we cannot save an edit file without and edit file retriever. It is
     // also used resolves audioclips that have source='./any/relative/path.wav'.
     std::cout << "Creating Edit Object" << std::endl;
     te::Edit::Options editOptions{ engine };
@@ -43,7 +43,7 @@ te::Edit* createEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role
     // By default (and for simplicity), all clips in an in-memory edit should
     // have a source property with an absolute path value. We want to avoid
     // clip sources with project ids or relative path values.
-    setClipAndSamplerSourcesToDirectFileReferences(*newEdit, false, false);
+    setClipAndSamplerSourcesToDirectFileReferences(*newEdit, SamplePathMode::absolute, false);
     
     // List any missing plugins
     for (auto plugin : newEdit->getPluginCache().getPlugins()) {
@@ -73,12 +73,15 @@ CybrEdit* copyCybrEditForPlayback(CybrEdit& cybrEdit) {
     return newCybrEdit;
 }
 
-void setClipAndSamplerSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose = true)
+void setClipAndSamplerSourcesToDirectFileReferences(te::Edit& changeEdit, SamplePathMode mode, bool verbose)
 {
     int failures = 0;
-    if (verbose) std::cout << "Searching for audio clips and updating their sources to "
-        << (useRelativePath ? "relative" : "absolute")
-        << " file paths" << std::endl;
+    if (verbose) {
+        std::cout << "Searching for audio clips and updating their sources ";
+        if (mode == SamplePathMode::absolute) std::cout << "to absolute paths" << std::endl;
+        if (mode == SamplePathMode::relative) std::cout << "to relative paths" << std::endl;
+        if (mode == SamplePathMode::decide) std::cout << "to absolute paths, if sample is not in a subdirectory" << std::endl;
+    }
     
     for (auto track : te::getClipTracks(changeEdit)) { // for each track
         for (auto clip : track->getClips()) { // inspect each clip
@@ -88,11 +91,18 @@ void setClipAndSamplerSourcesToDirectFileReferences(te::Edit& changeEdit, bool u
                 if (file == File()) {
                     // We failed to get the filepath from the project manager
                     failures++;
-                    std::cerr
-                    << "ERROR: Failed to find and update source clip: " << audioClip->getName()
-                    << " source=\"" << sourceFileRef.source << "\"" << std::endl;
+                    std::cout
+                        << "ERROR: Failed to find and update source clip: " << audioClip->getName()
+                        << " source=\"" << sourceFileRef.source << "\"" << std::endl;
                 }
                 else {
+                    bool useRelativePath;
+                    if (mode == SamplePathMode::relative) useRelativePath = true;
+                    else if (mode == SamplePathMode::absolute) useRelativePath = false;
+                    else {
+                        File editFileDir = changeEdit.editFileRetriever().getParentDirectory();
+                        useRelativePath = file.isAChildOf(editFileDir) ? true : false;
+                    }
                     // We have a filepath. We are not certain the file exists.
                     // Even if the file does not exists, we may be able to
                     // update the source property.
@@ -131,6 +141,13 @@ void setClipAndSamplerSourcesToDirectFileReferences(te::Edit& changeEdit, bool u
                 String oldPath = child.getProperty(te::IDs::source);
                 if (oldPath.isEmpty()) continue;
                 File soundFile = changeEdit.filePathResolver(oldPath);
+                bool useRelativePath;
+                if (mode == SamplePathMode::relative) useRelativePath = true;
+                else if (mode == SamplePathMode::absolute) useRelativePath = false;
+                else {
+                    File editFileDir = changeEdit.editFileRetriever().getParentDirectory();
+                    useRelativePath = soundFile.isAChildOf(editFileDir) ? true : false;
+                }
                 String newPath = te::SourceFileReference::findPathFromFile(changeEdit, soundFile, useRelativePath);
                 if (oldPath != newPath && newPath.isNotEmpty()) {
                     child.setProperty(te::IDs::source, newPath, nullptr);
