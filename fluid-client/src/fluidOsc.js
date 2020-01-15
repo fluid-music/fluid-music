@@ -279,7 +279,7 @@ const transport = {
   },
 };
 
-sampler = {
+const sampler = {
   /**
    * Add a sample to the currently selected sampler.
    * @param {string} name - the name of the sample to add

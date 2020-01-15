@@ -13,6 +13,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "cybr_helpers.h"
 #include "CybrEdit.h"
+#include "CybrProps.h"
 
 typedef void (*OscHandlerFunc)(const OSCMessage&);
 
