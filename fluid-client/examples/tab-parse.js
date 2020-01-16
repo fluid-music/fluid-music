@@ -8,7 +8,7 @@ const FluidClient = require('../src/FluidClient');
 const drums909 = require('../recipes/track-drums909');
 const drumTrackName = '909';
 const sampleDir =  path.join(__dirname, '909kit');
-const drumsMsg = drums909(sampleDir, drumTrackName);
+const drumsMsg = drums909(drumTrackName);
 const repeat = (v, times) => [].concat(...new Array(times).fill((!Array.isArray(v)) ? [v] : v));
 
 // General MIDI Percussion map defines note 36=bass-drum, 38=snare

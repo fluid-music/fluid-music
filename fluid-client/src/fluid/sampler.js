@@ -40,3 +40,5 @@ const sampler = {
     return { address: '/plugin/sampler/clear-all' };
   },
 };
+
+module.exports = sampler;
