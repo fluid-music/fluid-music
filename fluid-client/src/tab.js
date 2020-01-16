@@ -31,6 +31,55 @@ const parseRhythm = function(rhythm) {
   return {totals, deltas};
 };
 
+const parseVelocity_ori = function(vPattern, symbolsAndCounts, vLibrary, vDefault){
+  let p = 0;
+  const velObject = []
+  if(typeof(vPattern) !== 'string') return false;
+  for (let sc of symbolsAndCounts){
+    let symbol = sc[0];
+    let count = sc[1];
+
+    if (isEmpty(symbol)) {
+      velObject.push(0);
+      p += count;
+      continue;
+    }
+
+    let vel = vDefault/9 * 128
+    if(!isNaN(Number(vPattern[p]))) vel = Number(vPattern[p])/9 * 128
+    else if (typeof(vPattern[p]) === 'string' && vPattern[p] in vLibrary){
+        vel = Number(vLibrary[vPattern[p]])/9 * 128
+    }
+    velObject.push(vel)
+    p += count;
+  }
+  return velObject;
+}
+
+const parseVelocity = function(vPattern, symbolsAndCounts, vLibrary){
+  let p = 0;
+  const velObject = []
+  if(typeof(vPattern) !== 'string') return false;
+  for (let sc of symbolsAndCounts){
+    let symbol = sc[0];
+    let count = sc[1];
+
+    if (isEmpty(symbol)) {
+      velObject.push(0);
+      p += count;
+      continue;
+    }
+
+    if (!vLibrary.hasOwnProperty(vPattern[p]))
+        throw new Error(`velLibrary has no velocity value for "${vPattern[p]}"`);
+    let vel = vLibrary[vPattern[p]];
+
+    velObject.push(vel)
+    p += count;
+  }
+  return velObject;
+}
+
 /**
  * Convert a rhythm, pattern, and note library to a collection of note objects.
  *
@@ -49,13 +98,15 @@ const parseRhythm = function(rhythm) {
  *        noteLibrary = ['c4', 'd4']
  *        noteLibrary = {'0': 'c4', '1': 'd4' }
  */
-const parseTab = function(rhythm, pattern, noteLibrary) {
+const parseTab = function(rhythm, pattern, noteLibrary, vPattern, vLibrary, velDefault=5, vfunction=parseVelocity) {
   const rhythmObject = parseRhythm(rhythm);
   const symbolsAndCounts = patternToSymbolsAndCounts(pattern);
+  const velocityObject = vfunction(vPattern, symbolsAndCounts, vLibrary, velDefault);
   let p = 0; // position (in the rhythmObject)
   const results = [];
 
-  for (let sc of symbolsAndCounts) {
+
+  for (let [index, sc] of symbolsAndCounts.entries()) {
     let symbol = sc[0];
     let count = sc[1];
     if (symbol !== '.') {
@@ -66,11 +117,21 @@ const parseTab = function(rhythm, pattern, noteLibrary) {
       notes.forEach((note) => {
         const start = (p === 0) ? 0 : rhythmObject.totals[p-1];
         const end = rhythmObject.totals[p+count-1];
-        results.push({
-          n: valueToMidiNoteNumber(note),
-          s: start,
-          l: end - start,
-        });
+        if (!velocityObject) {
+          results.push({
+            n: valueToMidiNoteNumber(note),
+            s: start,
+            l: end - start,
+          });
+        }
+        else{
+          results.push({
+            n: valueToMidiNoteNumber(note),
+            s: start,
+            l: end - start,
+            v: velocityObject[index],
+          });
+        }
       });
     }
     p += count;
@@ -291,12 +352,15 @@ const patternToSymbolsAndCounts = function(pattern) {
  * @returns {Object[]} An array of noteObjects. The array will have an
  *          additional `.duration` parameter.
  */
-const parse = function(object, rhythm, noteLibrary, startTime) {
+const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrary, vDefault=5) {
   let notes = [];
   notes.duration = 0;
   if (typeof startTime !== 'number') startTime = 0;
   if (object.hasOwnProperty('noteLibrary')) noteLibrary = object.noteLibrary;
+  if (object.hasOwnProperty('vLibrary')) vLibrary = object.vLibrary;
   if (object.hasOwnProperty('r')) rhythm = object.r;
+  if (object.hasOwnProperty('v')) vPattern = object.v;
+  if (object.hasOwnProperty('vDefault')) vDefault = object.vDefault; //Potentially not needed, adding support just for now
   if (object.hasOwnProperty('startTime'))
     throw new Error('parse: startTime is not a legal pattern key');
   if (rhythm === undefined || noteLibrary === undefined)
@@ -304,15 +368,14 @@ const parse = function(object, rhythm, noteLibrary, startTime) {
 
   if (Array.isArray(object)) {
     for (let o of object) {
-      let a = parseRhythm(rhythm);
-      let newNotes = parse(o, rhythm, noteLibrary, startTime);
+      let newNotes = parse(o, rhythm, noteLibrary, startTime, vPattern, vLibrary, vDefault);
       notes.push(...newNotes);
       notes.duration += newNotes.duration;
       startTime += newNotes.duration; // NOTE: must be '+=', not '='
     }
   } else if (typeof object === 'string') {
-    // We have a string that can be parsed with parseTab
-    const result = parseTab(rhythm, object, noteLibrary).map((n) => {
+    // We have a string that can be parsed with parseTab that does not have a velocity string associated with it
+    const result = parseTab(rhythm, object, noteLibrary, vPattern, vLibrary, vDefault).map((n) => {
       n.s += startTime;
       return n;
     });
@@ -322,8 +385,8 @@ const parse = function(object, rhythm, noteLibrary, startTime) {
   } else {
     let duration = 0;
     for (let [key, val] of Object.entries(object)) {
-      if (key === 'noteLibrary' || key === 'r' || key === 'duration' || key === 'startTime') continue;
-      let newNotes = parse(val, rhythm, noteLibrary, startTime);
+      if (key === 'noteLibrary' || key === 'r' || key === 'duration' || key === 'startTime' || key === 'vLibrary' || key === 'vDefault' || key === 'v') continue;
+      let newNotes = parse(val, rhythm, noteLibrary, startTime, vPattern, vLibrary, vDefault);
       notes.push(...newNotes);
       if (newNotes.duration > duration) duration = newNotes.duration;
       notes.duration = newNotes.duration; // NOTE: must be '=', NOT '+='

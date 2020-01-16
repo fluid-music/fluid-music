@@ -38,7 +38,7 @@ const notes = tab.parse({
     p3, p3,
     { r:'1234..', p: '...sss',   b: { r, h: 'h h h h h h h . ', ks3 } }, // triplet snare on beat 4
     { r: 'h3e+a4e+a', p: '...ssssss', cr }, // drum roll of six 16th notes
-  ],
+  ]
 });
 
 const durationInQuarterNotes = notes.duration * 4;
