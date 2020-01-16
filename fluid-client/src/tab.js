@@ -30,7 +30,7 @@ const parseRhythm = function(rhythm) {
 
   return {totals, deltas};
 };
-
+//parseVelocity version 1
 const parseVelocity_ori = function(vPattern, symbolsAndCounts, vLibrary, vDefault){
   let p = 0;
   const velObject = []
@@ -56,6 +56,7 @@ const parseVelocity_ori = function(vPattern, symbolsAndCounts, vLibrary, vDefaul
   return velObject;
 }
 
+//parseVelocity version 2
 const parseVelocity = function(vPattern, symbolsAndCounts, vLibrary){
   let p = 0;
   const velObject = []
