@@ -175,6 +175,31 @@ describe('tab.parseTab', () => {
       tab.parseTab(rhythm, padPattern, chords);
     }).throw();
   });
+
+  describe('with vPattern and vLibrary arguments', () => {
+
+    const rhythm   = '1+2+3+4+';
+    const pattern  = '0.1.2...';
+    const vPattern = '0.1.2...';
+    const vLibrary    = [60, 70, 80];
+    const noteLibrary = [0, 1, 2];
+    const vNotes = tab.parseTab(rhythm, pattern, noteLibrary, vPattern, vLibrary);
+  
+    it('should output notes with .v values if passed a vPattern and vLibrary', ()=>{
+      vNotes.length.should.equal(3);
+      vNotes.forEach((note) => should.exist(note.v));
+    });
+  
+    it('should add correct .v values when passed a vPattern and a vLibrary', ()=> {
+      vNotes.should.deepEqual([
+        { n: 0, s: 0.00, l: 0.125, v: 60 },
+        { n: 1, s: 0.25, l: 0.125, v: 70 },
+        { n: 2, s: 0.50, l: 0.125, v: 80 },
+      ]);
+    });
+  
+  }); 
+
 });
 
 describe('parse', () => {
@@ -320,355 +345,145 @@ describe('parse', () => {
       { n: 2, s: 1.00, l: 1.0 },
     ]);
   });
-});
 
-describe('v1 with vPattern and vLibrary arguments', () => {
-
-  const chords = [
-    ["e4", "a4", "b4", "c#5"],
-    ["f4", "g4", "a4", "c5"],
-    ["g4", "a4", "b4", "d5"],
-  ]
-  const rhythm  = '1e+a2e+a3e+a4e+a';
-  const pattern = '0-......1-....2.';
-  const velLibrary = {'x':8.5, 'y':9};
-  const velDefault = 5;
-  const velocity ='........9.....x.';
-
-  it('should create the correct note objects with correct velocities', ()=>{
-    const result = tab.parseTab(rhythm, pattern, chords, velocity, velLibrary, velDefault)
-    result.should.deepEqual([
-      { n: 64, s: 0.0, l: 0.125, v: 128/9 * 5 },
-      { n: 69, s: 0.0, l: 0.125, v: 128/9 * 5 },
-      { n: 71, s: 0.0, l: 0.125, v: 128/9 * 5 },
-      { n: 73, s: 0.0, l: 0.125, v: 128/9 * 5 },
-
-      { n: 65, s: 0.5,   l: 0.125, v: 128 },
-      { n: 67, s: 0.5,   l: 0.125, v: 128 },
-      { n: 69, s: 0.5,   l: 0.125, v: 128 },
-      { n: 72, s: 0.5,   l: 0.125, v: 128 },
-
-      { n: 67, s: 0.875, l: 0.0625, v: 128/9 * 8.5 },
-      { n: 69, s: 0.875, l: 0.0625, v: 128/9 * 8.5 },
-      { n: 71, s: 0.875, l: 0.0625, v: 128/9 * 8.5 },
-      { n: 74, s: 0.875, l: 0.0625, v: 128/9 * 8.5 },
-    ])
-  });
-
-  it('should work with velocities when first symbol is a rest', ()=>{
-    const result = tab.parseTab(rhythm, '........1-....2.', chords, velocity, velLibrary, velDefault)
-    result.should.deepEqual([
-      { n: 65, s: 0.5,   l: 0.125, v: 128 },
-      { n: 67, s: 0.5,   l: 0.125, v: 128 },
-      { n: 69, s: 0.5,   l: 0.125, v: 128 },
-      { n: 72, s: 0.5,   l: 0.125, v: 128 },
-
-      { n: 67, s: 0.875, l: 0.0625, v: 128/9 * 8.5 },
-      { n: 69, s: 0.875, l: 0.0625, v: 128/9 * 8.5 },
-      { n: 71, s: 0.875, l: 0.0625, v: 128/9 * 8.5 },
-      { n: 74, s: 0.875, l: 0.0625, v: 128/9 * 8.5 },
-    ])
-  });
-});
-
-describe('v1 parse with vPattern and vLibrary arguments', () => {
-  const noteLibrary = [0, 1, 2, 3, 4, 5, 6];
-  const vLibrary    =  {'a':60*9/128, 'b':70*9/128, 'c':80*9/128, 'd':90*9/128, 'e':100*9/128, 'f': 110*9/128};
-  it('should parse a very simple object', () => {
-    const obj = {
-      noteLibrary,
-      vLibrary,
-      v: '.a..',
-      r: '1234',
-      p: '.0..',
-    };
-
-    tab.parse(obj).should.containDeep([
-      { n: 0, s: 0.25, l: 0.25, v: 60},
-    ]);
-  });
- 
-  it('should parse arrays sequentially and work when velocities are not all given', () => {
-    const obj = {
-      noteLibrary,
-      r: '1234',
-      vLibrary,
-      p: [
-         {p: '.0..', v:'.a..'},
-         '1...',
-      ]
-    };
-    tab.parse(obj).should.containDeep([
-      { n: 0, s: 0.25, l: 0.25, v: 60 },
-      { n: 1, s: 1.00, l: 0.25 },
-    ]);
-  });
-
-  it('should layer recursive objects', () => {
-    const obj = {
-      noteLibrary,
-      vLibrary,
-      r: '1234',
-      p: {
-        a: '0...',
-        b: '.1..',
-        v: 'ab..'
-      },
-    };
-
-    tab.parse(obj).should.containDeep([
-      { n: 0, s: 0.00, l: 0.25, v: 60 },
-      { n: 1, s: 0.25, l: 0.25, v: 70 },
-    ]);
-  });
-
-  it('should mix and match recursive objects and arrays', () => {
-    const obj = {
-      noteLibrary,
-      vLibrary,
-      r: '1234',
-      p: [
-        { a: '.0..', b: '.1..', v: '.b..' },
-        { a: '2...', b: '3...', v: 'a...' },
-      ],
-      b: '...4',
-    };
-
-    tab.parse(obj).should.containDeep([
-      { n: 0, s: 0.25, l: 0.25, v: 70 },
-      { n: 1, s: 0.25, l: 0.25, v: 70 },
-      { n: 2, s: 1.00, l: 0.25, v: 60 },
-      { n: 3, s: 1.00, l: 0.25, v: 60 },
-      { n: 4, s: 0.75, l: 0.25 },
-    ]);
-  });
-  it('should be able to update rhythm for nested objects', () => {
-    const obj = {
-      noteLibrary,
-      vLibrary,
-      r: '1234',
-      p: [
-        { a: '0.', b: '.1', r: 'hh', v: 'ab'},
-        { a: '2...', b: '3...', v:'a...', vLibrary:{'a':120*9/128}, noteLibrary: {'2': 20, '3': 30 } },
-        { a: '4...', v: 'a...'}
-      ],
-      b: '...5',
-    };
-
-    tab.parse(obj).should.containDeep([
-      { n: 0, s: 0.00, l: 0.50, v: 60 },
-      { n: 1, s: 0.50, l: 0.50, v: 70 },
-      { n: 20, s: 1.0, l: 0.25, v: 120 },
-      { n: 30, s: 1.0, l: 0.25, v: 120 },
-      { n: 4, s: 2.00, l: 0.25, v: 60 },
-      { n: 5, s: 0.75, l: 0.25 },
-    ]);
-  });
-  it('should handle nested arrays', () => {
-    const obj = {
-      noteLibrary,
-      vLibrary,
-      r: '12',
-      p: [
-        [{p: '0.', v: 'a.'}, { p: '1.', v: 'b.'}],
-        [{p: '2.', v: 'c.'}, { p: '3.', v: 'd.'}],
-        [{p: '4.', v: 'e.'}, { p: '56', v: 'ff'}],
-      ],
-    };
-
-    const result = tab.parse(obj);
-    result.should.containDeep([
-      { n: 0, s: 0.0, l: 0.25, v: 60 },
-      { n: 1, s: 0.5, l: 0.25, v: 70 },
-    ]);
-    result.should.containDeep([
-      { n: 2, s: 1.0, l: 0.25, v: 80 },
-      { n: 3, s: 1.5, l: 0.25, v: 90 },
-    ]);
-    result.should.containDeep([
-      { n: 4, s: 2.0, l: 0.25, v: 100 },
-      { n: 5, s: 2.5, l: 0.25, v: 110 },
-      { n: 6, s: 2.75, l: 0.25, v: 110 },
-    ]);
-  });
-
-  it('should handle arrays of strings and velocities', () => {
-    const obj = {
-      noteLibrary,
-      vLibrary,
-      r: '12',
-      p: ['01', {p:'23', v: 'ab'}]
-    };
-    tab.parse(obj).should.containDeep([
-      { n: 0, s: 0.00, l: 0.25 },
-      { n: 1, s: 0.25, l: 0.25 },
-      { n: 2, s: 0.50, l: 0.25, v: 60 },
-      { n: 3, s: 0.75, l: 0.25, v: 70 },
-    ]);
-  });
+  describe('with vPattern and vLibrary arguments', () => {
+    const noteLibrary = [0, 1, 2, 3, 4, 5, 6];
+    const vLibrary    = [60, 70, 80, 90, 100, 110];
+    it('should parse a very simple object', () => {
+      const obj = {
+        noteLibrary,
+        vLibrary,
+        v: '.0..',
+        r: '1234',
+        p: '.0..',
+      };
   
-});
-
-describe('v2 with vPattern and vLibrary arguments', () => {
-
-  const rhythm   = '1+2+3+4+';
-  const pattern  = '0.1.2...';
-  const vPattern = '0.1.2...';
-  const vLibrary    = [60, 70, 80];
-  const noteLibrary = [0, 1, 2];
-  const vNotes = tab.parseTab(rhythm, pattern, noteLibrary, vPattern, vLibrary);
-
-  it('should output notes with .v values if passed a vPattern and vLibrary', ()=>{
-    vNotes.length.should.equal(3);
-    vNotes.forEach((note) => should.exist(note.v));
-  });
-
-  it('should add correct .v values when passed a vPattern and a vLibrary', ()=> {
-    vNotes.should.deepEqual([
-      { n: 0, s: 0.00, l: 0.125, v: 60 },
-      { n: 1, s: 0.25, l: 0.125, v: 70 },
-      { n: 2, s: 0.50, l: 0.125, v: 80 },
-    ]);
-  });
-
-}); // velocities
-
-describe('v2 parse with vPattern and vLibrary arguments', () => {
-  const noteLibrary = [0, 1, 2, 3, 4, 5, 6];
-  const vLibrary    = [60, 70, 80, 90, 100, 110];
-  it('should parse a very simple object', () => {
-    const obj = {
-      noteLibrary,
-      vLibrary,
-      v: '.0..',
-      r: '1234',
-      p: '.0..',
-    };
-
-    tab.parse(obj).should.containDeep([
-      { n: 0, s: 0.25, l: 0.25, v: 60},
-    ]);
-  });
- 
-  it('should parse arrays sequentially and work when velocities are not all given', () => {
-    const obj = {
-      noteLibrary,
-      r: '1234',
-      vLibrary,
-      p: [
-         {p: '.0..', v:'.0..'},
-         '1...',
-      ]
-    };
-    tab.parse(obj).should.containDeep([
-      { n: 0, s: 0.25, l: 0.25, v: 60 },
-      { n: 1, s: 1.00, l: 0.25 },
-    ]);
-  });
-
-  it('should layer recursive objects', () => {
-    const obj = {
-      noteLibrary,
-      vLibrary,
-      r: '1234',
-      p: {
-        a: '0...',
-        b: '.1..',
-        v: '01..'
-      },
-    };
-
-    tab.parse(obj).should.containDeep([
-      { n: 0, s: 0.00, l: 0.25, v: 60 },
-      { n: 1, s: 0.25, l: 0.25, v: 70 },
-    ]);
-  });
-
-  it('should mix and match recursive objects and arrays', () => {
-    const obj = {
-      noteLibrary,
-      vLibrary,
-      r: '1234',
-      p: [
-        { a: '.0..', b: '.1..', v: '.1..' },
-        { a: '2...', b: '3...', v: '0...' },
-      ],
-      b: '...4',
-    };
-
-    tab.parse(obj).should.containDeep([
-      { n: 0, s: 0.25, l: 0.25, v: 70 },
-      { n: 1, s: 0.25, l: 0.25, v: 70 },
-      { n: 2, s: 1.00, l: 0.25, v: 60 },
-      { n: 3, s: 1.00, l: 0.25, v: 60 },
-      { n: 4, s: 0.75, l: 0.25 },
-    ]);
-  });
+      tab.parse(obj).should.containDeep([
+        { n: 0, s: 0.25, l: 0.25, v: 60},
+      ]);
+    });
+   
+    it('should parse arrays sequentially and work when velocities are not all given', () => {
+      const obj = {
+        noteLibrary,
+        r: '1234',
+        vLibrary,
+        p: [
+           {p: '.0..', v:'.0..'},
+           '1...',
+        ]
+      };
+      tab.parse(obj).should.containDeep([
+        { n: 0, s: 0.25, l: 0.25, v: 60 },
+        { n: 1, s: 1.00, l: 0.25 },
+      ]);
+    });
   
-  it('should be able to update rhythm for nested objects', () => {
-    const obj = {
-      noteLibrary,
-      vLibrary,
-      r: '1234',
-      p: [
-        { a: '0.', b: '.1', r: 'hh', v: '01'},
-        { a: '2...', b: '3...', v:'0...', vLibrary:[120], noteLibrary: {'2': 20, '3': 30 } },
-        { a: '4...', v: '0...'}
-      ],
-      b: '...5',
-    };
-
-    tab.parse(obj).should.containDeep([
-      { n: 0, s: 0.00, l: 0.50, v: 60 },
-      { n: 1, s: 0.50, l: 0.50, v: 70 },
-      { n: 20, s: 1.0, l: 0.25, v: 120 },
-      { n: 30, s: 1.0, l: 0.25, v: 120 },
-      { n: 4, s: 2.00, l: 0.25, v: 60 },
-      { n: 5, s: 0.75, l: 0.25 },
-    ]);
-  });
-
-  it('should handle nested arrays', () => {
-    const obj = {
-      noteLibrary,
-      vLibrary,
-      r: '12',
-      p: [
-        [{p: '0.', v: '0.'}, { p: '1.', v: '1.'}],
-        [{p: '2.', v: '2.'}, { p: '3.', v: '3.'}],
-        [{p: '4.', v: '4.'}, { p: '56', v: '55'}],
-      ],
-    };
-
-    const result = tab.parse(obj);
-    result.should.containDeep([
-      { n: 0, s: 0.0, l: 0.25, v: 60 },
-      { n: 1, s: 0.5, l: 0.25, v: 70 },
-    ]);
-    result.should.containDeep([
-      { n: 2, s: 1.0, l: 0.25, v: 80 },
-      { n: 3, s: 1.5, l: 0.25, v: 90 },
-    ]);
-    result.should.containDeep([
-      { n: 4, s: 2.0, l: 0.25, v: 100 },
-      { n: 5, s: 2.5, l: 0.25, v: 110 },
-      { n: 6, s: 2.75, l: 0.25, v: 110 },
-    ]);
-  });
-
-  it('should handle arrays of strings and velocities', () => {
-    const obj = {
-      noteLibrary,
-      vLibrary,
-      r: '12',
-      p: ['01', {p:'23', v: '01'}]
-    };
-    tab.parse(obj).should.containDeep([
-      { n: 0, s: 0.00, l: 0.25 },
-      { n: 1, s: 0.25, l: 0.25 },
-      { n: 2, s: 0.50, l: 0.25, v: 60 },
-      { n: 3, s: 0.75, l: 0.25, v: 70 },
-    ]);
+    it('should layer recursive objects', () => {
+      const obj = {
+        noteLibrary,
+        vLibrary,
+        r: '1234',
+        p: {
+          a: '0...',
+          b: '.1..',
+          v: '01..'
+        },
+      };
+  
+      tab.parse(obj).should.containDeep([
+        { n: 0, s: 0.00, l: 0.25, v: 60 },
+        { n: 1, s: 0.25, l: 0.25, v: 70 },
+      ]);
+    });
+  
+    it('should mix and match recursive objects and arrays', () => {
+      const obj = {
+        noteLibrary,
+        vLibrary,
+        r: '1234',
+        p: [
+          { a: '.0..', b: '.1..', v: '.1..' },
+          { a: '2...', b: '3...', v: '0...' },
+        ],
+        b: '...4',
+      };
+  
+      tab.parse(obj).should.containDeep([
+        { n: 0, s: 0.25, l: 0.25, v: 70 },
+        { n: 1, s: 0.25, l: 0.25, v: 70 },
+        { n: 2, s: 1.00, l: 0.25, v: 60 },
+        { n: 3, s: 1.00, l: 0.25, v: 60 },
+        { n: 4, s: 0.75, l: 0.25 },
+      ]);
+    });
+    
+    it('should be able to update rhythm for nested objects', () => {
+      const obj = {
+        noteLibrary,
+        vLibrary,
+        r: '1234',
+        p: [
+          { a: '0.', b: '.1', r: 'hh', v: '01'},
+          { a: '2...', b: '3...', v:'0...', vLibrary:[120], noteLibrary: {'2': 20, '3': 30 } },
+          { a: '4...', v: '0...'}
+        ],
+        b: '...5',
+      };
+  
+      tab.parse(obj).should.containDeep([
+        { n: 0, s: 0.00, l: 0.50, v: 60 },
+        { n: 1, s: 0.50, l: 0.50, v: 70 },
+        { n: 20, s: 1.0, l: 0.25, v: 120 },
+        { n: 30, s: 1.0, l: 0.25, v: 120 },
+        { n: 4, s: 2.00, l: 0.25, v: 60 },
+        { n: 5, s: 0.75, l: 0.25 },
+      ]);
+    });
+  
+    it('should handle nested arrays', () => {
+      const obj = {
+        noteLibrary,
+        vLibrary,
+        r: '12',
+        p: [
+          [{p: '0.', v: '0.'}, { p: '1.', v: '1.'}],
+          [{p: '2.', v: '2.'}, { p: '3.', v: '3.'}],
+          [{p: '4.', v: '4.'}, { p: '56', v: '55'}],
+        ],
+      };
+  
+      const result = tab.parse(obj);
+      result.should.containDeep([
+        { n: 0, s: 0.0, l: 0.25, v: 60 },
+        { n: 1, s: 0.5, l: 0.25, v: 70 },
+      ]);
+      result.should.containDeep([
+        { n: 2, s: 1.0, l: 0.25, v: 80 },
+        { n: 3, s: 1.5, l: 0.25, v: 90 },
+      ]);
+      result.should.containDeep([
+        { n: 4, s: 2.0, l: 0.25, v: 100 },
+        { n: 5, s: 2.5, l: 0.25, v: 110 },
+        { n: 6, s: 2.75, l: 0.25, v: 110 },
+      ]);
+    });
+  
+    it('should handle arrays of strings and velocities', () => {
+      const obj = {
+        noteLibrary,
+        vLibrary,
+        r: '12',
+        p: ['01', {p:'23', v: '01'}]
+      };
+      tab.parse(obj).should.containDeep([
+        { n: 0, s: 0.00, l: 0.25 },
+        { n: 1, s: 0.25, l: 0.25 },
+        { n: 2, s: 0.50, l: 0.25, v: 60 },
+        { n: 3, s: 0.75, l: 0.25, v: 70 },
+      ]);
+    });
+    
   });
   
 });
