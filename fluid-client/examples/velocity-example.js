@@ -17,9 +17,8 @@ const hihat='hhhhhhhhhhhhhhhh'
 
 const vLibary = [60,70,80,90]
 const vhihat='0123012301230123'
-
 const hhwv = {hihat, v:vhihat}
-const house={hhwv, kick, misc} //if no velocity is given, give user option to set default velocity
+const house={hhwv, kick, misc} 
 const drums_notes = {
     noteLibrary,
     vLibrary,
@@ -27,8 +26,6 @@ const drums_notes = {
     p: [house]
 }
 const drums_parsed = tab.parse(drums_notes);
-
-
 
 const client = new FluidClient(9999);
 client.send([
