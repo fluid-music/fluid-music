@@ -23,7 +23,7 @@ void CybrSearchPath::add(File directory) {
     props->setValue(k, searchPath.toString());
 }
 
-const String CybrSearchPath::key() {
+String CybrSearchPath::key() const {
     return "cybr-" + name + "-paths";
 }
 
@@ -40,27 +40,49 @@ void CybrSearchPath::init(ConsoleApplication& cApp, String defaults) {
         "Multi-purpose tool for getting and setting a search path.\n\
         \n\
         This can be used in three different ways:\n\
-        1) With no argument, print the search path, which is a semicolon\n\
-           separated list of directories\n\
+        1) With no argument, print the current search paths\n\
         2) With '=./some/path' as an argument, add that path to the front of\n\
            the list of search paths. The path string may be absolute or\n\
            relative. If it is relative, it will be resolved to an absolute\n\
            path before it is added to the list of search paths.\n\
-        3) With '=!' as the argument, which resets the path to a default value",
+        3) With '=!' as the argument, reset to the default search paths",
         [k, defaults, command, n](const ArgumentList& args) {
             String newPath = args.getValueForOption(command);
             auto* propFile = te::getApplicationSettings();
+            CybrSearchPath searchPath(n);
             if (newPath.isNotEmpty()) {
                 if (newPath == "!") {
                     propFile->setValue(k, defaults);
-                    std::cout << "Reset " << n << " search path to: ";
+                    std::cout << "Reset " << n << " search path to: " << std::endl;
                 } else {
-                    CybrSearchPath path(n);
-                    path.add(File::getCurrentWorkingDirectory().getChildFile(newPath));
-                    std::cout << n << " search path updated to: ";
+                    searchPath.add(File::getCurrentWorkingDirectory().getChildFile(newPath));
+                    std::cout << "Update " << n << " search path to: " << std::endl;
                 }
             }
-            std::cout << te::getApplicationSettings()->getValue(k) << std::endl;
+            for (auto dir : searchPath.paths())
+                std::cout << dir.getFullPathName() << std::endl;
         }
     });
+}
+
+Array<File> CybrSearchPath::paths() const {
+    String k = key();
+    auto searchPath = FileSearchPath(te::getApplicationSettings()->getValue(k));
+    Array<File> directories;
+
+    int count = searchPath.getNumPaths();
+    for (int i = 0; i < count; i++) directories.add(searchPath[i]);
+    return directories;
+}
+
+File CybrSearchPath::find(const StringRef filePath) const {
+    auto dirs = paths();
+
+    for (auto dir : dirs) {
+        File check = dir.getChildFile(filePath);
+        if (check.existsAsFile()) {
+            return check;
+        }
+    }
+    return File();
 }

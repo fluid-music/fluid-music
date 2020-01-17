@@ -15,15 +15,17 @@
 
 namespace te = tracktion_engine;
 
-const String CYBR_PRESET_PATHS("preset");
-const String CYBR_SAMPLE_PATHS("sample");
+const String CYBR_PRESET("preset");
+const String CYBR_SAMPLE("sample");
 
 class CybrSearchPath {
 public:
     CybrSearchPath(StringRef name);
     void add(File directory);
     void init(ConsoleApplication& cApp, String defaults = "");
-    const String key();
+    String key() const;
+    Array<File> paths() const;
+    File find(const StringRef filePath) const;
 private:
     const String name;
 };

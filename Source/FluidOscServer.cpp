@@ -403,11 +403,18 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
         double oneShot = (message.size() >= 6 && message[5].isInt32()) ? message[5].getInt32() : 0;
 
         File editDirectory = selectedPlugin->edit.editFileRetriever().getParentDirectory();
-        File file = CybrProps::resolveAudioFilepath(filePath, editDirectory);
-        filePath = file.getFullPathName();
+        File file = editDirectory.getChildFile(filePath);
 
-        if (!file.existsAsFile())
-            std::cout << "Warning: sampler trying to add sound, but file not found" << std::endl;
+        // First check if the file is an absolute file, OR was found relative to
+        // the edit file directory.
+        if (file.existsAsFile()) {
+            filePath = file.getFullPathName(); // Found it!
+        } else {
+            // Look in the sample search path.
+            file = CybrSearchPath(CYBR_SAMPLE).find(filePath);
+            if (file != File()) filePath = file.getFullPathName(); // Found it!
+            else std::cout << "Warning: sampler trying to add sampler sound, but file not found: " << filePath << std::endl;
+        }
 
         sampler->addSound(filePath, soundName, 0, 0, gain);
         sampler->setSoundGains(index, gain, pan);
