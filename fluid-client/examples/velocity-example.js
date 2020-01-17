@@ -15,10 +15,11 @@ const kick = 'k...k...k...k...'
 const misc = '..o.C.o...o.C.o.'
 const hihat='hhhhhhhhhhhhhhhh'
 
-const vLibary = [60,70,80,90]
+const vLibrary = [60,70,80,90]
 const vhihat='0123012301230123'
 const hhwv = {hihat, v:vhihat}
 const house={hhwv, kick, misc} 
+
 const drums_notes = {
     noteLibrary,
     vLibrary,
