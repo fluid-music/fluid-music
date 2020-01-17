@@ -74,7 +74,7 @@ client.send([
     fluid.global.activate(sessionPath),
     fluid.audiotrack.select('chorus'),
     fluid.global.cd('~/Library/Application Support/Tracktion/Waveform/Presets/'),
-    //fluid.plugin.load('4OSC Saw Lead'),
+    fluid.plugin.load('4OSC Saw Lead'),
     fluid.midiclip.create('v1.1', 0, 8*4, chorus_parsed)
 ]);
 client.send([
