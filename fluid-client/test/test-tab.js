@@ -199,7 +199,6 @@ describe('tab.parseTab', () => {
     });
 
   }); // velocities
-
 });
 
 describe('parse', () => {

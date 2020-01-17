@@ -15,8 +15,6 @@
 
 namespace te = tracktion_engine;
 
-
-
 class CybrProps {
 public:
     // Preset Dir ==============================================================

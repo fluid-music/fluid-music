@@ -158,8 +158,8 @@ void CLIApp::onRunning()
         "List all the projects from the project manager",
         "Edit files saved in Waveform may include references to projects from\n\
         the Waveform project manager. Print a list of all the projects found.\n\
-        If the list is empty, Waveform may not be installed, or you may need run\n\
-        with the --autodetect-pm option.",
+        If the list is empty, Waveform may not be installed, or you may need\n\
+        run with the --autodetect-pm option.",
         [this](auto&) { listProjects(engine); }
         });
 
@@ -454,6 +454,12 @@ void CLIApp::onRunning()
                 std::cout << "jack not supported" << std::endl;
             }
         } });
+
+    // App search paths
+    File prefsDir = engine.getPropertyStorage().getAppPrefsFolder();
+    File presetDir = prefsDir.getChildFile(CYBR_PRESET_PATHS);
+    CybrSearchPath presetSearchPath(CYBR_PRESET_PATHS);
+    presetSearchPath.init(cApp, presetDir.getFullPathName());
 
     // Because of the while loop below, we must not use the "default command"
     // functionality built into the juce::ConsoleApplication class. If there is
