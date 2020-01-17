@@ -184,10 +184,12 @@ describe('tab.parseTab', () => {
     const vLibrary    = [60, 70, 80];
     const noteLibrary = [0, 1, 2];
     const vNotes = tab.parseTab(rhythm, pattern, noteLibrary, vPattern, vLibrary);
+    
     it('should output notes with .v values if passed a vPattern and vLibrary', ()=>{
       vNotes.length.should.equal(3);
       vNotes.forEach((note) => should.exist(note.v));
     });
+    
     it('should add correct .v values when passed a vPattern and a vLibrary', ()=> {
       vNotes.should.deepEqual([
         { n: 0, s: 0.00, l: 0.125, v: 60 },
@@ -196,6 +198,7 @@ describe('tab.parseTab', () => {
       ]);
     });
   }); // velocities
+  
 });
 
 describe('parse', () => {
