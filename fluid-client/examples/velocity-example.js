@@ -15,13 +15,8 @@ const kick = 'k...k...k...k...'
 const misc = '..o.C.o...o.C.o.'
 const hihat='hhhhhhhhhhhhhhhh'
 
-//V1
-const vLibrary = {'x':4.5}
-const vhihat ='x678x67856785678'
-
-//V2
-vLibary = [60,70,80,90]
-vhihat='0123012301230123'
+const vLibary = [60,70,80,90]
+const vhihat='0123012301230123'
 
 const hhwv = {hihat, v:vhihat}
 const house={hhwv, kick, misc} //if no velocity is given, give user option to set default velocity
