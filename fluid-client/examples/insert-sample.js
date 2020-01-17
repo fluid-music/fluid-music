@@ -10,6 +10,6 @@ const client = new FluidClient(9999);
 client.send([
         fluid.global.activate(sessionPath),
         fluid.audiotrack.select('sample-track'),
-        fluid.audiotrack.insertWav('sample-track', 'sample', 0, '~/Documents/file.wav'),
+        fluid.audiotrack.insertWav('sample', 0, '~/Documents/file.wav'),
         fluid.global.save(sessionPath)
         ]);

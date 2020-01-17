@@ -8,8 +8,7 @@ const audiotrack = {
     }
   },
 
-  insertWav (trackName, clipName, startBeats, fileName){
-
+  insertWav (clipName, startBeats, fileName){
     const args = [
       {type: 'string', value: clipName}, 
       {type: 'string', value: fileName}, 
@@ -17,8 +16,7 @@ const audiotrack = {
     ];
 
     const elements = [
-      audiotrack.select(trackName),
-      { address: '/sample/insert', args }
+      { address: '/audiotrack/insert', args }
     ];
 
     return elements;

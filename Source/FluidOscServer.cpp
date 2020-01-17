@@ -42,7 +42,6 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/midiclip/n"})) return insertMidiNote(message);
     if (msgAddressPattern.matches({"/midiclip/select"})) return selectMidiClip(message);
     if (msgAddressPattern.matches({"/midiclip/clear"})) return clearMidiClip(message);
-    if (msgAddressPattern.matches({"/sample/insert"})) return insertWaveSample(message);
     if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
     if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
     if (msgAddressPattern.matches({"/plugin/preset/addpath"})) return addPluginPresetSearchPath(message);
@@ -51,6 +50,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
+    if (msgAddressPattern.matches({"/audiotrack/insert"})) return insertWaveSample(message);
     if (msgAddressPattern.matches({"/file/save"})) return saveActiveEdit(message);
     if (msgAddressPattern.matches({"/cd"})) return changeWorkingDirectory(message);
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
@@ -291,8 +291,14 @@ void FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
 }
 
 void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
-    if (!selectedMidiClip) return;
-    if (message.size() < 3) return;
+    if(!selectedAudioTrack){
+        std::cout << "Cannot load Audio Track: Must select Audio Track before inserting" << std::endl;
+        return;
+    }
+    if(message.size() < 3){
+        std::cout << "Expected 3 arguments, only recieved " << message.size() << "." << std::endl;
+        return;
+    }
 
     for (const auto& arg : message) { if (!arg.isInt32() && !arg.isFloat32()) return; }
     double startBeat = 0;

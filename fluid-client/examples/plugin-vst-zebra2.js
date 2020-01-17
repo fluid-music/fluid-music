@@ -10,8 +10,8 @@ const elements = [
   fluid.plugin.setParam('VCF1: Cutoff', 0.0),
   fluid.plugin.setParam('VCF2: Cutoff', 1.0),
 
-  fluid.midiclip.create('supersaw', 'p1', 0, 8, tabs.noTearsVerseNotes),
-  fluid.midiclip.create('supersaw', 'p2', 8, 8, tabs.noTearsVerseNotes),
+  ...fluid.midiclip.create('p1', 0, 8, tabs.noTearsVerseNotes),
+  ...fluid.midiclip.create('p2', 8, 8, tabs.noTearsVerseNotes),
   fluid.transport.loop(0, 16),
   fluid.transport.play(),
 ];

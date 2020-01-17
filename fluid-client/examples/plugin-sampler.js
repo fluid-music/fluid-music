@@ -9,7 +9,8 @@ const sessionPath = path.join(__dirname, 'sessions/out.tracktionedit')
 const client = new FluidClient(9999);
 client.send([
   fluid.global.activate(sessionPath, true),
-  fluid.midiclip.create('drums', 'beat1', 0, 4, tabs.beatNotes),
-  sampler909(),
+  fluid.audiotrack.select('drums'),
+  fluid.midiclip.create('beat1', 0, 4, tabs.beatNotes),
+  ...sampler909(),
   fluid.global.save(),
 ]);
