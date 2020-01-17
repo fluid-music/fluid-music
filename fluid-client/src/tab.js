@@ -353,7 +353,7 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
       startTime += newNotes.duration; // NOTE: must be '+=', not '='
     }
   } else if (typeof object === 'string') {
-    // We have a string that can be parsed with parseTab that does not have a velocity string associated with it
+    // We have a string that can be parsed with parseTab
     const result = parseTab(rhythm, object, noteLibrary, vPattern, vLibrary).map((n) => {
       n.s += startTime;
       return n;
@@ -364,7 +364,7 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
   } else {
     let duration = 0;
     for (let [key, val] of Object.entries(object)) {
-      if (key === 'noteLibrary' || key === 'r' || key === 'duration' || key === 'startTime' || key === 'vLibrary' || key === 'v') continue;
+      if (key === 'noteLibrary' || key === 'r' || key === 'duration' || key === 'startTime' || key === 'v' || key === 'vLibrary') continue;
       let newNotes = parse(val, rhythm, noteLibrary, startTime, vPattern, vLibrary, );
       notes.push(...newNotes);
       if (newNotes.duration > duration) duration = newNotes.duration;
