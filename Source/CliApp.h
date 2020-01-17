@@ -19,6 +19,7 @@
 #include "OscInputDevice.h"
 #include "FluidOscServer.h"
 #include "CybrProps.h"
+#include "CybrSearchPath.h"
 
 class CybrPropertyStorage : public te::PropertyStorage {
 public:

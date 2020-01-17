@@ -265,7 +265,7 @@ const patternToSymbolsAndCounts = function(pattern) {
 
   let currentChar = chars[0];
   let onSymbol = currentChar !== '.'; // are we starting on a symbol?
-  if (currentChar === '-') throw new Error(`Bad pattern string: "${chars} (begins on -)`);
+  if (currentChar === '-') throw new Error(`Bad pattern string: "${chars}" (begins on -)`);
 
   chars.forEach((c) => {
     if (c === '-') {
@@ -368,7 +368,6 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
       let newNotes = parse(val, rhythm, noteLibrary, startTime, vPattern, vLibrary, );
       notes.push(...newNotes);
       if (newNotes.duration > duration) duration = newNotes.duration;
-      notes.duration = newNotes.duration; // NOTE: must be '=', NOT '+='
     }
     notes.duration = duration;
   }

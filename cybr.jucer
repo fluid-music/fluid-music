@@ -24,6 +24,10 @@
       <FILE id="pjj3ve" name="CybrEdit.cpp" compile="1" resource="0" file="Source/CybrEdit.cpp"/>
       <FILE id="cwpENf" name="CybrProps.h" compile="0" resource="0" file="Source/CybrProps.h"/>
       <FILE id="EGF9HK" name="CybrProps.cpp" compile="1" resource="0" file="Source/CybrProps.cpp"/>
+      <FILE id="L11q6P" name="CybrSearchPath.h" compile="0" resource="0"
+            file="Source/CybrSearchPath.h"/>
+      <FILE id="pEVFDW" name="CybrSearchPath.cpp" compile="1" resource="0"
+            file="Source/CybrSearchPath.cpp"/>
       <FILE id="WTPBIq" name="CybrTrackList.h" compile="0" resource="0" file="Source/CybrTrackList.h"/>
       <FILE id="jUxSKN" name="OscInputDevice.h" compile="0" resource="0"
             file="Source/OscInputDevice.h"/>
