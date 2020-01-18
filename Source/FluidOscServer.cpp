@@ -50,7 +50,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
-    if (msgAddressPattern.matches({"/audiotrack/insert"})) return insertWaveSample(message);
+    if (msgAddressPattern.matches({"/audiotrack/insert/wav"})) return insertWaveSample(message);
     if (msgAddressPattern.matches({"/file/save"})) return saveActiveEdit(message);
     if (msgAddressPattern.matches({"/cd"})) return changeWorkingDirectory(message);
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
@@ -292,11 +292,11 @@ void FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
 
 void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
     if(!selectedAudioTrack){
-        std::cout << "Cannot load Audio Track: Must select Audio Track before inserting" << std::endl;
+        std::cout << "Cannot insert midi note: No Audio Track selected." << std::endl;
         return;
     }
     if(message.size() < 3){
-        std::cout << "Expected 3 arguments, only recieved " << message.size() << "." << std::endl;
+        std::cout << "Cannot insert midi note: Not enough arguments."<< std::endl;
         return;
     }
 
