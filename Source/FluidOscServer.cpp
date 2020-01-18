@@ -45,7 +45,6 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/sample/insert"})) return insertWaveSample(message);
     if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
     if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
-    if (msgAddressPattern.matches({"/plugin/preset/addpath"})) return addPluginPresetSearchPath(message);
     if (msgAddressPattern.matches({"/plugin/save"})) return savePluginPreset(message);
     if (msgAddressPattern.matches({"/plugin/load/trkpreset"})) return loadPluginTrkpreset(message);
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
@@ -167,16 +166,6 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
     }
 }
 
-void FluidOscServer::addPluginPresetSearchPath(const juce::OSCMessage& message) {
-    if (message.size() < 1 || !message[0].isString()) return;
-    File directoryToAdd = message[0].getString();
-    if (!directoryToAdd.isDirectory()) {
-        std::cout << "Cannot add search path: Directory does note exist: " << directoryToAdd.getFullPathName() << std::endl;
-        return;
-    }
-    searchPath.addIfNotAlreadyThere(directoryToAdd);
-}
-
 void FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
     if (!selectedPlugin) return;
     if (message.size() < 1 || !message[0].isString()) return;
@@ -225,30 +214,21 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
 
     String filename = message[0].getString();
     if (!filename.endsWithIgnoreCase(".trkpreset")) filename.append(".trkpreset", 10);
-    //TODO: Test this functionality
-    //Finds files within the search path that match the file name provided
-    searchPath.add(File::getCurrentWorkingDirectory());
-    Array<File> potentialFiles = searchPath.findChildFiles(File::TypesOfFileToFind::findFiles, true, filename);
-    searchPath.remove(-1);
 
-    
-    //Checks if any files were found
-    if(!potentialFiles.size()){
-        std::cout << "Cannot load plugin preset: Failed to load and parse file" << std::endl;
-        return;
+    File editDirectory = selectedAudioTrack->edit.editFileRetriever().getParentDirectory();
+    File file = editDirectory.getChildFile(filename);
+
+    // First check if the file is an absolute file, OR was found relative to
+    // the edit file directory.
+    if (file.existsAsFile()) {
+        filename = file.getFullPathName(); // Found it!
+    } else {
+        // Look in the sample search path.
+        file = CybrSearchPath(CYBR_PRESET).find(filename);
+        if (file != File()) filename = file.getFullPathName(); // Found it!
+        else std::cout << "Warning: preset file not found: " << filename << std::endl;
     }
-    
-    File file = potentialFiles[0];
-    
-    //Checks for any conflicts, prioritizing user path names over default tracktion presets
-    for(File fileIter: potentialFiles){
-        if(!fileIter.getFullPathName().contains("Tracktion")){
-            file = fileIter;
-            std::cout<<"Found plugin preset file outside of tracktion default presets"<<std::endl;
-            break;
-        }
-    }
-    
+
     ValueTree v = loadXmlFile(file);
 
     if (!v.isValid()) {

@@ -68,6 +68,8 @@ const plugin = {
    * @param {Buffer|String} file - A
    */
   loadTrkpreset(file) {
+    console.error('fluid.plugin.loadTrkpreset will be deprecated, and should be avoided');
+
     let buffer;
     if (!file)
       throw new Error('plugin.loadTrkpreset requires a file argument');
@@ -89,6 +91,11 @@ const plugin = {
   },
 
   addpath(presetDir){
+    throw new Error('fluid.plugin.addpath is deprecated, and should not be used.\n\
+    To change the plugin search path, use ./cybr --preset-dirs=path \n\
+    The goal it so move away from specifying any kind of paths on the client.\n\
+    It is possible to use absolute paths, but this may be deprecated eventually.');
+
     if (typeof presetDir !== 'string')
       throw new Error('plugin.addpath requires preset directory as argument');
     return {

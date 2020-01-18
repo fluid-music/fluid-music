@@ -411,13 +411,18 @@ void CLIApp::onRunning()
     File prefsDir = engine.getPropertyStorage().getAppPrefsFolder();
 
     // Preset search paths
+    File cybrPresets = prefsDir.getChildFile(CYBR_PRESET);
+    File tracktionPresets = getWaveformAppDir().getChildFile("Presets");
+    cybrPresets.createDirectory();
     String presetSearchPaths =
-        prefsDir.getChildFile(CYBR_PRESET).getFullPathName() + ";"
-        + getWaveformAppDir().getChildFile("Presets").getFullPathName();
+        cybrPresets.getFullPathName() + ";"
+        + tracktionPresets.getFullPathName();
     CybrSearchPath presetSearchPath(CYBR_PRESET);
     presetSearchPath.init(cApp, presetSearchPaths);
 
+    // Samples search path
     File defaultSampleDir = prefsDir.getChildFile(CYBR_SAMPLE);
+    defaultSampleDir.createDirectory();
     CybrSearchPath sampleSearchPath(CYBR_SAMPLE);
     sampleSearchPath.init(cApp, defaultSampleDir.getFullPathName());
 

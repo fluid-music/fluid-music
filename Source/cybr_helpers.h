@@ -12,6 +12,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SamplePathMode.h"
 #include "CybrEdit.h"
+#include "CybrSearchPath.h"
 
 namespace te = tracktion_engine;
 
@@ -26,7 +27,6 @@ void setClipAndSamplerSourcesToDirectFileReferences(
                                                     te::Edit& changeEdit,
                                                     SamplePathMode mode = SamplePathMode::decide,
                                                     bool verbose = false);
-
 
 /** Try to lookup and add project manager settings from Tracktion Waveform. */
 void autodetectPmSettings(te::Engine& engine);

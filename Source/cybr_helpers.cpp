@@ -437,13 +437,21 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
         return;
     }
 
+    Array<File> presetDirs = CybrSearchPath(CYBR_PRESET).paths();
+    if (presetDirs.size() < 1) {
+        std::cout << "Cannot save preset. No preset paths found" << std::endl;
+        return;
+    }
+
     if (!name.endsWithIgnoreCase(".trkpreset")) name.append(".trkpreset", 10);
 
-    File file = File::getCurrentWorkingDirectory().getChildFile(File::createLegalFileName(name));
+    File file = presetDirs[0].getChildFile(File::createLegalFileName(name));
     File saveDir = file.getParentDirectory();
 
     if (!file.hasWriteAccess()) {
-        std::cout << "Cannot write to file: does not have write access: " << file.getFullPathName() << std::endl;
+        std::cout
+            << "Cannot write preset file (do not have write access): "
+            << file.getFullPathName() << std::endl;
         return;
     }
     ValueTree state(te::IDs::PRESET);
