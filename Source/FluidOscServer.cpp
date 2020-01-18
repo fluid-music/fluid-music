@@ -147,20 +147,25 @@ void FluidOscServer::selectPlugin(const OSCMessage& message) {
 }
 
 void FluidOscServer::setPluginParam(const OSCMessage& message) {
-    if (message.size() > 2 ||
+    if (message.size() > 3 ||
         !message[0].isString() ||
-        !message[1].isFloat32()) return;
+        !message[1].isFloat32() ||
+        !message[2].isFloat32()) return;
 
     if (!selectedPlugin) return;
 
     String paramName = message[0].getString();
     float paramValue = message[1].getFloat32();
+    float changeTime = message[2].getFloat32();
 
     for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
         if (param->paramName.equalsIgnoreCase(paramName)) {
-            param->beginParameterChangeGesture();
-            param->setNormalisedParameter(paramValue, NotificationType::sendNotification); 
-            param->endParameterChangeGesture();
+                
+            if(!param->hasAutomationPoints()){ // If this is the first time changing the value of the parameter, set it to its default until it is changed.
+                param->getCurve().addPoint(0, param->getCurrentValue(), 0);
+            }
+            
+            param->getCurve().addPoint(changeTime, paramValue, 0);
             std::cout << "set " << paramName << " to " << paramValue << " explicitvalue: " << param->getCurrentExplicitValue() << " value: " << param->getCurrentValue() << std::endl;
             break;
         }

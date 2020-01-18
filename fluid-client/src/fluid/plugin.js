@@ -29,16 +29,17 @@ const plugin = {
     return { args, address: '/plugin/select' };
   },
 
-  setParam(paramName, normalizedValue) {
+  setParam(paramName, value, time = 0) {
     if (typeof paramName !== 'string')
       throw new Error('plugin.setParam needs a parameterName, got: ' + paramName);
-    if (typeof normalizedValue !== 'number')
-      throw new Error('plugin.setParam needs a value number, got ' + normalizedValue);
+    if (typeof value !== 'number')
+      throw new Error('plugin.setParam needs a value number, got ' + value);
     return {
       address: '/plugin/param/set',
       args: [
         { type: 'string', value: paramName },
-        { type: 'float', value: normalizedValue },
+        { type: 'float', value: value },
+        { type: 'float', value: time },
       ],
     }
   },
