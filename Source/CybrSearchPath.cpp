@@ -40,13 +40,13 @@ void CybrSearchPath::init(ConsoleApplication& cApp, String defaults) {
     PropertiesFile* props = te::getApplicationSettings();
     String k = key();
     if (props->getValue(k).isEmpty()) props->setValue(k, defaults);
-    String command = "--" + name + "-paths";
+    String command = "--" + name + "-path";
     String n = name;
     cApp.addCommand({
         command,
         command + "[=./path|!]",
-        "Print/Add/Reset " + name + "search paths",
-        "Multi-purpose tool for getting and setting a search path.\n\
+        "Print/Add/Reset " + name + " search path",
+        "Multi-purpose tool for getting and setting a search directories.\n\
         \n\
         This can be used in three different ways:\n\
         1) With no argument, print the current search paths\n\
@@ -62,10 +62,10 @@ void CybrSearchPath::init(ConsoleApplication& cApp, String defaults) {
             if (newPath.isNotEmpty()) {
                 if (newPath == "!") {
                     propFile->setValue(k, defaults);
-                    std::cout << "Reset " << n << " search path to: " << std::endl;
+                    std::cout << "Reset " << n << " search dirs to: " << std::endl;
                 } else {
                     searchPath.add(File::getCurrentWorkingDirectory().getChildFile(newPath));
-                    std::cout << "Update " << n << " search path to: " << std::endl;
+                    std::cout << "Update " << n << " search dirs to: " << std::endl;
                 }
             }
             for (auto dir : searchPath.paths())
