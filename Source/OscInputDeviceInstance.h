@@ -70,7 +70,7 @@ public:
 
     // see MidiInputDeviceInstance for what this is really supposed to do.
     Array<te::Clip*> applyRetrospectiveRecord (te::SelectionManager*) override;
-    
+
     te::AudioNode* createLiveInputNode() override;
     
     /** recordingStartTime refers to when the recording began. It does not get

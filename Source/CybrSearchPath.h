@@ -18,6 +18,10 @@ namespace te = tracktion_engine;
 const String CYBR_PRESET("preset");
 const String CYBR_SAMPLE("sample");
 
+/** Guess the application directory for Tracktion Waveform */
+File getWaveformAppDir();
+
+/** Helper class for dealing with search paths */
 class CybrSearchPath {
 public:
     CybrSearchPath(StringRef name);

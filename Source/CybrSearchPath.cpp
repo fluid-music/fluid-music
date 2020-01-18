@@ -10,6 +10,15 @@
 
 #include "CybrSearchPath.h"
 
+File getWaveformAppDir() {
+    PropertiesFile::Options jucePropOpts;
+    jucePropOpts.osxLibrarySubFolder = "Application Support";
+    jucePropOpts.applicationName = "UNUSED";
+    jucePropOpts.getDefaultFile();
+    PropertiesFile juceProps(jucePropOpts);
+    return juceProps.getFile().getParentDirectory().getChildFile("Tracktion/Waveform");
+}
+
 CybrSearchPath::CybrSearchPath(StringRef _name)
 : name(_name)
 {}

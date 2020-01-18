@@ -27,6 +27,7 @@ void setClipAndSamplerSourcesToDirectFileReferences(
                                                     SamplePathMode mode = SamplePathMode::decide,
                                                     bool verbose = false);
 
+
 /** Try to lookup and add project manager settings from Tracktion Waveform. */
 void autodetectPmSettings(te::Engine& engine);
 void listWaveDevices(te::Engine& engine);
