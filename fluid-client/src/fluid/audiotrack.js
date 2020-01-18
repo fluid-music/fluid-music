@@ -16,7 +16,7 @@ const audiotrack = {
     ];
 
     const elements = [
-      { address: '/audiotrack/insert', args }
+      { address: '/audiotrack/insert/wav', args }
     ];
 
     return elements;
