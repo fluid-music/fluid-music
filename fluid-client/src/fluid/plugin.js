@@ -68,7 +68,10 @@ const plugin = {
    * @param {Buffer|String} file - A
    */
   loadTrkpreset(file) {
-    console.error('fluid.plugin.loadTrkpreset will be deprecated, and should be avoided');
+    console.warn('fluid.plugin.loadTrkpreset should be avoided, because it\n\
+    might be deprecated in a future release. Most presets are too large to\n\
+    fit in a udp packet. Eventually, we want to send messages over TCP, but\n\
+    before we can do that, the juce OSC code needs to be updated.');
 
     let buffer;
     if (!file)
