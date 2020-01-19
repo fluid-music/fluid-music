@@ -311,32 +311,63 @@ void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
 }
 
 void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
+    if (!activeCybrEdit) {
+        std::cout << "Cannot insert wave sample: no active edit" << std::endl;
+        return;
+    }
+
     if(!selectedAudioTrack){
-        std::cout << "Cannot load Audio Track: Must select Audio Track before inserting" << std::endl;
+        std::cout << "Cannot insert wave sample: Must select Audio Track before inserting" << std::endl;
         return;
     }
+
     if(message.size() < 3){
-        std::cout << "Expected 3 arguments, only recieved " << message.size() << "." << std::endl;
+        std::cout << "Cannot insert wave file: only recieved " << message.size() << "arguments." << std::endl;
         return;
     }
-    
+
+    if (!message[0].isString()) {
+        std::cout << "Cannot insert wave file: first argument must be a string" << std::endl;
+    }
+    String clipName = message[0].getString();
+
+    if (!message[1].isString()) {
+        std::cout << "Cannot insert wave file: second argument must be a string" << std::endl;
+        return;
+    }
+    String filePath = message[1].getString();
+
+    if (!message[2].isFloat32() && !message[2].isInt32()) {
+        std::cout << "Cannot insert wave file: third argument must be int or float" << std::endl;
+    }
+
     double startBeat = 0;
     if (message[2].isFloat32()) startBeat = message[2].getFloat32();
     else if (message[2].isInt32()) startBeat = message[2].getInt32();
-    String clipName = message[0].getString();
-    String fileName = message[1].getString();
-    
     double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeat);
 
-    File file = fileName;
+    File editDirectory = activeCybrEdit->getEdit().editFileRetriever().getParentDirectory();
+    File file = editDirectory.getChildFile(filePath);
+
+    // First check if the file is an absolute file, OR was found relative to
+    // the edit file directory.
+    if (file.existsAsFile()) {
+        filePath = file.getFullPathName(); // Found it!
+    } else {
+        // Look in the sample search path.
+        file = CybrSearchPath(CYBR_SAMPLE).find(filePath);
+        if (file != File()) filePath = file.getFullPathName(); // Found it!
+        else std::cout << "Cannot insert wave file: file not found: " << filePath << std::endl;
+    }
+
     te::AudioFile audiofile(file);
     if(!audiofile.isWavFile()){
-        std::cout << "Cannot load sample: Must be valid WAV file." << std::endl;
+        std::cout << "Cannot insert wave file: Must be valid WAV file." << std::endl;
         return;
     }
-    
+
     te::EditTimeRange timeRange = te::EditTimeRange(startSeconds, startSeconds+audiofile.getLength());
-    
+
     te::ClipPosition pos;
     pos.time = timeRange;
     selectedAudioTrack->insertWaveClip(clipName, file, pos, false);
