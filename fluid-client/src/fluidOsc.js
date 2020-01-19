@@ -4,24 +4,6 @@ const audiotrack = require('./fluid/audiotrack');
 const midiclip = require('./fluid/midiclip');
 const transport = require('./fluid/transport');
 
-const sample = {
-  insertWav (trackName, clipName, startBeats, fileName){
-
-    const args = [
-      {type: 'string', value: clipName}, 
-      {type: 'string', value: fileName}, 
-      {type: 'float', value: startBeats},
-    ];
-
-    const elements = [
-      audiotrack.select(trackName),
-      { address: '/sample/insert', args }
-    ];
-
-    return elements;
-  }
-}
-
 const global = {
   /**
    * @param {string} [filename] - '.tracktionedit' or '.wav' filename. If no
@@ -82,7 +64,6 @@ const global = {
 
 module.exports = {
   midiclip,
-  sample,
   audiotrack,
   plugin,
   global,

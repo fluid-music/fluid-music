@@ -15,10 +15,11 @@ const kick = 'k...k...k...k...'
 const misc = '..o.C.o...o.C.o.'
 const hihat='hhhhhhhhhhhhhhhh'
 
-const vLibary = [60,70,80,90]
+const vLibrary = [60,70,80,90]
 const vhihat='0123012301230123'
 const hhwv = {hihat, v:vhihat}
 const house={hhwv, kick, misc} 
+
 const drums_notes = {
     noteLibrary,
     vLibrary,
@@ -31,7 +32,7 @@ const client = new FluidClient(9999);
 client.send([
     fluid.global.activate(sessionPath),
     fluid.audiotrack.select('house'),
-    drumsMsg,
-    fluid.midiclip.create(drumTrackName, 'house', 0, 4, drums_parsed),
+    ...drumsMsg,
+    fluid.midiclip.create('house', 0, 4, drums_parsed),
     fluid.global.save(sessionPath)
 ]);

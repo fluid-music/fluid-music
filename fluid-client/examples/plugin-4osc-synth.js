@@ -10,7 +10,7 @@ const client = new FluidClient(9999);
 client.send([
   fluid.audiotrack.select('stabs'),
   fluid.plugin.select('4osc'),
-  fluid.midiclip.create('stabs', 'v1.1', 0, 8, tabs.noTearsVerseNotes),
-  fluid.midiclip.create('stabs', 'v1.2', 8, 8, tabs.noTearsVerseNotes),
+  ...fluid.midiclip.create('v1.1', 0, 8, tabs.noTearsVerseNotes),
+  ...fluid.midiclip.create('v1.2', 8, 8, tabs.noTearsVerseNotes),
   fluid.global.save(sessionPath),
 ]);
