@@ -9,7 +9,6 @@ const sessionPath = path.join(__dirname, 'sessions/out.tracktionedit');
 
 const drums909 = require('../recipes/track-drums909');
 const drumTrackName = '909';
-const drumsMsg = drums909(drumTrackName);
 
 // General MIDI Percussion map defines note 36=bass-drum, 38=snare
 // See: http://www.onicos.com/staff/iz/formats/midi-drummap.html
@@ -45,12 +44,21 @@ const chords = [{ c0, r: r0 }, { c1, r: r1 }, { c2, r:r2 }];
 const drumNotes = tab.parse({ noteLibrary, r: r0, drums });
 const chordNotes = tab.parse({ noteLibrary: chordLibrary, r: r0, chords });
 const durationInQuarterNotes = drumNotes.duration * 4;
+
 const client = new FluidClient(9999);
-client.send(drumsMsg);
-client.send(fluid.midiclip.create(drumTrackName, 'drums', 0, durationInQuarterNotes, drumNotes));
-client.send(fluid.midiclip.create('chords', 'c1', 0, durationInQuarterNotes, chordNotes));
+
+client.send([
+  drums909(drumTrackName),
+  fluid.audiotrack.select(drumTrackName),
+  fluid.midiclip.create('drums', 0, durationInQuarterNotes, drumNotes),
+]);
+
+client.send(fluid.audiotrack.select('chords'));
+client.send(fluid.midiclip.create('c1', 0, durationInQuarterNotes, chordNotes));
+
 client.send(fluid.audiotrack.select('chords'));
 client.send(fluid.plugin.load('4OSC Clinics Unison WMF'));
+
 client.send(fluid.transport.loop(0, durationInQuarterNotes));
 client.send(fluid.transport.play());
 client.send(fluid.global.save(sessionPath));
