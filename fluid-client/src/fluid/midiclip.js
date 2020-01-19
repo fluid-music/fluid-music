@@ -48,16 +48,14 @@ const midiclip = {
   /**
    * Build an OSC message that creates a clip with a bunch of midi notes
    *
-   * @param { string } trackName
    * @param { string } clipName
    * @param { Number } startBeats - Clip start time in quarter notes
    * @param { Number} lengthBeats - Clip length in quarter notes
    * @param { {l:number, n: number, s: start}[] } notes - array of objects like:
    *        { l: length, n: note, s: start } objects
    */
-  create(trackName, clipName, startBeats, lengthBeats, notes) {
+  create(clipName, startBeats, lengthBeats, notes) {
     elements = [
-      audiotrack.select(trackName),
       midiclip.select(clipName, startBeats, lengthBeats),
       midiclip.clear(),
     ];

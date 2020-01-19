@@ -7,6 +7,20 @@ const audiotrack = {
       args: [{ type: 'string', value: trackName }],
     }
   },
+
+  insertWav (clipName, startBeats, fileName){
+    const args = [
+      {type: 'string', value: clipName}, 
+      {type: 'string', value: fileName}, 
+      {type: 'float', value: startBeats},
+    ];
+
+    const elements = [
+      { address: '/audiotrack/insert/wav', args }
+    ];
+
+    return elements;
+  },
 }
 
 module.exports = audiotrack;

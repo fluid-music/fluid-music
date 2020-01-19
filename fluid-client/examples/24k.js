@@ -6,8 +6,7 @@ const tab = require('../src/tab');
 const path = require('path');
 const drums909 = require('../recipes/track-drums909');
 const drumTrackName = '909';
-const sampleDir =  path.join(__dirname, '909kit');
-const drumsMsg = drums909(sampleDir, drumTrackName);
+const drumsMsg = drums909(drumTrackName);
 
 const sessionPath = path.join(__dirname, 'sessions/24kmagic.tracktionedit')
 
@@ -76,10 +75,10 @@ client.send([
     fluid.audiotrack.select('chorus'),
     fluid.global.cd('~/Library/Application Support/Tracktion/Waveform/Presets/'),
     fluid.plugin.load('4OSC Saw Lead'),
-    fluid.midiclip.create('chorus', 'v1.1', 0, 8*4, chorus_parsed)
+    fluid.midiclip.create('v1.1', 0, 8*4, chorus_parsed)
 ]);
 client.send([
-    drumsMsg,
-    fluid.midiclip.create(drumTrackName, 'drums', 0, 4*9, drums_parsed),
+    ...drumsMsg,
+    fluid.midiclip.create('drums', 0, 4*9, drums_parsed),
     fluid.global.save(sessionPath)
 ]);

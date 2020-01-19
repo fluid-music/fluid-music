@@ -41,7 +41,9 @@ const notes = tab.parse({
 
 const durationInQuarterNotes = notes.duration * 4;
 const client = new FluidClient(9999);
-client.send(drumsMsg);
-client.send(fluid.midiclip.create(drumTrackName, 'drums', 0, durationInQuarterNotes, notes));
-client.send(fluid.transport.loop(0, durationInQuarterNotes));
-client.send(fluid.transport.play());
+client.send([...drumsMsg,
+            fluid.midiclip.create('drums', 0, durationInQuarterNotes, notes),
+            fluid.transport.loop(0, durationInQuarterNotes),
+            fluid.transport.play(),
+]);
+
