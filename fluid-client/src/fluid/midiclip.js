@@ -42,7 +42,7 @@ const midiclip = {
     if (typeof velocity === 'number')
       args.push({ type: 'integer', value: velocity });
 
-    return { address: '/midiclip/n', args }
+    return { address: '/midiclip/insert/note', args }
   },
 
   /**

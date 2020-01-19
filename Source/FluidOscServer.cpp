@@ -39,7 +39,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
         return;
     }
 
-    if (msgAddressPattern.matches({"/midiclip/n"})) return insertMidiNote(message);
+    if (msgAddressPattern.matches({"/midiclip/insert/note"})) return insertMidiNote(message);
     if (msgAddressPattern.matches({"/midiclip/select"})) return selectMidiClip(message);
     if (msgAddressPattern.matches({"/midiclip/clear"})) return clearMidiClip(message);
     if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
