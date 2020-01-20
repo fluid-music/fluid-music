@@ -1,6 +1,6 @@
 {
   "name": "fluid-music",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Basic cybr client examples",
   "main": "src/index.js",
   "scripts": {
