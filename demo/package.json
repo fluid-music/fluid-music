@@ -1,11 +1,11 @@
 {
   "name": "fluid-demo",
   "version": "0.0.1",
-  "description": "Fluid demo song. ",
+  "description": "Fluid Music Demo Song",
   "main": "demo.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "link": "npm link ../fluid-client",
+    "link": "npm link ../fluid-music",
     "watch": "nodemon -w demo.js -- demo.js"
   },
   "author": "Charles Holbrow",
