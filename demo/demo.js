@@ -1,14 +1,9 @@
 #!/usr/bin/env node
 
-const fluid = require('../src/fluidOsc');
-const tab = require('../src/tab');
-const FluidClient = require('../src/FluidClient');
 const path = require('path');
+const fluid = require('fluid-music');
 
 const sessionPath = path.join(__dirname, 'sessions/out.tracktionedit');
-
-const drums909 = require('../recipes/track-drums909');
-const drumTrackName = '909';
 
 // General MIDI Percussion map defines note 36=bass-drum, 38=snare
 // See: http://www.onicos.com/staff/iz/formats/midi-drummap.html
@@ -24,41 +19,49 @@ const rest = {r: 'w', p: '.'};
 
 const r0 = '1+2+3+4+';
 const h0 = 'k h h h ';
-const c0 = '0 1 2   ';
-const p0 = {r: r0, p: h0};
+const c0 = '012     ';
+const p0 = { r: r0, p: h0 };
 
 const r1 = '1+2+3+4..';
 const h1 = 'k h h hhh';
-const c1 = '1 2 0  0 '
+const c1 = '211   012';
 const p1 = {r: r1, p: h1};
 
-const r2 = '1+2+3+4....';
-const h2 = 'k hhh hhhhh';
+const r2 = '1+2+3+4....w';
+const h2 = 'k hhh khhhkk';
 
-const c2 = '1 2 0  0 1 ';
+const c2 = '1 2 0 021021';
 const p2 = {r: r2, p: h2};
 
 const drums = [p0, p1, p2, rest];
 const chords = [{ c0, r: r0 }, { c1, r: r1 }, { c2, r:r2 }];
 
-const drumNotes = tab.parse({ noteLibrary, r: r0, drums });
-const chordNotes = tab.parse({ noteLibrary: chordLibrary, r: r0, chords });
+const drumNotes = fluid.tab.parse({ noteLibrary, r: r0, drums });
+const chordNotes = fluid.tab.parse({ noteLibrary: chordLibrary, r: r0, chords });
 const durationInQuarterNotes = drumNotes.duration * 4;
 
-const client = new FluidClient(9999);
+const client = new fluid.Client(9999);
 
+const drumTrackName = '909';
 client.send([
-  drums909(drumTrackName),
+  fluid.recipes.drumTrack909(drumTrackName),
   fluid.audiotrack.select(drumTrackName),
-  fluid.midiclip.create('drums', 0, durationInQuarterNotes, drumNotes),
+  fluid.midiclip.create('d1', 0, durationInQuarterNotes, drumNotes),
 ]);
 
-client.send(fluid.audiotrack.select('chords'));
-client.send(fluid.midiclip.create('c1', 0, durationInQuarterNotes, chordNotes));
+client.send([
+  fluid.audiotrack.select('chords'),
+  fluid.midiclip.create('c1', 0, durationInQuarterNotes, chordNotes),
+]);
 
-client.send(fluid.audiotrack.select('chords'));
-client.send(fluid.plugin.load('4OSC Clinics Unison WMF'));
+client.send([
+  fluid.audiotrack.select('chords'),
+  fluid.plugin.load('4OSC Clinics Unison WMF'),
+  fluid.plugin.select('volume'),
+  fluid.plugin.setParam('Volume', 0.25),
+]);
 
 client.send(fluid.transport.loop(0, durationInQuarterNotes));
 client.send(fluid.transport.play());
 client.send(fluid.global.save(sessionPath));
+

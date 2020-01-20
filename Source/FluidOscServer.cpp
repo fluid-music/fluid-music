@@ -492,11 +492,12 @@ void FluidOscServer::handleTransportMessage(const OSCMessage& message) {
             if (range.getEnd() != endSeconds) transport.setLoopOut(endSeconds);
             std::cout << "Looping start|length: " << startBeats << "|" << endBeats << std::endl;
         }
-        // If looping was previously disabled, setting looping to true seems to move the playhead
-        // to the start of the loop. This surprised me, but is okay for now. It is probably not the
-        // ideal behavior. Setting the loop point should probably never change playback (currently
-        // it probably only changes the playback iff we are not already looping, but if we are looping
-        // a different region, playback will be unaffected).
+        // If looping was previously disabled, setting looping to true seems to
+        // move the playhead to the start of the loop. This surprised me, but is
+        // okay for now. It is probably not the ideal behavior. Setting the loop
+        // point should probably never change playback (currently it probably
+        // only changes the playback iff we are not already looping, but if we
+        // are looping a different region, playback will be unaffected).
         transport.looping.setValue(true, nullptr);
     }
 };

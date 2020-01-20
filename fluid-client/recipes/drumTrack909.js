@@ -1,5 +1,3 @@
-const path = require('path');
-const fs = require('fs');
 const fluid = require('../src/fluidOsc');
 
 const s1 = { name: 's1', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD A SP 909 09.wav' };
