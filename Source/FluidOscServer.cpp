@@ -167,8 +167,14 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
 }
 
 void FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
-    if (!selectedPlugin) return;
-    if (message.size() < 1 || !message[0].isString()) return;
+    if (!selectedPlugin) {
+        std::cout << "Cannot save plugin preset: No selected plugin" << std::endl;
+        return;
+    }
+    if (message.size() < 1 || !message[0].isString()) {
+        std::cout << "Cannot save plugin preset: First argument must be a name string" << std::endl;
+        return;
+    }
     saveTracktionPreset(selectedPlugin, message[0].getString());
 }
 
@@ -180,7 +186,7 @@ void FluidOscServer::loadPluginTrkpreset(const juce::OSCMessage &message) {
     }
 
     if (!message.size() || !message[0].isBlob()) {
-        std::cout << "Cannot load trkpreset data: mising blob" << std::endl;
+        std::cout << "Cannot load trkpreset data: Mising blob" << std::endl;
         return;
     }
 
