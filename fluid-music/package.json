@@ -1,6 +1,6 @@
 {
   "name": "fluid-music",
-  "version": "0.0.2-0",
+  "version": "0.0.2",
   "description": "Basic cybr client examples",
   "main": "src/index.js",
   "scripts": {
@@ -11,12 +11,12 @@
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
   "devDependencies": {
+    "nodemon": "^2.0.1",
     "mocha": "^6.2.2",
     "should": "^13.2.3"
   },
   "dependencies": {
     "expr-eval": "^2.0.2",
-    "nodemon": "^2.0.1",
     "osc-min": "^1.1.2",
     "sharp11": "^2.0.2",
     "yaml": "^1.7.2"

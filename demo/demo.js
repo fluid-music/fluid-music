@@ -19,7 +19,7 @@ const rest = {r: 'w', p: '.'};
 
 const r0 = '1+2+3+4+';
 const h0 = 'k h h h ';
-const c0 = '012     ';
+const c0 = '000     ';
 const p0 = { r: r0, p: h0 };
 
 const r1 = '1+2+3+4..';
@@ -42,10 +42,8 @@ const durationInQuarterNotes = drumNotes.duration * 4;
 
 const client = new fluid.Client(9999);
 
-const drumTrackName = '909';
 client.send([
-  fluid.recipes.drumTrack909(drumTrackName),
-  fluid.audiotrack.select(drumTrackName),
+  fluid.audiotrack.select('drums'),
   fluid.midiclip.create('d1', 0, durationInQuarterNotes, drumNotes),
 ]);
 
@@ -54,14 +52,5 @@ client.send([
   fluid.midiclip.create('c1', 0, durationInQuarterNotes, chordNotes),
 ]);
 
-client.send([
-  fluid.audiotrack.select('chords'),
-  fluid.plugin.load('4OSC Clinics Unison WMF'),
-  fluid.plugin.select('volume'),
-  fluid.plugin.setParam('Volume', 0.25),
-]);
-
 client.send(fluid.transport.loop(0, durationInQuarterNotes));
 client.send(fluid.transport.play());
-client.send(fluid.global.save(sessionPath));
-
