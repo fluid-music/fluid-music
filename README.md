@@ -20,15 +20,15 @@ How do these work, and what paths to they search? Generally, these tend to work 
 1. Check if the file is relative to the active edit
 1. Search the configurable list of paths for the relevant file type.
 
-Here are the current defaults on mac (these will look different on PC/linux). Note that you can change these default with the relevant CLI arguments.
+Here are the current defaults on mac (these will look different on Windows and Linux). Note that you can change these defaults with the relevant CLI.
 
-- `/audiotrack/insert/wav` and `/audiotrack/insert/wav`
+- `/audiotrack/insert/wav` and `/plugin/sampler/add`
   1. `~/Library/Application Support/cybr/sample`
 - `/plugin/load`
   1. `~/Library/Application Support/cybr/preset`
   1. `~/Library/Application Support/Tracktion/Waveform/Presets`
 
-Note that `/plugin/load` and `/plugin/save` expect to look for `.trkpreset` files. If the filename supplied does not have a `.trkpreset` extension, one will be added automatically. This means that the methods can simply specify a preset name like `'4OSC Clinics Unison WMF'`, and if Tracktion Waveform is installed
+Note that `/plugin/load` and `/plugin/save` expect to look for `.trkpreset` files. If the filename supplied does not have a `.trkpreset` extension, one will be added automatically. This means that the methods can simply specify a preset name like `'4OSC Clinics Unison WMF'`, and if Tracktion Waveform is installed.
 
 Note that `/plugin/save` will save preset files in the *first* directory in the preset search path. Currently, saving a plugin with an absolute pathname is not supported.
 
