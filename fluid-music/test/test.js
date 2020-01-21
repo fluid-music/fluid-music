@@ -42,6 +42,18 @@ describe('valueToMidiNoteNumber', () => {
     should(() => { converters.valueToMidiNoteNumber('invalid'); }).throw();
     should(() => { converters.valueToMidiNoteNumber('##'); }).throw();
   });
+  it('should handle strings in the form "c4+7"', () => {
+    converters.valueToMidiNoteNumber('c4+7').should.equal(67);
+  });
+  it('should handle strings in the form "c4-5"', () => {
+    converters.valueToMidiNoteNumber('c4-5').should.equal(55);
+  });
+  it('should handle strings in the form "c#4+7"', () => {
+    converters.valueToMidiNoteNumber('c#4+7').should.equal(68);
+  });
+  it('should handle strings in the form "cb4-5"', () => {
+    converters.valueToMidiNoteNumber('cb4-5').should.equal(54);
+  });
 });
 
 describe('createMidiNoteMessage', () => {

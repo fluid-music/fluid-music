@@ -27,7 +27,17 @@ const valueToWholeNotes = function(value) {
 const valueToMidiNoteNumber = function(value) {
   let noteNumber;
   if      (typeof value === 'number') noteNumber = value;
-  else if (typeof value === 'string') noteNumber = s11.note.create(value).value();
+  else if (typeof value === 'string') {
+    let i = value.indexOf('+');
+    if (i === -1) i = value.indexOf('-');
+    if (i !== -1) {
+      const first = value.slice(0, i);
+      const second = value.slice(i);
+      noteNumber = parser.evaluate(s11.note.create(first).value() + second);
+    } else {
+      noteNumber = s11.note.create(value).value();
+    }
+  }
   else throw new Error('Note value invalid: ' + JSON.stringify(value));
   return noteNumber;
 };
