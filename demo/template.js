@@ -18,6 +18,12 @@ client.send([
   fluid.plugin.select('volume'),
   fluid.plugin.setParam('Volume', 0.25),
 
+  // Bass
+  fluid.audiotrack.select('bass'),
+  fluid.plugin.load('Zebra2 bass2osc'),
+  fluid.plugin.select('volume'),
+  fluid.plugin.setParam('Volume', 0.5),
+
   // Finalize
   fluid.global.save(),
 ]);
