@@ -41,7 +41,7 @@ describe('valueToMidiNoteNumber', () => {
   it('should throw on an invalid string', () => {
     should(() => { converters.valueToMidiNoteNumber('invalid'); }).throw();
     should(() => { converters.valueToMidiNoteNumber('##'); }).throw();
-  })
+  });
 });
 
 describe('createMidiNoteMessage', () => {
@@ -54,7 +54,7 @@ describe('createMidiNoteMessage', () => {
 
 
   const desiredResult = {
-    address: '/midiclip/n',
+    address: '/midiclip/insert/note',
     args: [
       { type: 'integer', value: noteNum },
       { type: 'float', value: startTimeInQuarterNotes },
@@ -82,18 +82,10 @@ describe('midiclip.create', () => {
     { n: 67, s: 1.0, l: 0.25 },
   ];
 
-  const arpMessage = fluid.midiclip.create('track1', 'clip1', 1, 2, notes);
-
-  it('should have /audiotrack/select', () => {
-    const trackSelect = arpMessage[0];
-    trackSelect.should.deepEqual({
-      address: '/audiotrack/select',
-      args: [{ type: 'string', value: 'track1' }], // no way to know if its array or not
-    });
-  });
+  const arpMessage = fluid.midiclip.create('clip1', 1, 2, notes);
 
   it('should have /midiclip/select', () => {
-    const clipSelect = arpMessage[1];
+    const clipSelect = arpMessage[0];
     clipSelect.should.deepEqual({
       address: '/midiclip/select',
       args: [
@@ -105,30 +97,30 @@ describe('midiclip.create', () => {
   });
 
   it('should have /midiclip/clear', () => {
-    const clipClear = arpMessage[2];
+    const clipClear = arpMessage[1];
     clipClear.should.deepEqual({
       address: '/midiclip/clear',
     });
   });
 
-  it('should have /midiclip/n messages (x3)', () => {
-    const notes = arpMessage.slice(3);
+  it('should have /midiclip/insert/note messages (x3)', () => {
+    const notes = arpMessage.slice(2);
     notes.should.deepEqual([{
-      address: '/midiclip/n',
+      address: '/midiclip/insert/note',
       args: [
         { type: 'integer', value: 60 },
         { type: 'float',   value: 0 },
         { type: 'float',   value: 1 },
       ],
     }, {
-      address: '/midiclip/n',
+      address: '/midiclip/insert/note',
       args: [
         { type: 'integer', value: 64 },
         { type: 'float',   value: 2 },
         { type: 'float',   value: 1 },
       ],
     }, {
-      address: '/midiclip/n',
+      address: '/midiclip/insert/note',
       args: [
         { type: 'integer', value: 67 },
         { type: 'float',   value: 4 },
