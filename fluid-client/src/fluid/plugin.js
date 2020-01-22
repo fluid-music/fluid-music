@@ -29,7 +29,7 @@ const plugin = {
     return { args, address: '/plugin/select' };
   },
 
-  setParam(paramName, normalizedValue, time = 0) {
+  setParam(paramName, normalizedValue) {
     if (typeof paramName !== 'string')
       throw new Error('plugin.setParam needs a parameterName, got: ' + paramName);
     if (typeof normalizedValue !== 'number')
@@ -39,7 +39,6 @@ const plugin = {
       args: [
         { type: 'string', value: paramName },
         { type: 'float', value: normalizedValue },
-        { type: 'float', value: time },
       ],
     }
   },

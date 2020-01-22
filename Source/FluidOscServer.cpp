@@ -20,15 +20,13 @@ FluidOscServer::FluidOscServer() {
 void FluidOscServer::BundleReceivedHelper(const juce::OSCBundle &bundle, SelectedObjects objects){
     SelectedObjects currBundle = objects;
     for (const auto& element: bundle) {
-        
+        // We want to remember if the selected object was changed in a message, but not in a bundle.
         if (element.isMessage()){
-            // We want to remember if the selected object was changed in a message, but not in a bundle.
             oscMessageReceived(element.getMessage());
             currBundle = SelectedObjects(selectedAudioTrack, selectedMidiClip, selectedPlugin);
         }
-        if (element.isBundle()){
-            BundleReceivedHelper(element.getBundle(), currBundle);
-        }
+        if (element.isBundle()) BundleReceivedHelper(element.getBundle(), currBundle);
+        
     }
     
     selectedAudioTrack = objects.audio;
@@ -172,7 +170,6 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
 
     String paramName = message[0].getString();
     float paramValue = message[1].getFloat32();
-    float changeTime = message[2].getFloat32();
 
     for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
         if (param->paramName.equalsIgnoreCase(paramName)) {
