@@ -50,6 +50,8 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/insert/wav"})) return insertWaveSample(message);
+    if (msgAddressPattern.matches({"/audiotrack/select/return"})) return selectReturnTrack(message);
+    if (msgAddressPattern.matches({"/audiotrack/send/level"})) return ensureSend(message);
     if (msgAddressPattern.matches({"/file/save"})) return saveActiveEdit(message);
     if (msgAddressPattern.matches({"/cd"})) return changeWorkingDirectory(message);
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
@@ -127,10 +129,129 @@ void FluidOscServer::changeWorkingDirectory(const OSCMessage& message) {
 }
 
 void FluidOscServer::selectAudioTrack(const juce::OSCMessage& message) {
-    if (!message.size() || !message[0].isString()) return;
+    if (!message.size() || !message[0].isString()){
+        std::cout << "Cannot select audio track: no track name provided" << std::endl;
+        return;
+    }
 
     String trackName = message[0].getString();
     selectedAudioTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), trackName);
+}
+
+void FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
+    if (!activeCybrEdit) {
+        std::cout << "Cannot select return track: no active edit"  << std::endl;
+        return;
+    }
+
+    if (!message.size() || !message[0].isString()) {
+        std::cout << "Cannot select return track: no name provided" << std::endl;
+        return;
+    }
+
+    te::Edit& edit = activeCybrEdit->getEdit();
+    String busName = message[0].getString();
+    int busIndex = ensureBus(edit, busName);
+
+    if (busIndex == -1) {
+        std::cout << "Cannot select return track: no available busses" << std::endl;
+        return;
+    }
+
+    selectedAudioTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), busName);
+    assert(selectedAudioTrack); // I believe this will always return a track
+
+    // Look through plugins on the track, see if it already has an AuxReturnPlugin
+    te::AuxReturnPlugin* returnPlugin = nullptr;
+    for (te::Plugin* checkPlugin : selectedAudioTrack->pluginList) {
+        if (auto foundPlugin = dynamic_cast<te::AuxReturnPlugin*>(checkPlugin)) {
+            if (foundPlugin->busNumber == busIndex) {
+                std::cout << "Skip insert aux return plugin. Edit already has " << busName << " return" << std::endl;
+                returnPlugin = foundPlugin;
+                break;
+            } else {
+                std::cout << "Note: An unexpected auxreturn plugin was found while selecting return track (an additional one may be created)" << std::endl;
+            }
+        }
+    }
+
+    // No return plugin was found on the track. Insert a new one.
+    if (!returnPlugin) {
+        te::Plugin::Ptr plugin = selectedAudioTrack->edit.getPluginCache().createNewPlugin("auxreturn", PluginDescription());
+        if (auto foundPlugin = dynamic_cast<te::AuxReturnPlugin*>(plugin.get())) {
+            returnPlugin = foundPlugin;
+            returnPlugin->busNumber = busIndex;
+            selectedAudioTrack->pluginList.insertPlugin(foundPlugin, 0, nullptr);
+            std::cout << "Insert auxreturn plugin with busNumber: " << busIndex << std::endl;
+        }
+    }
+}
+
+void FluidOscServer::ensureSend(const OSCMessage& message) {
+    if (!selectedAudioTrack) {
+        std::cout << "Cannot ensure send: no audio track selected" << std::endl;
+        return;
+    }
+
+    if (!message.size() || !message[0].isString()) {
+        std::cout << "Cannot ensure send: message needs name" << std::endl;
+        return;
+    }
+
+    String busName = message[0].getString();
+    float gainLevel = 0;
+    String position = "post-gain";
+
+    if (message.size() >= 2 && message[1].isFloat32()) {
+        gainLevel = message[1].getFloat32();
+    }
+
+    if (message.size() >= 3 && message[2].isString()) {
+        position = message[2].getString();
+    }
+
+    int busIndex = ensureBus(selectedAudioTrack->edit, busName);
+
+    if (busIndex == -1) {
+        std::cout << "Cannot create send: no available busses" << std::endl;
+        return;
+    }
+
+    if (!position.equalsIgnoreCase("post-gain")) {
+        std::cout << "Cannot ensure send: currently only post-gain sends are supported" << std::endl;
+        return;
+    }
+
+    // Look through plugins on the track, see if it already has an AuxSendPlugin
+    te::AuxSendPlugin* sendPlugin = nullptr;
+    bool foundVolume = false;
+    for (te::Plugin* checkPlugin : selectedAudioTrack->pluginList) {
+        if (!foundVolume) {
+            if (auto foundPlugin = dynamic_cast<te::VolumeAndPanPlugin*>(checkPlugin))
+                foundVolume = true;
+        }
+        if (auto foundPlugin = dynamic_cast<te::AuxSendPlugin*>(checkPlugin)) {
+            if (foundPlugin->busNumber == busIndex) {
+                std::cout << "Skip insert aux send plugin. Edit already has " << busName << " send" << std::endl;
+                sendPlugin = foundPlugin;
+                break;
+            }
+        }
+    }
+
+    if (!sendPlugin) {
+        te::Plugin::Ptr plugin = selectedAudioTrack->edit.getPluginCache().createNewPlugin("auxsend", PluginDescription());
+        if (auto foundPlugin = dynamic_cast<te::AuxSendPlugin*>(plugin.get())) {
+            sendPlugin = foundPlugin;
+            sendPlugin->busNumber = busIndex;
+            selectedAudioTrack->pluginList.insertPlugin(foundPlugin, -1, nullptr);
+            std::cout << "Insert auxsend plugin with busNumber: " << busIndex << std::endl;
+        }
+    }
+
+    if (sendPlugin) {
+        sendPlugin->gainLevel = gainLevel; // same bug as before (discovered on delay plugin)?
+    }
 }
 
 void FluidOscServer::selectPlugin(const OSCMessage& message) {

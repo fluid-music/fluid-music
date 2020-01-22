@@ -3,6 +3,7 @@ const sampler = require('./fluid/sampler');
 const audiotrack = require('./fluid/audiotrack');
 const midiclip = require('./fluid/midiclip');
 const transport = require('./fluid/transport');
+const bus = require('./fluid/bus');
 
 const global = {
   /**
@@ -65,6 +66,7 @@ const global = {
 module.exports = {
   midiclip,
   audiotrack,
+  bus,
   plugin,
   global,
   transport,

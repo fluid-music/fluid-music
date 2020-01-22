@@ -532,6 +532,30 @@ ValueTree loadXmlFile(File file) {
     return result;
 }
 
+int ensureBus(te::Edit& edit, String busName) {
+    int busIndex = -1;
+    // If there is already a bus with the name, find its index
+    for (int i = 0; i < 32; i++) {
+        if (edit.getAuxBusName(i).equalsIgnoreCase(busName)) {
+            busIndex = i;
+            break;
+        }
+    }
+
+    // If no bus with this name was found, create it
+    if (busIndex == -1) {
+        for (int i = 0; i < 32; i++) {
+            if (edit.getAuxBusName(i).isEmpty()) {
+                busIndex = i;
+                edit.setAuxBusName(i, busName);
+                break;
+            }
+        }
+    }
+    return busIndex;
+}
+
+
 void printOscMessage(const OSCMessage& message) {
     std::cout << message.getAddressPattern().toString();
     for (const auto& arg : message) {

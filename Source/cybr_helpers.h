@@ -44,6 +44,10 @@ void saveTracktionPreset(te::Plugin* plugin, String name);
 void loadTracktionPreset(te::AudioTrack& track, ValueTree preset);
 ValueTree loadXmlFile(File file);
 
+/** Get the index of the bus with a given name. If that bus does not exist,
+ create it. If all buses already have a name, return -1 */
+int ensureBus(te::Edit& edit, String busName);
+
 te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name);
 te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name);
 /** Add a plugin just before the VolumeAndPan plugin.
