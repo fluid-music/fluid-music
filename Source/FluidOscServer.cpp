@@ -174,7 +174,7 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
             curve.addPoint(changeTime, paramValue, curveValue);
             curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
             
-            std::cout << "set " << paramName << " to " << param->valueToString(paramValue) << " at time " << changeQuarterNote <<" Quarter Notes."<< std::endl;
+            std::cout << "set " << paramName << " to " << param->valueToString(paramValue) << " at " << changeQuarterNote <<" Quarter Notes."<< std::endl;
             break;
         }
     }
