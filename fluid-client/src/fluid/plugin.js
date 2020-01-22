@@ -29,6 +29,16 @@ const plugin = {
     return { args, address: '/plugin/select' };
   },
 
+  /**
+   * Changes the automation curve of the parameter value,
+   * adds a point to the curve at the specified value and time.
+   * The server automatically adds a point at the default value of the parameter at time 0.
+   *
+   * @param {string} paramName - the name of the parameter
+   * @param {number} normalizedValue - a normalized parameter value from 0 to 1
+   * @param {number} timeInQuarterNotes - time of parameter change in quarter notes
+   * @param {number} curve - the curvature of the line formed by this point and the next point
+   */
   setParam(paramName, normalizedValue, timeInQuarterNotes = 0, curve = 0) {
     if (typeof paramName !== 'string')
       throw new Error('plugin.setParam needs a parameterName, got: ' + paramName);

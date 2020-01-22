@@ -151,7 +151,9 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
         !message[0].isString() ||
         !message[1].isFloat32() ||
         !message[2].isFloat32() ||
-        !message[3].isFloat32()) return;
+        !message[3].isFloat32()){
+        std::cout<<"Setting parameter failed. Not enough arguments."<<std::endl;
+        return;}
         
     if (!selectedPlugin) return;
 
