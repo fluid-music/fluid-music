@@ -26,7 +26,6 @@ void FluidOscServer::BundleReceivedHelper(const juce::OSCBundle &bundle, Selecte
             currBundle = SelectedObjects(selectedAudioTrack, selectedMidiClip, selectedPlugin);
         }
         if (element.isBundle()) BundleReceivedHelper(element.getBundle(), currBundle);
-        
     }
     
     selectedAudioTrack = objects.audio;
