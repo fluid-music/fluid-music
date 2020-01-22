@@ -18,15 +18,9 @@
 typedef void (*OscHandlerFunc)(const OSCMessage&);
 
 struct SelectedObjects {
-    te::AudioTrack* audio;
-    te::MidiClip* midi;
-    te::Plugin* plugin;
-    
-    SelectedObjects(te::AudioTrack* _audio=nullptr, te::MidiClip* _midi=nullptr, te::Plugin* _plugin=nullptr){
-        audio = _audio;
-        midi = _midi;
-        plugin = _plugin;
-    }
+    te::AudioTrack* audio = nullptr;
+    te::MidiClip* midi = nullptr;
+    te::Plugin* plugin = nullptr;
 };
 
 class FluidOscServer :
