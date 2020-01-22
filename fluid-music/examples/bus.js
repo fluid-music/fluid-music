@@ -6,10 +6,12 @@ const client = new Client(9999);
 
 client.send([
   fluid.global.activate(path.join(__dirname, 'sessions/out.tracktionedit'), true),
-  fluid.bus.selectReturnTrack('r1'),
-  fluid.bus.selectReturnTrack('r2'),
+  fluid.audiotrack.selectReturnTrack('unused1'),
+  fluid.audiotrack.selectReturnTrack('delay'),
   fluid.plugin.select('delay'),
+  fluid.audiotrack.selectReturnTrack('unused2'),
+
   fluid.audiotrack.select('Track 1'),
-  fluid.bus.sendLevel('delay', -20),
+  fluid.audiotrack.send('delay', -20),
   fluid.global.save(),
 ]);

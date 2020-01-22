@@ -17,12 +17,17 @@ client.send([
   fluid.plugin.load('4OSC Clinics Unison WMF'),
   fluid.plugin.select('volume'),
   fluid.plugin.setParam('Volume', 0.25),
+  fluid.plugin.select('auxsend'),
 
   // Bass
   fluid.audiotrack.select('bass'),
   fluid.plugin.load('Zebra2 bass2osc'),
   fluid.plugin.select('volume'),
-  fluid.plugin.setParam('Volume', 0.5),
+  fluid.plugin.setParam('Volume', 0.42),
+
+  // Effect sends
+  fluid.audiotrack.selectReturnTrack('delay'),
+  fluid.plugin.select('#TStereo Delay', 'VST'),
 
   // Finalize
   fluid.global.save(),

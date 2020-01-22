@@ -250,7 +250,7 @@ void FluidOscServer::ensureSend(const OSCMessage& message) {
     }
 
     if (sendPlugin) {
-        sendPlugin->gainLevel = gainLevel; // same bug as before (discovered on delay plugin)?
+        sendPlugin->setGainDb(gainLevel);
     }
 }
 
