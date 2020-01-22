@@ -156,7 +156,7 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
 
     String paramName = message[0].getString();
     float paramValue = message[1].getFloat32();
-    float changeTime = message[2].getFloat32();
+    double changeTime = (double)message[2].getFloat32();
 
     for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
         if (param->paramName.equalsIgnoreCase(paramName)) {
@@ -165,8 +165,14 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
                 param->getCurve().addPoint(0, param->getCurrentValue(), 0);
             }
             
+            te::AutomationCurve curve = param->getCurve();
+            if (curve.getValueAt(changeTime) == paramValue){
+                std::cout << paramName << " already has value " << paramValue << " at time " << changeTime << std::endl;
+                continue;
+            }
+            
             param->getCurve().addPoint(changeTime, paramValue, 0);
-            std::cout << "set " << paramName << " to " << paramValue << " explicitvalue: " << param->getCurrentExplicitValue() << " value: " << param->getCurrentValue() << std::endl;
+            std::cout << "set " << paramName << " to " << paramValue << " at time " << changeTime << std::endl;
             break;
         }
     }
@@ -422,9 +428,9 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
             filePath = file.getFullPathName(); // Found it!
         } else {
             // Look in the sample search path.
-            file = CybrSearchPath(CYBR_SAMPLE).find(filePath);
-            if (file != File()) filePath = file.getFullPathName(); // Found it!
-            else std::cout << "Warning: sampler trying to add sampler sound, but file not found: " << filePath << std::endl;
+//            file = CybrSearchPath(CYBR_SAMPLE).find(filePath);
+//            if (file != File()) filePath = file.getFullPathName(); // Found it!
+//            else std::cout << "Warning: sampler trying to add sampler sound, but file not found: " << filePath << std::endl;
         }
 
         sampler->addSound(filePath, soundName, 0, 0, gain);
