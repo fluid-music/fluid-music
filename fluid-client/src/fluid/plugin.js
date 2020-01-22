@@ -29,17 +29,23 @@ const plugin = {
     return { args, address: '/plugin/select' };
   },
 
-  setParam(paramName, value, time = 0) {
+  setParam(paramName, normalizedValue, timeInQuarterNotes = 0, curve = 0) {
     if (typeof paramName !== 'string')
       throw new Error('plugin.setParam needs a parameterName, got: ' + paramName);
-    if (typeof value !== 'number')
-      throw new Error('plugin.setParam needs a value number, got ' + value);
+    if (typeof normalizedValue !== 'number')
+      throw new Error('plugin.setParam needs a value number, got ' + normalizedValue);
+    if (typeof timeInQuarterNotes !== 'number')
+      throw new Error('plugin.setParam needs a time number, got ' + timeInQuarterNotes);
+    if (typeof curve !== 'number')
+      throw new Error('plugin.setParam needs a curve number, got ' + curve);
+
     return {
       address: '/plugin/param/set',
       args: [
         { type: 'string', value: paramName },
-        { type: 'float', value: value },
-        { type: 'float', value: time },
+        { type: 'float', value: normalizedValue },
+        { type: 'float', value: timeInQuarterNotes },
+        { type: 'float', value: curve },
       ],
     }
   },

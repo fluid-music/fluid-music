@@ -147,32 +147,34 @@ void FluidOscServer::selectPlugin(const OSCMessage& message) {
 }
 
 void FluidOscServer::setPluginParam(const OSCMessage& message) {
-    if (message.size() > 3 ||
+    if (message.size() > 4 ||
         !message[0].isString() ||
         !message[1].isFloat32() ||
-        !message[2].isFloat32()) return;
-
+        !message[2].isFloat32() ||
+        !message[3].isFloat32()) return;
+        
     if (!selectedPlugin) return;
 
     String paramName = message[0].getString();
-    float paramValue = message[1].getFloat32();
-    double changeTime = (double)message[2].getFloat32();
+    float normalizedValue = message[1].getFloat32();
+    double changeQuarterNote = (double)message[2].getFloat32();
+    float curveValue = message[3].getFloat32();
+    double changeTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(changeQuarterNote);
+    
 
     for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
         if (param->paramName.equalsIgnoreCase(paramName)) {
-                
-            if(!param->hasAutomationPoints()){ // If this is the first time changing the value of the parameter, set it to its default until it is changed.
-                param->getCurve().addPoint(0, param->getCurrentValue(), 0);
-            }
-            
+            float paramValue = param->valueRange.convertFrom0to1(normalizedValue);
             te::AutomationCurve curve = param->getCurve();
-            if (curve.getValueAt(changeTime) == paramValue){
-                std::cout << paramName << " already has value " << paramValue << " at time " << changeTime << std::endl;
-                continue;
+            // If this is the first time changing the value of the parameter, set it to its default at time 0.
+            if(!param->hasAutomationPoints()){
+                curve.addPoint(0, param->getCurrentValue(), 0);
             }
             
-            param->getCurve().addPoint(changeTime, paramValue, 0);
-            std::cout << "set " << paramName << " to " << paramValue << " at time " << changeTime << std::endl;
+            curve.addPoint(changeTime, paramValue, curveValue);
+            curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
+            
+            std::cout << "set " << paramName << " to " << param->valueToString(paramValue) << " at time " << changeTime <<"s"<< std::endl;
             break;
         }
     }
