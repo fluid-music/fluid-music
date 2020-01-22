@@ -430,9 +430,9 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
             filePath = file.getFullPathName(); // Found it!
         } else {
             // Look in the sample search path.
-//            file = CybrSearchPath(CYBR_SAMPLE).find(filePath);
-//            if (file != File()) filePath = file.getFullPathName(); // Found it!
-//            else std::cout << "Warning: sampler trying to add sampler sound, but file not found: " << filePath << std::endl;
+            file = CybrSearchPath(CYBR_SAMPLE).find(filePath);
+            if (file != File()) filePath = file.getFullPathName(); // Found it!
+            else std::cout << "Warning: sampler trying to add sampler sound, but file not found: " << filePath << std::endl;
         }
 
         sampler->addSound(filePath, soundName, 0, 0, gain);

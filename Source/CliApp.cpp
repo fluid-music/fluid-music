@@ -411,12 +411,12 @@ void CLIApp::onRunning()
     File prefsDir = engine.getPropertyStorage().getAppPrefsFolder();
 
     File defaultPresetDir = prefsDir.getChildFile(CYBR_PRESET);
-//    CybrSearchPath presetSearchPath(CYBR_PRESET);
-//    presetSearchPath.init(cApp, defaultPresetDir.getFullPathName());
+    CybrSearchPath presetSearchPath(CYBR_PRESET);
+    presetSearchPath.init(cApp, defaultPresetDir.getFullPathName());
 
     File defaultSampleDir = prefsDir.getChildFile(CYBR_SAMPLE);
-//    CybrSearchPath sampleSearchPath(CYBR_SAMPLE);
-//    sampleSearchPath.init(cApp, defaultSampleDir.getFullPathName());
+    CybrSearchPath sampleSearchPath(CYBR_SAMPLE);
+    sampleSearchPath.init(cApp, defaultSampleDir.getFullPathName());
 
     // Because of the while loop below, we must not use the "default command"
     // functionality built into the juce::ConsoleApplication class. If there is
