@@ -24,9 +24,7 @@ void FluidOscServer::BundleReceivedHelper(const juce::OSCBundle &bundle, Selecte
         if (element.isMessage()){
             // We want to remember if the selected object was changed in a message, but not in a bundle.
             oscMessageReceived(element.getMessage());
-            currBundle.audio = selectedAudioTrack;
-            currBundle.midi = selectedMidiClip;
-            currBundle.plugin = selectedPlugin;
+            currBundle = SelectedObjects(selectedAudioTrack, selectedMidiClip, selectedPlugin);
         }
         if (element.isBundle()){
             BundleReceivedHelper(element.getBundle(), currBundle);
