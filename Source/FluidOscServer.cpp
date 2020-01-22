@@ -157,10 +157,23 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
 
     String paramName = message[0].getString();
     float normalizedValue = message[1].getFloat32();
+    if (normalizedValue > 1 || normalizedValue < 0){
+        std::cout<<"Setting parameter " << paramName << " failed. Normalized value has to be between 0 and 1."<<std::endl;
+        return;
+    }
+    
     double changeQuarterNote = (double)message[2].getFloat32();
-    float curveValue = message[3].getFloat32();
+    if (changeQuarterNote < 0){
+        std::cout<<"Setting parameter " << paramName << " failed. Time has to be a positive number."<<std::endl;
+        return;
+    }
     double changeTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(changeQuarterNote);
     
+    float curveValue = message[3].getFloat32();
+    if (curveValue > 1 || curveValue < -1){
+        std::cout<<"Setting parameter " << paramName << " failed. Curve has to be between -1 and 1."<<std::endl;
+        return;
+    }
 
     for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
         if (param->paramName.equalsIgnoreCase(paramName)) {
@@ -174,7 +187,7 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
             curve.addPoint(changeTime, paramValue, curveValue);
             curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
             
-            std::cout << "set " << paramName << " to " << param->valueToString(paramValue) << " at " << changeQuarterNote <<" Quarter Notes."<< std::endl;
+            std::cout << "set " << paramName << " to " << param->valueToString(paramValue) << " at " << changeQuarterNote <<" Quarter Note(s)."<< std::endl;
             break;
         }
     }
