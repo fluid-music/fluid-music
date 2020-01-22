@@ -17,12 +17,25 @@
 
 typedef void (*OscHandlerFunc)(const OSCMessage&);
 
+struct SelectedObjects {
+    te::AudioTrack* audio;
+    te::MidiClip* midi;
+    te::Plugin* plugin;
+    
+    SelectedObjects(te::AudioTrack* _audio=nullptr, te::MidiClip* _midi=nullptr, te::Plugin* _plugin=nullptr){
+        audio = _audio;
+        midi = _midi;
+        plugin = _plugin;
+    }
+};
+
 class FluidOscServer :
     public OSCReceiver,
     private OSCReceiver::Listener<OSCReceiver::MessageLoopCallback>
 {
 public:
     FluidOscServer();
+    void BundleReceivedHelper(const OSCBundle& bundle, SelectedObjects objects);
     virtual void oscMessageReceived (const OSCMessage& message) override;
     virtual void oscBundleReceived (const OSCBundle& bundle) override;
 

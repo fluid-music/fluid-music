@@ -14,11 +14,26 @@ FluidOscServer::FluidOscServer() {
     addListener (this);
 }
 
-void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
+/*
+ Helper function for oscBundleReceived so selectedAudioTrack, selectedMidiClip and selectedPlugin are not reset when dealing with nested bundles.
+ */
+void FluidOscServer::BundleReceivedHelper(const juce::OSCBundle &bundle, SelectedObjects objects){
+//    selectedAudioTrack = objects.audio;
+//    selectedMidiClip = objects.midi;
+//    selectedPlugin = objects.plugin;
     for (const auto& element: bundle) {
+        //SelectedObjects obj = SelectedObjects(selectedAudioTrack, selectedMidiClip, selectedPlugin);
         if (element.isMessage()) oscMessageReceived(element.getMessage());
-        if (element.isBundle()) oscBundleReceived(element.getBundle());
+        if (element.isBundle()) BundleReceivedHelper(element.getBundle(), obj);
+        //    selectedAudioTrack = objects.audio;
+        //    selectedMidiClip = objects.midi;
+        //    selectedPlugin = objects.plugin;
     }
+}
+
+void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
+    SelectedObjects obj;
+    BundleReceivedHelper(bundle, obj);
     selectedMidiClip = nullptr;
     selectedAudioTrack = nullptr;
     selectedPlugin = nullptr;
@@ -422,9 +437,9 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
             filePath = file.getFullPathName(); // Found it!
         } else {
             // Look in the sample search path.
-            file = CybrSearchPath(CYBR_SAMPLE).find(filePath);
-            if (file != File()) filePath = file.getFullPathName(); // Found it!
-            else std::cout << "Warning: sampler trying to add sampler sound, but file not found: " << filePath << std::endl;
+//            file = CybrSearchPath(CYBR_SAMPLE).find(filePath);
+//            if (file != File()) filePath = file.getFullPathName(); // Found it!
+//            else std::cout << "Warning: sampler trying to add sampler sound, but file not found: " << filePath << std::endl;
         }
 
         sampler->addSound(filePath, soundName, 0, 0, gain);
