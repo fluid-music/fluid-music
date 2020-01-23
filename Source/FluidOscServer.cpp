@@ -281,13 +281,13 @@ void FluidOscServer::selectPlugin(const OSCMessage& message) {
         return;
     }
     String pluginName = message[0].getString();
-    int n = message[1].getInt32();
+    int index = message[1].getInt32();
     String pluginFormat = String();
 
     if (message.size() > 2 && message[2].isString())
         pluginFormat = message[2].getString();
     if (!selectedAudioTrack) return;
-    selectedPlugin = getOrCreatePluginByNameAndId(*selectedAudioTrack, pluginName, pluginFormat, n);
+    selectedPlugin = getOrCreatePluginByNameAndIndex(*selectedAudioTrack, pluginName, pluginFormat, index);
 }
 
 void FluidOscServer::setPluginParam(const OSCMessage& message) {
