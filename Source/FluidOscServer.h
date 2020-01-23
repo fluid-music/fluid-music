@@ -29,7 +29,7 @@ class FluidOscServer :
 {
 public:
     FluidOscServer();
-    void BundleHandler(const OSCBundle& bundle, SelectedObjects objects);
+    void handleOscBundle(const OSCBundle& bundle, SelectedObjects objects);
     virtual void oscMessageReceived (const OSCMessage& message) override;
     virtual void oscBundleReceived (const OSCBundle& bundle) override;
 
