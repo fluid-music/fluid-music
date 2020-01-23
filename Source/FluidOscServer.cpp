@@ -272,15 +272,20 @@ void FluidOscServer::ensureSend(const OSCMessage& message) {
 }
 
 void FluidOscServer::selectPlugin(const OSCMessage& message) {
-    if (!message.size() || !message[0].isString()) return;
+    if (message.size() > 3 ||
+        !message[0].isString() ||
+        !message[1].isInt32() ){
+        std::cout<<"selectPlugin failed. Incorrect arguments."<<std::endl;
+        return;
+    }
     String pluginName = message[0].getString();
+    int n = message[1].getInt32();
     String pluginFormat = String();
 
-    if (message.size() >= 2 && message[1].isString())
-        pluginFormat = message[1].getString();
-
+    if (message.size() > 2 && message[2].isString())
+        pluginFormat = message[2].getString();
     if (!selectedAudioTrack) return;
-    selectedPlugin = getOrCreatePluginByName(*selectedAudioTrack, pluginName, pluginFormat);
+    selectedPlugin = getOrCreatePluginByNameAndId(*selectedAudioTrack, pluginName, pluginFormat, n);
 }
 
 void FluidOscServer::setPluginParam(const OSCMessage& message) {

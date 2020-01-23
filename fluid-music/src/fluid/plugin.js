@@ -13,12 +13,16 @@ const plugin = {
    * @param {string} pluginName - the name of the vst plugin
    * @param {[string]} pluginType - optional type, for example 'VST', 'VST3',
    *        'AudioUnit'. If omitted, search all types.
+   * @param {string} pluginId - the id of the plugin
    */
-  select(pluginName, pluginType) {
+  select(pluginName, pluginType, pluginId = 0) {
     if (typeof pluginName !== 'string')
       throw new Error('plugin.select(pluginName) needs a string, got: ' + undefined);
 
-    const args = [{ type: 'string', value: pluginName}];
+    const args = [
+      { type: 'string', value: pluginName},
+      { type: 'integer', value: pluginId},
+    ];
     if (typeof pluginType === 'string') {
       if (pluginType.toLowerCase() === 'vst2') {
         throw new Error('"vst2" is not a valid plugin type, use "vst" instead');
