@@ -29,7 +29,6 @@ class FluidOscServer :
 {
 public:
     FluidOscServer();
-    void handleOscBundle(const OSCBundle& bundle, SelectedObjects objects);
     virtual void oscMessageReceived (const OSCMessage& message) override;
     virtual void oscBundleReceived (const OSCBundle& bundle) override;
 
@@ -58,6 +57,13 @@ public:
     std::unique_ptr<CybrEdit> activeCybrEdit = nullptr;
 
 private:
+
+    /** Recursively handle all messages and nested bundles, reseting the
+     selection state to parentSelection after each bundle. This should ensure
+     that nested bundles do not leave behind a selection after they have been
+     handled. */
+    void handleOscBundle(const OSCBundle& bundle, SelectedObjects parentSelection);
+
     te::AudioTrack* selectedAudioTrack = nullptr;
     te::MidiClip* selectedMidiClip = nullptr;
     te::Plugin* selectedPlugin = nullptr;

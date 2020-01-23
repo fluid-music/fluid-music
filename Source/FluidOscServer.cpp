@@ -14,28 +14,30 @@ FluidOscServer::FluidOscServer() {
     addListener (this);
 }
 
-/*
- Helper function for oscBundleReceived so selectedAudioTrack, selectedMidiClip and selectedPlugin are not reset when dealing with nested bundles.
- */
-void FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects objects){
-    SelectedObjects currBundle = objects;
+void FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects parentSelection) {
+    SelectedObjects currBundle = parentSelection;
     for (const auto& element: bundle) {
-        // We want to remember if the selected object was changed in a message, but not in a bundle.
-        if (element.isMessage()){
+        if (element.isMessage()) {
+            // allow messages to update the current selection ("currBundle")
             oscMessageReceived(element.getMessage());
             currBundle.audio = selectedAudioTrack;
             currBundle.midi = selectedMidiClip;
             currBundle.plugin = selectedPlugin;
+        } else if (element.isBundle()) {
+            // After processing a bundle, selection will reset to "currBundle"
+            handleOscBundle(element.getBundle(), currBundle);
         }
-        if (element.isBundle()) handleOscBundle(element.getBundle(), currBundle);
     }
     
-    selectedAudioTrack = objects.audio;
-    selectedMidiClip = objects.midi;
-    selectedPlugin = objects.plugin;
+    selectedAudioTrack = parentSelection.audio;
+    selectedMidiClip = parentSelection.midi;
+    selectedPlugin = parentSelection.plugin;
 }
 
 void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
+    // We could initialize SelectedObjects to the current state. However, it is
+    // a little safer to leave it uninitialized, because we guarntee that the
+    // outermost bundle will leave behind empty selections.
     SelectedObjects obj;
     handleOscBundle(bundle, obj);
 }
@@ -382,8 +384,9 @@ void FluidOscServer::setPluginParamAt(const OSCMessage& message) {
         if (param->paramName.equalsIgnoreCase(paramName)) {
             if (isNormalized) paramValue = param->valueRange.convertFrom0to1(paramValue);
             te::AutomationCurve curve = param->getCurve();
-            // If this is the first time changing the value of the parameter, set it to its default at time 0.
-            if(!param->hasAutomationPoints()){
+            // If this is the first time changing the value of the parameter,
+            // set it to its default at time 0.
+            if(!param->hasAutomationPoints()) {
                 curve.addPoint(0, param->getCurrentValue(), 0);
             }
             

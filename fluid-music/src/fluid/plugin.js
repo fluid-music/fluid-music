@@ -191,7 +191,7 @@ const plugin = {
     };
   },
 
-  addpath(presetDir){
+  addpath(presetDir) {
     throw new Error('fluid.plugin.addpath is deprecated, and should not be used.\n\
     To change the plugin search path, use ./cybr --preset-dirs=path \n\
     The goal it so move away from specifying any kind of paths on the client.\n\
