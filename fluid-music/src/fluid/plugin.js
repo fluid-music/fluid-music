@@ -137,8 +137,6 @@ const plugin = {
     }
   },
 
-
-
   save(presetName) {
     if (typeof presetName !== 'string')
       throw new Error('plugin.save requires preset name as argument');
