@@ -16,8 +16,8 @@ client.send([
   fluid.audiotrack.select('chords'),
   fluid.plugin.load('4OSC Clinics Unison WMF'),
   fluid.plugin.select('volume'),
-  fluid.plugin.setParam('Volume', 0.25),
-  fluid.audiotrack.send('delay', -10),
+  fluid.plugin.setParam('Volume', 0.25  , 0.000001, 1),
+  fluid.audiotrack.send('delay', -15),
 
   // Bass
   fluid.audiotrack.select('bass'),

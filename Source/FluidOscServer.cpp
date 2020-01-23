@@ -332,8 +332,9 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
         if (param->paramName.equalsIgnoreCase(paramName)) {
             float paramValue = param->valueRange.convertFrom0to1(normalizedValue);
             te::AutomationCurve curve = param->getCurve();
-            // If this is the first time changing the value of the parameter, set it to its default at time 0.
-            if(!param->hasAutomationPoints()){
+            // If this is the first time changing the value of the parameter,
+            // set it to its default at time 0.
+            if(!param->hasAutomationPoints()) {
                 curve.addPoint(0, param->getCurrentValue(), 0);
             }
             
