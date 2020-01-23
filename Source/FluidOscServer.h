@@ -38,6 +38,7 @@ public:
     void selectMidiClip(const OSCMessage& message);
     void selectPlugin(const OSCMessage& message);
     void setPluginParam(const OSCMessage& message);
+    void setPluginParamAt(const OSCMessage& message);
     void savePluginPreset(const OSCMessage& message);
     void loadPluginPreset(const OSCMessage& message);
     void loadPluginTrkpreset(const OSCMessage& message);

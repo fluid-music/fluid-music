@@ -62,6 +62,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/midiclip/clear"})) return clearMidiClip(message);
     if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
     if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
+    if (msgAddressPattern.matches({"/plugin/param/set/at"})) return setPluginParamAt(message);
     if (msgAddressPattern.matches({"/plugin/save"})) return savePluginPreset(message);
     if (msgAddressPattern.matches({"/plugin/load/trkpreset"})) return loadPluginTrkpreset(message);
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
@@ -285,11 +286,10 @@ void FluidOscServer::selectPlugin(const OSCMessage& message) {
 }
 
 void FluidOscServer::setPluginParam(const OSCMessage& message) {
-    if (message.size() > 4 ||
+    if (message.size() > 3 ||
         !message[0].isString() ||
         !message[1].isFloat32() ||
-        !message[2].isFloat32() ||
-        !message[3].isFloat32()) {
+        !message[2].isString()) {
         std::cout << "Setting parameter failed. Incorrect arguments." << std::endl;
         return;
     }
@@ -300,13 +300,60 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
     }
 
     String paramName = message[0].getString();
-    float normalizedValue = message[1].getFloat32();
-    if (normalizedValue > 1 || normalizedValue < 0){
-        std::cout
-            << "Setting parameter " << paramName
-            << " failed. Normalized value has to be between 0 and 1."
-            << std::endl;
+    float paramValue = message[1].getFloat32();
+    bool isNormalized = message[2].getString() == "normalized";
+    if(isNormalized){
+        if (paramValue > 1 || paramValue < 0){
+            std::cout
+                << "Setting parameter " << paramName
+                << " failed. Normalized value has to be between 0 and 1."
+                << std::endl;
+            return;
+        }
+    }
+    
+    for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
+        if (param->paramName.equalsIgnoreCase(paramName)) {
+            param->beginParameterChangeGesture();
+            if(isNormalized) param->setNormalisedParameter(paramValue, NotificationType::sendNotification);
+            else param->setParameter(paramValue, NotificationType::sendNotification);
+            param->endParameterChangeGesture();
+            std::cout << "set " << paramName
+            << " to " << message[1].getFloat32()
+            << " explicitvalue: " << param->valueToString(param->getCurrentExplicitValue())
+            <<std::endl;
+            break;
+        }
+    }
+}
+
+void FluidOscServer::setPluginParamAt(const OSCMessage& message) {
+    if (message.size() > 5 ||
+        !message[0].isString() ||
+        !message[1].isFloat32() ||
+        !message[2].isFloat32() ||
+        !message[3].isFloat32() ||
+        !message[4].isString() ) {
+        std::cout << "Setting parameter failed. Incorrect arguments." << std::endl;
         return;
+    }
+
+    if (!selectedPlugin) {
+        std::cout << "Setting plugin parameter failed: No selected plugin" << std::endl;
+        return;
+    }
+    
+    String paramName = message[0].getString();
+    float paramValue = message[1].getFloat32();
+    bool isNormalized = message[4].getString() == "normalized";
+    if (isNormalized){
+        if (paramValue > 1 || paramValue < 0){
+            std::cout
+                << "Setting parameter " << paramName
+                << " failed. Normalized value has to be between 0 and 1."
+                << std::endl;
+            return;
+        }
     }
     
     double changeQuarterNote = (double)message[2].getFloat32();
@@ -330,7 +377,7 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
 
     for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
         if (param->paramName.equalsIgnoreCase(paramName)) {
-            float paramValue = param->valueRange.convertFrom0to1(normalizedValue);
+            if (isNormalized) paramValue = param->valueRange.convertFrom0to1(paramValue);
             te::AutomationCurve curve = param->getCurve();
             // If this is the first time changing the value of the parameter,
             // set it to its default at time 0.
@@ -343,7 +390,7 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
             
             std::cout
                 << "set " << paramName
-                << " to " << param->valueToString(paramValue)
+                << " to " << message[1].getFloat32() << " explicit value: " << param->valueToString(paramValue)
                 << " at " << changeQuarterNote << " Quarter Note(s)."
                 << std::endl;
 
