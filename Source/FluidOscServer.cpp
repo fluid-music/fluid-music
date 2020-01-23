@@ -300,7 +300,6 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
     String paramName = message[0].getString();
     float paramValue = message[1].getFloat32();
     bool isNormalized = message[2].getString() == "normalized";
-    
     if(isNormalized){
         if (paramValue > 1 || paramValue < 0){
             std::cout
@@ -341,10 +340,10 @@ void FluidOscServer::setPluginParamAt(const OSCMessage& message) {
         std::cout << "Setting plugin parameter failed: No selected plugin" << std::endl;
         return;
     }
-    bool isNormalized = message[4].getString() == "normalized";
+    
     String paramName = message[0].getString();
     float paramValue = message[1].getFloat32();
-    
+    bool isNormalized = message[4].getString() == "normalized";
     if (isNormalized){
         if (paramValue > 1 || paramValue < 0){
             std::cout
