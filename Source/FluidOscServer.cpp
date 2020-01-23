@@ -14,14 +14,30 @@ FluidOscServer::FluidOscServer() {
     addListener (this);
 }
 
-void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
+/*
+ Helper function for oscBundleReceived so selectedAudioTrack, selectedMidiClip and selectedPlugin are not reset when dealing with nested bundles.
+ */
+void FluidOscServer::BundleReceivedHelper(const juce::OSCBundle &bundle, SelectedObjects objects){
+    SelectedObjects currBundle = objects;
     for (const auto& element: bundle) {
-        if (element.isMessage()) oscMessageReceived(element.getMessage());
-        if (element.isBundle()) oscBundleReceived(element.getBundle());
+        // We want to remember if the selected object was changed in a message, but not in a bundle.
+        if (element.isMessage()){
+            oscMessageReceived(element.getMessage());
+            currBundle.audio = selectedAudioTrack;
+            currBundle.midi = selectedMidiClip;
+            currBundle.plugin = selectedPlugin;
+        }
+        if (element.isBundle()) BundleReceivedHelper(element.getBundle(), currBundle);
     }
-    selectedMidiClip = nullptr;
-    selectedAudioTrack = nullptr;
-    selectedPlugin = nullptr;
+    
+    selectedAudioTrack = objects.audio;
+    selectedMidiClip = objects.midi;
+    selectedPlugin = objects.plugin;
+}
+
+void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
+    SelectedObjects obj;
+    BundleReceivedHelper(bundle, obj);
 }
 
 void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
@@ -271,29 +287,42 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
         !message[0].isString() ||
         !message[1].isFloat32() ||
         !message[2].isFloat32() ||
-        !message[3].isFloat32()){
-        std::cout<<"Setting parameter failed. Not enough arguments."<<std::endl;
-        return;}
-        
-    if (!selectedPlugin) return;
+        !message[3].isFloat32()) {
+        std::cout << "Setting parameter failed. Incorrect arguments." << std::endl;
+        return;
+    }
+
+    if (!selectedPlugin) {
+        std::cout << "Setting plugin parameter failed: No selected plugin" << std::endl;
+        return;
+    }
 
     String paramName = message[0].getString();
     float normalizedValue = message[1].getFloat32();
     if (normalizedValue > 1 || normalizedValue < 0){
-        std::cout<<"Setting parameter " << paramName << " failed. Normalized value has to be between 0 and 1."<<std::endl;
+        std::cout
+            << "Setting parameter " << paramName
+            << " failed. Normalized value has to be between 0 and 1."
+            << std::endl;
         return;
     }
     
     double changeQuarterNote = (double)message[2].getFloat32();
-    if (changeQuarterNote < 0){
-        std::cout<<"Setting parameter " << paramName << " failed. Time has to be a positive number."<<std::endl;
+    if (changeQuarterNote < 0) {
+        std::cout
+            << "Setting parameter " << paramName
+            << " failed. Time has to be a positive number."
+            << std::endl;
         return;
     }
     double changeTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(changeQuarterNote);
     
     float curveValue = message[3].getFloat32();
-    if (curveValue > 1 || curveValue < -1){
-        std::cout<<"Setting parameter " << paramName << " failed. Curve has to be between -1 and 1."<<std::endl;
+    if (curveValue > 1 || curveValue < -1) {
+        std::cout
+            << "Setting parameter " << paramName
+            << " failed. Curve has to be between -1 and 1."
+            << std::endl;
         return;
     }
 
@@ -309,7 +338,12 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
             curve.addPoint(changeTime, paramValue, curveValue);
             curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
             
-            std::cout << "set " << paramName << " to " << param->valueToString(paramValue) << " at " << changeQuarterNote <<" Quarter Note(s)."<< std::endl;
+            std::cout
+                << "set " << paramName
+                << " to " << param->valueToString(paramValue)
+                << " at " << changeQuarterNote << " Quarter Note(s)."
+                << std::endl;
+
             break;
         }
     }

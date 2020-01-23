@@ -10,7 +10,7 @@ client.send([
   fluid.global.activate(sessionPath, true),
   fluid.audiotrack.select('stabs'),
   fluid.plugin.select('4osc'),
-  fluid.plugin.setParam('Amp Attack', 0.8, 1, 0.3), 
+  fluid.plugin.setParam('Amp Attack', 0.8, 1, 0.3),
   ...fluid.midiclip.create('v1.1', 0, 8, tabs.noTearsVerseNotes),
   fluid.global.save(sessionPath),
 ]);
