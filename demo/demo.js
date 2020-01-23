@@ -23,18 +23,18 @@ const bassLibrary = chordLibrary.map( a => fluid.converters.valueToMidiNoteNumbe
 
 const rest = {r: 'w', p: '.'};
 
-const r0 = '1+2+3+4+';
-const h0 = 'k s k h ';
-const c0 = '0 1 22  ';
+const r0 = '1+2+3+4+1+2+3+4+';
+const h0 = 'k s k h k s k h ';
+const c0 = '0 1 22   21';
 const p0 = { r: r0, p: h0 };
 
 const r1 = '1+2+3+4..';
 const h1 = 'k h h hhh';
-const c1 = '21 1 1012';
+const c1 = '         ';
 const p1 = {r: r1, p: h1};
 
 const r2 = '1+2+3+4....w';
-const h2 = 'k hhh khhhkk';
+const h2 = 'k hhh khshkk';
 
 const c2 = '1 2 0 021021';
 const p2 = {r: r2, p: h2};

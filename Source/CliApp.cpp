@@ -407,6 +407,17 @@ void CLIApp::onRunning()
             }
         } });
 
+    cApp.addCommand({
+        "--print-block-size",
+        "--print-block-size",
+        "print audio block size",
+        "undocumented",
+        [this](const ArgumentList& args) {
+            std::cout << "Block Size: " << engine.getDeviceManager().getBlockSize() << std::endl;
+        }
+
+    });
+
     // App search paths
     File prefsDir = engine.getPropertyStorage().getAppPrefsFolder();
 

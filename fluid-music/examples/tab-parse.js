@@ -4,7 +4,7 @@ const tab = require('../src/tab');
 const fluid = require('../src/fluidOsc');
 const FluidClient = require('../src/FluidClient');
 
-const drums909 = require('../recipes/track-drums909');
+const drums909 = require('../recipes/drumTrack909');
 const drumTrackName = '909';
 const drumsMsg = drums909(drumTrackName);
 const repeat = (v, times) => [].concat(...new Array(times).fill((!Array.isArray(v)) ? [v] : v));
