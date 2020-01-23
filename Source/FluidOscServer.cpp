@@ -17,7 +17,7 @@ FluidOscServer::FluidOscServer() {
 /*
  Helper function for oscBundleReceived so selectedAudioTrack, selectedMidiClip and selectedPlugin are not reset when dealing with nested bundles.
  */
-void FluidOscServer::BundleReceivedHelper(const juce::OSCBundle &bundle, SelectedObjects objects){
+void FluidOscServer::BundleHandler(const juce::OSCBundle &bundle, SelectedObjects objects){
     SelectedObjects currBundle = objects;
     for (const auto& element: bundle) {
         // We want to remember if the selected object was changed in a message, but not in a bundle.
@@ -27,7 +27,7 @@ void FluidOscServer::BundleReceivedHelper(const juce::OSCBundle &bundle, Selecte
             currBundle.midi = selectedMidiClip;
             currBundle.plugin = selectedPlugin;
         }
-        if (element.isBundle()) BundleReceivedHelper(element.getBundle(), currBundle);
+        if (element.isBundle()) BundleHandler(element.getBundle(), currBundle);
     }
     
     selectedAudioTrack = objects.audio;
@@ -37,7 +37,7 @@ void FluidOscServer::BundleReceivedHelper(const juce::OSCBundle &bundle, Selecte
 
 void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
     SelectedObjects obj;
-    BundleReceivedHelper(bundle, obj);
+    BundleHandler(bundle, obj);
 }
 
 void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
