@@ -507,6 +507,14 @@ void FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
     auto exisiting = selectedMidiClip->state.getChildWithName(te::IDs::SEQUENCE);
     if (!exisiting.isValid()) selectedMidiClip->clearTakes();
     selectedMidiClip->getSequence().clear(nullptr); // is this needed?
+
+    // If the clip is currently playing, we probably want to send an all notes
+    // off message, which looks roughly like this
+    if (auto track = dynamic_cast<te::AudioTrack*>(selectedMidiClip->getTrack()))
+        for (int i = 1; i <= 16; ++i)
+            track->injectLiveMidiMessage(MidiMessage::allNotesOff(i),
+                                         te::MidiMessageArray::notMPE);
+
 }
 
 void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
