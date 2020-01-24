@@ -71,7 +71,7 @@ const audiotrack = {
 
   gain(levelDb) {
     if (typeof levelDb !== 'number')
-      throw new Error('audiotack.gain requires a number in dBFS');
+      throw new Error('audiotrack.gain requires a number in dBFS');
 
     return {
       address: '/audiotrack/set/db',
