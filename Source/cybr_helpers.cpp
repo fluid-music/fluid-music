@@ -376,7 +376,7 @@ void listPluginParameters(te::Engine& engine, const String pluginName) {
     std::unique_ptr<te::Edit> edit(createEmptyEdit(File(), engine));
     edit->ensureNumberOfAudioTracks(1);
     te::AudioTrack* track = te::getFirstAudioTrack(*edit);
-    te::Plugin* plugin = getOrCreatePluginByNameAndIndex(*track, pluginName);
+    te::Plugin* plugin = getOrCreatePluginByName(*track, pluginName);
     if (!plugin) {
         std::cout << "Plugin not found: " << pluginName << std::endl;
         return;
@@ -392,7 +392,7 @@ void listPluginPresets(te::Engine& engine, const String pluginName) {
     std::unique_ptr<te::Edit> edit(createEmptyEdit(File(), engine));
     edit->ensureNumberOfAudioTracks(1);
     te::AudioTrack* track = te::getFirstAudioTrack(*edit);
-    te::Plugin* plugin = getOrCreatePluginByNameAndIndex(*track, pluginName);
+    te::Plugin* plugin = getOrCreatePluginByName(*track, pluginName);
     if (!plugin) {
         std::cout << "Plugin not found: " << pluginName << std::endl;
         return;
@@ -475,7 +475,7 @@ void loadTracktionPreset(te::AudioTrack& audioTrack, ValueTree v) {
         String name = preset[te::IDs::name];
 
         // Tracktion plugins have a type property but no name property.
-        // getOrCreatePluginByNameAndIndex expect 'name' to be the name of the vst or
+        // getOrCreatePluginByName expect 'name' to be the name of the vst or
         // 'type' of the tracktion plugin (which does not have a name).
         // This sillyness allows us to get a plugin from a preset
         if (!preset.hasProperty(te::IDs::name)) {
@@ -490,10 +490,10 @@ void loadTracktionPreset(te::AudioTrack& audioTrack, ValueTree v) {
 
         std::cout << "Found preset: " << type << "/" << name << std::endl;
 
-        if (te::Plugin* plugin = getOrCreatePluginByNameAndIndex(audioTrack, name, type)) {
+        if (te::Plugin* plugin = getOrCreatePluginByName(audioTrack, name, type)) {
             ValueTree currentConfig = plugin->state;
             // These should be correct on the preset, but just in case, get the ones
-            // returned by getOrCreatePluginByNameAndIndex, so we will be sure that we are not
+            // returned by getOrCreatePluginByName, so we will be sure that we are not
             // changing them.
             if (currentConfig.hasProperty(te::IDs::type)) preset.setProperty(te::IDs::type, currentConfig[te::IDs::type], nullptr);
             if (currentConfig.hasProperty(te::IDs::name)) preset.setProperty(te::IDs::name, currentConfig[te::IDs::name], nullptr);
@@ -593,7 +593,7 @@ te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name
     return clip;
 }
 
-te::Plugin* getOrCreatePluginByNameAndIndex(te::AudioTrack& track, const String name, const String type, const int index) {
+te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, const String type, const int index) {
     int nthPluginOfName = 0;
     for (te::Plugin* checkPlugin : track.pluginList) {
         // Internal plugins like "volume"

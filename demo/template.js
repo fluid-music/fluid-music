@@ -14,7 +14,7 @@ client.send([
 
   // Chord track
   fluid.audiotrack.select('chords'),
-  fluid.plugin.load('4OSC Clinics Unison WMF'),
+  // fluid.plugin.load('4OSC Clinics Unison WMF'),
   // fluid.plugin.select('zebra2'),
   fluid.plugin.select('volume'),
   fluid.plugin.setParamNormalized('Volume', 0.25),
