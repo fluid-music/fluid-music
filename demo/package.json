@@ -6,11 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "link": "npm link ../fluid-music",
-    "watch": "nodemon -w demo.js -- demo.js"
+    "watch": "nodemon -w demo-cloud.js -w cloud.js -- demo-cloud.js"
   },
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
-  "dependencies": {},
+  "dependencies": {
+    "underscore": "^1.9.2"
+  },
   "devDependencies": {
     "nodemon": "^2.0.2"
   }

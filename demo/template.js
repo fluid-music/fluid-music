@@ -15,15 +15,19 @@ client.send([
   // Chord track
   fluid.audiotrack.select('chords'),
   fluid.plugin.load('4OSC Clinics Unison WMF'),
+  // fluid.plugin.select('zebra2'),
   fluid.plugin.select('volume'),
-  fluid.plugin.setParam('Volume', 0.25  , 0.000001, 1),
-  fluid.audiotrack.send('delay', -15),
+  fluid.plugin.setParamNormalized('Volume', 0.25),
+
+  // Cloud Track
+  fluid.audiotrack.select('cloud'),
+  fluid.plugin.select('zebra2', 'VST'),
 
   // Bass
   fluid.audiotrack.select('bass'),
-  fluid.plugin.load('Zebra2 bass2osc'),
+  // fluid.plugin.load('Zebra2 bass2osc'),
   fluid.plugin.select('volume'),
-  fluid.plugin.setParam('Volume', 0.42),
+  fluid.plugin.setParamNormalized('Volume', 0.42),
 
   // Effect sends
   fluid.audiotrack.selectReturnTrack('delay'),
