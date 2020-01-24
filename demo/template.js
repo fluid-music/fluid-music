@@ -21,7 +21,7 @@ client.send([
 
   // Cloud Track
   fluid.audiotrack.select('cloud'),
-  fluid.plugin.select('zebra2', 'VST'),
+  fluid.plugin.load('Zebra2 cloud-one'),
 
   // Bass
   fluid.audiotrack.select('bass'),

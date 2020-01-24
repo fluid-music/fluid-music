@@ -36,10 +36,26 @@ const allOctaves = (note) => {
   return _.range(noteNum, octaves * 12  + noteNum, 12).slice(3, -1);
 };
 
-const cloud = (availableNotes, duration) => {
-  const notes = [];
+const create = (availableNotes, opts) => {
 
-  let getDeltaTime = scoop(duration, 1/32, 1/4);
+  opts = Object.assign({
+    durationInWholeNotes: 8,
+    shortestDelta: 1/32,
+    longestDelta: 1/4
+  }, opts);
+
+  if (opts.shortestDelta > opts.longestDelta) {
+    const temp = opts.shortestDelta;
+    opts.shortestDelta = opts.longestDelta;
+    opts.longestDelta = temp;
+  }
+
+  const duration = opts.durationInWholeNotes;
+  const notes = [];
+  const getDeltaTime = scoop(duration, opts.shortestDelta, opts.longestDelta);
+  const getVelocity = bump(duration, 20, 127);
+  const getLength = scoop(duration, 1/20, 1/2);
+
   let t = 0;  
   while (t < duration) {
     let dt = random.range(0, getDeltaTime(t));
@@ -47,10 +63,11 @@ const cloud = (availableNotes, duration) => {
     notes.push({
       n: random.choice(availableNotes),
       s: t,
-      l: 1/16,
+      l: getLength(t),
+      v: Math.round(getVelocity(t)),
     });
   }
   return notes;
 }
 
-module.exports = { saw, sin, cos, bump, scoop, allOctaves, cloud, random };
+module.exports = { saw, sin, cos, bump, scoop, allOctaves, create, random };
