@@ -1,5 +1,5 @@
 const FluidClient = require('../src/FluidClient');
-const fluid = require('../src/fluidOsc');
+const fluid = require('../src/index');
 const path = require('path');
 
 const sessionsDir = path.join(__dirname, 'sessions/')

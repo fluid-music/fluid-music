@@ -1,8 +1,29 @@
-const fluid = require('./fluidOsc');
-const drumTrack909 = require('../recipes/drumTrack909');
+// OSC Message Helpers
+const plugin = require('./fluid/plugin');
+const sampler = require('./fluid/sampler');
+const audiotrack = require('./fluid/audiotrack');
+const midiclip = require('./fluid/midiclip');
+const transport = require('./fluid/transport');
+const global = require('./fluid/global');
 
-module.exports = fluid;
-module.exports.tab = require('./tab');
-module.exports.converters = require('./converters');
-module.exports.Client = require('./FluidClient');
-module.exports.recipes = { drumTrack909 } ;
+// Other Stuff
+const tab = require('./tab');
+const Client = require('./FluidClient');
+const converters = require('./converters');
+
+const recipes = {
+  drumTrack909: require('../recipes/drumTrack909'),
+};
+
+module.exports = {
+  audiotrack,
+  Client,
+  converters,
+  global,
+  midiclip,
+  plugin,
+  sampler,
+  tab,
+  transport,
+  recipes,
+};

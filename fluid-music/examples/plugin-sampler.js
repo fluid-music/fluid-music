@@ -1,5 +1,5 @@
 const path = require('path');
-const fluid = require('../src/fluidOsc');
+const fluid = require('../src/index');
 const FluidClient = require('../src/FluidClient');
 const tabs = require('./tab-examples');
 const sampler909 = require('../recipes/track-drums909');
