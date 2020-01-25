@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "link": "npm link ../fluid-music",
-    "watch": "nodemon -w demo-cloud.js -w cloud.js -- demo-cloud.js"
+    "watch": "nodemon -w demo-cloud.js -w ../fluid-music/recipes/cloud.js -- demo-cloud.js"
   },
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
