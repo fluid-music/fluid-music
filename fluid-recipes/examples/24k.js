@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-const fluid = require('../src/index');
-const FluidClient = require('../src/FluidClient');
-const tab = require('../src/tab');
 const path = require('path');
-const drums909 = require('../recipes/track-drums909');
+
+const fluid = require('fluid-music');
+const recipes = require('../');
+
 const drumTrackName = '909';
-const drumsMsg = drums909(drumTrackName);
+const drumsMsg = recipes.drumTrack909(drumTrackName);
 
 const sessionPath = path.join(__dirname, 'sessions/24kmagic.tracktionedit')
 
@@ -66,10 +66,10 @@ const drums_notes = {
         drum_end]
 }
 
-const chorus_parsed = tab.parse(chorus_notes);
-const drums_parsed = tab.parse(drums_notes);
+const chorus_parsed = fluid.tab.parse(chorus_notes);
+const drums_parsed = fluid.tab.parse(drums_notes);
 
-const client = new FluidClient(9999);
+const client = new fluid.Client(9999);
 client.send([
     fluid.global.activate(sessionPath),
     fluid.audiotrack.select('chorus'),
