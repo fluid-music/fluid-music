@@ -11,11 +11,6 @@ const tab = require('./tab');
 const Client = require('./FluidClient');
 const converters = require('./converters');
 
-const recipes = {
-  drumTrack909: require('../recipes/drumTrack909'),
-  cloud: require('../recipes/cloud'),
-};
-
 module.exports = {
   audiotrack,
   Client,
@@ -26,5 +21,4 @@ module.exports = {
   sampler,
   tab,
   transport,
-  recipes,
 };

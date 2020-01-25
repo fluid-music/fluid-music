@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const path = require('path');
 const fluid = require('fluid-music');
-const cloud = fluid.recipes.cloud;
+const cloud = require('fluid-recipes').cloud;
 
 const availableNote = [
   ...cloud.allOctaves('b4'),

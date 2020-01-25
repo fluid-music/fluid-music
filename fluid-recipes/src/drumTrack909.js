@@ -1,4 +1,4 @@
-const fluid = require('../src/fluid/index');
+const fluid = require('fluid-music');
 
 const s1 = { name: 's1', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD A SP 909 09.wav' };
 const s2 = { name: 's2', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD B SP 909 09.wav' };

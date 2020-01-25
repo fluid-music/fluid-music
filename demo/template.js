@@ -2,6 +2,7 @@
 
 const path = require('path');
 const fluid = require('fluid-music');
+const recipes = require('fluid-recipes');
 
 const sessionFilename = path.join(__dirname, 'sessions/demo.tracktionedit');
 
@@ -10,7 +11,7 @@ client.send([
   // Drums Track
   fluid.global.activate(sessionFilename, true),
   fluid.audiotrack.select('drums'),
-  fluid.recipes.drumTrack909('drums'),
+  recipes.drumTrack909('drums'),
 
   // Chord track
   fluid.audiotrack.select('chords'),

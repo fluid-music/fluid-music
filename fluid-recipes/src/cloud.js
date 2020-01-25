@@ -1,6 +1,6 @@
 const _ = require('underscore');
-const converters = require('../src/converters');
-const valueToMidiNoteNumber = converters.valueToMidiNoteNumber;
+const fluid = require('fluid-music');
+const valueToMidiNoteNumber = fluid.converters.valueToMidiNoteNumber;
 
 /**
  * Waveform generator function
