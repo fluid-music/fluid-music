@@ -53,7 +53,7 @@ te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name
 /** Add a plugin just before the VolumeAndPan plugin.
  `type` can be 'vst|vst3|tracktion' or an empty string.
  If `type` is an empty string, search all types. */
-te::Plugin* getOrCreatePluginByNameAndIndex(te::AudioTrack& track,
+te::Plugin* getOrCreatePluginByName(te::AudioTrack& track,
                                     const String name,
                                     const String type = {},
                                     const int index = 0);

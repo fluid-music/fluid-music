@@ -376,7 +376,7 @@ void listPluginParameters(te::Engine& engine, const String pluginName) {
     std::unique_ptr<te::Edit> edit(createEmptyEdit(File(), engine));
     edit->ensureNumberOfAudioTracks(1);
     te::AudioTrack* track = te::getFirstAudioTrack(*edit);
-    te::Plugin* plugin = getOrCreatePluginByNameAndIndex(*track, pluginName);
+    te::Plugin* plugin = getOrCreatePluginByName(*track, pluginName);
     if (!plugin) {
         std::cout << "Plugin not found: " << pluginName << std::endl;
         return;
@@ -392,7 +392,7 @@ void listPluginPresets(te::Engine& engine, const String pluginName) {
     std::unique_ptr<te::Edit> edit(createEmptyEdit(File(), engine));
     edit->ensureNumberOfAudioTracks(1);
     te::AudioTrack* track = te::getFirstAudioTrack(*edit);
-    te::Plugin* plugin = getOrCreatePluginByNameAndIndex(*track, pluginName);
+    te::Plugin* plugin = getOrCreatePluginByName(*track, pluginName);
     if (!plugin) {
         std::cout << "Plugin not found: " << pluginName << std::endl;
         return;
@@ -490,7 +490,7 @@ void loadTracktionPreset(te::AudioTrack& audioTrack, ValueTree v) {
 
         std::cout << "Found preset: " << type << "/" << name << std::endl;
 
-        if (te::Plugin* plugin = getOrCreatePluginByNameAndIndex(audioTrack, name, type)) {
+        if (te::Plugin* plugin = getOrCreatePluginByName(audioTrack, name, type)) {
             ValueTree currentConfig = plugin->state;
             // These should be correct on the preset, but just in case, get the ones
             // returned by getOrCreatePluginByNameAndIndex, so we will be sure that we are not
