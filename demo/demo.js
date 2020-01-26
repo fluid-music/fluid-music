@@ -57,6 +57,7 @@ client.send([
 client.send([
   fluid.audiotrack.select('chords'),
   fluid.midiclip.create('c1', 0, durationInQuarterNotes, chordNotes),
+  fluid.audiotrack.send('delay', -15),
 ]);
 
 client.send([

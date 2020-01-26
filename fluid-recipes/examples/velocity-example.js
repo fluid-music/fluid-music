@@ -1,13 +1,12 @@
-const fluid = require('../src/fluidOsc');
-const FluidClient = require('../src/FluidClient');
-const tab = require('../src/tab');
+#!/usr/bin/env node
 const path = require('path');
-const drums909 = require('../recipes/track-drums909');
 
-const drumTrackName = 'house';
-const drumsMsg = drums909(drumTrackName);
+const fluid = require('fluid-music');
+const recipes = require('../');
 
 const sessionPath = path.join(__dirname, 'sessions/velocity.tracktionedit')
+const drumTrackName = 'house';
+const drumsMsg = recipes.drumTrack909(drumTrackName);
 
 const rhythm='1e+a2e+a3e+a4e+a'
 const noteLibrary = {k: 36, h: 42, s: 38, S: 40, c: 49, t: 41, o:46, p:44, C: 39}
@@ -26,9 +25,9 @@ const drums_notes = {
     r: rhythm,
     p: [house]
 }
-const drums_parsed = tab.parse(drums_notes);
+const drums_parsed = fluid.tab.parse(drums_notes);
 
-const client = new FluidClient(9999);
+const client = new fluid.Client(9999);
 client.send([
     fluid.global.activate(sessionPath),
     fluid.audiotrack.select('house'),

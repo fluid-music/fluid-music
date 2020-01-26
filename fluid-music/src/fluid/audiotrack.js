@@ -59,8 +59,25 @@ const audiotrack = {
     if (typeof levelDb === 'number')
       args[1] = { type: 'float', value: levelDb };
 
-    return { address: '/audiotrack/send/level', args };
-  }
+    return { address: '/audiotrack/send/set/db', args };
+  },
+
+  mute(mute = true) {
+    if (mute) return { address: '/audiotrack/mute'};
+    else return { address: '/audiotrack/unmute'};
+  },
+
+  unmute() { return { address: '/audiotrack/unmute'}},
+
+  gain(levelDb) {
+    if (typeof levelDb !== 'number')
+      throw new Error('audiotrack.gain requires a number in dBFS');
+
+    return {
+      address: '/audiotrack/set/db',
+      args: [{ type: 'float', value: levelDb }],
+    };
+  },
 }
 
 module.exports = audiotrack;

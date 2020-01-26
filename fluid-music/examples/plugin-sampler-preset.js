@@ -13,7 +13,7 @@ const process = require('process');
 const path = require('path');
 const fs = require('fs');
 
-const fluid = require('../src/fluidOsc');
+const fluid = require('../src/index');
 const FluidClient = require('../src/FluidClient');
 const tabs = require('./tab-examples');
 

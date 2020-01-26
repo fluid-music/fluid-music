@@ -1,5 +1,5 @@
 const FluidClient = require('../src/FluidClient');
-const fluid = require('../src/fluidOsc');
+const fluid = require('../src/index');
 const tabs = require('./tab-examples');
 
 const elements = [

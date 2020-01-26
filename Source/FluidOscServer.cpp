@@ -68,9 +68,12 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
+    if (msgAddressPattern.matches({"/audiotrack/set/db"})) return setTrackGain(message);
+    if (msgAddressPattern.matches({"/audiotrack/send/set/db"})) return ensureSend(message);
     if (msgAddressPattern.matches({"/audiotrack/insert/wav"})) return insertWaveSample(message);
     if (msgAddressPattern.matches({"/audiotrack/select/return"})) return selectReturnTrack(message);
-    if (msgAddressPattern.matches({"/audiotrack/send/level"})) return ensureSend(message);
+    if (msgAddressPattern.matches({"/audiotrack/mute"})) return muteTrack(true);
+    if (msgAddressPattern.matches({"/audiotrack/unmute"})) return muteTrack(false);
     if (msgAddressPattern.matches({"/file/save"})) return saveActiveEdit(message);
     if (msgAddressPattern.matches({"/cd"})) return changeWorkingDirectory(message);
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
@@ -287,7 +290,7 @@ void FluidOscServer::selectPlugin(const OSCMessage& message) {
     if (message.size() > 2 && message[2].isString())
         pluginFormat = message[2].getString();
     if (!selectedAudioTrack) return;
-    selectedPlugin = getOrCreatePluginByNameAndIndex(*selectedAudioTrack, pluginName, pluginFormat, index);
+    selectedPlugin = getOrCreatePluginByName(*selectedAudioTrack, pluginName, pluginFormat, index);
 }
 
 void FluidOscServer::setPluginParam(const OSCMessage& message) {
@@ -512,6 +515,14 @@ void FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
     auto exisiting = selectedMidiClip->state.getChildWithName(te::IDs::SEQUENCE);
     if (!exisiting.isValid()) selectedMidiClip->clearTakes();
     selectedMidiClip->getSequence().clear(nullptr); // is this needed?
+
+    // If the clip is currently playing, we probably want to send an all notes
+    // off message, which looks roughly like this
+    if (auto track = dynamic_cast<te::AudioTrack*>(selectedMidiClip->getTrack()))
+        for (int i = 1; i <= 16; ++i)
+            track->injectLiveMidiMessage(MidiMessage::allNotesOff(i),
+                                         te::MidiMessageArray::notMPE);
+
 }
 
 void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
@@ -615,6 +626,34 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     te::ClipPosition pos;
     pos.time = timeRange;
     selectedAudioTrack->insertWaveClip(clipName, file, pos, false);
+}
+
+void FluidOscServer::setTrackGain(const OSCMessage& message) {
+    if (!selectedAudioTrack) {
+        std::cout << "Cannot set track gain: No track selected." << std::endl;
+        return;
+    }
+
+    if (!message.size() || !message[0].isFloat32()) {
+        std::cout << "Cannot set track gain: Missing arguments." << std::endl;
+        return;
+    }
+
+    if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
+        volumePlugin->setVolumeDb(message[0].getFloat32());
+    } else {
+        std::cout << "Cannot set track gain: Track is missing volume plugin." << std::endl;
+    }
+
+}
+
+void FluidOscServer::muteTrack(bool mute) {
+    if (!selectedAudioTrack) {
+        std::cout << "Cannot " << (mute ? "mute" : "unmute") << ": No track selected." << std::endl;
+        return;
+    }
+
+    selectedAudioTrack->setMute(mute);
 }
 
 void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {

@@ -51,6 +51,8 @@ public:
     void changeWorkingDirectory(const OSCMessage& message);
     void handleSamplerMessage(const OSCMessage& message);
     void handleTransportMessage(const OSCMessage& message);
+    void muteTrack(bool mute);
+    void setTrackGain(const OSCMessage& message);
 
     // everything else
     void activateEditFile(File file, bool forceEmptyEdit = false);

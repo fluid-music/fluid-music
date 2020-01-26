@@ -1,5 +1,5 @@
 const path = require('path');
-const fluid = require('../src/fluidOsc');
+const fluid = require('../src/index');
 const Client = require('../src/FluidClient');
 
 const client = new Client(9999);

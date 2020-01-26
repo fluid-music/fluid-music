@@ -593,7 +593,7 @@ te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name
     return clip;
 }
 
-te::Plugin* getOrCreatePluginByNameAndIndex(te::AudioTrack& track, const String name, const String type, const int index) {
+te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, const String type, const int index) {
     int nthPluginOfName = 0;
     for (te::Plugin* checkPlugin : track.pluginList) {
         // Internal plugins like "volume"

@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 
-const tab = require('../src/tab');
-const fluid = require('../src/fluidOsc');
-const FluidClient = require('../src/FluidClient');
+const fluid = require('fluid-music');
+const recipes = require('../');
 
-const drums909 = require('../recipes/drumTrack909');
 const drumTrackName = '909';
-const drumsMsg = drums909(drumTrackName);
+const drumsMsg = recipes.drumTrack909(drumTrackName);
+
 const repeat = (v, times) => [].concat(...new Array(times).fill((!Array.isArray(v)) ? [v] : v));
 
 // General MIDI Percussion map defines note 36=bass-drum, 38=snare
@@ -27,7 +26,7 @@ const p2 = { h, ks2 };
 const p3 = { h, ks3 };
 const cr = { r: 'h', p: '🔥'};  // kick/crash on down beat ('h' rhythm is a half note)
 
-const notes = tab.parse({
+const notes = fluid.tab.parse({
   noteLibrary, r,
   p: [
     {p0, cr}, p0,
@@ -40,10 +39,10 @@ const notes = tab.parse({
 });
 
 const durationInQuarterNotes = notes.duration * 4;
-const client = new FluidClient(9999);
-client.send([...drumsMsg,
-            fluid.midiclip.create('drums', 0, durationInQuarterNotes, notes),
-            fluid.transport.loop(0, durationInQuarterNotes),
-            fluid.transport.play(),
+const client = new fluid.Client(9999);
+client.send([
+  ...drumsMsg,
+  fluid.midiclip.create('drums', 0, durationInQuarterNotes, notes),
+  fluid.transport.loop(0, durationInQuarterNotes),
+  fluid.transport.play(),
 ]);
-

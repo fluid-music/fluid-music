@@ -1,10 +1,5 @@
-const plugin = require('./fluid/plugin');
-const sampler = require('./fluid/sampler');
-const audiotrack = require('./fluid/audiotrack');
-const midiclip = require('./fluid/midiclip');
-const transport = require('./fluid/transport');
 
-const global = {
+const global = module.exports = {
   /**
    * @param {string} [filename] - '.tracktionedit' or '.wav' filename. If no
    *        filename is provided, an empty string will be used, which implies
@@ -59,14 +54,5 @@ const global = {
         { type: 'integer', value: forceEmptyEdit ? 1 : 0 },
       ],
     };
-  }
-};
-
-module.exports = {
-  midiclip,
-  audiotrack,
-  plugin,
-  global,
-  transport,
-  sampler,
+  }, 
 };
