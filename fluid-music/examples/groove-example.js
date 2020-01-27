@@ -2,7 +2,7 @@
 
 const path = require('path');
 const tab = require('../src/tab');
-const fluid = require('../src/fluid');
+const fluid = require('../src/index');
 const FluidClient = require('../src/FluidClient');
 const groove = require('../src/groove');
 
