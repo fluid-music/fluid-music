@@ -6,7 +6,7 @@ const fluid = require('../src/index');
 const FluidClient = require('../src/FluidClient');
 const groove = require('../src/groove');
 
-const sessionPath = path.join(__dirname, 'sessions/swing.tracktionedit')
+const sessionPath = path.join(__dirname, 'sessions/out.tracktionedit')
 const drums909 = require('../../fluid-recipes/src/drumTrack909');
 const drumTrackName = '909';
 const drumsMsg = drums909(drumTrackName);
