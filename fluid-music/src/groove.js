@@ -2,29 +2,36 @@ const grooves = require("../grooves/grooveLibrary")
 const tab = require("./tab")
 
 const getGroove = function(groovelib, grooveName){
+
     for(const val of Object.values(groovelib)){
         if (val === grooveName)
             return groovelib
-        else if (typeof val === "object")
-                return getGroove(val, grooveName)
+        else if (typeof val === "object"){
+            let g = getGroove(val, grooveName)
+            if (g !== null)
+                return g
+        }
+            
     }
-    throw new Error("Groove Not Found")
+    return null;
 }
 
 /**
  * Applies a specified groove onto an array of note objects
- * @param {object[]} notes - An array of note objects
- * @param {string | object} grooveItem - Either the name of the groove present 
+ * @param {Object[]} notes - An array of note objects
+ * @param {string | Object} grooveItem - Either the name of the groove present 
  *        within the groove library, or a new groove object.
- * @param {object} multipliers - An object of the form {v: Number, o: Number, level: Number}
+ * @param {Object} multipliers - An object of the form {v: number, o: number, level: number}
  *        the keys are: velocity, offset and level respectively. 
  *        Level affects the overall effect the groove has on the note objects.
- * @param {Number} randomness - A number representing the amount of randomness added to the offset
- * @returns {object[]}  - The modified note array
+ * @param {number} randomness - A number representing the amount of randomness added to the offset
+ * @returns {Object[]}  - The modified note array
  */
 const applyGroove = function(notes, grooveItem, multipliers, randomness=0) {
-    if (typeof grooveItem === "string")
+    if (typeof grooveItem === "string"){
         selG = getGroove(grooves, grooveItem);
+        if (selG === null) throw new Error ("Groove Not Found")
+    }   
     else if (typeof grooveItem === "object")
         selG = grooveItem;
     else
