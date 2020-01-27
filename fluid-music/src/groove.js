@@ -47,6 +47,9 @@ const applyGroove = function(notes, grooveItem, multipliers, randomness=0) {
     else
         multipliers = {v: 1, o: 1, level: 1};
         
+    if (!selG.oLibrary || !selG.vLibrary || !selG.time || !selG.velocity || !selG.rhythm) 
+        throw new Error("Invalid Groove Object")
+    
     const sortedNotes = [...notes].sort((a, b) => (a.s > b.s) ? 1 : -1);
     const rhythmDeltas = tab.parseRhythm(selG.rhythm).deltas;
 
