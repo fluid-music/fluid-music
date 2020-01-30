@@ -1,27 +1,24 @@
 #!/usr/bin/env node
 
-const path = require('path');
-const tab = require('../src/tab');
 const fluid = require('../src/index');
-const FluidClient = require('../src/FluidClient');
-const groove = require('../src/groove');
+const recipes = require('../');
+const path = require('path');
 
-const sessionPath = path.join(__dirname, 'sessions/out.tracktionedit')
-const drums909 = require('../../fluid-recipes/src/drumTrack909');
 const drumTrackName = '909';
-const drumsMsg = drums909(drumTrackName);
+const drumsMsg = recipes.drumTrack909(drumTrackName);
+const sessionPath = path.join(__dirname, 'sessions/out.tracktionedit')
 
 const noteLibrary = { h: 42 };
 
 const r   = '1+2+3+4+'; // main rhythm
-const notes = tab.parse({
+const notes = fluid.tab.parse({
   noteLibrary, r,
   p: [
     { r:'1+2+3+4+', p: 'hhhhhhhh',} 
   ],
 });
 
-const groovyNotes = groove.applyGroove(notes, "Heavy Swing", {v: 1.3, o: 1.5}, 0.2)
+const groovyNotes = fluid.groove.applyGroove(notes, "Heavy Swing", {v:2,o:2,l:2});
 
 const client = new FluidClient(9999);
 client.send([

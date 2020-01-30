@@ -10,6 +10,7 @@
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
   "dependencies": {
+    "fluid-music": "0.0.2-0",
     "underscore": "^1.9.2"
   }
 }
