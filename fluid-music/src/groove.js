@@ -39,9 +39,9 @@ const applyGroove = function(notes, grooveItem, multipliers, randomness=0) {
     if (typeof randomness !== "number")
         throw Error("randomness must be a number.");
     if (typeof multipliers === "object"){
-        multipliers.v = multipliers.v ? multipliers.v : 1;
-        multipliers.o = multipliers.o ? multipliers.o : 1;
-        multipliers.l = multipliers.l ? multipliers.l : 1;
+        multipliers.v = typeof multipliers.v === 'number' ? multipliers.v : 1;
+        multipliers.o = typeof multipliers.o === 'number' ? multipliers.o : 1;
+        multipliers.l = typeof multipliers.l === 'number' ? multipliers.l : 1;
     }
     else
         multipliers = {v: 1, o: 1, l: 1};
