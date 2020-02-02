@@ -32,7 +32,7 @@ const plugin = {
 
     return { args, address: '/plugin/select' };
   },
-  
+
   /**
    * Changes the specified parameter to the normalized value provided.
    *
@@ -141,6 +141,27 @@ const plugin = {
     }
   },
 
+  /**
+   * Route the named track to the side chain input for the selected plugin. Note
+   * that this might not actually enable the side chain in the plugin
+   * configuration. For VSTs, enabling the side chain input may not be
+   * accessible from the fluid API, in which case it must be accomplished with a
+   * plugin preset.
+   *
+   * @param {string} inputTrackName - a track with this name will feed the
+   *    selected plugin's side chain input. The track will be created if it does
+   *    not exist.
+   */
+  setSideChainInput(inputTrackName) {
+    if (typeof inputTrackName !== 'string')
+      throw new Error('plugin.setSideChainInput requires an input track name');
+
+    return {
+      address: '/plugin/sidechain/input/set',
+      args: [ {type: 'string', value: inputTrackName } ],
+    }
+  },
+
   save(presetName) {
     if (typeof presetName !== 'string')
       throw new Error('plugin.save requires preset name as argument');
@@ -162,7 +183,7 @@ const plugin = {
   },
 
   /**
-   * Load a .trkpreset file on the client side, and send it to 
+   * Load a .trkpreset file on the client side, and send it to
    * @param {Buffer|String} file - A
    */
   loadTrkpreset(file) {

@@ -10,8 +10,8 @@ const audiotrack = {
 
   insertWav (clipName, startBeats, fileName){
     const args = [
-      {type: 'string', value: clipName}, 
-      {type: 'string', value: fileName}, 
+      {type: 'string', value: clipName},
+      {type: 'string', value: fileName},
       {type: 'float', value: startBeats},
     ];
 
@@ -23,7 +23,11 @@ const audiotrack = {
   },
 
   /**
-   * Selects a track, ensuring that it has a bus return;
+   * Selects a track, ensuring that it has a bus return. Afterwords, other
+   * tracks can add sends that target the track selected with this method.
+   *
+   * Use the audiotrack.send method to send from other tracks to a return.
+   *
    * @param {string} busName - name of audiotrack (the return will be named
    *                           after the audio track).
    */

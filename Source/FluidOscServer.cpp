@@ -63,6 +63,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
     if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
     if (msgAddressPattern.matches({"/plugin/param/set/at"})) return setPluginParamAt(message);
+    if (msgAddressPattern.matches({"/plugin/sidechain/input/set" })) return setPluginSideChainInput(message);
     if (msgAddressPattern.matches({"/plugin/save"})) return savePluginPreset(message);
     if (msgAddressPattern.matches({"/plugin/load/trkpreset"})) return loadPluginTrkpreset(message);
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
@@ -405,6 +406,29 @@ void FluidOscServer::setPluginParamAt(const OSCMessage& message) {
             break;
         }
     }
+}
+
+
+void FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
+    if (!selectedPlugin) {
+        std::cout << "Cannot set plugin side chain input: No selected plugin" << std::endl;
+        return;
+    }
+
+    if (!selectedPlugin->canSidechain()) {
+        std::cout << "Cannot set plugin side chain input: Selected plugin cannot side chain" << std::endl;
+        return;
+    }
+
+    if (!message.size() || !message[0].isString()) {
+        std::cout << "Cannot set plugin side chain input: Missing input-track-name arg" << std::endl;
+        return;
+    }
+
+    String inputTrackname = message[0].getString();
+    te::AudioTrack* inputTrack = getOrCreateAudioTrackByName(selectedPlugin->edit, inputTrackname);
+    std::cout << "Setting input id: " << inputTrack->itemID.toString() << std::endl;
+    selectedPlugin->setSidechainSourceID(inputTrack->itemID);
 }
 
 void FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
