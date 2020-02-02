@@ -427,8 +427,13 @@ void FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
 
     String inputTrackname = message[0].getString();
     te::AudioTrack* inputTrack = getOrCreateAudioTrackByName(selectedPlugin->edit, inputTrackname);
-    std::cout << "Setting input id: " << inputTrack->itemID.toString() << std::endl;
     selectedPlugin->setSidechainSourceID(inputTrack->itemID);
+    std::cout << "Side chain input: " << inputTrack->getName() << std::endl;
+
+    if (auto compressor = dynamic_cast<te::CompressorPlugin*>(selectedPlugin)) {
+        std::cout << "NOTE: when enabling a side chain in put on the internal compressor plugin, the side chain will be enabled by default. " << std::endl;
+        compressor->useSidechainTrigger = true;
+    }
 }
 
 void FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
