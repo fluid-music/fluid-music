@@ -8,6 +8,7 @@ const global = require('./fluid/global');
 
 // Other Stuff
 const tab = require('./tab');
+const groove = require('./groove')
 const Client = require('./FluidClient');
 const converters = require('./converters');
 
@@ -21,4 +22,5 @@ module.exports = {
   sampler,
   tab,
   transport,
+  groove,
 };
