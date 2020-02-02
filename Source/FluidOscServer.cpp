@@ -78,13 +78,104 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/file/save"})) return saveActiveEdit(message);
     if (msgAddressPattern.matches({"/cd"})) return changeWorkingDirectory(message);
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
+    if (msgAddressPattern.matches({"/audiotrack/region/render"})) return renderRegion(message);
 
     std::cout << "Unhandled message: ";
     printOscMessage(message);
 }
 
+void FluidOscServer::renderRegion(const OSCMessage& message) {
+    // Args
+    // 0 - (string, required) output filename
+    // 1 - (float, optional) start quarterNotes
+    // 2 - (float, optional) duration in quarterNotes
+    // If both 1 and 2 are floats, render this time range in beats. Otherwise,
+    // render the edit loop region.
+
+    if (!selectedAudioTrack) {
+        std::cout << "Cannot render track region: No selected track" << std::endl;
+        return;
+    }
+
+    if (message.size() < 1 || !message[0].isString()) {
+        std::cout << "Cannot render track region: Missing filename" << std::endl;
+        return;
+    }
+
+    String filename = message[0].getString();
+    File outputFile = selectedAudioTrack->edit.filePathResolver(filename);
+    String jobTitle = "Render " + selectedAudioTrack->getName() + " to " + filename;
+    std::cout << jobTitle << std::endl;
+
+    BigInteger tracksToDo;
+    {
+        int i = 0;
+        selectedAudioTrack->edit.visitAllTracks([this, &i, &tracksToDo] (te::Track& track) {
+            if (selectedAudioTrack == &track)
+                tracksToDo.setBit(i);
+            i++;
+            return true;
+            }, true);
+    }
+
+    te::TransportControl& transport = selectedAudioTrack->edit.getTransport();
+    te::EditTimeRange range = transport.getLoopRange();
+
+    if (message.size() >= 3 && message[1].isFloat32() && message[2].isFloat32()) {
+        double startBeats = message[1].getFloat32();
+        double durationBeats = message[2].getFloat32();
+        double endBeats = startBeats + durationBeats;
+        double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
+        double endSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeats);
+        range.start = startSeconds;
+        range.end = endSeconds;
+    }
+
+    if (range.getLength() == 0) {
+        std::cout
+        << "Cannot render track region: no time range available." << std::endl;
+        return;
+    }
+
+    if (!outputFile.hasWriteAccess()) {
+        std::cout
+        << "Cannot render track region: Don't have write access: "
+        << outputFile.getFullPathName() << std::endl;
+        return;
+    }
+
+    if (outputFile.exists()) {
+        if (!outputFile.deleteFile()) {
+            std::cout
+            << "Cannot render track region: Failed to delete existing file"
+            << std::endl;
+            return;
+        } else {
+            std::cout
+            << "Overwrite: "
+            << outputFile.getFullPathName() << std::endl;
+        }
+    }
+
+    bool success = te::Renderer::renderToFile(jobTitle,
+                                              outputFile,
+                                              selectedAudioTrack->edit,
+                                              range,
+                                              tracksToDo);
+    if (success) {
+        std::cout << "Rendered: " << outputFile.getFullPathName() << std::endl;
+    } else {
+        std::cout << "Failed to render: "
+        << outputFile.getFullPathName() << std::endl;
+        return;
+    }
+}
+
 void FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
-    if (!activeCybrEdit) return;
+    if (!activeCybrEdit) {
+        std::cout << "Cannot save active edit: No active edit" << std::endl;
+        return;
+    }
 
     String filename = (message.size() && message[0].isString())
         ? message[0].getString()
@@ -630,9 +721,9 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     else if (message[2].isInt32()) startBeat = message[2].getInt32();
     double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeat);
 
-    File editDirectory = activeCybrEdit->getEdit().editFileRetriever().getParentDirectory();
-    File file = editDirectory.getChildFile(filePath);
-
+    // The default filePathResolver checks for an absolute file, then looks
+    // in the relative to the edit file directory (using edit.editFileRetriever)
+    File file = activeCybrEdit->getEdit().filePathResolver(filePath);
     // First check if the file is an absolute file, OR was found relative to
     // the edit file directory.
     if (file.existsAsFile()) {
@@ -755,7 +846,10 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
 }
 
 void FluidOscServer::handleTransportMessage(const OSCMessage& message) {
-    if (!activeCybrEdit) return;
+    if (!activeCybrEdit) {
+        std::cout << "Cannot update transport: No active edit" << std::endl;
+        return;
+    }
     te::TransportControl& transport = activeCybrEdit->getEdit().getTransport();
 
     const OSCAddressPattern pattern = message.getAddressPattern();

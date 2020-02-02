@@ -82,6 +82,39 @@ const audiotrack = {
       args: [{ type: 'float', value: levelDb }],
     };
   },
+
+  /**
+   * Render a region of the track to an audio file. If no time range is
+   * supplied, the engine should use the loop time range.
+   *
+   * @param {string} outFilename output filename
+   * @param {number} [startQuarterNotes] start time in quarter notes
+   * @param {number} [durationQuarterNotes] duration in quarter notes
+   */
+  renderRegion(outFilename, startQuarterNotes, durationQuarterNotes) {
+    if (typeof outFilename !== 'string')
+      throw new Error('audiotrack.renderRegion requires a outputFilename string');
+
+    const args =  [{ type: 'string', value: outFilename }];
+
+    if (startQuarterNotes !== undefined || durationQuarterNotes !== undefined) {
+      if (typeof startQuarterNotes !== 'number' ||
+          typeof durationQuarterNotes !== 'number')
+      {
+        const msg =
+          'An invalid time range was supplied to renderRegion: ' +
+          'Both start and duration values must be numbers.';
+        throw new Error(msg);
+      }
+    }
+
+    if (typeof startQuarterNotes === 'number') {
+      args.push({ type: 'float', value: startQuarterNotes });
+      args.push({ type: 'float', value: durationQuarterNotes });
+    }
+
+    return { args, address: '/audiotrack/region/render' }
+  },
 }
 
 module.exports = audiotrack;

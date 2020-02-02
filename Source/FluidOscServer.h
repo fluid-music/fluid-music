@@ -54,6 +54,7 @@ public:
     void handleTransportMessage(const OSCMessage& message);
     void muteTrack(bool mute);
     void setTrackGain(const OSCMessage& message);
+    void renderRegion(const OSCMessage& message);
 
     // everything else
     void activateEditFile(File file, bool forceEmptyEdit = false);
