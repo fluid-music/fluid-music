@@ -3,21 +3,27 @@ const fs = require('fs');
 const plugin = {
   /**
    * Creates an object that looks like this:
+   * ```
    *  {
    *    address: '/plugin/select',
    *    args: [
    *      { type: 'string', value: 'zebra2' },
+   *      { type: 'integer', value: 0 },
    *      { type: 'string', value: 'vst' },
    *    ],
    *  }
+   * ```
    * @param {string} pluginName - the name of the vst plugin
-   * @param {[string]} pluginType - optional type, for example 'VST', 'VST3',
+   * @param {string} [pluginType] - optional type, for example 'VST', 'VST3',
    *        'AudioUnit'. If omitted, search all types.
-   * @param {string} pluginId - the id of the plugin
+   * @param {number} [pluginId=0] - the id of the plugin
    */
   select(pluginName, pluginType, pluginId = 0) {
     if (typeof pluginName !== 'string')
       throw new Error('plugin.select(pluginName) needs a string, got: ' + undefined);
+
+    if (typeof pluginId !== 'number' || pluginId !== Math.floor(pluginId))
+      throw new Error('plugin.select pluginId values must be an integer');
 
     const args = [
       { type: 'string', value: pluginName},
