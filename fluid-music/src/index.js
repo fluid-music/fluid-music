@@ -5,6 +5,7 @@ const audiotrack = require('./fluid/audiotrack');
 const midiclip = require('./fluid/midiclip');
 const transport = require('./fluid/transport');
 const global = require('./fluid/global');
+const clip = require('./fluid/clip');
 
 // Other Stuff
 const tab = require('./tab');
@@ -15,6 +16,7 @@ const converters = require('./converters');
 module.exports = {
   audiotrack,
   Client,
+  clip,
   converters,
   global,
   midiclip,

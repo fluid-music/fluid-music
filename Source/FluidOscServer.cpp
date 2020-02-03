@@ -69,16 +69,17 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
+    if (msgAddressPattern.matches({"/audiotrack/select/return"})) return selectReturnTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/set/db"})) return setTrackGain(message);
     if (msgAddressPattern.matches({"/audiotrack/send/set/db"})) return ensureSend(message);
     if (msgAddressPattern.matches({"/audiotrack/insert/wav"})) return insertWaveSample(message);
-    if (msgAddressPattern.matches({"/audiotrack/select/return"})) return selectReturnTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/mute"})) return muteTrack(true);
     if (msgAddressPattern.matches({"/audiotrack/unmute"})) return muteTrack(false);
     if (msgAddressPattern.matches({"/file/save"})) return saveActiveEdit(message);
     if (msgAddressPattern.matches({"/cd"})) return changeWorkingDirectory(message);
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/region/render"})) return renderRegion(message);
+    if (msgAddressPattern.matches({"/clip/render"})) return renderClip(message);
 
     std::cout << "Unhandled message: ";
     printOscMessage(message);
@@ -104,19 +105,6 @@ void FluidOscServer::renderRegion(const OSCMessage& message) {
 
     String filename = message[0].getString();
     File outputFile = selectedAudioTrack->edit.filePathResolver(filename);
-    String jobTitle = "Render " + selectedAudioTrack->getName() + " to " + filename;
-    std::cout << jobTitle << std::endl;
-
-    BigInteger tracksToDo;
-    {
-        int i = 0;
-        selectedAudioTrack->edit.visitAllTracks([this, &i, &tracksToDo] (te::Track& track) {
-            if (selectedAudioTrack == &track)
-                tracksToDo.setBit(i);
-            i++;
-            return true;
-            }, true);
-    }
 
     te::TransportControl& transport = selectedAudioTrack->edit.getTransport();
     te::EditTimeRange range = transport.getLoopRange();
@@ -130,45 +118,39 @@ void FluidOscServer::renderRegion(const OSCMessage& message) {
         range.start = startSeconds;
         range.end = endSeconds;
     }
+    renderTrackRegion(outputFile, *selectedAudioTrack, range);
+}
 
-    if (range.getLength() == 0) {
-        std::cout
-        << "Cannot render track region: no time range available." << std::endl;
+void FluidOscServer::renderClip(const juce::OSCMessage &message) {
+    // Args
+    // 0 - (string, required) output filename
+    // 1 - (float, optional) tail in seconds
+
+    if (message.size() < 1 || !message[0].isString()) {
+        std::cout << "Cannot render track region: Missing filename" << std::endl;
         return;
     }
 
-    if (!outputFile.hasWriteAccess()) {
-        std::cout
-        << "Cannot render track region: Don't have write access: "
-        << outputFile.getFullPathName() << std::endl;
+    String filename = message[0].getString();
+    File outputFile = selectedAudioTrack->edit.filePathResolver(filename);
+
+    if (!selectedClip) {
+        std::cout << "Cannot render selected clip: No clip selected" << std::endl;
         return;
     }
 
-    if (outputFile.exists()) {
-        if (!outputFile.deleteFile()) {
-            std::cout
-            << "Cannot render track region: Failed to delete existing file"
-            << std::endl;
-            return;
-        } else {
-            std::cout
-            << "Overwrite: "
-            << outputFile.getFullPathName() << std::endl;
-        }
-    }
-
-    bool success = te::Renderer::renderToFile(jobTitle,
-                                              outputFile,
-                                              selectedAudioTrack->edit,
-                                              range,
-                                              tracksToDo);
-    if (success) {
-        std::cout << "Rendered: " << outputFile.getFullPathName() << std::endl;
-    } else {
-        std::cout << "Failed to render: "
-        << outputFile.getFullPathName() << std::endl;
+    te::Track* track = selectedClip->getTrack();
+    if (!track) {
+        jassert(false);
+        std::cout << "Cannot render clip region: Failed to get clip's track" << std::endl;
         return;
     }
+
+    double tail = (message.size() >= 2 && message[1].isFloat32()) ? message[1].getFloat32() : 0;
+    te::EditTimeRange range = selectedClip->getEditTimeRange();
+    range.end += tail;
+
+    renderTrackRegion(outputFile, *track, range);
 }
 
 void FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {

@@ -14,9 +14,11 @@ const audiotrack = require('./audiotrack');
 const midiclip = require('./midiclip');
 const transport = require('./transport');
 const global = require('./global');
+const clip = require('./clip');
 
 module.exports = {
   audiotrack,
+  clip,
   global,
   midiclip,
   plugin,

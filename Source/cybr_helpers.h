@@ -48,8 +48,13 @@ ValueTree loadXmlFile(File file);
  create it. If all buses already have a name, return -1 */
 int ensureBus(te::Edit& edit, String busName);
 
+/** Render a range of the audio file, overwriting the file if it already exists.
+Includes some simple checks like non-zero duration, file write access. */
+void renderTrackRegion(File outputFile, te::Track& track, te::EditTimeRange range);
+
 te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name);
 te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name);
+
 /** Add a plugin just before the VolumeAndPan plugin.
  `type` can be 'vst|vst3|tracktion' or an empty string.
  If `type` is an empty string, search all types. */

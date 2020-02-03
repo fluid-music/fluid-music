@@ -55,6 +55,7 @@ public:
     void muteTrack(bool mute);
     void setTrackGain(const OSCMessage& message);
     void renderRegion(const OSCMessage& message);
+    void renderClip(const OSCMessage& message);
 
     // everything else
     void activateEditFile(File file, bool forceEmptyEdit = false);
