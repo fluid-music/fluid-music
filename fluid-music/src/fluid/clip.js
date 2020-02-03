@@ -17,7 +17,21 @@ const clip = {
       args.push({ type: 'float', value: tailInSeconds });
 
     return { address: '/clip/render', args };
-  }
+  },
+
+  /**
+   * Select a clip on the currently selected track.
+   * @param {string} clipName
+   */
+  select(clipName) {
+    if (typeof clipName !== 'string')
+      throw new Error('clip.select clipName must be a string');
+
+    return {
+      address: '/clip/select',
+      args: [{ type: 'string', value: clipName }],
+    };
+  },
 };
 
 module.exports = clip;

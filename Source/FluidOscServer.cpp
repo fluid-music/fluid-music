@@ -80,9 +80,48 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/region/render"})) return renderRegion(message);
     if (msgAddressPattern.matches({"/clip/render"})) return renderClip(message);
+    if (msgAddressPattern.matches({"/clip/trim"})) return trimClip(message);
+    if (msgAddressPattern.matches({"/clip/select"})) return selectClip(message);
 
     std::cout << "Unhandled message: ";
     printOscMessage(message);
+}
+
+void FluidOscServer::trimClip(const juce::OSCMessage& message) {
+    if (!selectedClip) {
+        std::cout << "Cannot trim clip: No clip selected" << std::endl;
+        return;
+    }
+
+
+    jassert(false); // unimplemented
+}
+
+void FluidOscServer::selectClip(const juce::OSCMessage& message) {
+    if (!selectedAudioTrack) {
+        std::cout << "Cannot select clip: No audio track selected" << std::endl;
+        return;
+    }
+    if (!message.size() || !message[0].isString()) {
+        std::cout << "Cannot select clip: First argument must be clip name string" << std::endl;
+        return;
+    }
+
+    String clipName = message[0].getString();
+    for (auto clip : selectedAudioTrack->getClips()) {
+        if (clip->getName().equalsIgnoreCase(clipName)) {
+            selectedClip = clip;
+            std::cout
+                << "Selected " << clip->getName()
+                << " (" << clip->state.getType().toString() << ") on "
+                << selectedAudioTrack->getName() << std::endl;
+            return;
+        }
+    }
+
+    std::cout
+        << "Cannot select clip: \"" << clipName
+        << "\" not found on track " << selectedAudioTrack->getName() << std::endl;
 }
 
 void FluidOscServer::renderRegion(const OSCMessage& message) {
