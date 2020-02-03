@@ -18,8 +18,8 @@
 typedef void (*OscHandlerFunc)(const OSCMessage&);
 
 struct SelectedObjects {
-    te::AudioTrack* audio = nullptr;
-    te::MidiClip* midi = nullptr;
+    te::AudioTrack* audioTrack = nullptr;
+    te::Clip* clip = nullptr;
     te::Plugin* plugin = nullptr;
 };
 
@@ -69,6 +69,6 @@ private:
     void handleOscBundle(const OSCBundle& bundle, SelectedObjects parentSelection);
 
     te::AudioTrack* selectedAudioTrack = nullptr;
-    te::MidiClip* selectedMidiClip = nullptr;
+    te::Clip* selectedClip = nullptr;
     te::Plugin* selectedPlugin = nullptr;
 };

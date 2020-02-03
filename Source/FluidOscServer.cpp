@@ -20,8 +20,8 @@ void FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects pa
         if (element.isMessage()) {
             // allow messages to update the current selection ("currBundle")
             oscMessageReceived(element.getMessage());
-            currBundle.audio = selectedAudioTrack;
-            currBundle.midi = selectedMidiClip;
+            currBundle.audioTrack = selectedAudioTrack;
+            currBundle.clip = selectedClip;
             currBundle.plugin = selectedPlugin;
         } else if (element.isBundle()) {
             // After processing a bundle, selection will reset to "currBundle"
@@ -29,8 +29,8 @@ void FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects pa
         }
     }
     
-    selectedAudioTrack = parentSelection.audio;
-    selectedMidiClip = parentSelection.midi;
+    selectedAudioTrack = parentSelection.audioTrack;
+    selectedClip = parentSelection.clip;
     selectedPlugin = parentSelection.plugin;
 }
 
@@ -611,27 +611,36 @@ void FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
     if (!message.size() || !message[0].isString()) return;
 
     String clipName = message[0].getString();
-    selectedMidiClip = getOrCreateMidiClipByName(*selectedAudioTrack, clipName);
+    selectedClip = getOrCreateMidiClipByName(*selectedAudioTrack, clipName);
 
     // Clip startBeats
     if (message.size() >= 2 && message[1].isFloat32()) {
         double startBeats = message[1].getFloat32();
         double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
-        selectedMidiClip->setStart(startSeconds, false, true);
+        selectedClip->setStart(startSeconds, false, true);
     }
     // Clip length
     if (message.size() >= 3 && message[2].isFloat32()) {
         double lengthInBeats = message[2].getFloat32();
-        double startBeat = selectedMidiClip->getStartBeat();
+        double startBeat = selectedClip->getStartBeat();
         double endBeat = startBeat + lengthInBeats;
         double endTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeat);
-        selectedMidiClip->setEnd(endTime, true);
+        selectedClip->setEnd(endTime, true);
     }
 }
 
 void FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
-    if (!selectedMidiClip) return;
-    
+    if (!selectedClip) {
+        std::cout << "Cannot clear midi clip: No clip selected" << std::endl;
+        return;
+    }
+
+    auto selectedMidiClip = dynamic_cast<te::MidiClip*>(selectedClip);
+    if (!selectedMidiClip) {
+        std::cout << "Cannot clear midi clip: selected clip is not a midi clip" << std::endl;
+        return;
+    }
+
     auto exisiting = selectedMidiClip->state.getChildWithName(te::IDs::SEQUENCE);
     if (!exisiting.isValid()) selectedMidiClip->clearTakes();
     selectedMidiClip->getSequence().clear(nullptr); // is this needed?
@@ -646,12 +655,18 @@ void FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
 }
 
 void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
-    if(!selectedAudioTrack){
-        std::cout << "Cannot insert midi note: No Audio Track selected." << std::endl;
+    if(!selectedClip){
+        std::cout << "Cannot insert midi note: No clip selected." << std::endl;
         return;
     }
     if(message.size() < 3){
         std::cout << "Cannot insert midi note: Not enough arguments."<< std::endl;
+        return;
+    }
+
+    auto selectedMidiClip = dynamic_cast<te::MidiClip*>(selectedClip);
+    if (!selectedMidiClip) {
+        std::cout << "Cannot insertMidiNoe: selected clip is not a midi clip" << std::endl;
         return;
     }
 
@@ -745,7 +760,8 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
 
     te::ClipPosition pos;
     pos.time = timeRange;
-    selectedAudioTrack->insertWaveClip(clipName, file, pos, false);
+    te::WaveAudioClip::Ptr c = selectedAudioTrack->insertWaveClip(clipName, file, pos, false);
+    selectedClip = c.get();
 }
 
 void FluidOscServer::setTrackGain(const OSCMessage& message) {

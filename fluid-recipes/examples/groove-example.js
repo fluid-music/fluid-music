@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const fluid = require('../src/index');
-const recipes = require('../');
 const path = require('path');
+const fluid = require('fluid-music');
+const recipes = require('../');
 
 const drumTrackName = '909';
 const drumsMsg = recipes.drumTrack909(drumTrackName);
@@ -20,7 +20,7 @@ const notes = fluid.tab.parse({
 
 const groovyNotes = fluid.groove.applyGroove(notes, "Heavy Swing", {v:2,o:2,l:2});
 
-const client = new FluidClient(9999);
+const client = new fluid.Client(9999);
 client.send([
   fluid.global.activate(sessionPath, true),
   drumsMsg,
