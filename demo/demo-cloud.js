@@ -13,16 +13,17 @@ const availableNote = [
   // ...cloud.allOctaves('f4'),
 ];
 
-const config = {
+const cloudConfig = {
   durationInWholeNotes: 6,
   shortestDelta: 1/8,
   longestDelta: 1/1,
 };
 
-const notes = cloud.create(availableNote, config);
+const notes = cloud.create(availableNote, cloudConfig);
 
 const client = new fluid.Client(9999);
-const durationInQuarterNotes = config.durationInWholeNotes * 4
+const durationInQuarterNotes = cloudConfig.durationInWholeNotes * 4;
+
 client.send([
   fluid.audiotrack.select('cloud'),
   fluid.midiclip.create('cloud1', 0, durationInQuarterNotes, notes),

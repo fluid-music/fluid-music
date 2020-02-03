@@ -22,7 +22,7 @@ client.send([
 
   // Cloud Track
   fluid.audiotrack.select('cloud'),
-  fluid.plugin.load('Zebra2 cloud-one'),
+  fluid.plugin.load('Zebra2 cloud-two'),
 
   // Bass
   fluid.audiotrack.select('bass'),
