@@ -80,21 +80,77 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/region/render"})) return renderRegion(message);
     if (msgAddressPattern.matches({"/clip/render"})) return renderClip(message);
-    if (msgAddressPattern.matches({"/clip/trim"})) return trimClip(message);
+    if (msgAddressPattern.matches({"/clip/set/length"})) return setClipLength(message);
     if (msgAddressPattern.matches({"/clip/select"})) return selectClip(message);
+    if (msgAddressPattern.matches({"/clip/trim/seconds"})) return trimClipBySeconds(message);
 
     std::cout << "Unhandled message: ";
     printOscMessage(message);
 }
 
-void FluidOscServer::trimClip(const juce::OSCMessage& message) {
+void FluidOscServer::trimClipBySeconds(const juce::OSCMessage& message) {
     if (!selectedClip) {
         std::cout << "Cannot trim clip: No clip selected" << std::endl;
         return;
     }
 
+    double startTrim = (message.size() >= 1 && message[0].isFloat32()) ? message[0].getFloat32() : 0;
+    double endTrim =   (message.size() >= 2 && message[1].isFloat32()) ? message[1].getFloat32() : 0;
+    te::EditTimeRange currentRange = selectedClip->getEditTimeRange();
+    te::EditTimeRange newRange {currentRange.start + startTrim, currentRange.end - endTrim};
 
-    jassert(false); // unimplemented
+    if (newRange.getLength() <= 0) {
+        std::cout << "Cannot trim clip: duration of trimmed clip would be sub-zero" << std::endl;
+        return;
+    }
+    // verify: does this work when the new start is after the old end, but before the new end????
+    selectedClip->setStart(newRange.start, true, false);
+    selectedClip->setEnd(newRange.end, true);
+}
+
+void FluidOscServer::setClipLength(const juce::OSCMessage& message) {
+    if (!selectedClip) {
+        std::cout << "Cannot set clip length: No clip selected" << std::endl;
+        return;
+    }
+
+    if (!message.size() || !message[0].isFloat32()) {
+        std::cout << "Cannot set clip length: First argument must be a float duration" << std::endl;
+        return;
+    }
+
+    bool trimStart = false;
+    if (message.size() >= 2 && message[1].isString()) {
+        if (message[1].getString().toLowerCase().startsWithChar('s')) {
+            trimStart = true;
+        }
+    }
+    double durationInQuarterNotes = message[0].getFloat32();
+
+    if (durationInQuarterNotes <= 0) {
+        std::cout << "Cannot set clip length: duration argument must be greater than 0" << std::endl;
+        return;
+    }
+
+    te::EditTimeRange currentRange = selectedClip->getEditTimeRange();
+    double startBeat = selectedClip->getStartBeat();
+    double endBeat = selectedClip->getEndBeat();
+
+    if (trimStart) {
+        double newStartBeat = endBeat - durationInQuarterNotes;
+        double newStartSeconds = selectedClip->edit.tempoSequence.beatsToTime(newStartBeat);
+        selectedClip->setStart(newStartSeconds, true, false);
+    } else {
+        double newEndBeat = startBeat + durationInQuarterNotes;
+        double newEndSeconds = selectedClip->edit.tempoSequence.beatsToTime(newEndBeat);
+        double newDuration = newEndSeconds - currentRange.start;
+
+         if (newDuration > selectedClip->getMaximumLength()) {
+            newEndSeconds = currentRange.start + selectedClip->getMaximumLength();
+            newEndBeat = selectedClip->edit.tempoSequence.timeToBeats(newEndSeconds);
+        }
+        selectedClip->setEnd(newEndSeconds, true);
+    }
 }
 
 void FluidOscServer::selectClip(const juce::OSCMessage& message) {

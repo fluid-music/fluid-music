@@ -56,7 +56,8 @@ public:
     void setTrackGain(const OSCMessage& message);
     void renderRegion(const OSCMessage& message);
     void renderClip(const OSCMessage& message);
-    void trimClip(const OSCMessage& message);
+    void setClipLength(const OSCMessage& message);
+    void trimClipBySeconds(const OSCMessage& message);
     void selectClip(const OSCMessage& message);
 
     // everything else

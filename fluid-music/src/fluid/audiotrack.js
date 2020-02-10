@@ -14,12 +14,7 @@ const audiotrack = {
       {type: 'string', value: fileName},
       {type: 'float', value: startBeats},
     ];
-
-    const elements = [
-      { address: '/audiotrack/insert/wav', args }
-    ];
-
-    return elements;
+    return { address: '/audiotrack/insert/wav', args };
   },
 
   /**
