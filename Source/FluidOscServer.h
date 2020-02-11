@@ -52,7 +52,6 @@ public:
     void changeWorkingDirectory(const OSCMessage& message);
     void handleSamplerMessage(const OSCMessage& message);
     void handleTransportMessage(const OSCMessage& message);
-    void muteTrack(bool mute);
     void setTrackGain(const OSCMessage& message);
     void renderRegion(const OSCMessage& message);
     void renderClip(const OSCMessage& message);
@@ -61,6 +60,7 @@ public:
     void selectClip(const OSCMessage& message);
 
     // everything else
+    void muteTrack(bool mute);
     void activateEditFile(File file, bool forceEmptyEdit = false);
     std::unique_ptr<CybrEdit> activeCybrEdit = nullptr;
 

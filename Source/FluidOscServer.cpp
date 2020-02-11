@@ -778,11 +778,6 @@ void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
 }
 
 void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
-    if (!activeCybrEdit) {
-        std::cout << "Cannot insert wave sample: no active edit" << std::endl;
-        return;
-    }
-
     if(!selectedAudioTrack){
         std::cout << "Cannot insert wave sample: Must select Audio Track before inserting" << std::endl;
         return;
@@ -795,6 +790,7 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
 
     if (!message[0].isString()) {
         std::cout << "Cannot insert wave file: first argument must be a string" << std::endl;
+        return;
     }
     String clipName = message[0].getString();
 
@@ -806,16 +802,17 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
 
     if (!message[2].isFloat32() && !message[2].isInt32()) {
         std::cout << "Cannot insert wave file: third argument must be int or float" << std::endl;
+        return;
     }
 
     double startBeat = 0;
     if (message[2].isFloat32()) startBeat = message[2].getFloat32();
     else if (message[2].isInt32()) startBeat = message[2].getInt32();
-    double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeat);
+    double startSeconds = selectedAudioTrack->edit.tempoSequence.beatsToTime(startBeat);
 
     // The default filePathResolver checks for an absolute file, then looks
     // in the relative to the edit file directory (using edit.editFileRetriever)
-    File file = activeCybrEdit->getEdit().filePathResolver(filePath);
+    File file = selectedAudioTrack->edit.filePathResolver(filePath);
     // First check if the file is an absolute file, OR was found relative to
     // the edit file directory.
     if (file.existsAsFile()) {
