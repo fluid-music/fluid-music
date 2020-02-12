@@ -86,9 +86,43 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/clip/source/offset/seconds"})) return offsetClipSourceInSeconds(message);
     if (msgAddressPattern.matches({"/audioclip/reverse"})) return reverseAudioClip(true);
     if (msgAddressPattern.matches({"/audioclip/unreverse"})) return reverseAudioClip(false);
+    if (msgAddressPattern.matches({"/audioclip/fade/seconds"})) return audioClipFadeInOutSeconds(message);
 
     std::cout << "Unhandled message: ";
     printOscMessage(message);
+}
+
+void FluidOscServer::audioClipFadeInOutSeconds(const OSCMessage& message) {
+    if (!selectedClip) {
+        std::cout << "Cannot setup audio clip fade in/out: no clip selected" << std::endl;
+        return;
+    }
+
+    auto* audioClip = dynamic_cast<te::WaveAudioClip*>(selectedClip);
+    if (!audioClip) {
+        std::cout << "Cannot setup audio clip fade in/out: selected clip is not an audio clip" << std::endl;
+        return;
+    }
+
+    // All args optional
+    // 0 - fade In  TIME
+    // 1 - fade Out TIME
+
+    if (message.size() >= 1 && message[0].isFloat32()) {
+        double fadeInTime = message[0].getFloat32();
+        audioClip->setFadeIn(fadeInTime);
+        if (message.size() >= 3 && message[2].isFloat32()) {
+            // TODO: Set type?
+        }
+    }
+
+    if (message.size() >= 2 && message[1].isFloat32()) {
+        double fadeOutTime = message[1].getFloat32();
+        audioClip->setFadeOut(fadeOutTime);
+        if (message.size() >= 4 && message[3].isFloat32()) {
+            // TODO Set fade type?
+        }
+    }
 }
 
 void FluidOscServer::reverseAudioClip(bool reverse) {
@@ -135,6 +169,14 @@ void FluidOscServer::reverseAudioClip(bool reverse) {
         double tailSize = sourceLength - (startInSource + length);
         audioClip->setOffset(tailSize);
     }
+
+    // Also switch fade in/out
+    double fadeInTime = audioClip->getFadeIn();
+    auto fadeInType = audioClip->getFadeInType();
+    audioClip->setFadeIn(audioClip->getFadeOut());
+    audioClip->setFadeInType(audioClip->getFadeOutType());
+    audioClip->setFadeOut(fadeInTime);
+    audioClip->setFadeOutType(fadeInType);
 }
 
 void FluidOscServer::offsetClipSourceInSeconds(const juce::OSCMessage& message) {
