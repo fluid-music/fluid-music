@@ -58,9 +58,11 @@ public:
     void setClipLength(const OSCMessage& message);
     void trimClipBySeconds(const OSCMessage& message);
     void selectClip(const OSCMessage& message);
+    void offsetClipSourceInSeconds(const OSCMessage& message);
 
     // everything else
     void muteTrack(bool mute);
+    void reverseAudioClip(bool reverse);
     void activateEditFile(File file, bool forceEmptyEdit = false);
     std::unique_ptr<CybrEdit> activeCybrEdit = nullptr;
 

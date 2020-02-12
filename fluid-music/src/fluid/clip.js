@@ -62,9 +62,9 @@ const clip = {
   trimSeconds(secondsToStart = 0, secondsFromEnd = 0) {
     if (!secondsToStart) secondsToStart = 0;
     if (typeof secondsToStart !== 'number')
-      throw new Error('clip.trim: if present, first argument must be number');
+      throw new Error('clip.trimSeconds: if present, first argument must be number');
     if (typeof secondsFromEnd !== 'number')
-      throw new Error('clip.trim: if present, second argument must be number');
+      throw new Error('clip.trimSeconds: if present, second argument must be number');
 
     return {
       address: '/clip/trim/seconds',
@@ -72,6 +72,21 @@ const clip = {
         { type: 'float', value: secondsToStart },
         { type: 'float', value: secondsFromEnd },
       ],
+    };
+  },
+
+  /**
+   * Update the source start time. This does not affect time that the clip is
+   * positioned within the session.
+   * @param {number} startAtSeconds Time in the source to start the clip
+   */
+  setSourceOffsetSeconds(startAtSeconds) {
+    if (typeof startAtSeconds !== 'number')
+      throw new Error('clip.setSourceOffsetSeconds requires an offset number');
+
+    return {
+      address: '/clip/source/offset/seconds',
+      args: [ { type: 'float', value: startAtSeconds} ],
     };
   },
 };

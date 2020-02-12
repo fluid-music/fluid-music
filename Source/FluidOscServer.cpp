@@ -83,9 +83,72 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/clip/set/length"})) return setClipLength(message);
     if (msgAddressPattern.matches({"/clip/select"})) return selectClip(message);
     if (msgAddressPattern.matches({"/clip/trim/seconds"})) return trimClipBySeconds(message);
+    if (msgAddressPattern.matches({"/clip/source/offset/seconds"})) return offsetClipSourceInSeconds(message);
+    if (msgAddressPattern.matches({"/audioclip/reverse"})) return reverseAudioClip(true);
+    if (msgAddressPattern.matches({"/audioclip/unreverse"})) return reverseAudioClip(false);
 
     std::cout << "Unhandled message: ";
     printOscMessage(message);
+}
+
+void FluidOscServer::reverseAudioClip(bool reverse) {
+    if (!selectedClip) {
+        std::cout << "Cannot update clip reverse status: no clip selected" << std::endl;
+        return;
+    }
+
+    auto* audioClip = dynamic_cast<te::WaveAudioClip*>(selectedClip);
+    if (!audioClip) {
+        std::cout << "Cannot update clip reverse status: selected clip is not an audio clip" << std::endl;
+        return;
+    }
+    if (reverse == audioClip->getIsReversed()) return;
+
+    // All the durations below are measured in seconds (after the speedRatio has
+    // been applied).
+    //
+    // The algorithm for reversing is the same, weather we are reversing, or
+    // "unreversing." Annoyingly, the clip->getSourceLength method returns 0
+    // if the clip is already reversed, so the if(reverse) block is used to
+    // ensure that getSourceLength is only called when the clip is in an
+    // unreversed state.
+    //
+    // The algorithm works when the clip's speedRatio is adjusted. However, I
+    // have not tested it with more complicated time streching, such as when
+    // clip effects are used to automate playback speed. Preliminary tests
+    // suggest that in Tracktion Waveform, clip effects are deactivated when the
+    // clip is reversed.
+
+    te::ClipPosition pos = audioClip->getPosition();
+    double speedRatio = audioClip->getSpeedRatio();
+    double length = pos.getLength();
+    double startInSource = pos.getOffset(); // after stretch
+
+    if (reverse) {
+        double sourceLength = audioClip->getSourceLength() / speedRatio;
+        double tailSize = sourceLength - (startInSource + length);
+        audioClip->setIsReversed(reverse);
+        audioClip->setOffset(tailSize);
+    } else {
+        audioClip->setIsReversed(reverse);
+        double sourceLength = audioClip->getSourceLength() / speedRatio;
+        double tailSize = sourceLength - (startInSource + length);
+        audioClip->setOffset(tailSize);
+    }
+}
+
+void FluidOscServer::offsetClipSourceInSeconds(const juce::OSCMessage& message) {
+    if (!selectedClip) {
+        std::cout << "Cannot set clip source offset: no clip selected" << std::endl;
+        return;
+    }
+
+    if (!message.size() || !message[0].isFloat32()) {
+        std::cout << "Cannot set clip source offset: missing offset value" << std::endl;
+        return;
+    }
+    double newOffset = message[0].getFloat32();
+    selectedClip->setOffset(newOffset);
 }
 
 void FluidOscServer::trimClipBySeconds(const juce::OSCMessage& message) {
@@ -789,19 +852,19 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     }
 
     if (!message[0].isString()) {
-        std::cout << "Cannot insert wave file: first argument must be a string" << std::endl;
+        std::cout << "Cannot insert wave file: first argument must be a clipName string" << std::endl;
         return;
     }
     String clipName = message[0].getString();
 
     if (!message[1].isString()) {
-        std::cout << "Cannot insert wave file: second argument must be a string" << std::endl;
+        std::cout << "Cannot insert wave file: second argument must be a filepath string" << std::endl;
         return;
     }
     String filePath = message[1].getString();
 
     if (!message[2].isFloat32() && !message[2].isInt32()) {
-        std::cout << "Cannot insert wave file: third argument must be int or float" << std::endl;
+        std::cout << "Cannot insert wave file: third argument must be a quarterNote start time int or float" << std::endl;
         return;
     }
 
