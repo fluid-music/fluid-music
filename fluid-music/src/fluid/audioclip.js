@@ -26,6 +26,20 @@ const audioclip = {
   fadeOut(seconds) {
     return audioclip.fadeInOutSeconds(null, seconds);
   },
+
+  /**
+   * Adjust the gain of the selected audio clip.
+   * @param {number} dBFS full scale decibel to set
+   */
+  gain(dBFS) {
+    if (typeof dBFS !== 'number')
+      throw new Error('audioclip.gain requires a dBFS number');
+
+    return {
+      address: '/audioclip/set/db',
+      args: [{ type: 'float', value: dBFS }],
+    };
+  },
 };
 
 module.exports = audioclip;

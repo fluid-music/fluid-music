@@ -84,12 +84,39 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/clip/select"})) return selectClip(message);
     if (msgAddressPattern.matches({"/clip/trim/seconds"})) return trimClipBySeconds(message);
     if (msgAddressPattern.matches({"/clip/source/offset/seconds"})) return offsetClipSourceInSeconds(message);
+    if (msgAddressPattern.matches({"/audioclip/set/db"})) return setClipDb(message);
     if (msgAddressPattern.matches({"/audioclip/reverse"})) return reverseAudioClip(true);
     if (msgAddressPattern.matches({"/audioclip/unreverse"})) return reverseAudioClip(false);
     if (msgAddressPattern.matches({"/audioclip/fade/seconds"})) return audioClipFadeInOutSeconds(message);
 
     std::cout << "Unhandled message: ";
     printOscMessage(message);
+}
+
+void FluidOscServer::setClipDb(const OSCMessage& message) {
+    if (!selectedClip) {
+        std::cout << "Cannot set audio clip gain: no clip selected" << std::endl;
+        return;
+    }
+
+    auto* audioClip = dynamic_cast<te::AudioClipBase*>(selectedClip);
+    if (!audioClip) {
+        std::cout << "Cannot set audio clip gain: selected clip is not an audio clip" << std::endl;
+        return;
+    }
+
+    if (!message.size() || !message[0].isFloat32()) {
+        std::cout << "Cannot set audio clip gain: missing db float argument" << std::endl;
+        return;
+    }
+
+    double dBFS = message[0].getFloat32();
+    if (dBFS > 40) {
+        std::cout << "Cannot set audio clip gain: " << dBFS << "db is dangerously loud" << std::endl;
+        return;
+    }
+
+    audioClip->setGainDB(dBFS);
 }
 
 void FluidOscServer::audioClipFadeInOutSeconds(const OSCMessage& message) {

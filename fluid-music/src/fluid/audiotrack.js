@@ -68,13 +68,13 @@ const audiotrack = {
 
   unmute() { return { address: '/audiotrack/unmute'}},
 
-  gain(levelDb) {
-    if (typeof levelDb !== 'number')
+  gain(dBFS) {
+    if (typeof dBFS !== 'number')
       throw new Error('audiotrack.gain requires a number in dBFS');
 
     return {
       address: '/audiotrack/set/db',
-      args: [{ type: 'float', value: levelDb }],
+      args: [{ type: 'float', value: dBFS }],
     };
   },
 

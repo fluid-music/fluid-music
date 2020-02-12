@@ -60,6 +60,7 @@ public:
     void selectClip(const OSCMessage& message);
     void offsetClipSourceInSeconds(const OSCMessage& message);
     void audioClipFadeInOutSeconds(const OSCMessage& message);
+    void setClipDb(const OSCMessage& message);
 
     // everything else
     void muteTrack(bool mute);
