@@ -39,8 +39,8 @@ const audiotrack = {
   /**
    * Adjust the send level to the specified bus, adding the send (post-gain) if
    * it does not yet exist. Use with audiotrack.selectReturnTrack(busName).
-   * @param {string} busName - The name of the return bus to send to
-   * @param {number} [levelDb] = default on the server is 0
+   * @param {string} busName The name of the return bus to send to
+   * @param {number} [levelDb=0] default on the server is 0
    */
   send(busName, levelDb) {
     if (typeof busName !== 'string')
