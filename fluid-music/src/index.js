@@ -13,6 +13,8 @@ const tab = require('./tab');
 const groove = require('./groove')
 const Client = require('./FluidClient');
 const converters = require('./converters');
+const fs = require('./fs');
+const random = require('./random');
 
 module.exports = {
   audioclip,
@@ -20,9 +22,11 @@ module.exports = {
   Client,
   clip,
   converters,
+  fs,
   global,
   midiclip,
   plugin,
+  random,
   sampler,
   tab,
   transport,
