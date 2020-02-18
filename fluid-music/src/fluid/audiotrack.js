@@ -110,6 +110,13 @@ const audiotrack = {
 
     return { args, address: '/audiotrack/region/render' }
   },
+
+  /**
+   * Remove all clips (ex. audio, midi clips) from the selected audio track.
+   */
+  removeClips() {
+    return { address: '/audiotrack/remove/clips' };
+  },
 }
 
 module.exports = audiotrack;

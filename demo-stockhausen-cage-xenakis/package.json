@@ -1,0 +1,20 @@
+{
+  "name": "demo-stockhausen-cage-xenakis",
+  "version": "1.0.0",
+  "description": "fluid music demo project",
+  "main": "run.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "link": "npm link ../fluid-music; npm link ../fluid-recipes",
+    "watch": "nodemon -w run.js",
+    "postinstall": "npm run link"
+  },
+  "author": "Charles Holbrow",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  },
+  "dependencies": {
+    "underscore": "^1.9.2"
+  }
+}

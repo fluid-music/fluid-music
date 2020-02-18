@@ -72,6 +72,7 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/audiotrack/select/return"})) return selectReturnTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/set/db"})) return setTrackGain(message);
     if (msgAddressPattern.matches({"/audiotrack/send/set/db"})) return ensureSend(message);
+    if (msgAddressPattern.matches({"/audiotrack/remove/clips"})) return removeAudioTrackClips(message);
     if (msgAddressPattern.matches({"/audiotrack/insert/wav"})) return insertWaveSample(message);
     if (msgAddressPattern.matches({"/audiotrack/mute"})) return muteTrack(true);
     if (msgAddressPattern.matches({"/audiotrack/unmute"})) return muteTrack(false);
@@ -91,6 +92,22 @@ void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
 
     std::cout << "Unhandled message: ";
     printOscMessage(message);
+}
+
+void FluidOscServer::removeAudioTrackClips(const OSCMessage& message) {
+    if (!selectedAudioTrack) {
+        std::cout << "Cannot remove audio track clips: no track selected" << std::endl;
+        return;
+    }
+
+    te::Clip::Array clipsToRemove;
+    for (te::Clip* clip : selectedAudioTrack->getClips()) {
+        clipsToRemove.add(clip);
+    }
+
+    for (te::Clip* clip : clipsToRemove) {
+        clip->removeFromParentTrack();
+    }
 }
 
 void FluidOscServer::setClipDb(const OSCMessage& message) {
