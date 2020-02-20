@@ -1,5 +1,6 @@
 const path = require('path');
 const fluid = require('fluid-music');
+const fsHelpers = require('./fs');
 const _ = require('underscore');
 
 // First, run ./template.js, which activates the base session. 
@@ -9,9 +10,9 @@ const sessionFilename = path.join(__dirname, 'sessions/scx.tracktionedit');
 const baseDir = '/Users/charles/projects/reaper/sounds/';
 
 async function run() {
-  const subDirs = await fluid.fs.getDirsIn(baseDir);
+  const subDirs = await fsHelpers.getDirsIn(baseDir);
   console.log(subDirs);
-  let wavCollections = await Promise.all(subDirs.map(fluid.fs.getWavFilesIn));
+  let wavCollections = await Promise.all(subDirs.map(fsHelpers.getWavFilesIn));
 
   wavCollections = wavCollections.filter((collection, i) => {
     if (collection && collection.length) return true;
@@ -19,7 +20,7 @@ async function run() {
     return false;
   });
 
-  const files = _.range(60).map(i => {
+  const files = _.range(160).map(i => {
     let collection = wavCollections[i % wavCollections.length];
     return fluid.random.choice(collection);
   });
