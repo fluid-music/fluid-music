@@ -6,6 +6,7 @@ By describing a sound design document with modular blocks of code, the Fluid Eng
 
 - Expedite the monotonous parts of sound design, by abstracting **sound design recipes** with code
 - Enable recipe sharing, distribution, and remixing
+- Document the sound design practices used to achieve certain musical results in a way that is human and machine readable
 - Provide a foundation to experiment with new kinds of recorded music that are more dynamic and more flexible than the static audio files commonly distributed today.
 
 The most basic workflow looks like this:
