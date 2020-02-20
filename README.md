@@ -2,34 +2,61 @@
 
 The Fluid Engine is a Swiss Army Knife for **computational sound design** and electro-acoustic composition.
 
-The Fluid Engine introduces the concept of **sound design recipes**, which encapsulate some of the tasks conventionally performed in a DAW in modular blocks of imperative code. The Fluid Engine aims to:
+The Fluid Engine introduces the concept of **sound design recipes**, which encapsulate sound design tasks inside modular blocks of imperative code. This recipe-based system aims to:
 
-1. Expedite the monotonous parts of sound design by abstracting sound design tasks into **sound design recipes**
-1. Document the sound design practices used to achieve certain musical results in a way that is both *human readable* and *machine readable*.
-1. Enable sharing, distribution, versioning, and remixing of **sound design recipes**
-1. Provide a foundation to experiment with new kinds of recorded music that are more dynamic and more flexible than the static audio files commonly distributed today.
-
-Together, these are necessary prerequisites for effective *fluid music*.
+1. Expedite the monotonous parts of sound design
+1. Document the sound design practices used to achieve certain musical results
+1. Enable sharing, distribution, versioning, and remixing of sound design techniques
+1. Provide the building blocks required to experiment with new ways of creating, packaging and distributing dynamic music systems.
 
 ## Comparison with other tools
 
-- GUI/DAW based systems are useful for precision editing along a timeline.
-- Graphical programming languages like Max and PureData are useful for prototyping realtime interactive systems.
-- Code based languages like SuperCollider and CSound are useful for designing and deploying systems are more complex that what is supported in a DAW
+Traditional DAWs
+  - Useful if you want:
+    - precise timeline-based editing. No other tool works as well for common timeline based sound design like precise parameter automation, audio editing, and mixing, arranging
+    - great for both realtime editing and offline audio rendering
+    - professional plugin eco system
+  - Not helpful if you need to:
+    - insert any kind of computation or procedural content into the the production pipeline
+    - deploy dynamic content to a web server or mobile devices
 
-The fluid engine strikes a different balance
-- Can run headless:
-  - Necessary for deploying on a server
-- Integrates with a conventional DAW GUI for precision timeline based editing.
-  - This is necessary for releasing music that is competitive with music created professionally using the conventional DAW based workflow.
+Graphical programming languages like Max and PureData
+  - Useful when you want to:
+    - prototype realtime interactive systems
+  - Not useful if you need:
+    - precise timeline-based editing
+    - design systems that are too complex to manage in a graphical programming environment
+
+Code based languages like SuperCollider and ChucK, and CSound
+  - Useful when you want to:
+    - design complex interactive audio graphs
+    - deploy on a server or in mobile app
+    - do experimental sound design
+  - Not useful if you need:
+    - precise timeline-based editing/composing on a timeline (while Csound is built on the concept of a text based "score," it is very clumsy to work with when compared with a DAW)
+    - support for pro quality plugins
+    - precise audio editing support
+
+The Fluid Engine aims to bridge the gap between DAWs and computational systems by integrating computational code-based techniques directly into a conventional audio workstation. The following design choices show a balance between timeline-centric, GUI-based DAWs, and other systems for imperative computational sound design.
+
+The Fluid Engine:
+- Can run headless, which is necessary for
+  - deploying to a web server
+- Integrates with a conventional DAW GUI, which is necessary for:
+  - precision timeline based editing
+  - creating content that is competitive with music created professionally using the conventional DAW based workflow.
 - Can render results in realtime, which is necessary for:
   - playing the engine like an instrument
-  - exploring the output space possibilities as a musician/composer
-  - mixing/matching/tweaking input recipes
-  - Can run as a streaming server
+  - exploring recipe parameter space as a sound designer
+  - mixing/matching/tweaking input recipes as a musician/composer
+  - running in an dynamic audio streaming server
 - Can render offline. Necessary for:
-  - generating content faster than realtime
-  - using the engine in machine learning contexts such as GANs or reinforcement learning.
+  - offline personalized content systems
+  - deploying in machine learning projects such as a GANs and reinforcement learning systems
+  - efficient machine listening based recipes
+- Can describe sound design documents in a format that is human readable and machine readable, allowing
+  - an ecosystem of recipe sharing, akin to a package manager AND
+  - integration with procedural and ML workflows
 
 ## Workflow
 
