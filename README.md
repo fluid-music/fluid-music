@@ -5,8 +5,8 @@ The fluid engine is a Swiss Army Knife CLI for computational sound design and el
 By describing a sound design document with modular blocks of code, the Fluid Engine aims to
 
 - Expedite the monotonous parts of sound design, by abstracting **sound design recipes** with code
-- Enable recipe sharing, distribution, and remixing
-- Document the sound design practices used to achieve certain musical results in a way that is human and machine readable
+- Enable sharing, distribution, versioning, and remixing of **sound design recipes**
+- Document the sound design practices used to achieve certain musical results in a way that is *human readable* and *machine readable*
 - Provide a foundation to experiment with new kinds of recorded music that are more dynamic and more flexible than the static audio files commonly distributed today.
 
 The most basic workflow looks like this:
@@ -19,11 +19,11 @@ But much more complicated and flexible uses can be built using the modules in th
 
 ## CLI
 
-The most common invocation is `cybr -e -f`, opens an empty document (`-e`) and starts a server listening for `fluid-music` recipes (`-f`).
+The most common invocation is `cybr -e -f`, opens an empty document (`-e`) and starts a server listening for `fluid-music` recipes (`-f`). Recipes can then be sent from `fluid-music` client code.
 
-For up-to-date info on all the possible run `cybr -h`.
+For up-to-date info on all the possible commands, run `cybr -h`.
 
-For detailed information about an option,  (ex `--f`) run `cybr -h -f`
+For detailed information about an option,  (ex `-f`) run `cybr -h -f`
 
 ```
 cybr -f|--fluid-server           Launch a server and listen for fluid engine OSC messages
