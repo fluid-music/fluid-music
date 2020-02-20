@@ -433,7 +433,7 @@ void printPreset(te::Plugin* plugin) {
 
 void saveTracktionPreset(te::Plugin* plugin, String name) {
     if (!plugin) {
-        assert(false);
+        jassert(false);
         return;
     }
 

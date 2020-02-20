@@ -499,7 +499,7 @@ void FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
     }
 
     selectedAudioTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), busName);
-    assert(selectedAudioTrack); // I believe this will always return a track
+    jassert(selectedAudioTrack); // I believe this will always return a track
 
     // Look through plugins on the track, see if it already has an AuxReturnPlugin
     te::AuxReturnPlugin* returnPlugin = nullptr;
