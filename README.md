@@ -40,11 +40,9 @@ Code based languages like SuperCollider and ChucK, and CSound
 The Fluid Engine aims to bridge the gap between DAWs and computational systems by integrating computational code-based techniques directly into a conventional audio workstation. The following design choices show a balance between timeline-centric, GUI-based DAWs, and other systems for imperative computational sound design.
 
 The Fluid Engine:
-- Can run headless, which is necessary for
-  - deploying to a web server
 - Integrates with a conventional DAW GUI, which is necessary for:
   - precision timeline based editing
-  - creating content that is competitive with music created professionally using the conventional DAW based workflow.
+  - creating content that is competitive with music created professionally using the conventional DAW based workflow
 - Can render results in realtime, which is necessary for:
   - playing the engine like an instrument
   - exploring recipe parameter space as a sound designer
@@ -54,7 +52,9 @@ The Fluid Engine:
   - offline personalized content systems
   - deploying in machine learning projects such as a GANs and reinforcement learning systems
   - efficient machine listening based recipes
-- Can describe sound design documents in a format that is human readable and machine readable, allowing
+- Can run headless, which is necessary for:
+  - deploying to a web server
+- Can describe sound design documents in a format that is human readable and machine readable, allowing:
   - an ecosystem of recipe sharing, akin to a package manager AND
   - integration with procedural and ML workflows
 
@@ -70,7 +70,7 @@ The engine strikes a balance between code based workflow and a GUI/DAW based wor
 
 ## CLI
 
-The most common invocation is `cybr -e -f`, opens an empty document (`-e`) and starts a server listening for `fluid-music` recipes (`-f`). Recipes can then be sent from `fluid-music` client code.
+The most common invocation is `cybr -e -f`, which opens an empty document (`-e`) and starts a server listening for `fluid-music` recipes (`-f`). Recipes can then be sent from `fluid-music` client code.
 
 For up-to-date info on all the possible commands, run `cybr -h`.
 
