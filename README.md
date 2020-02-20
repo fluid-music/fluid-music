@@ -1,21 +1,45 @@
 # Fluid Engine
 
-The fluid engine is a Swiss Army Knife CLI for computational sound design and electro-acoustic composition.
+The Fluid Engine is a Swiss Army Knife for **computational sound design** and electro-acoustic composition.
 
-By describing a sound design document with modular blocks of code, the Fluid Engine aims to
+The Fluid Engine introduces the concept of **sound design recipes**, which encapsulate some of the tasks conventionally performed in a DAW in modular blocks of imperative code. The Fluid Engine aims to:
 
-- Expedite the monotonous parts of sound design, by abstracting **sound design recipes** with code
-- Enable sharing, distribution, versioning, and remixing of **sound design recipes**
-- Document the sound design practices used to achieve certain musical results in a way that is *human readable* and *machine readable*
-- Provide a foundation to experiment with new kinds of recorded music that are more dynamic and more flexible than the static audio files commonly distributed today.
+1. Expedite the monotonous parts of sound design by abstracting sound design tasks into **sound design recipes**
+1. Document the sound design practices used to achieve certain musical results in a way that is both *human readable* and *machine readable*.
+1. Enable sharing, distribution, versioning, and remixing of **sound design recipes**
+1. Provide a foundation to experiment with new kinds of recorded music that are more dynamic and more flexible than the static audio files commonly distributed today.
 
-The most basic workflow looks like this:
+Together, these are necessary prerequisites for effective *fluid music*.
 
-1. Write **sound design recipes** using the language described in the `fluid-music` node module. Recipes encapsulate sound design procedures that would traditionally be performed in a DAW.
-2. Mix and match original recipes with bundled recipes, and send the result to the server.
+## Comparison with other tools
+
+- GUI/DAW based systems are useful for precision editing along a timeline.
+- Graphical programming languages like Max and PureData are useful for prototyping realtime interactive systems.
+- Code based languages like SuperCollider and CSound are useful for designing and deploying systems are more complex that what is supported in a DAW
+
+The fluid engine strikes a different balance
+- Can run headless:
+  - Necessary for deploying on a server
+- Integrates with a conventional DAW GUI for precision timeline based editing.
+  - This is necessary for releasing music that is competitive with music created professionally using the conventional DAW based workflow.
+- Can render results in realtime, which is necessary for:
+  - playing the engine like an instrument
+  - exploring the output space possibilities as a musician/composer
+  - mixing/matching/tweaking input recipes
+  - Can run as a streaming server
+- Can render offline. Necessary for:
+  - generating content faster than realtime
+  - using the engine in machine learning contexts such as GANs or reinforcement learning.
+
+## Workflow
+
+The engine strikes a balance between code based workflow and a GUI/DAW based workflow. The most basic use of the Fluid Engine looks like this:
+
+1. Write **sound design recipes** using the language described in the `fluid-music` node module (recipes encapsulate sound design procedures that would traditionally be performed in a DAW.)
+2. Send a collection of recipes to the Fluid Engine server. Update the recipe parameters while auditioning the sonic output in realtime until results are satisfactory.
 3. Tweak the result in a DAW. Currently, [Tracktion Waveform](https://www.tracktion.com/products/waveform) is supported. Support for other formats may be added.
 
-But much more complicated and flexible uses can be built using the modules in this repository.
+...but much more complicated and flexible uses can be built on the tools in this repository.
 
 ## CLI
 
