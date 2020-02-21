@@ -20,8 +20,8 @@ client.send([
   fluid.clip.length(1),                             // Trim the audio clip to one second
   fluid.plugin.select('eos', 'vst'),                // Insert the eos vst reverb plugin
   fluid.clip.render(voxVerb, 4),                    // Render the selected clip with 4 second "tail"
-  fluid.audiotrack.select('reverse-reverb'),        // Create and select a track named "new track"
-  fluid.audiotrack.insertWav('r1', 0, voxVerb),     // Insert the newly render audio
+  fluid.audiotrack.select('reversed'),              // Create and select a track named "reversed"
+  fluid.audiotrack.insertWav('r1', 0, voxVerb),     // Insert and select the newly rendered audio
   fluid.audioclip.reverse(),                        // reverse the selected clip
   fluid.global.save(),                              // Save document (session) file
   fluid.transport.play(),
