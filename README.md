@@ -7,8 +7,8 @@ The Fluid Engine introduces the concept of **sound design recipes**, which encap
 1. Make new kinds of computational sound design feasible
 1. Expedite the monotonous parts of sound design
 1. Document and parametrize the sound design practices used to achieve certain musical results
-1. Enable sharing, distribution, versioning, and remixing of sound design techniques
-1. Provide foundational infrastructure to experiment with new ways of creating, packaging and distributing dynamic music systems.
+1. Enable sharing, distribution, versioning, and remixing of **sound design recipes**
+1. Provide foundational infrastructure to experiment with new ways of creating, packaging and distributing dynamic music systems
 
 ## Comparison with other tools
 
