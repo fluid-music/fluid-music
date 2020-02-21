@@ -4,10 +4,11 @@ The Fluid Engine is a Swiss Army Knife for **computational sound design** and el
 
 The Fluid Engine introduces the concept of **sound design recipes**, which encapsulate sound design tasks inside modular blocks of imperative code. This recipe-based system aims to:
 
+1. Make new kinds of computational sound design feasible
 1. Expedite the monotonous parts of sound design
-1. Document the sound design practices used to achieve certain musical results
+1. Document and parametrize the sound design practices used to achieve certain musical results
 1. Enable sharing, distribution, versioning, and remixing of sound design techniques
-1. Provide the building blocks required to experiment with new ways of creating, packaging and distributing dynamic music systems.
+1. Provide foundational infrastructure to experiment with new ways of creating, packaging and distributing dynamic music systems.
 
 ## Comparison with other tools
 
@@ -42,6 +43,7 @@ The Fluid Engine aims to bridge the gap between DAWs and computational systems b
 **The Fluid Engine:**
 - Integrates with a conventional DAW GUI, which is necessary for:
   - precision timeline based editing
+  - carefully inspecting the output of computational content and recipes
   - creating content that is competitive with music created professionally using the conventional DAW based workflow
 - Can render results in realtime, which is necessary for:
   - playing the engine like an instrument
