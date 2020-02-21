@@ -11,7 +11,7 @@ The Fluid Engine introduces the concept of **sound design recipes**, which encap
 
 ## Comparison with other tools
 
-Traditional DAWs
+**Traditional DAWs**
   - Useful if you want:
     - precise timeline-based editing. No other tool works as well for common timeline based sound design like precise parameter automation, audio editing, and mixing, arranging
     - great for both realtime editing and offline audio rendering
@@ -20,14 +20,14 @@ Traditional DAWs
     - insert any kind of computation or procedural content into the the production pipeline
     - deploy dynamic content to a web server or mobile devices
 
-Graphical programming languages like Max and PureData
+**Graphical programming languages like Max and PureData**
   - Useful when you want to:
     - prototype realtime interactive systems
   - Not useful if you need:
     - precise timeline-based editing
     - design systems that are too complex to manage in a graphical programming environment
 
-Code based languages like SuperCollider and ChucK, and CSound
+**Code based languages like SuperCollider and ChucK, and CSound**
   - Useful when you want to:
     - design complex interactive audio graphs
     - deploy on a server or in mobile app
@@ -39,7 +39,7 @@ Code based languages like SuperCollider and ChucK, and CSound
 
 The Fluid Engine aims to bridge the gap between DAWs and computational systems by integrating computational code-based techniques directly into a conventional audio workstation. The following design choices show a balance between timeline-centric, GUI-based DAWs, and other systems for imperative computational sound design.
 
-The Fluid Engine:
+**The Fluid Engine:**
 - Integrates with a conventional DAW GUI, which is necessary for:
   - precision timeline based editing
   - creating content that is competitive with music created professionally using the conventional DAW based workflow

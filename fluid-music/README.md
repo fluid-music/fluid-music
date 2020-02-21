@@ -1,5 +1,83 @@
 # Fluid Music
 
+## Fluid Client Methods
+Many client methods are available, including the ones below:
+
+audioclip:
+```JavaScript
+fluid.audioclip.reverse(...)
+fluid.audioclip.fadeInOutSeconds(...)
+fluid.audioclip.fadeIn(...)
+fluid.audioclip.fadeOut(...)
+fluid.audioclip.gain(...)
+```
+audiotrack:
+```JavaScript
+fluid.audiotrack.select(...)
+fluid.audiotrack.insertWav(...)
+fluid.audiotrack.selectReturnTrack(...)
+fluid.audiotrack.send(...)
+fluid.audiotrack.mute(...)
+fluid.audiotrack.unmute(...)
+fluid.audiotrack.gain(...)
+fluid.audiotrack.renderRegion(...)
+fluid.audiotrack.removeClips(...)
+```
+clip:
+```JavaScript
+fluid.clip.render(...)
+fluid.clip.select(...)
+fluid.clip.length(...)
+fluid.clip.trimSeconds(...)
+fluid.clip.setSourceOffsetSeconds(...)
+```
+global:
+```JavaScript
+fluid.global.save(...)
+fluid.global.cd(...)
+fluid.global.activate(...)
+```
+midiclip:
+```JavaScript
+fluid.midiclip.clear(...)
+fluid.midiclip.select(...)
+fluid.midiclip.note(...)
+fluid.midiclip.create(...)
+```
+plugin:
+```JavaScript
+fluid.plugin.select(...)
+fluid.plugin.setParamNormalized(...)
+fluid.plugin.setParamExplicit(...)
+fluid.plugin.setParamNormalizedAt(...)
+fluid.plugin.setParamExplicitAt(...)
+fluid.plugin.setSideChainInput(...)
+fluid.plugin.save(...)
+fluid.plugin.load(...)
+fluid.plugin.loadTrkpreset(...)
+fluid.plugin.addpath(...)
+```
+random:
+```JavaScript
+fluid.random.choice(...)
+```
+sampler:
+```JavaScript
+fluid.sampler.add(...)
+fluid.sampler.clearAll(...)
+```
+transport:
+```JavaScript
+fluid.transport.play(...)
+fluid.transport.stop(...)
+fluid.transport.loop(...)
+fluid.transport.to(...)
+```
+groove:
+```JavaScript
+fluid.groove.applyGroove(...)
+```
+
 ## Fluid Music Tablature
 
 Fluid music comes with a simple but powerful music notation system built on JSON objects.
