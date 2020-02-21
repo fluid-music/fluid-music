@@ -1,5 +1,8 @@
 const fs = require('fs');
 
+/**
+ * @namespace plugin
+ */
 const plugin = {
   /**
    * Creates an object that looks like this:

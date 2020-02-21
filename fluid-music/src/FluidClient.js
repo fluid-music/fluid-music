@@ -14,8 +14,12 @@ const prepareObjectForOsc = function(msgObject, timetag) {
 
 /**
  * FluidOscSender will close instantly after all messages were sent.
+ * @class Client
  */
-module.exports = class FluidOscSender {
+module.exports = class Client {
+  /**
+   * @param {number} targetPort UDP port to send to
+   */
   constructor(targetPort) {
     if (typeof targetPort !== 'number') targetPort = 9999;
     this.targetPort = targetPort;
@@ -39,7 +43,7 @@ module.exports = class FluidOscSender {
    *            { type: 'float', value: 3.14159 },
    *          ]
    *        }
-   * @param {[number]} [timetag = 0] - timetag is only used if first argument is
+   * @param {number} [timetag=0] - timetag is only used if first argument is an
    *        array.
    */
   send(msgObject, timetag) {

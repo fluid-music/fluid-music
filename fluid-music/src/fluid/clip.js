@@ -1,3 +1,6 @@
+/**
+ * @namespace clip
+ */
 const clip = {
   /**
    * Render the selected clip (audio or midi) to an audio file.

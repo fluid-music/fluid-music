@@ -1,4 +1,6 @@
-
+/**
+ * @namespace global
+ */
 const global = module.exports = {
   /**
    * @param {string} [filename] - '.tracktionedit' or '.wav' filename. If no

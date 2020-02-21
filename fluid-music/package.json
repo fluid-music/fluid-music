@@ -6,13 +6,15 @@
   "scripts": {
     "watch": "nodemon -e .js,.mjs,.json,.yaml,.yml src/index.js",
     "test": "mocha",
-    "test-debug": "mocha --reporter spec --inspect-brk"
+    "test-debug": "mocha --reporter spec --inspect-brk",
+    "docs": "jsdoc2md  --files 'src/fluid/*.js' > docs/fluid.md"
   },
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
   "devDependencies": {
-    "nodemon": "^2.0.1",
+    "jsdoc-to-markdown": "^5.0.3",
     "mocha": "^6.2.2",
+    "nodemon": "^2.0.1",
     "should": "^13.2.3"
   },
   "dependencies": {

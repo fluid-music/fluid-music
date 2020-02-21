@@ -1,4 +1,11 @@
+/**
+ * @namespace audiotrack
+ */
 const audiotrack = {
+  /**
+   * Select an audio track by name
+   * @param {string} trackName
+   */
   select(trackName) {
     if (typeof trackName !== 'string')
       throw new Error('audiotrack.Select requires track name string, got: ' + trackName);
@@ -8,6 +15,13 @@ const audiotrack = {
     }
   },
 
+  /**
+   * Insert a audio file clip into the selected audio track. No effect if there
+   * is no selected track.
+   * @param {string} clipName name the new clip
+   * @param {number} startBeats clip start time in quarter notes
+   * @param {string} fileName
+   */
   insertWav (clipName, startBeats, fileName){
     const args = [
       {type: 'string', value: clipName},
@@ -61,11 +75,18 @@ const audiotrack = {
     return { address: '/audiotrack/send/set/db', args };
   },
 
+  /**
+   * Mute or unmute the selected audio track.
+   * @param {boolean} [mute=true] true if track should be muted. false = unmute.
+   */
   mute(mute = true) {
     if (mute) return { address: '/audiotrack/mute'};
     else return { address: '/audiotrack/unmute'};
   },
 
+  /**
+   * Unmute the selected audio track.
+   */
   unmute() { return { address: '/audiotrack/unmute'}},
 
   gain(dBFS) {

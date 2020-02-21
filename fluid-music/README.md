@@ -42,6 +42,9 @@ client.send([
 ```
 
 ## Fluid Client Methods
+
+See [docs/fluid.md](./docs/fluid.md) for detailed info.
+
 Many client methods are available, including the ones below:
 
 ```JavaScript

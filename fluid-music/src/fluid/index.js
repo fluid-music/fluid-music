@@ -17,7 +17,9 @@ const transport = require('./transport');
 const global = require('./global');
 const clip = require('./clip');
 
-
+/**
+ * @module fluid
+ */
 module.exports = {
   audioclip,
   audiotrack,

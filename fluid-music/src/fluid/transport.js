@@ -1,4 +1,6 @@
-
+/**
+ * @namespace transport
+ */
 const transport = {
   play() { return { address: '/transport/play',} },
   stop() { return { address: '/transport/stop',} },
