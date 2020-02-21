@@ -3,16 +3,15 @@
 ## Fluid Client Methods
 Many client methods are available, including the ones below:
 
-audioclip:
 ```JavaScript
+// audioclip:
 fluid.audioclip.reverse(...)
 fluid.audioclip.fadeInOutSeconds(...)
 fluid.audioclip.fadeIn(...)
 fluid.audioclip.fadeOut(...)
 fluid.audioclip.gain(...)
-```
-audiotrack:
-```JavaScript
+
+// audiotrack:
 fluid.audiotrack.select(...)
 fluid.audiotrack.insertWav(...)
 fluid.audiotrack.selectReturnTrack(...)
@@ -22,30 +21,26 @@ fluid.audiotrack.unmute(...)
 fluid.audiotrack.gain(...)
 fluid.audiotrack.renderRegion(...)
 fluid.audiotrack.removeClips(...)
-```
-clip:
-```JavaScript
+
+// clip:
 fluid.clip.render(...)
 fluid.clip.select(...)
 fluid.clip.length(...)
 fluid.clip.trimSeconds(...)
 fluid.clip.setSourceOffsetSeconds(...)
-```
-global:
-```JavaScript
+
+// global:
 fluid.global.save(...)
 fluid.global.cd(...)
 fluid.global.activate(...)
-```
-midiclip:
-```JavaScript
+
+// midiclip:
 fluid.midiclip.clear(...)
 fluid.midiclip.select(...)
 fluid.midiclip.note(...)
 fluid.midiclip.create(...)
-```
-plugin:
-```JavaScript
+
+// plugin:
 fluid.plugin.select(...)
 fluid.plugin.setParamNormalized(...)
 fluid.plugin.setParamExplicit(...)
@@ -56,25 +51,21 @@ fluid.plugin.save(...)
 fluid.plugin.load(...)
 fluid.plugin.loadTrkpreset(...)
 fluid.plugin.addpath(...)
-```
-random:
-```JavaScript
+
+// random:
 fluid.random.choice(...)
-```
-sampler:
-```JavaScript
+
+// sampler:
 fluid.sampler.add(...)
 fluid.sampler.clearAll(...)
-```
-transport:
-```JavaScript
+
+// transport:
 fluid.transport.play(...)
 fluid.transport.stop(...)
 fluid.transport.loop(...)
 fluid.transport.to(...)
-```
-groove:
-```JavaScript
+
+// groove:
 fluid.groove.applyGroove(...)
 ```
 
