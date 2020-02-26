@@ -13,12 +13,10 @@
 InterprocessConnection* FluidIpcServer::createConnectionObject(){
     std::cout<<"Creating interprocess connection"<<std::endl;
     
-//    FluidIpc ipc;
-//    ipcVec.push_back(ipc);
-    ipc.setFluidServer(*serverRef);
+    ipcMap[ipc_num].setFluidServer(*serverRef);
     
     std::cout << "FluidOscServer: Activated new cybr edit" << std::endl;
-    return &ipc;
+    return &ipcMap[ipc_num++];
 }
 
 FluidIpcServer::FluidIpcServer(FluidOscServer& server){

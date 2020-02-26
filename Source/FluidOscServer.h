@@ -89,8 +89,10 @@ private:
 class FluidIpcServer : public InterprocessConnectionServer{
 public:
     FluidIpcServer(FluidOscServer& server);
-    FluidIpc ipc;
     InterprocessConnection* createConnectionObject() override;
+    
 private:
+    int ipc_num = 0;
+    std::map<int, FluidIpc> ipcMap;
     FluidOscServer* serverRef = nullptr;
 };
