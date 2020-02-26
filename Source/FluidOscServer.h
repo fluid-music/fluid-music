@@ -24,21 +24,18 @@ struct SelectedObjects {
     te::Plugin* plugin = nullptr;
 };
 
-//TODO: implement connect, and have a server spawn an interprocess connection.
-// inherit from
 class FluidOscServer :
-    public InterprocessConnection, OSCReceiver,
+    public OSCReceiver,
     private OSCReceiver::Listener<OSCReceiver::MessageLoopCallback>
 {
 public:
     FluidOscServer();
     
-    void connectionMade() override;
-    void connectionLost() override;
-    void messageReceived(const MemoryBlock& message) override;
-    
     virtual void oscMessageReceived (const OSCMessage& message) override;
     virtual void oscBundleReceived (const OSCBundle& bundle) override;
+    
+    void handleOscBundle(const OSCBundle& bundle, SelectedObjects parentSelection);
+    void handleOscMessage(const OSCMessage& message);
 
     // message handlers
     void selectAudioTrack(const OSCMessage& message);
@@ -72,17 +69,28 @@ private:
      selection state to parentSelection after each bundle. This should ensure
      that nested bundles do not leave behind a selection after they have been
      handled. */
-    void handleOscBundle(const OSCBundle& bundle, SelectedObjects parentSelection);
-    void handleOscMessage(const OSCMessage& message);
 
     te::AudioTrack* selectedAudioTrack = nullptr;
     te::MidiClip* selectedMidiClip = nullptr;
     te::Plugin* selectedPlugin = nullptr;
 };
 
+class FluidIpc : public InterprocessConnection{
+public:
+    void connectionMade() override;
+    void connectionLost() override;
+    void messageReceived(const MemoryBlock& message) override;
+    
+    void setFluidServer(FluidOscServer& server);
+private:
+    FluidOscServer* fluidserver = nullptr;
+};
+
 class FluidIpcServer : public InterprocessConnectionServer{
 public:
-    FluidOscServer fluidserver;
-    CybrEdit * newCybrEdit = nullptr;
+    FluidIpcServer(FluidOscServer& server);
+    FluidIpc ipc;
     InterprocessConnection* createConnectionObject() override;
+private:
+    FluidOscServer* serverRef = nullptr;
 };

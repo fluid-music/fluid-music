@@ -12,35 +12,48 @@
 
 InterprocessConnection* FluidIpcServer::createConnectionObject(){
     std::cout<<"Creating interprocess connection"<<std::endl;
-    fluidserver.activeCybrEdit.reset(newCybrEdit);
+    
+//    FluidIpc ipc;
+//    ipcVec.push_back(ipc);
+    ipc.setFluidServer(*serverRef);
+    
     std::cout << "FluidOscServer: Activated new cybr edit" << std::endl;
-    return &fluidserver;
+    return &ipc;
 }
 
-FluidOscServer::FluidOscServer() {
-    addListener (this);
+FluidIpcServer::FluidIpcServer(FluidOscServer& server){
+    serverRef = &server;
 }
 
-void FluidOscServer::connectionMade(){
+void FluidIpc::setFluidServer(FluidOscServer& server){
+    fluidserver = &server;
+}
+
+void FluidIpc::connectionMade(){
     std::cout<<"Connection Made"<<std::endl;
 }
 
-void FluidOscServer::connectionLost(){
+void FluidIpc::connectionLost(){
     std::cout<<"Connection Lost"<<std::endl;
 }
 
-void FluidOscServer::messageReceived(const MemoryBlock &message){
+void FluidIpc::messageReceived(const MemoryBlock &message){
     OSCInputStream instream(message.getData(), message.getSize());
     OSCBundle::Element elem = instream.readElementWithKnownSize(message.getSize());
     
     if(elem.isBundle()){
         OSCBundle bundle = elem.getBundle();
         SelectedObjects obj;
-        handleOscBundle(bundle, obj);
+        fluidserver->handleOscBundle(bundle, obj);
     }
     else{
         OSCMessage msg = elem.getMessage();
+        fluidserver->handleOscMessage(msg);
     }
+}
+
+FluidOscServer::FluidOscServer() {
+    addListener (this);
 }
 
 void FluidOscServer::oscBundleReceived(const OSCBundle &bundle){
