@@ -34,7 +34,8 @@ public:
     bool getRunForever() { return runForever; }
     void setRunForever(bool newFlag);
 
-    FluidOscServer fluidOscServer;
+    FluidIpcServer fluidIpcServer;
+    
 private:
     juce::OwnedArray<CybrEdit> playingEdits;
     bool runForever = false;

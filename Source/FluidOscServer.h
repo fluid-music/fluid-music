@@ -14,6 +14,7 @@
 #include "cybr_helpers.h"
 #include "CybrEdit.h"
 #include "CybrSearchPath.h"
+#include "temp_OSCInputStream.h"
 
 typedef void (*OscHandlerFunc)(const OSCMessage&);
 
@@ -23,12 +24,19 @@ struct SelectedObjects {
     te::Plugin* plugin = nullptr;
 };
 
+//TODO: implement connect, and have a server spawn an interprocess connection.
+// inherit from
 class FluidOscServer :
-    public OSCReceiver,
+    public InterprocessConnection, OSCReceiver,
     private OSCReceiver::Listener<OSCReceiver::MessageLoopCallback>
 {
 public:
     FluidOscServer();
+    
+    void connectionMade() override;
+    void connectionLost() override;
+    void messageReceived(const MemoryBlock& message) override;
+    
     virtual void oscMessageReceived (const OSCMessage& message) override;
     virtual void oscBundleReceived (const OSCBundle& bundle) override;
 
@@ -65,8 +73,16 @@ private:
      that nested bundles do not leave behind a selection after they have been
      handled. */
     void handleOscBundle(const OSCBundle& bundle, SelectedObjects parentSelection);
+    void handleOscMessage(const OSCMessage& message);
 
     te::AudioTrack* selectedAudioTrack = nullptr;
     te::MidiClip* selectedMidiClip = nullptr;
     te::Plugin* selectedPlugin = nullptr;
+};
+
+class FluidIpcServer : public InterprocessConnectionServer{
+public:
+    FluidOscServer fluidserver;
+    CybrEdit * newCybrEdit = nullptr;
+    InterprocessConnection* createConnectionObject() override;
 };
