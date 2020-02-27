@@ -2,6 +2,11 @@ const fs = require('fs');
 const fsp = fs.promises;
 const path = require('path');
 
+/**
+ * Recursively find all the filename in a given directory.
+ * @param {string} dir directory to search
+ * @returns {Promise} An array of all the filenames in a given folder
+ */
 async function walk(dir) {
   let files = await fsp.readdir(dir);
   files = await Promise.all(files.map(async file => {
@@ -14,6 +19,11 @@ async function walk(dir) {
   return files.reduce((all, folderContents) => all.concat(folderContents), []);
 }
 
+/**
+ * Recursively find all the wav files in the given path
+ * @param {string} searchPath directory to search
+ * @returns {Promise} An array of filenames
+ */
 async function getWavFilesIn(searchPath) {
   return walk(searchPath).then((files) => {
     return files.filter(filename => filename.toLowerCase().endsWith('.wav'));
@@ -26,6 +36,7 @@ async function getWavFilesIn(searchPath) {
  * directories in baseDir.
  *
  * @param {string} baseDir directory to search
+ * @returns {Promise} An array of directory names
  */
 async function getDirsIn(baseDir) {
   let files = (await fsp.readdir(baseDir)).map(filename => {
