@@ -69,8 +69,8 @@ void FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects pa
         if (element.isMessage()) {
             // allow messages to update the current selection ("currBundle")
             handleOscMessage(element.getMessage());
-            currBundle.audio = selectedAudioTrack;
-            currBundle.midi = selectedMidiClip;
+            currBundle.audioTrack = selectedAudioTrack;
+            currBundle.clip = selectedClip;
             currBundle.plugin = selectedPlugin;
         } else if (element.isBundle()) {
             // After processing a bundle, selection will reset to "currBundle"
@@ -78,8 +78,8 @@ void FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects pa
         }
     }
     
-    selectedAudioTrack = parentSelection.audio;
-    selectedMidiClip = parentSelection.midi;
+    selectedAudioTrack = parentSelection.audioTrack;
+    selectedClip = parentSelection.clip;
     selectedPlugin = parentSelection.plugin;
 }
 
@@ -104,27 +104,345 @@ void FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
     if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
     if (msgAddressPattern.matches({"/plugin/param/set/at"})) return setPluginParamAt(message);
+    if (msgAddressPattern.matches({"/plugin/sidechain/input/set" })) return setPluginSideChainInput(message);
     if (msgAddressPattern.matches({"/plugin/save"})) return savePluginPreset(message);
     if (msgAddressPattern.matches({"/plugin/load/trkpreset"})) return loadPluginTrkpreset(message);
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
+    if (msgAddressPattern.matches({"/audiotrack/select/return"})) return selectReturnTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/set/db"})) return setTrackGain(message);
     if (msgAddressPattern.matches({"/audiotrack/send/set/db"})) return ensureSend(message);
+    if (msgAddressPattern.matches({"/audiotrack/remove/clips"})) return removeAudioTrackClips(message);
     if (msgAddressPattern.matches({"/audiotrack/insert/wav"})) return insertWaveSample(message);
-    if (msgAddressPattern.matches({"/audiotrack/select/return"})) return selectReturnTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/mute"})) return muteTrack(true);
     if (msgAddressPattern.matches({"/audiotrack/unmute"})) return muteTrack(false);
     if (msgAddressPattern.matches({"/file/save"})) return saveActiveEdit(message);
     if (msgAddressPattern.matches({"/cd"})) return changeWorkingDirectory(message);
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
+    if (msgAddressPattern.matches({"/audiotrack/region/render"})) return renderRegion(message);
+    if (msgAddressPattern.matches({"/clip/render"})) return renderClip(message);
+    if (msgAddressPattern.matches({"/clip/set/length"})) return setClipLength(message);
+    if (msgAddressPattern.matches({"/clip/select"})) return selectClip(message);
+    if (msgAddressPattern.matches({"/clip/trim/seconds"})) return trimClipBySeconds(message);
+    if (msgAddressPattern.matches({"/clip/source/offset/seconds"})) return offsetClipSourceInSeconds(message);
+    if (msgAddressPattern.matches({"/audioclip/set/db"})) return setClipDb(message);
+    if (msgAddressPattern.matches({"/audioclip/reverse"})) return reverseAudioClip(true);
+    if (msgAddressPattern.matches({"/audioclip/unreverse"})) return reverseAudioClip(false);
+    if (msgAddressPattern.matches({"/audioclip/fade/seconds"})) return audioClipFadeInOutSeconds(message);
 
     std::cout << "Unhandled message: ";
     printOscMessage(message);
 }
 
+void FluidOscServer::removeAudioTrackClips(const OSCMessage& message) {
+    if (!selectedAudioTrack) {
+        std::cout << "Cannot remove audio track clips: no track selected" << std::endl;
+        return;
+    }
+
+    te::Clip::Array clipsToRemove;
+    for (te::Clip* clip : selectedAudioTrack->getClips()) {
+        clipsToRemove.add(clip);
+    }
+
+    for (te::Clip* clip : clipsToRemove) {
+        clip->removeFromParentTrack();
+    }
+}
+
+void FluidOscServer::setClipDb(const OSCMessage& message) {
+    if (!selectedClip) {
+        std::cout << "Cannot set audio clip gain: no clip selected" << std::endl;
+        return;
+    }
+
+    auto* audioClip = dynamic_cast<te::AudioClipBase*>(selectedClip);
+    if (!audioClip) {
+        std::cout << "Cannot set audio clip gain: selected clip is not an audio clip" << std::endl;
+        return;
+    }
+
+    if (!message.size() || !message[0].isFloat32()) {
+        std::cout << "Cannot set audio clip gain: missing db float argument" << std::endl;
+        return;
+    }
+
+    double dBFS = message[0].getFloat32();
+    if (dBFS > 40) {
+        std::cout << "Cannot set audio clip gain: " << dBFS << "db is dangerously loud" << std::endl;
+        return;
+    }
+
+    audioClip->setGainDB(dBFS);
+}
+
+void FluidOscServer::audioClipFadeInOutSeconds(const OSCMessage& message) {
+    if (!selectedClip) {
+        std::cout << "Cannot setup audio clip fade in/out: no clip selected" << std::endl;
+        return;
+    }
+
+    auto* audioClip = dynamic_cast<te::WaveAudioClip*>(selectedClip);
+    if (!audioClip) {
+        std::cout << "Cannot setup audio clip fade in/out: selected clip is not an audio clip" << std::endl;
+        return;
+    }
+
+    // All args optional
+    // 0 - fade In  TIME
+    // 1 - fade Out TIME
+
+    if (message.size() >= 1 && message[0].isFloat32()) {
+        double fadeInTime = message[0].getFloat32();
+        audioClip->setFadeIn(fadeInTime);
+        if (message.size() >= 3 && message[2].isFloat32()) {
+            // TODO: Set type?
+        }
+    }
+
+    if (message.size() >= 2 && message[1].isFloat32()) {
+        double fadeOutTime = message[1].getFloat32();
+        audioClip->setFadeOut(fadeOutTime);
+        if (message.size() >= 4 && message[3].isFloat32()) {
+            // TODO Set fade type?
+        }
+    }
+}
+
+void FluidOscServer::reverseAudioClip(bool reverse) {
+    if (!selectedClip) {
+        std::cout << "Cannot update clip reverse status: no clip selected" << std::endl;
+        return;
+    }
+
+    auto* audioClip = dynamic_cast<te::WaveAudioClip*>(selectedClip);
+    if (!audioClip) {
+        std::cout << "Cannot update clip reverse status: selected clip is not an audio clip" << std::endl;
+        return;
+    }
+    if (reverse == audioClip->getIsReversed()) return;
+
+    // All the durations below are measured in seconds (after the speedRatio has
+    // been applied).
+    //
+    // The algorithm for reversing is the same, weather we are reversing, or
+    // "unreversing." Annoyingly, the clip->getSourceLength method returns 0
+    // if the clip is already reversed, so the if(reverse) block is used to
+    // ensure that getSourceLength is only called when the clip is in an
+    // unreversed state.
+    //
+    // The algorithm works when the clip's speedRatio is adjusted. However, I
+    // have not tested it with more complicated time streching, such as when
+    // clip effects are used to automate playback speed. Preliminary tests
+    // suggest that in Tracktion Waveform, clip effects are deactivated when the
+    // clip is reversed.
+
+    te::ClipPosition pos = audioClip->getPosition();
+    double speedRatio = audioClip->getSpeedRatio();
+    double length = pos.getLength();
+    double startInSource = pos.getOffset(); // after stretch
+
+    if (reverse) {
+        double sourceLength = audioClip->getSourceLength() / speedRatio;
+        double tailSize = sourceLength - (startInSource + length);
+        audioClip->setIsReversed(reverse);
+        audioClip->setOffset(tailSize);
+    } else {
+        audioClip->setIsReversed(reverse);
+        double sourceLength = audioClip->getSourceLength() / speedRatio;
+        double tailSize = sourceLength - (startInSource + length);
+        audioClip->setOffset(tailSize);
+    }
+
+    // Also switch fade in/out
+    double fadeInTime = audioClip->getFadeIn();
+    auto fadeInType = audioClip->getFadeInType();
+    audioClip->setFadeIn(audioClip->getFadeOut());
+    audioClip->setFadeInType(audioClip->getFadeOutType());
+    audioClip->setFadeOut(fadeInTime);
+    audioClip->setFadeOutType(fadeInType);
+}
+
+void FluidOscServer::offsetClipSourceInSeconds(const juce::OSCMessage& message) {
+    if (!selectedClip) {
+        std::cout << "Cannot set clip source offset: no clip selected" << std::endl;
+        return;
+    }
+
+    if (!message.size() || !message[0].isFloat32()) {
+        std::cout << "Cannot set clip source offset: missing offset value" << std::endl;
+        return;
+    }
+    double newOffset = message[0].getFloat32();
+    selectedClip->setOffset(newOffset);
+}
+
+void FluidOscServer::trimClipBySeconds(const juce::OSCMessage& message) {
+    if (!selectedClip) {
+        std::cout << "Cannot trim clip: No clip selected" << std::endl;
+        return;
+    }
+
+    double startTrim = (message.size() >= 1 && message[0].isFloat32()) ? message[0].getFloat32() : 0;
+    double endTrim =   (message.size() >= 2 && message[1].isFloat32()) ? message[1].getFloat32() : 0;
+    te::EditTimeRange currentRange = selectedClip->getEditTimeRange();
+    te::EditTimeRange newRange {currentRange.start + startTrim, currentRange.end - endTrim};
+
+    if (newRange.getLength() <= 0) {
+        std::cout << "Cannot trim clip: duration of trimmed clip would be sub-zero" << std::endl;
+        return;
+    }
+    // verify: does this work when the new start is after the old end, but before the new end????
+    selectedClip->setStart(newRange.start, true, false);
+    selectedClip->setEnd(newRange.end, true);
+}
+
+void FluidOscServer::setClipLength(const juce::OSCMessage& message) {
+    if (!selectedClip) {
+        std::cout << "Cannot set clip length: No clip selected" << std::endl;
+        return;
+    }
+
+    if (!message.size() || !message[0].isFloat32()) {
+        std::cout << "Cannot set clip length: First argument must be a float duration" << std::endl;
+        return;
+    }
+
+    bool trimStart = false;
+    if (message.size() >= 2 && message[1].isString()) {
+        if (message[1].getString().toLowerCase().startsWithChar('s')) {
+            trimStart = true;
+        }
+    }
+    double durationInQuarterNotes = message[0].getFloat32();
+
+    if (durationInQuarterNotes <= 0) {
+        std::cout << "Cannot set clip length: duration argument must be greater than 0" << std::endl;
+        return;
+    }
+
+    te::EditTimeRange currentRange = selectedClip->getEditTimeRange();
+    double startBeat = selectedClip->getStartBeat();
+    double endBeat = selectedClip->getEndBeat();
+
+    if (trimStart) {
+        double newStartBeat = endBeat - durationInQuarterNotes;
+        double newStartSeconds = selectedClip->edit.tempoSequence.beatsToTime(newStartBeat);
+        selectedClip->setStart(newStartSeconds, true, false);
+    } else {
+        double newEndBeat = startBeat + durationInQuarterNotes;
+        double newEndSeconds = selectedClip->edit.tempoSequence.beatsToTime(newEndBeat);
+        double newDuration = newEndSeconds - currentRange.start;
+
+         if (newDuration > selectedClip->getMaximumLength()) {
+            newEndSeconds = currentRange.start + selectedClip->getMaximumLength();
+            newEndBeat = selectedClip->edit.tempoSequence.timeToBeats(newEndSeconds);
+        }
+        selectedClip->setEnd(newEndSeconds, true);
+    }
+}
+
+void FluidOscServer::selectClip(const juce::OSCMessage& message) {
+    if (!selectedAudioTrack) {
+        std::cout << "Cannot select clip: No audio track selected" << std::endl;
+        return;
+    }
+    if (!message.size() || !message[0].isString()) {
+        std::cout << "Cannot select clip: First argument must be clip name string" << std::endl;
+        return;
+    }
+
+    String clipName = message[0].getString();
+    for (auto clip : selectedAudioTrack->getClips()) {
+        if (clip->getName().equalsIgnoreCase(clipName)) {
+            selectedClip = clip;
+            std::cout
+                << "Selected " << clip->getName()
+                << " (" << clip->state.getType().toString() << ") on "
+                << selectedAudioTrack->getName() << std::endl;
+            return;
+        }
+    }
+
+    std::cout
+        << "Cannot select clip: \"" << clipName
+        << "\" not found on track " << selectedAudioTrack->getName() << std::endl;
+}
+
+void FluidOscServer::renderRegion(const OSCMessage& message) {
+    // Args
+    // 0 - (string, required) output filename
+    // 1 - (float, optional) start quarterNotes
+    // 2 - (float, optional) duration in quarterNotes
+    // If both 1 and 2 are floats, render this time range in beats. Otherwise,
+    // render the edit loop region.
+
+    if (!selectedAudioTrack) {
+        std::cout << "Cannot render track region: No selected track" << std::endl;
+        return;
+    }
+
+    if (message.size() < 1 || !message[0].isString()) {
+        std::cout << "Cannot render track region: Missing filename" << std::endl;
+        return;
+    }
+
+    String filename = message[0].getString();
+    File outputFile = selectedAudioTrack->edit.filePathResolver(filename);
+
+    te::TransportControl& transport = selectedAudioTrack->edit.getTransport();
+    te::EditTimeRange range = transport.getLoopRange();
+
+    if (message.size() >= 3 && message[1].isFloat32() && message[2].isFloat32()) {
+        double startBeats = message[1].getFloat32();
+        double durationBeats = message[2].getFloat32();
+        double endBeats = startBeats + durationBeats;
+        double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
+        double endSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeats);
+        range.start = startSeconds;
+        range.end = endSeconds;
+    }
+    renderTrackRegion(outputFile, *selectedAudioTrack, range);
+}
+
+void FluidOscServer::renderClip(const juce::OSCMessage &message) {
+    // Args
+    // 0 - (string, required) output filename
+    // 1 - (float, optional) tail in seconds
+
+    if (message.size() < 1 || !message[0].isString()) {
+        std::cout << "Cannot render track region: Missing filename" << std::endl;
+        return;
+    }
+
+    String filename = message[0].getString();
+    File outputFile = selectedAudioTrack->edit.filePathResolver(filename);
+
+    if (!selectedClip) {
+        std::cout << "Cannot render selected clip: No clip selected" << std::endl;
+        return;
+    }
+
+    te::Track* track = selectedClip->getTrack();
+    if (!track) {
+        jassert(false);
+        std::cout << "Cannot render clip region: Failed to get clip's track" << std::endl;
+        return;
+    }
+
+    double tail = (message.size() >= 2 && message[1].isFloat32()) ? message[1].getFloat32() : 0;
+    te::EditTimeRange range = selectedClip->getEditTimeRange();
+    range.end += tail;
+
+    renderTrackRegion(outputFile, *track, range);
+}
+
 void FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
-    if (!activeCybrEdit) return;
+    if (!activeCybrEdit) {
+        std::cout << "Cannot save active edit: No active edit" << std::endl;
+        return;
+    }
 
     String filename = (message.size() && message[0].isString())
         ? message[0].getString()
@@ -222,7 +540,7 @@ void FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
     }
 
     selectedAudioTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), busName);
-    assert(selectedAudioTrack); // I believe this will always return a track
+    jassert(selectedAudioTrack); // I believe this will always return a track
 
     // Look through plugins on the track, see if it already has an AuxReturnPlugin
     te::AuxReturnPlugin* returnPlugin = nullptr;
@@ -448,6 +766,34 @@ void FluidOscServer::setPluginParamAt(const OSCMessage& message) {
     }
 }
 
+
+void FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
+    if (!selectedPlugin) {
+        std::cout << "Cannot set plugin side chain input: No selected plugin" << std::endl;
+        return;
+    }
+
+    if (!selectedPlugin->canSidechain()) {
+        std::cout << "Cannot set plugin side chain input: Selected plugin cannot side chain" << std::endl;
+        return;
+    }
+
+    if (!message.size() || !message[0].isString()) {
+        std::cout << "Cannot set plugin side chain input: Missing input-track-name arg" << std::endl;
+        return;
+    }
+
+    String inputTrackname = message[0].getString();
+    te::AudioTrack* inputTrack = getOrCreateAudioTrackByName(selectedPlugin->edit, inputTrackname);
+    selectedPlugin->setSidechainSourceID(inputTrack->itemID);
+    std::cout << "Side chain input: " << inputTrack->getName() << std::endl;
+
+    if (auto compressor = dynamic_cast<te::CompressorPlugin*>(selectedPlugin)) {
+        std::cout << "NOTE: when enabling a side chain in put on the internal compressor plugin, the side chain will be enabled by default. " << std::endl;
+        compressor->useSidechainTrigger = true;
+    }
+}
+
 void FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
     if (!selectedPlugin) {
         std::cout << "Cannot save plugin preset: No selected plugin" << std::endl;
@@ -532,27 +878,36 @@ void FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
     if (!message.size() || !message[0].isString()) return;
 
     String clipName = message[0].getString();
-    selectedMidiClip = getOrCreateMidiClipByName(*selectedAudioTrack, clipName);
+    selectedClip = getOrCreateMidiClipByName(*selectedAudioTrack, clipName);
 
     // Clip startBeats
     if (message.size() >= 2 && message[1].isFloat32()) {
         double startBeats = message[1].getFloat32();
         double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
-        selectedMidiClip->setStart(startSeconds, false, true);
+        selectedClip->setStart(startSeconds, false, true);
     }
     // Clip length
     if (message.size() >= 3 && message[2].isFloat32()) {
         double lengthInBeats = message[2].getFloat32();
-        double startBeat = selectedMidiClip->getStartBeat();
+        double startBeat = selectedClip->getStartBeat();
         double endBeat = startBeat + lengthInBeats;
         double endTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeat);
-        selectedMidiClip->setEnd(endTime, true);
+        selectedClip->setEnd(endTime, true);
     }
 }
 
 void FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
-    if (!selectedMidiClip) return;
-    
+    if (!selectedClip) {
+        std::cout << "Cannot clear midi clip: No clip selected" << std::endl;
+        return;
+    }
+
+    auto selectedMidiClip = dynamic_cast<te::MidiClip*>(selectedClip);
+    if (!selectedMidiClip) {
+        std::cout << "Cannot clear midi clip: selected clip is not a midi clip" << std::endl;
+        return;
+    }
+
     auto exisiting = selectedMidiClip->state.getChildWithName(te::IDs::SEQUENCE);
     if (!exisiting.isValid()) selectedMidiClip->clearTakes();
     selectedMidiClip->getSequence().clear(nullptr); // is this needed?
@@ -567,12 +922,18 @@ void FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
 }
 
 void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
-    if(!selectedAudioTrack){
-        std::cout << "Cannot insert midi note: No Audio Track selected." << std::endl;
+    if(!selectedClip){
+        std::cout << "Cannot insert midi note: No clip selected." << std::endl;
         return;
     }
     if(message.size() < 3){
         std::cout << "Cannot insert midi note: Not enough arguments."<< std::endl;
+        return;
+    }
+
+    auto selectedMidiClip = dynamic_cast<te::MidiClip*>(selectedClip);
+    if (!selectedMidiClip) {
+        std::cout << "Cannot insertMidiNoe: selected clip is not a midi clip" << std::endl;
         return;
     }
 
@@ -607,11 +968,6 @@ void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
 }
 
 void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
-    if (!activeCybrEdit) {
-        std::cout << "Cannot insert wave sample: no active edit" << std::endl;
-        return;
-    }
-
     if(!selectedAudioTrack){
         std::cout << "Cannot insert wave sample: Must select Audio Track before inserting" << std::endl;
         return;
@@ -623,28 +979,30 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     }
 
     if (!message[0].isString()) {
-        std::cout << "Cannot insert wave file: first argument must be a string" << std::endl;
+        std::cout << "Cannot insert wave file: first argument must be a clipName string" << std::endl;
+        return;
     }
     String clipName = message[0].getString();
 
     if (!message[1].isString()) {
-        std::cout << "Cannot insert wave file: second argument must be a string" << std::endl;
+        std::cout << "Cannot insert wave file: second argument must be a filepath string" << std::endl;
         return;
     }
     String filePath = message[1].getString();
 
     if (!message[2].isFloat32() && !message[2].isInt32()) {
-        std::cout << "Cannot insert wave file: third argument must be int or float" << std::endl;
+        std::cout << "Cannot insert wave file: third argument must be a quarterNote start time int or float" << std::endl;
+        return;
     }
 
     double startBeat = 0;
     if (message[2].isFloat32()) startBeat = message[2].getFloat32();
     else if (message[2].isInt32()) startBeat = message[2].getInt32();
-    double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeat);
+    double startSeconds = selectedAudioTrack->edit.tempoSequence.beatsToTime(startBeat);
 
-    File editDirectory = activeCybrEdit->getEdit().editFileRetriever().getParentDirectory();
-    File file = editDirectory.getChildFile(filePath);
-
+    // The default filePathResolver checks for an absolute file, then looks
+    // in the relative to the edit file directory (using edit.editFileRetriever)
+    File file = selectedAudioTrack->edit.filePathResolver(filePath);
     // First check if the file is an absolute file, OR was found relative to
     // the edit file directory.
     if (file.existsAsFile()) {
@@ -666,7 +1024,8 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
 
     te::ClipPosition pos;
     pos.time = timeRange;
-    selectedAudioTrack->insertWaveClip(clipName, file, pos, false);
+    te::WaveAudioClip::Ptr c = selectedAudioTrack->insertWaveClip(clipName, file, pos, false);
+    selectedClip = c.get();
 }
 
 void FluidOscServer::setTrackGain(const OSCMessage& message) {
@@ -767,7 +1126,10 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
 }
 
 void FluidOscServer::handleTransportMessage(const OSCMessage& message) {
-    if (!activeCybrEdit) return;
+    if (!activeCybrEdit) {
+        std::cout << "Cannot update transport: No active edit" << std::endl;
+        return;
+    }
     te::TransportControl& transport = activeCybrEdit->getEdit().getTransport();
 
     const OSCAddressPattern pattern = message.getAddressPattern();

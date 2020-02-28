@@ -83,7 +83,6 @@ void CLIApp::onRunning()
                 appJobs.fluidOscServer.activeCybrEdit.reset(newCybrEdit);
                 std::cout << "FluidOscServer: Activated new cybr edit" << std::endl;
             }
-            
             return true;
         } });
 

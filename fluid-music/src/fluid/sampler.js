@@ -1,12 +1,15 @@
+/**
+ * @namespace sampler
+ */
 const sampler = {
   /**
    * Add a sample to the currently selected sampler.
-   * @param {string} name - the name of the sample to add
-   * @param {string} filename - the filename (relative to server WD, or absolute)
-   * @param {Number} noteNum - the Midi note number to add the sample to
-   * @param {[Number=0]} gain - Gain in DBFS (0 is unity)
-   * @param {[Number=0]} pan - pan (-1 = hard left, 1 = hard right)
-   * @param {[Bool=false]} - oneShot
+   * @param {string} name the name of the sample to add
+   * @param {string} filename the filename (relative to server WD, or absolute)
+   * @param {Number} noteNum the Midi note number to add the sample to
+   * @param {number} [gain=0] Gain in DBFS (0 is unity)
+   * @param {number} [pan=0] pan (-1 = hard left, 1 = hard right)
+   * @param {boolean} [oneShot=false]
    */
   add(name, filename, noteNum, gain, pan, oneShot) {
     if (typeof name !== 'string')

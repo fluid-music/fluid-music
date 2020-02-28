@@ -19,8 +19,8 @@
 typedef void (*OscHandlerFunc)(const OSCMessage&);
 
 struct SelectedObjects {
-    te::AudioTrack* audio = nullptr;
-    te::MidiClip* midi = nullptr;
+    te::AudioTrack* audioTrack = nullptr;
+    te::Clip* clip = nullptr;
     te::Plugin* plugin = nullptr;
 };
 
@@ -39,11 +39,13 @@ public:
 
     // message handlers
     void selectAudioTrack(const OSCMessage& message);
+    void removeAudioTrackClips(const OSCMessage& message);
     void selectReturnTrack(const OSCMessage& message);
     void selectMidiClip(const OSCMessage& message);
     void selectPlugin(const OSCMessage& message);
     void setPluginParam(const OSCMessage& message);
     void setPluginParamAt(const OSCMessage& message);
+    void setPluginSideChainInput(const OSCMessage& message);
     void savePluginPreset(const OSCMessage& message);
     void loadPluginPreset(const OSCMessage& message);
     void loadPluginTrkpreset(const OSCMessage& message);
@@ -56,10 +58,19 @@ public:
     void changeWorkingDirectory(const OSCMessage& message);
     void handleSamplerMessage(const OSCMessage& message);
     void handleTransportMessage(const OSCMessage& message);
-    void muteTrack(bool mute);
     void setTrackGain(const OSCMessage& message);
+    void renderRegion(const OSCMessage& message);
+    void renderClip(const OSCMessage& message);
+    void setClipLength(const OSCMessage& message);
+    void trimClipBySeconds(const OSCMessage& message);
+    void selectClip(const OSCMessage& message);
+    void offsetClipSourceInSeconds(const OSCMessage& message);
+    void audioClipFadeInOutSeconds(const OSCMessage& message);
+    void setClipDb(const OSCMessage& message);
 
     // everything else
+    void muteTrack(bool mute);
+    void reverseAudioClip(bool reverse);
     void activateEditFile(File file, bool forceEmptyEdit = false);
     std::unique_ptr<CybrEdit> activeCybrEdit = nullptr;
 
@@ -71,7 +82,7 @@ private:
      handled. */
 
     te::AudioTrack* selectedAudioTrack = nullptr;
-    te::MidiClip* selectedMidiClip = nullptr;
+    te::Clip* selectedClip = nullptr;
     te::Plugin* selectedPlugin = nullptr;
 };
 

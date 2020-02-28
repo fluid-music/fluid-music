@@ -1,9 +1,30 @@
 const converters = require('../converters');
 const audiotrack = require('./audiotrack');
+/**
+ * Represents a MIDI note within midi clip
+ * @typedef {Object} noteObject
+ * @property {number} n note (probably a MIDI note number)
+ * @property {number} l length in whole notes
+ * @property {number} s start time in whole notes
+ * @property {number} [v=64] optional midi velocity
+ */
 
+/**
+ * @namespace midiclip
+ */
 const midiclip = {
+  /**
+   * Clear all MIDI notes in the currently selected clip.
+   */
   clear() { return { address: '/midiclip/clear' } },
 
+  /**
+   * Select a MIDI clip by name on the currently selected track. Create the clip
+   * if it does not exist. Set the clip's start time and length in quarter notes.
+   * @param {string} name name of the MIDI clip to select.
+   * @param {number} startTimeInQuarterNotes
+   * @param {number} lengthInQuarterNotes
+   */
   select(name, startTimeInQuarterNotes, lengthInQuarterNotes) {
     if (typeof name !== 'string')
       throw new Error('midiclip.Select requires name string, got: ' + name);
@@ -24,10 +45,10 @@ const midiclip = {
 
   /**
    * Create an /midiclip/n message
-   * @param {[Integer]} noteNum - MIDI Note Number
-   * @param {Number} startTimeInWholeNotes - Note start time in Whole notes
-   * @param {Number} durationInWholeNotes - Note length in Whole notes
-   * @param {[Integer]} velocity - Optional MIDI note velocity.
+   * @param {Integer} noteNum MIDI Note Number
+   * @param {Number} startTimeInWholeNotes Note start time in Whole notes
+   * @param {Number} durationInWholeNotes Note length in Whole notes
+   * @param {Integer} [velocity] Optional MIDI note velocity.
    */
   note(noteNum, startTimeInWholeNotes, durationInWholeNotes, velocity) {
     const args = [
@@ -47,12 +68,12 @@ const midiclip = {
 
   /**
    * Build an OSC message that creates a clip with a bunch of midi notes
-   *
-   * @param { string } clipName
-   * @param { Number } startBeats - Clip start time in quarter notes
-   * @param { Number} lengthBeats - Clip length in quarter notes
-   * @param { {l:number, n: number, s: start}[] } notes - array of objects like:
-   *        { l: length, n: note, s: start } objects
+
+   * @param { string } clipName name of the clip.
+   * @param { number } startBeats - Clip start time in quarter notes
+   * @param { number} lengthBeats - Clip length in quarter notes
+   * @param { noteObject[] } notes - array of objects, which look like:
+   *    { l: length, n: note, s: start }
    */
   create(clipName, startBeats, lengthBeats, notes) {
     elements = [

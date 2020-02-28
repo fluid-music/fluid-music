@@ -433,7 +433,7 @@ void printPreset(te::Plugin* plugin) {
 
 void saveTracktionPreset(te::Plugin* plugin, String name) {
     if (!plugin) {
-        assert(false);
+        jassert(false);
         return;
     }
 
@@ -667,3 +667,49 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
     return nullptr;
 }
 
+void renderTrackRegion(File outputFile, te::Track& track, te::EditTimeRange range) {
+    if (range.getLength() == 0) {
+        std::cout << "Cannot render track region: time range is zero." << std::endl;
+        return;
+    }
+
+    if (!outputFile.hasWriteAccess()) {
+        std::cout << "Cannot render track region: No write access: " << outputFile.getFullPathName() << std::endl;
+        return;
+    }
+
+    if (outputFile.exists()) {
+        if (!outputFile.deleteFile()) {
+            std::cout << "Cannot render track region: Failed to delete existing file" << std::endl;
+            return;
+        } else {
+            std::cout << "Overwrite: " << outputFile.getFullPathName() << std::endl;
+        }
+    }
+
+    String jobTitle = "Render " + track.getName() + " to " + outputFile.getFullPathName();
+    std::cout << jobTitle << std::endl;
+
+    BigInteger tracksToDo;
+    {
+        int i = 0;
+        track.edit.visitAllTracks([&i, &track, &tracksToDo] (te::Track& check) {
+            if (&track == &check) tracksToDo.setBit(i);
+            i++;
+            return true;
+        }, true);
+    }
+    jassert(tracksToDo.countNumberOfSetBits() == 1);
+
+    bool success = te::Renderer::renderToFile(jobTitle,
+                                              outputFile,
+                                              track.edit,
+                                              range,
+                                              tracksToDo);
+    if (success) {
+        std::cout << "Rendered: " << outputFile.getFullPathName() << std::endl;
+    } else {
+        std::cout << "Failed to render: " << outputFile.getFullPathName() << std::endl;
+        return;
+    }
+}

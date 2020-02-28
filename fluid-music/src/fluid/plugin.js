@@ -1,23 +1,32 @@
 const fs = require('fs');
 
+/**
+ * @namespace plugin
+ */
 const plugin = {
   /**
    * Creates an object that looks like this:
+   * ```
    *  {
    *    address: '/plugin/select',
    *    args: [
    *      { type: 'string', value: 'zebra2' },
+   *      { type: 'integer', value: 0 },
    *      { type: 'string', value: 'vst' },
    *    ],
    *  }
+   * ```
    * @param {string} pluginName - the name of the vst plugin
-   * @param {[string]} pluginType - optional type, for example 'VST', 'VST3',
+   * @param {string} [pluginType] - optional type, for example 'VST', 'VST3',
    *        'AudioUnit'. If omitted, search all types.
-   * @param {string} pluginId - the id of the plugin
+   * @param {number} [pluginId=0] - the id of the plugin
    */
   select(pluginName, pluginType, pluginId = 0) {
     if (typeof pluginName !== 'string')
       throw new Error('plugin.select(pluginName) needs a string, got: ' + undefined);
+
+    if (typeof pluginId !== 'number' || pluginId !== Math.floor(pluginId))
+      throw new Error('plugin.select pluginId values must be an integer');
 
     const args = [
       { type: 'string', value: pluginName},
@@ -32,7 +41,7 @@ const plugin = {
 
     return { args, address: '/plugin/select' };
   },
-  
+
   /**
    * Changes the specified parameter to the normalized value provided.
    *
@@ -141,6 +150,27 @@ const plugin = {
     }
   },
 
+  /**
+   * Route the named track to the side chain input for the selected plugin. Note
+   * that this might not actually enable the side chain in the plugin
+   * configuration. For VSTs, enabling the side chain input may not be
+   * accessible from the fluid API, in which case it must be accomplished with a
+   * plugin preset.
+   *
+   * @param {string} inputTrackName - a track with this name will feed the
+   *    selected plugin's side chain input. The track will be created if it does
+   *    not exist.
+   */
+  setSideChainInput(inputTrackName) {
+    if (typeof inputTrackName !== 'string')
+      throw new Error('plugin.setSideChainInput requires an input track name');
+
+    return {
+      address: '/plugin/sidechain/input/set',
+      args: [ {type: 'string', value: inputTrackName } ],
+    }
+  },
+
   save(presetName) {
     if (typeof presetName !== 'string')
       throw new Error('plugin.save requires preset name as argument');
@@ -162,7 +192,7 @@ const plugin = {
   },
 
   /**
-   * Load a .trkpreset file on the client side, and send it to 
+   * Load a .trkpreset file on the client side, and send it to
    * @param {Buffer|String} file - A
    */
   loadTrkpreset(file) {
