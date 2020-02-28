@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "link": "npm link ../fluid-music; npm link ../fluid-recipes",
-    "watch": "nodemon -w run.js",
+    "watch": "nodemon -w run.js run.js",
     "postinstall": "npm run link"
   },
   "author": "Charles Holbrow",

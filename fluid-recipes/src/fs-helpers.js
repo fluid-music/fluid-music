@@ -52,13 +52,13 @@ async function getDirsIn(baseDir) {
 
 /**
  * For every immediate (non-recursive) child directory in base dir `baseDir`,
- * find all the .wav files in that directory. For example,
- *
+ * find all the .wav files in that directory. For example, given these files:
+ * ```
  * /wav/alpha/a.wav
  * /wav/alpha/b.wav
  * /wav/beta/1/kick.wav
  * /wav/beat/2/snare.wav
- *
+ * ```
  * `waveFilesInFolderGroups('/wav')` would return:
  * ```
  * [
