@@ -1,5 +1,8 @@
 {
   "cSpell.words": [
     "audioclip"
+  ],
+  "includePath": [
+    "${workspaceFolder}/**"
   ]
 }

@@ -264,6 +264,7 @@ void listMidiDevices(te::Engine& engine) {
 
 void scanVst3(te::Engine& engine)
 {
+#if (JUCE_PLUGINHOST_VST3 && (JUCE_MAC || JUCE_WINDOWS))
     std::cout << "Scanning for VST3 plugins..." << std::endl;
     
     juce::VST3PluginFormat vst3;
@@ -287,6 +288,13 @@ void scanVst3(te::Engine& engine)
         std::cout << "Failed to load plugin: " << filename << std::endl;
     }
     std::cout << std::endl;
+#else
+    #if (JUCE_LINUX)
+    std::cout << "VST3 is not supported on LINUX" << std::endl;
+    #endif
+    std::cout << "VST3 hosting is not enabled. Skipping VST 3 scan." << std::endl;
+    return;
+#endif
 }
 
 void scanVst2(te::Engine& engine) {
