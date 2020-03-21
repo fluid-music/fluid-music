@@ -10,6 +10,17 @@ The Fluid Engine introduces the concept of **sound design recipes**, which encap
 1. Enable sharing, distribution, versioning, and remixing of **sound design recipes**
 1. Provide foundational infrastructure to experiment with new ways of creating, packaging and distributing dynamic music systems
 
+## Install
+
+Most work happens on the `develop` branch:
+
+```
+git clone https://github.com/CharlesHolbrow/cybr.git
+cd cybr
+git checkout develop
+git submodule update --init --recursive
+```
+
 ## Comparison with other tools
 
 The Fluid Engine aims to bridge the gap between DAWs and existing procedural audio languages by integrating computational code-based techniques directly into a conventional audio workstation. The following design choices show a balance between timeline-centric, GUI-based DAWs, and other systems for imperative computational sound design.
