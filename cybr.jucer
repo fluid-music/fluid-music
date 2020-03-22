@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="gn3eC9" name="cybr" projectType="consoleapp" jucerVersion="5.4.7">
+<JUCERPROJECT id="gn3eC9" name="cybr" projectType="consoleapp" jucerVersion="5.4.5">
   <MAINGROUP id="JTqeoX" name="cybr">
     <GROUP id="{E03437D9-F7F3-5413-6A30-51BDC7A4D4BC}" name="Source">
       <FILE id="BsSl9C" name="FluidOscServer.cpp" compile="1" resource="0"
@@ -43,6 +43,10 @@
       <FILE id="HfQVk6" name="SamplePathMode.h" compile="0" resource="0"
             file="Source/SamplePathMode.h"/>
     </GROUP>
+    <FILE id="OhQeKm" name="temp_OSCInputStream.cpp" compile="1" resource="0"
+          file="Source/temp_OSCInputStream.cpp"/>
+    <FILE id="UV8I0A" name="temp_OSCInputStream.h" compile="0" resource="0"
+          file="Source/temp_OSCInputStream.h"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2017 targetFolder="Builds/VisualStudio2017">
