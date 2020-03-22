@@ -25,6 +25,7 @@ const parsedArgs = {
   "create": null,
   "open": null,
   "saveas": null,
+  "render": null,
 };
 
 
@@ -95,6 +96,12 @@ const commands = {
     console.log(`save: ${exists? '(overwrite)' : '(create)'}:`, filename);
     client.send(fluid.global.save(filename, 'd'));
   },
+  render() {
+    const filename = parseFilename(parsedArgs.render, '.wav');
+    const exists = fs.existsSync(filename);
+    client.send(fluid.global.save(filename));
+    console.log(`render${exists? ' (overwrite)': ''}:`, filename);
+  },
 };
 
 unhandled.forEach(value => {
@@ -105,9 +112,9 @@ unhandled.forEach(value => {
 console.log(parsedArgs);
 console.log(unhandled);
 
-function parseFilename(filename) {
-  if (!filename.toLowerCase().endsWith('.tracktionedit'))
-    filename += '.tracktionedit';
+function parseFilename(filename, ext='.tracktionedit') {
+  if (path.extname(filename).toLowerCase() !== ext)
+    filename += ext;
 
   if (!path.isAbsolute(filename))
     filename = path.join(process.cwd(), filename);
