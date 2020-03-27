@@ -43,6 +43,10 @@
       <FILE id="HfQVk6" name="SamplePathMode.h" compile="0" resource="0"
             file="Source/SamplePathMode.h"/>
     </GROUP>
+    <FILE id="OhQeKm" name="temp_OSCInputStream.cpp" compile="1" resource="0"
+          file="Source/temp_OSCInputStream.cpp"/>
+    <FILE id="UV8I0A" name="temp_OSCInputStream.h" compile="0" resource="0"
+          file="Source/temp_OSCInputStream.h"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2017 targetFolder="Builds/VisualStudio2017">

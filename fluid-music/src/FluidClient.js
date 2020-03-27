@@ -1,61 +1,31 @@
-const dgram = require('dgram');
-const osc = require('osc-min');
+const IpcClient = require("osc-ipc-client")
 
-// Helper to allow arrays of arrays to convert to bundles
-const prepareObjectForOsc = function(msgObject, timetag) {
-  if (Array.isArray(msgObject))
-    return {
-      oscType: 'bundle',
-      timetag: typeof timetag === 'number' ? timetag : 0,
-      elements: msgObject.map((v) => prepareObjectForOsc(v, timetag))
-    };
-  else return msgObject;
-}
+const options = {
+    targetPort: 9999,
+    targetHost: '127.0.0.1',
+    header: 0xf2b49e2c, 
+    timeout: 3000, 
+    isUnixDomainSocket: false,
+  };
 
-/**
- * FluidOscSender will close instantly after all messages were sent.
- * @class Client
- */
-module.exports = class Client {
-  /**
-   * @param {number} targetPort UDP port to send to
-   */
-  constructor(targetPort) {
-    if (typeof targetPort !== 'number') targetPort = 9999;
-    this.targetPort = targetPort;
-    this.pendingMsgCount = 0;
-    this.client = dgram.createSocket('udp4');
-  }
+module.exports = class FluidOscSender{
+    constructor(targetPort){
+        if (typeof targetPort !== 'number') targetPort = 9999;
+        this.targetPort = targetPort;
+        this.client = new IpcClient(options);
+    }
 
-  /**
-   * Send an osc message or bundle.
-   * @param {object|object[]|Buffer} msgObject - The osc message to be sent.
-   *        If the type is:
-   *          - object - parse it with the osc-min npm module
-   *          - object[] - parse as a bundle. each object is an osc-min message
-   *          - Buffer - send the raw buffer
-   *        Expects objects to be in the npm osc-min format, which look like:
-   *        {
-   *          address: '/some/address',
-   *          args: [
-   *            { type: 'string', value: 'hi there' },
-   *            { type: 'integer', value: 100 },
-   *            { type: 'float', value: 3.14159 },
-   *          ]
-   *        }
-   * @param {number} [timetag=0] - timetag is only used if first argument is an
-   *        array.
-   */
-  send(msgObject, timetag) {
-    const buffer = (msgObject instanceof Buffer)
-      ? msgObject
-      : osc.toBuffer(prepareObjectForOsc(msgObject, timetag));
+    _connectPromise(){
+        return new Promise(resolve => {
+            this.client.on("connect", ()=>{
+                resolve("connected");
+            });
+        });
+    }
 
-    this.pendingMsgCount++;
-    this.client.send(buffer, this.targetPort, (err) => {
-      if (err) console.error('Error sending message:', err, msgObject);
-      this.pendingMsgCount--;
-      if (this.pendingMsgCount === 0) this.client.close();
-    });
-  }
+    async send(msgObject, timetag){
+        await this._connectPromise();
+        await this.client.sendOsc(msgObject, timetag);
+        this.client.close()
+    }
 }

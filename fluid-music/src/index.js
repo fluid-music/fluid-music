@@ -11,6 +11,7 @@ const clip = require('./fluid/clip');
 // Other Stuff
 const tab = require('./tab');
 const groove = require('./groove')
+const UdpClient = require('./FluidUdpClient');
 const Client = require('./FluidClient');
 const converters = require('./converters');
 const random = require('./random');
@@ -18,6 +19,7 @@ const random = require('./random');
 module.exports = {
   audioclip,
   audiotrack,
+  UdpClient,
   Client,
   clip,
   converters,

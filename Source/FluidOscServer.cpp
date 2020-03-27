@@ -10,8 +10,57 @@
 
 #include "FluidOscServer.h"
 
+InterprocessConnection* FluidIpcServer::createConnectionObject(){
+    std::cout<<"Creating interprocess connection"<<std::endl;
+    
+    ipcMap[ipc_num].setFluidServer(*serverRef);
+    
+    std::cout << "FluidOscServer: Activated new cybr edit" << std::endl;
+    return &ipcMap[ipc_num++];
+}
+
+FluidIpcServer::FluidIpcServer(FluidOscServer& server){
+    serverRef = &server;
+}
+
+void FluidIpc::setFluidServer(FluidOscServer& server){
+    fluidserver = &server;
+}
+
+void FluidIpc::connectionMade(){
+    std::cout<<"Connection Made"<<std::endl;
+}
+
+void FluidIpc::connectionLost(){
+    std::cout<<"Connection Lost"<<std::endl;
+}
+
+void FluidIpc::messageReceived(const MemoryBlock &message){
+    OSCInputStream instream(message.getData(), message.getSize());
+    OSCBundle::Element elem = instream.readElementWithKnownSize(message.getSize());
+    
+    if(elem.isBundle()){
+        OSCBundle bundle = elem.getBundle();
+        SelectedObjects obj;
+        fluidserver->handleOscBundle(bundle, obj);
+    }
+    else{
+        OSCMessage msg = elem.getMessage();
+        fluidserver->handleOscMessage(msg);
+    }
+}
+
 FluidOscServer::FluidOscServer() {
     addListener (this);
+}
+
+void FluidOscServer::oscBundleReceived(const OSCBundle &bundle){
+    SelectedObjects obj;
+    handleOscBundle(bundle, obj);
+}
+
+void FluidOscServer::oscMessageReceived(const OSCMessage &message){
+    handleOscMessage(message);
 }
 
 void FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects parentSelection) {
@@ -19,7 +68,7 @@ void FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects pa
     for (const auto& element: bundle) {
         if (element.isMessage()) {
             // allow messages to update the current selection ("currBundle")
-            oscMessageReceived(element.getMessage());
+            handleOscMessage(element.getMessage());
             currBundle.audioTrack = selectedAudioTrack;
             currBundle.clip = selectedClip;
             currBundle.plugin = selectedPlugin;
@@ -34,15 +83,7 @@ void FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects pa
     selectedPlugin = parentSelection.plugin;
 }
 
-void FluidOscServer::oscBundleReceived(const juce::OSCBundle &bundle) {
-    // We could initialize SelectedObjects to the current state. However, it is
-    // a little safer to leave it uninitialized, because we guarntee that the
-    // outermost bundle will leave behind empty selections.
-    SelectedObjects obj;
-    handleOscBundle(bundle, obj);
-}
-
-void FluidOscServer::oscMessageReceived (const OSCMessage& message) {
+void FluidOscServer::handleOscMessage (const OSCMessage& message) {
     const OSCAddressPattern msgAddressPattern = message.getAddressPattern();
 
     if (msgAddressPattern.matches({"/test"}) || msgAddressPattern.matches({"/print"})) {

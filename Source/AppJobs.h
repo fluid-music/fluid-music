@@ -35,6 +35,8 @@ public:
     void setRunForever(bool newFlag);
 
     FluidOscServer fluidOscServer;
+    std::unique_ptr<FluidIpcServer> fluidIpcServer;
+    
 private:
     juce::OwnedArray<CybrEdit> playingEdits;
     bool runForever = false;

@@ -64,10 +64,18 @@ void CLIApp::onRunning()
         "Launch a server and listen for fluid engine OSC messages",
         "This runs a server that listens for OSC messages",
         [this](auto&) {
+            appJobs.fluidIpcServer = std::make_unique<FluidIpcServer>(appJobs.fluidOscServer);
+            if (!appJobs.fluidIpcServer->beginWaitingForSocket(options.listenPort)) {
+                std::cout << "FluidIpcServer: Falied to connect" << std::endl;
+                return false;
+            }
+            std::cout << "FluidIpcServer: Listening for Connection" << std::endl;
+            
             if (!appJobs.fluidOscServer.connect(options.listenPort)) {
                 std::cout << "FluidOscServer: Falied to connect" << std::endl;
                 return false;
             }
+            
             appJobs.setRunForever(true);
             std::cout << "FluidOscServer: Connected!" << std::endl;
             if (cybrEdit) {
