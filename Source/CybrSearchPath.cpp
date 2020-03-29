@@ -12,8 +12,12 @@
 
 File getWaveformAppDir() {
     PropertiesFile::Options jucePropOpts;
+
+    // It appears applicationName is ignored on Mac. For some reason, setting it
+    // to "config" yields correct results on linux, which expands to:
+    // /home/$USER/.config/Tracktion/Waveform/
+    jucePropOpts.applicationName = "config";
     jucePropOpts.osxLibrarySubFolder = "Application Support";
-    jucePropOpts.applicationName = "UNUSED";
     jucePropOpts.getDefaultFile();
     PropertiesFile juceProps(jucePropOpts);
     return juceProps.getFile().getParentDirectory().getChildFile("Tracktion/Waveform");

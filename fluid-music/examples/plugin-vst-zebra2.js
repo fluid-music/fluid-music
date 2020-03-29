@@ -7,7 +7,7 @@ const elements = [
   fluid.plugin.select('zebra2', 'vst'),
 
   fluid.plugin.setParamNormalized('ENV1: Attack', 1.0),
-  fluid.plugin.setParamNormalized('VCF1: Cutoff', 0.0),
+  fluid.plugin.setParamNormalized('VCF1: Cutoff', 1.0),
   fluid.plugin.setParamNormalized('VCF2: Cutoff', 1.0),
 
   ...fluid.midiclip.create('p1', 0, 8, tabs.noTearsVerseNotes),
