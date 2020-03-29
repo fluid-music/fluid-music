@@ -4,6 +4,11 @@ const fs = require('fs');
 const fluid = require('./src/index.js');
 const argv = process.argv.slice(2);
 
+let docs = 'usage: fluid [flags] command arg\n\n';
+function addDocstring(name, string) {
+  docs += `${name}\n    ${string}\n`;
+};
+
 /** Put all args that are meant to have values here (as opposed to "flags" which
  * will not have a value.
  *
@@ -33,11 +38,11 @@ const parsedArgs = {
 // object with the appropriate argument extracted from process.argv.
 //
 // Commands with arguments will be placed in parsedArgs, and the command itself
-// (ex. `play` or `to`) will be pushed onto the 'unhandled' array.
+// (ex. `play` or `to`) will be pushed onto the 'toHandle' array.
 //
 // Everything else not found in the keys of `parsedArgs` will also be added to
-// the unhandled array.
-const unhandled = [];
+// the toHandle array.
+const toHandle = [];
 for (let i = 0; i < argv.length; i++) {
   let value = argv[i];
   if (parsedArgs.hasOwnProperty(value)) {
@@ -49,68 +54,86 @@ for (let i = 0; i < argv.length; i++) {
       parsedArgs[value] = argv[i+1];
 
     i++; // skip over the argument;
-    if (!value.startsWith('-')) unhandled.push(value); // consider commands unhandled
+    if (!value.startsWith('-')) toHandle.push(value); // consider commands toHandle
   } else {
-    unhandled.push(value);
+    toHandle.push(value);
   }
 }
 
 const client = new fluid.Client(parsedArgs["-p"]);
+const commands = {};
 
-const commands = {
-  play() {
-    console.log('play!');
-    client.send(fluid.transport.play());
-  },
-  stop() {
-    console.log('stop!');
-    client.send(fluid.transport.stop());
-  },
-  to() {
-    if (typeof parsedArgs.to !== 'number' || isNaN(parsedArgs.to))
-      console.error('ERROR: "to" command must have a numeric argument');
-    else
-      client.send(fluid.transport.to(parsedArgs.to));
-  },
-  /** Create and activate a new tracktionedit */
-  create() {
-    const filename = parseFilename(parsedArgs.create);
-    const exists = fs.existsSync(filename);
-    console.log(`create${exists ? '' : ' (overwrite)'}:`, filename);
-    client.send(fluid.global.activate(filename, true));
-  },
-  open() {
-    const filename = parseFilename(parsedArgs.open);
-    const exists = fs.existsSync(filename);
-    console.log(`open${exists? '' : ' (create)'}:`, filename);
-    client.send(fluid.global.activate(filename, false));
-  },
-  save() {
-    client.send(fluid.global.save(null,'d'));
-    console.log('save: ***filename unchanged***');
-    return;
-  },
-  saveas() {
-    const filename = parseFilename(parsedArgs.saveas);
-    const exists = fs.existsSync(filename);
-    console.log(`save: ${exists? '(overwrite)' : '(create)'}:`, filename);
-    client.send(fluid.global.save(filename, 'd'));
-  },
-  render() {
-    const filename = parseFilename(parsedArgs.render, '.wav');
-    const exists = fs.existsSync(filename);
-    client.send(fluid.global.save(filename));
-    console.log(`render${exists? ' (overwrite)': ''}:`, filename);
-  },
+addDocstring('play', 'Playback the active edit');
+commands.play = function(){
+  console.log('play!');
+  client.send(fluid.transport.play());
 };
 
-unhandled.forEach(value => {
+addDocstring('stop', 'Stop playback of the active edit');
+commands.stop = function(){
+  console.log('stop!');
+  client.send(fluid.transport.stop());
+};
+
+addDocstring('to <seconds>', 'Move the transport to a time in seconds')
+commands.to = function(){
+  if (typeof parsedArgs.to !== 'number' || isNaN(parsedArgs.to))
+    console.error('ERROR: "to" command must have a numeric argument');
+  else
+    client.send(fluid.transport.to(parsedArgs.to));
+};
+
+addDocstring('create <filename>', 'Create a tracktionedit file, overwriting if needed');
+commands.create = function(){
+  /** Create and activate a new tracktionedit */
+  const filename = parseFilename(parsedArgs.create);
+  const exists = fs.existsSync(filename);
+  console.log(`create${exists ? '' : ' (overwrite)'}:`, filename);
+  client.send(fluid.global.activate(filename, true));
+};
+
+addDocstring('open <filename>', 'Open a tracktionedit file, creating if needed');
+commands.open = function(){
+  const filename = parseFilename(parsedArgs.open);
+  const exists = fs.existsSync(filename);
+  console.log(`open${exists? '' : ' (create)'}:`, filename);
+  client.send(fluid.global.activate(filename, false));
+};
+
+addDocstring('save', 'Save the active tracktionedit file');
+commands.save = function(){
+  client.send(fluid.global.save(null,'d'));
+  console.log('save: ***filename unchanged***');
+  return;
+};
+
+addDocstring('saveas <filename>', 'Save the active tracktionedit, overwriting if needed');
+commands.saveas = function(){
+  const filename = parseFilename(parsedArgs.saveas);
+  const exists = fs.existsSync(filename);
+  console.log(`save: ${exists? '(overwrite)' : '(create)'}:`, filename);
+  client.send(fluid.global.save(filename, 'd'));
+};
+
+addDocstring('render <filename.wav>', 'Render the active edit in entirity');
+commands.render = function(){
+  const filename = parseFilename(parsedArgs.render, '.wav');
+  const exists = fs.existsSync(filename);
+  client.send(fluid.global.save(filename));
+  console.log(`render${exists? ' (overwrite)': ''}:`, filename);
+};
+
+addDocstring('help', 'print this help information');
+commands.help = function() { console.log(docs); };
+commands['-h'] = commands.help;
+
+// Execute commands, and log unhandled
+toHandle.forEach(value => {
   if (commands.hasOwnProperty(value)) commands[value]();
-  else console.error('Unhandled argument:', value);
+  else console.error('toHandle argument:', value);
 });
 
-console.log(parsedArgs);
-console.log(unhandled);
+if (!argv.length) commands.help();
 
 function parseFilename(filename, ext='.tracktionedit') {
   if (path.extname(filename).toLowerCase() !== ext)
