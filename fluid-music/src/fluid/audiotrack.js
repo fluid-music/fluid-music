@@ -23,6 +23,13 @@ const audiotrack = {
    * @param {string} fileName
    */
   insertWav (clipName, startBeats, fileName){
+    if (typeof clipName !== 'string')
+      throw new Error('audiotrack.insertWav: clipName must be a string');
+    if (typeof startBeats !== 'number')
+      throw new Error('audiotrack.insertWav: startBeats must be a number');
+    if (typeof fileName !== 'string')
+      throw new Error('audiotrack.insertWav: fileName must be a string');
+
     const args = [
       {type: 'string', value: clipName},
       {type: 'string', value: fileName},
