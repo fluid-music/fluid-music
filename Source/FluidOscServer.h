@@ -73,6 +73,8 @@ public:
     void activateEditFile(File file, bool forceEmptyEdit = false);
     std::unique_ptr<CybrEdit> activeCybrEdit = nullptr;
 
+    SelectedObjects getSelectedObjects();
+
 private:
 
     /** Recursively handle all messages and nested bundles, reseting the

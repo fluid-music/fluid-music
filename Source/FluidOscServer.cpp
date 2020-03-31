@@ -25,6 +25,10 @@ void FluidOscServer::oscMessageReceived(const OSCMessage &message){
     handleOscMessage(message);
 }
 
+SelectedObjects FluidOscServer::getSelectedObjects() {
+    return { selectedAudioTrack, selectedClip, selectedPlugin };
+}
+
 void FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects parentSelection) {
     SelectedObjects currBundle = parentSelection;
     for (const auto& element: bundle) {

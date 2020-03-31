@@ -16,13 +16,11 @@ InterprocessConnection* FluidIpcServer::createConnectionObject(){
     std::cout<<"Creating interprocess connection"<<std::endl;
     
     ipcMap[ipc_num].setFluidServer(*fluidOscServer);
-    
-    std::cout << "FluidOscServer: Activated new cybr edit" << std::endl;
+
     return &ipcMap[ipc_num++];
 }
 
-FluidIpcServer::FluidIpcServer(FluidOscServer& server){
-    fluidOscServer = &server;
+FluidIpcServer::FluidIpcServer(FluidOscServer& server) : fluidOscServer(&server){
 }
 
 //==============================================================================
@@ -43,8 +41,9 @@ void FluidIpc::messageReceived(const MemoryBlock &message){
     OSCBundle::Element elem = instream.readElementWithKnownSize(message.getSize());
     
     if(elem.isBundle()){
+        // Pass the current selection in to the bundle handler
+        SelectedObjects obj = fluidOscServer->getSelectedObjects();
         OSCBundle bundle = elem.getBundle();
-        SelectedObjects obj;
         fluidOscServer->handleOscBundle(bundle, obj);
     }
     else{
