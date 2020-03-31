@@ -14,7 +14,6 @@
 #include "cybr_helpers.h"
 #include "CybrEdit.h"
 #include "CybrSearchPath.h"
-#include "temp_OSCInputStream.h"
 
 typedef void (*OscHandlerFunc)(const OSCMessage&);
 
@@ -86,24 +85,3 @@ private:
     te::Plugin* selectedPlugin = nullptr;
 };
 
-class FluidIpc : public InterprocessConnection{
-public:
-    void connectionMade() override;
-    void connectionLost() override;
-    void messageReceived(const MemoryBlock& message) override;
-    
-    void setFluidServer(FluidOscServer& server);
-private:
-    FluidOscServer* fluidserver = nullptr;
-};
-
-class FluidIpcServer : public InterprocessConnectionServer{
-public:
-    FluidIpcServer(FluidOscServer& server);
-    InterprocessConnection* createConnectionObject() override;
-    
-private:
-    int ipc_num = 0;
-    std::map<int, FluidIpc> ipcMap;
-    FluidOscServer* serverRef = nullptr;
-};

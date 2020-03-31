@@ -14,6 +14,7 @@
 #include "cybr_helpers.h"
 #include "CybrEdit.h"
 #include "FluidOscServer.h"
+#include "FluidIpcServer.h"
 
 namespace te = tracktion_engine;
 class AppJobs : public juce::ChangeBroadcaster {
