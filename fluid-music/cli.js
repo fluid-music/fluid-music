@@ -34,7 +34,7 @@ const parsedArgs = {
 };
 
 
-// For each argument, if it has value in parsedArgs, augment the `parsedArgs`
+// For each value, if it has value in parsedArgs, augment the `parsedArgs`
 // object with the appropriate argument extracted from process.argv.
 //
 // Commands with arguments will be placed in parsedArgs, and the command itself
@@ -46,7 +46,10 @@ const toHandle = [];
 for (let i = 0; i < argv.length; i++) {
   let value = argv[i];
   if (parsedArgs.hasOwnProperty(value)) {
-    if (i + 1 >= argv.length) throw new Error('missing value for: ' + value);
+    if (i + 1 >= argv.length) {
+      console.error(`ERROR: "${value}" requires an argument`);
+      process.exit(1);
+    }
 
     if (typeof parsedArgs[value] === 'number')
       parsedArgs[value] = Number.parseFloat(argv[i+1]);
