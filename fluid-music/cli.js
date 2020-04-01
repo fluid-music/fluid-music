@@ -27,6 +27,7 @@ function addDocstring(name, string) {
 const parsedArgs = {
   "-p": 9999,
   "to": NaN, // typeof NaN === 'number'
+  "tempo": NaN,
   "create": null,
   "open": null,
   "saveas": null,
@@ -125,6 +126,16 @@ commands.render = function(){
   client.send(fluid.global.save(filename));
   console.log(`render${exists? ' (overwrite)': ''}:`, filename);
 };
+
+addDocstring('tempo <bpm>', 'Set the initial tempo');
+commands.tempo = function() {
+  const bpm = parsedArgs.tempo;
+  if (typeof bpm !== 'number' || isNaN(bpm)) {
+    console.error('ERROR: Invalid tempo value:', bpm);
+    process.exit(1);
+  }
+  client.send(fluid.tempo.set(bpm));
+}
 
 addDocstring('help', 'print this help information');
 commands.help = function() { console.log(docs); };
