@@ -193,7 +193,7 @@ const plugin = {
 
   /**
    * Load a .trkpreset file on the client side, and send it to
-   * @param {Buffer|String} file - A
+   * @param {String|Buffer} file - A filename or node Buffer object
    */
   loadTrkpreset(file) {
     console.warn('fluid.plugin.loadTrkpreset should be avoided, because it\n\
@@ -208,12 +208,16 @@ const plugin = {
     if (typeof file === 'string') {
       buffer = fs.readFileSync(file);
       if (!buffer) throw new Error('plugin.loadTrkpreset failed to load file: ' + filename);
-    }
-    else if (file instanceof Buffer) {
+    } else if (Buffer.isBuffer(file)) {
       buffer = file;
     } else {
       throw new Error('plugin.loadTrkpreset requires a Buffer or filename')
     }
+
+    // Pad with \0 as required by OSC spec
+    const requiredPadding = buffer.length % 4;
+    if (requiredPadding)
+      buffer = Buffer.concat([buffer, Buffer.alloc(requiredPadding)]);
 
     return {
       address: '/plugin/load/trkpreset',
