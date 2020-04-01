@@ -7,6 +7,7 @@ const transport = require('./fluid/transport');
 const global = require('./fluid/global');
 const audioclip = require('./fluid/audioclip');
 const clip = require('./fluid/clip');
+const tempo = require('./fluid/tempo');
 
 // Other Stuff
 const tab = require('./tab');
@@ -29,6 +30,7 @@ module.exports = {
   random,
   sampler,
   tab,
+  tempo,
   transport,
   groove,
 };

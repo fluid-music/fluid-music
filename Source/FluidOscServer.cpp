@@ -96,6 +96,7 @@ void FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/audioclip/reverse"})) return reverseAudioClip(true);
     if (msgAddressPattern.matches({"/audioclip/unreverse"})) return reverseAudioClip(false);
     if (msgAddressPattern.matches({"/audioclip/fade/seconds"})) return audioClipFadeInOutSeconds(message);
+    if (msgAddressPattern.matches({"/tempo/set/"})) return setTempo(message);
 
     std::cout << "Unhandled message: ";
     printOscMessage(message);
@@ -1020,6 +1021,16 @@ void FluidOscServer::muteTrack(bool mute) {
     }
 
     selectedAudioTrack->setMute(mute);
+}
+
+void FluidOscServer::setTempo(const OSCMessage &message) {
+    if (!message.size() || !message[0].isFloat32()) {
+        std::cout << "Cannot set tempo: missing tempo argument" << std::endl;
+    }
+
+    float bpm = message[0].getFloat32();
+    te::TempoSetting* tempo = activeCybrEdit->getEdit().tempoSequence.getTempo(0);
+    tempo->setBpm(bpm);
 }
 
 void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
