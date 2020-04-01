@@ -1,0 +1,9 @@
+noteLibrary: { 
+  C: 24,D: 26,E: 28,F: 29,G: 31,A: 33,B: 35,
+  c: 36,d: 38,e: 40,f: 41,g: 43,a: 45,b: 47, }
+r: 1..2..3..4..w....
+p: ..cCDEF-cB  cdefg
+q: cdef
+
+
+  
