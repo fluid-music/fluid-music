@@ -118,7 +118,7 @@ commands.saveas = function(){
   client.send(fluid.global.save(filename, 'd'));
 };
 
-addDocstring('render <filename.wav>', 'Render the active edit in entirity');
+addDocstring('render <filename.wav>', 'Render the active edit in entirety');
 commands.render = function(){
   const filename = parseFilename(parsedArgs.render, '.wav');
   const exists = fs.existsSync(filename);
