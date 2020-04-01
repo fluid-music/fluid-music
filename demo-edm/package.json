@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "link": "npm link ../fluid-music; npm link ../fluid-recipes",
-    "postinstall": "npm run link"
+    "prepare": "npm run link"
   },
   "author": "Charles Holbrow",
   "license": "UNLICENSED",

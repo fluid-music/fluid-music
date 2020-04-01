@@ -5,13 +5,14 @@
   "main": "src/index.js",
   "scripts": {
     "link": "npm link ../fluid-music",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "npm run link"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
+  "peerDependencies": {
+    "fluid-music": "0.0.2-0"
+  },
   "dependencies": {
-    "fluid-music": "0.0.2-0",
     "underscore": "^1.9.2"
   }
 }
