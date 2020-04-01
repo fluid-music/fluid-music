@@ -1,22 +1,29 @@
 const _ = require('underscore');
-const path = require('path');
 const fluid = require('fluid-music');
 const recipes = require('fluid-recipes');
 
-const wd           = process.cwd();
-const editFilename = path.join(wd, 'edm.tracktionedit');
-const bassFilename = path.join(__dirname, 'zebra2.bass2osc.trkpreset');
 const kickPath     = recipes.fromMars909.kit.k2.path
-
 console.log('kick path:', kickPath);
-console.log('session:', editFilename);
+
+
+const bass = fluid.tab.parse({
+  noteLibrary: {
+    C:24,D:26,E:28,F:29,G:31,A:33,B:35,
+    c:36,d:38,e:40,f:41,g:43,a:45,
+  },
+  r: '1+2+3+4+',
+  p: [
+    {p:'cCEeF-c.'},
+    {p:'A..BF-..'}
+  ],
+});
 
 const msg = [
-  fluid.global.activate(editFilename, true),
   fluid.audiotrack.select('kick'),
   _.range(10).map((i) => fluid.audiotrack.insertWav('k'+i, i, kickPath)),
   fluid.audiotrack.select('bass'),
-  fluid.plugin.loadTrkpreset(bassFilename),
+  fluid.midiclip.create('bass', 0, 8, bass),
+  fluid.transport.loop(0, 8),
 ];
 
 const client = new fluid.Client(9999);
