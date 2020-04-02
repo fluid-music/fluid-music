@@ -35,7 +35,7 @@ const parsedArgs = {
 };
 
 
-// For each value, if it has value in parsedArgs, augment the `parsedArgs`
+// For each value, if it has an entry in `parsedArgs`, augment the `parsedArgs`
 // object with the appropriate argument extracted from process.argv.
 //
 // Commands with arguments will be placed in parsedArgs, and the command itself
