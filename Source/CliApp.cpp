@@ -69,7 +69,7 @@ void CLIApp::onRunning()
                 std::cout << "FluidIpcServer: Falied to connect" << std::endl;
                 return false;
             }
-            std::cout << "FluidIpcServer: Listening for Connection" << std::endl;
+            std::cout << "FluidIpcServer: Listening for Connections" << std::endl;
             
             if (!appJobs.fluidOscServer.connect(options.listenPort)) {
                 std::cout << "FluidOscServer: Falied to connect" << std::endl;
@@ -77,7 +77,7 @@ void CLIApp::onRunning()
             }
             
             appJobs.setRunForever(true);
-            std::cout << "FluidOscServer: Connected!" << std::endl;
+            std::cout << "FluidOscServer: Listening for Connections" << std::endl;
             if (cybrEdit) {
                 CybrEdit* newCybrEdit = copyCybrEditForPlayback(*cybrEdit);
                 appJobs.fluidOscServer.activeCybrEdit.reset(newCybrEdit);
