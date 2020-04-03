@@ -9,10 +9,6 @@ console.log('session:', editFilename);
 const bpm = 128;
 const oneBeatInMs = 60000 / 128;
 
-// map 0 to 1 over -50 to 18. Range of
-const db2DelayLevel = v => (v + 50) / 68;
-const ms2DelayTime = v => (v) / 5000;
-
 const msg = [
   fluid.global.activate(editFilename, true),
   fluid.tempo.set(bpm),
@@ -29,7 +25,6 @@ const msg = [
   fluid.pluginTStereoDelay.zero(),
   fluid.pluginTStereoDelay.setDelayMs(oneBeatInMs),
 ];
-
 
 const client = new fluid.Client(9999);
 client.send(msg);
