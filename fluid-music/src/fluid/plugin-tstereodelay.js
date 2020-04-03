@@ -139,6 +139,17 @@ const pluginTStereoDelay = {
   },
 
   /**
+   * Set the feedback amount from both left and rights delays.
+   * @param {number} amt Right feedback amount. 0=none 1=100% -1=100%(inverted)
+   */
+  setFeedback(amt) {
+    return [
+      fluid.plugin.setParamExplicit('L Feedback', amt * 0.5 + 0.5),
+      fluid.plugin.setParamExplicit('R Feedback', amt * 0.5 + 0.5),
+    ];
+  },
+
+  /**
    * #TStereo Delay has a 'Sync' feature, which is not currently well supported
    * by this fluid module. I recommend disabling it. If you want to use the sync
    * feature, you must use the `fluid.plugin.setParam` methods.
