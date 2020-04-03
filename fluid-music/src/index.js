@@ -1,5 +1,6 @@
 // OSC Message Helpers
 const plugin = require('./fluid/plugin');
+const pluginTStereoDelay = require('./fluid/plugin-tstereodelay');
 const sampler = require('./fluid/sampler');
 const audiotrack = require('./fluid/audiotrack');
 const midiclip = require('./fluid/midiclip');
@@ -27,6 +28,7 @@ module.exports = {
   global,
   midiclip,
   plugin,
+  pluginTStereoDelay,
   random,
   sampler,
   tab,

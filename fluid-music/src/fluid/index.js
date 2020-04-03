@@ -17,6 +17,7 @@ const transport = require('./transport');
 const global = require('./global');
 const clip = require('./clip');
 const tempo = require('./tempo');
+const pluginTStereoDelay = require('./plugin-tstereodelay');
 
 /**
  * @module fluid
@@ -28,6 +29,7 @@ module.exports = {
   global,
   midiclip,
   plugin,
+  pluginTStereoDelay,
   sampler,
   tempo,
   transport,

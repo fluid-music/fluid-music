@@ -196,11 +196,6 @@ const plugin = {
    * @param {String|Buffer} file - A filename or node Buffer object
    */
   loadTrkpreset(file) {
-    console.warn('fluid.plugin.loadTrkpreset should be avoided, because it\n\
-    might be deprecated in a future release. Most presets are too large to\n\
-    fit in a udp packet. Eventually, we want to send messages over TCP, but\n\
-    before we can do that, the juce OSC code needs to be updated.');
-
     let buffer;
     if (!file)
       throw new Error('plugin.loadTrkpreset requires a file argument');
