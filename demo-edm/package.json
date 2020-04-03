@@ -6,12 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "link": "npm link ../fluid-music; npm link ../fluid-recipes",
-    "prepare": "npm run link",
+    "postinstall": "npm run link",
     "watch": "nodemon -w index.js -w content.yaml -- index.js"
   },
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
   "dependencies": {
+    "ramda": "^0.27.0",
     "underscore": "^1.10.2",
     "yaml": "^1.8.3"
   },
