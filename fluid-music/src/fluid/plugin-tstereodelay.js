@@ -21,8 +21,6 @@ const ms2Time = v => v / 5000;       // For "L Delay" and "R Delay" params
  * Internal Plugins like "volume", "insert", "auxsend", and "auxreturn" work
  * with `fluid.plugin.setParamExplicit` AND `fluid.plugin.setParamNormalized`.
  *
-
- *
  * `#TStereo Delay` has several wet/dry controls:
  * - "Wet" - This is the value that appears in the UI
  * - "Wet Level" - Extra control that appears only in tracktion's bottom bar

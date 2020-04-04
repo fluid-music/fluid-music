@@ -68,7 +68,6 @@ const midiclip = {
 
   /**
    * Build an OSC message that creates a clip with a bunch of midi notes
-
    * @param { string } clipName name of the clip.
    * @param { number } startBeats - Clip start time in quarter notes
    * @param { number} lengthBeats - Clip length in quarter notes
