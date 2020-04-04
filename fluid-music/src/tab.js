@@ -84,6 +84,9 @@ const parseVelocity = function(vPattern, symbolsAndCounts, vLibrary){
  *        noteLibrary = {'0': 'c4', '1': 'd4' }
  */
 const parseTab = function(rhythm, pattern, noteLibrary, vPattern, vLibrary) {
+  if (pattern.length > rhythm.length)
+    throw new Error(`parseTab: rhythm ('${rhythm}') not long enough for pattern ('${pattern}')`);
+
   const rhythmObject = parseRhythm(rhythm);
   const symbolsAndCounts = patternToSymbolsAndCounts(pattern);
   const velocityArray = parseVelocity(vPattern, symbolsAndCounts, vLibrary);

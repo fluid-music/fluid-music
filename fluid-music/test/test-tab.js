@@ -149,7 +149,7 @@ describe('tab.parseTab', () => {
     ]);
   });
 
-  it('should also work with arrays of notes', ()=>{
+  it('should parse arrays in the noteLibrary as chords', ()=>{
     const result = tab.parseTab(rhythm, pattern, chords);
     result.should.deepEqual([
       { n: 64, s: 0.0, l: 0.125 },
@@ -167,6 +167,12 @@ describe('tab.parseTab', () => {
       { n: 71, s: 0.875, l: 0.0625 },
       { n: 74, s: 0.875, l: 0.0625 },
     ]);
+  });
+
+  it('should throw if the pattern string is longer than the rhythm string', () => {
+    should(() => {
+      tab.parseTab('12', '123', chords);
+    }).throw();
   });
 
   it('should throw if the pattern contains a symbol with no corresponding note/chord', () => {
@@ -484,5 +490,37 @@ describe('parse', () => {
     });
     
   });
+
+  describe('mismatched lengths between patterns and rhythms', () => {
+    describe('pattern string is shorter than the rhythm string', () => {
+      it('should use the length from the pattern string', () => {
+        const obj = {
+          noteLibrary,
+          r: '1234',
+          p: ['01', '23'],
+        };
+        const result = tab.parse(obj);
+        result.should.containDeep([
+          { n: 0, s: 0.00, l: 0.25 },
+          { n: 1, s: 0.25, l: 0.25 },
+          { n: 2, s: 1.00, l: 0.25 },
+          { n: 3, s: 1.25, l: 0.25 },
+        ]);
+      });
+    });
+
+    describe('rhythm string is shorter than the pattern string', () => {
+      it('should throw', () => {
+        const obj = {
+          noteLibrary,
+          r: '12',
+          p: '1234',
+        };
+        should(() => {
+          const result = tab.parse(obj);
+        }).throw();
   
+      })
+    });
+  });
 });
