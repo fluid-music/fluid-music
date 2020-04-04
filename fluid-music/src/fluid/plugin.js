@@ -129,8 +129,8 @@ const plugin = {
    *
    * @param {string} paramName - the name of the parameter
    * @param {number} paramValue - the explicit value of the parameter set
-   * @param {number} timeInQuarterNotes - time of parameter change in quarter notes
-   * @param {number} curve - A number from [-1, 1] (inclusive), which represents
+   * @param {number} [timeInQuarterNotes=0] - time of parameter change in quarter notes
+   * @param {number} [curve=0] - A number from [-1, 1] (inclusive), which represents
    *    the curvature of the line formed by this point and the next point. Zero
    *    implies a linear change. Higher values create a curve that begins slowly
    *    and accelerates. Lower values create a curve that begins quickly, and
@@ -156,6 +156,33 @@ const plugin = {
         { type: 'string', value: "explicit" },
       ],
     }
+  },
+
+  /**
+   * Helper that makes plugin speciffic modules easier to write. You probably
+   * do not need this unless you are writing an adapter.
+   *
+   * For Tracktion VSTs, all parameters are normalized, so setParamNormalized
+   * and setParamExplicit are effectively the same. This can make code that
+   * parameterizes VSTs difficult to read and write. To address this, plugin
+   * speciffic adapters can provide an abstraction layer that makes the code
+   * pretty and fun to read and write. This is a helper method that makes
+   * those adapters cleaner.
+   *
+   * @param {string} paramName - the name of the parameter
+   * @param {number} paramValue - the explicit value of the parameter set
+   * @param {number} [timeInQuarterNotes=0] - time of parameter change in quarter notes
+   * @param {number} [curve=0] - A number from [-1, 1] (inclusive), which represents
+   *    the curvature of the line formed by this point and the next point. Zero
+   *    implies a linear change. Higher values create a curve that begins slowly
+   *    and accelerates. Lower values create a curve that begins quickly, and
+   *    decelerates.
+   */
+  setExternalParamHelper(paramName, paramValue, timeInQuarterNotes, curve) {
+    if (timeInQuarterNotes === undefined)
+      return plugin.setParamExplicit(paramName, paramValue);
+
+    return plugin.setParamExplicitAt(paramName, paramValue, timeInQuarterNotes, curve);
   },
 
   /**

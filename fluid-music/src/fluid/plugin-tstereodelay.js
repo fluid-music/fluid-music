@@ -21,11 +21,7 @@ const ms2Time = v => v / 5000;       // For "L Delay" and "R Delay" params
  * Internal Plugins like "volume", "insert", "auxsend", and "auxreturn" work
  * with `fluid.plugin.setParamExplicit` AND `fluid.plugin.setParamNormalized`.
  *
- * For Tracktion VSTs, all parameters are normalized, so setParamNormalized and
- * setParamExplicit are effectively the same. This module provides adapters for
- * specifying paramter values in useful units like decibels and milliseconds as
- * opposed to normalized 0-1 values. This makes it easier to read and write
- * delay parameters in code.
+
  *
  * `#TStereo Delay` has several wet/dry controls:
  * - "Wet" - This is the value that appears in the UI
@@ -70,87 +66,157 @@ const pluginTStereoDelay = {
 
   /**
    * @param {number} delayMs delay time in milliseconds
+   * @param {number} [timeInQuarterNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve] A number from [-1, 1] (inclusive), which represents
+   *    the curvature of the line formed by this point and the next point. Zero
+   *    implies a linear change. Higher values create a curve that begins slowly
+   *    and accelerates. Lower values create a curve that begins quickly, and
+   *    decelerates.
    */
-  setDelayLeftMs(delayMs) {
-    return fluid.plugin.setParamExplicit('L Delay', ms2Time(delayMs));
+  setDelayLeftMs(delayMs, timeInQuarterNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('L Delay', ms2Time(delayMs), timeInQuarterNotes, curve);
   },
 
   /**
    * @param {number} delayMs delay time in milliseconds
+   * @param {number} [timeInQuarterNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve] A number from [-1, 1] (inclusive), which represents
+   *    the curvature of the line formed by this point and the next point. Zero
+   *    implies a linear change. Higher values create a curve that begins slowly
+   *    and accelerates. Lower values create a curve that begins quickly, and
+   *    decelerates.
    */
-  setDelayRightMs(delayMs) {
-    return fluid.plugin.setParamExplicit('R Delay', ms2Time(delayMs));
+  setDelayRightMs(delayMs, timeInQuarterNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('R Delay', ms2Time(delayMs), timeInQuarterNotes, curve);
   },
 
   /**
    * Set Delay time for both left and right channels
    * @param {number} delayMs delay time in milliseconds
+   * @param {number} [timeInQuarterNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve] A number from [-1, 1] (inclusive), which represents
+   *    the curvature of the line formed by this point and the next point. Zero
+   *    implies a linear change. Higher values create a curve that begins slowly
+   *    and accelerates. Lower values create a curve that begins quickly, and
+   *    decelerates.
    */
-  setDelayMs(delayMs) {
+  setDelayMs(delayMs, timeInQuarterNotes, curve) {
     return [
-      pluginTStereoDelay.setDelayLeftMs(delayMs),
-      pluginTStereoDelay.setDelayRightMs(delayMs),
+      pluginTStereoDelay.setDelayLeftMs(delayMs, timeInQuarterNotes, curve),
+      pluginTStereoDelay.setDelayRightMs(delayMs, timeInQuarterNotes, curve),
     ];
   },
 
   /**
    * Set the Wet signal level
    * @param {number} db Wet signal level in DBFS (0 = unity gain)
+   * @param {number} [timeInQuarterNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve] A number from [-1, 1] (inclusive), which represents
+   *    the curvature of the line formed by this point and the next point. Zero
+   *    implies a linear change. Higher values create a curve that begins slowly
+   *    and accelerates. Lower values create a curve that begins quickly, and
+   *    decelerates.
    */
-  setWetDbfs(db) {
-    return fluid.plugin.setParamExplicit('Wet', db2Level(db));
+  setWetDbfs(db, timeInQuarterNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Wet', db2Level(db), timeInQuarterNotes, curve);
   },
 
   /**
    * Set the Dry signal level
    * @param {number} db Dry signal level in DBFS (0 = unity gain)
+   * @param {number} [timeInQuarterNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve] A number from [-1, 1] (inclusive), which represents
+   *    the curvature of the line formed by this point and the next point. Zero
+   *    implies a linear change. Higher values create a curve that begins slowly
+   *    and accelerates. Lower values create a curve that begins quickly, and
+   *    decelerates.
    */
-  setDryDbfs(db) {
-    return fluid.plugin.setParamExplicit('Dry', db2Level(db));
+  setDryDbfs(db, timeInQuarterNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Dry', db2Level(db), timeInQuarterNotes, curve);
   },
 
   /**
    * If the left channel has non-zero feedback, pan it accross the left/right
    * inputs.
    * @param {number} pan 0=center -1=left 1=right
+   * @param {number} [timeInQuarterNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve] A number from [-1, 1] (inclusive), which represents
+   *    the curvature of the line formed by this point and the next point. Zero
+   *    implies a linear change. Higher values create a curve that begins slowly
+   *    and accelerates. Lower values create a curve that begins quickly, and
+   *    decelerates.
    */
-  setCrossfeedLeft(pan) {
-    return fluid.plugin.setParamExplicit('L Cross FB', pan * 0.5 + 0.5);
+  setCrossfeedLeft(pan, timeInQuarterNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('L Cross FB', pan * 0.5 + 0.5, timeInQuarterNotes, curve);
   },
 
   /**
    * If the right channel has non-zero feedback, pan it accross the left/right
    * inputs.
    * @param {number} pan 0=center -1=left 1=right
+   * @param {number} [timeInQuarterNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve] A number from [-1, 1] (inclusive), which represents
+   *    the curvature of the line formed by this point and the next point. Zero
+   *    implies a linear change. Higher values create a curve that begins slowly
+   *    and accelerates. Lower values create a curve that begins quickly, and
+   *    decelerates.
    */
-  setCrossfeedRight(pan) {
-    return fluid.plugin.setParamExplicit('R Cross FB', pan * 0.5 + 0.5);
+  setCrossfeedRight(pan, timeInQuarterNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('R Cross FB', pan * 0.5 + 0.5, timeInQuarterNotes, curve);
   },
 
   /**
    * Set the feedback amount from the left delay back into the plugin input.
    * @param {number} amt Left feedback amount. 0=none 1=100% -1=100%(inverted)
+   * @param {number} [timeInQuarterNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve] A number from [-1, 1] (inclusive), which represents
+   *    the curvature of the line formed by this point and the next point. Zero
+   *    implies a linear change. Higher values create a curve that begins slowly
+   *    and accelerates. Lower values create a curve that begins quickly, and
+   *    decelerates.
    */
-  setFeedbackLeft(amt) {
-    return fluid.plugin.setParamExplicit('L Feedback', amt * 0.5 + 0.5);
+  setFeedbackLeft(amt, timeInQuarterNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('L Feedback', amt * 0.5 + 0.5, timeInQuarterNotes, curve);
   },
 
   /**
    * Set the feedback amount from the right delay back into the plugin input.
    * @param {number} amt Right feedback amount. 0=none 1=100% -1=100%(inverted)
+   * @param {number} [timeInQuarterNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve] A number from [-1, 1] (inclusive), which represents
+   *    the curvature of the line formed by this point and the next point. Zero
+   *    implies a linear change. Higher values create a curve that begins slowly
+   *    and accelerates. Lower values create a curve that begins quickly, and
+   *    decelerates.
    */
-  setFeedbackRight(amt) {
-    return fluid.plugin.setParamExplicit('R Feedback', amt * 0.5 + 0.5);
+  setFeedbackRight(amt, timeInQuarterNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('R Feedback', amt * 0.5 + 0.5, timeInQuarterNotes, curve);
   },
 
   /**
    * Set the feedback amount from both left and rights delays.
    * @param {number} amt Right feedback amount. 0=none 1=100% -1=100%(inverted)
+   * @param {number} [timeInQuarterNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve] A number from [-1, 1] (inclusive), which represents
+   *    the curvature of the line formed by this point and the next point. Zero
+   *    implies a linear change. Higher values create a curve that begins slowly
+   *    and accelerates. Lower values create a curve that begins quickly, and
+   *    decelerates.
    */
-  setFeedback(amt) {
+  setFeedback(amt, timeInQuarterNotes, curve) {
     return [
-      fluid.plugin.setParamExplicit('L Feedback', amt * 0.5 + 0.5),
-      fluid.plugin.setParamExplicit('R Feedback', amt * 0.5 + 0.5),
+      fluid.plugin.setExternalParamHelper('L Feedback', amt * 0.5 + 0.5, timeInQuarterNotes, curve),
+      fluid.plugin.setExternalParamHelper('R Feedback', amt * 0.5 + 0.5, timeInQuarterNotes, curve),
     ];
   },
 
