@@ -8,7 +8,11 @@ const ms2Time = v => v / 5000;       // For "L Delay" and "R Delay" params
 
 /**
  * This is a helper class for Tracktion's #TStereoDelay VST2 plugin, which is
- * available on Mac, Windows, and Linux.
+ * available on Mac, Windows, and Linux. The #T series of plugins are part of
+ * Tracktion Waveform's "Daw Essentials" package:
+ * https://www.tracktion.com/products/daw-essentials-collection
+ * The "Daw Essentials" package comes bundled with OEM, Standard, and Extreme
+ * versions of Waveform (but unfortunately, not the "Basic" bundle).
  *
  * To use any method in this module other than `select`, make sure that a
  * `#TStereo Delay` plugin instance is selected by first calling
@@ -17,10 +21,11 @@ const ms2Time = v => v / 5000;       // For "L Delay" and "R Delay" params
  * Internal Plugins like "volume", "insert", "auxsend", and "auxreturn" work
  * with `fluid.plugin.setParamExplicit` AND `fluid.plugin.setParamNormalized`.
  *
- * For VSTs it is not possible to use setParamNormalized. This module provides
- * some useful adapters for specifying paramter values in useful units like
- * decibels and milliseconds, making it easier to read and write delay
- * parameters in code.
+ * For Tracktion VSTs, all parameters are normalized, so setParamNormalized and
+ * setParamExplicit are effectively the same. This module provides adapters for
+ * specifying paramter values in useful units like decibels and milliseconds as
+ * opposed to normalized 0-1 values. This makes it easier to read and write
+ * delay parameters in code.
  *
  * `#TStereo Delay` has several wet/dry controls:
  * - "Wet" - This is the value that appears in the UI
