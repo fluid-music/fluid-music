@@ -26,6 +26,44 @@
 <dd></dd>
 </dl>
 
+## Constants
+
+<dl>
+<dt><a href="#pluginTStereoDelay">pluginTStereoDelay</a></dt>
+<dd><p>This is a helper class for Tracktion&#39;s #TStereoDelay VST2 plugin, which is
+available on Mac, Windows, and Linux. The #T series of plugins are part of
+Tracktion Waveform&#39;s &quot;Daw Essentials&quot; package:
+<a href="https://www.tracktion.com/products/daw-essentials-collection">https://www.tracktion.com/products/daw-essentials-collection</a>
+The &quot;Daw Essentials&quot; package comes bundled with OEM, Standard, and Extreme
+versions of Waveform (but unfortunately, not the &quot;Basic&quot; bundle).</p>
+<p>To use any method in this module other than <code>select</code>, make sure that a
+<code>#TStereo Delay</code> plugin instance is selected by first calling
+<code>pluginTStereoDelay.select()</code>.</p>
+<p>Internal Plugins like &quot;volume&quot;, &quot;insert&quot;, &quot;auxsend&quot;, and &quot;auxreturn&quot; work
+with <code>fluid.plugin.setParamExplicit</code> AND <code>fluid.plugin.setParamNormalized</code>.</p>
+<p><code>#TStereo Delay</code> has several wet/dry controls:</p>
+<ul>
+<li>&quot;Wet&quot; - This is the value that appears in the UI</li>
+<li>&quot;Wet Level&quot; - Extra control that appears only in tracktion&#39;s bottom bar</li>
+<li>&quot;Dry&quot;</li>
+<li>&quot;Dry Level&quot;
+This module uses &quot;Wet&quot; and &quot;Dry&quot;, because it makes it easier to understand
+from when the plugin is viewed in a GUI.</li>
+</ul>
+<p>The <code>#TStereo Delay</code> has some limited tempo sync abilities. When sync is
+enabled, the following parameters indicate the delay time:</p>
+<ul>
+<li>&quot;L Note Delay&quot;</li>
+<li>&quot;L Note Offset&quot;</li>
+<li>&quot;R Note Delay&quot;</li>
+<li>&quot;R Note Offset&quot;
+When sync is disabled, the following params indicate the delay time:</li>
+<li>&quot;L Delay&quot;</li>
+<li>&quot;R Delay&quot;</li>
+</ul>
+</dd>
+</dl>
+
 ## Typedefs
 
 <dl>
@@ -358,7 +396,8 @@ Build an OSC message that creates a clip with a bunch of midi notes
     * [.setParamNormalized(paramName, normalizedValue)](#plugin.setParamNormalized)
     * [.setParamExplicit(paramName, paramValue)](#plugin.setParamExplicit)
     * [.setParamNormalizedAt(paramName, normalizedValue, timeInQuarterNotes, curve)](#plugin.setParamNormalizedAt)
-    * [.setParamExplicitAt(paramName, paramValue, timeInQuarterNotes, curve)](#plugin.setParamExplicitAt)
+    * [.setParamExplicitAt(paramName, paramValue, [timeInQuarterNotes], [curve])](#plugin.setParamExplicitAt)
+    * [.setExternalParamHelper(paramName, paramValue, [timeInQuarterNotes], [curve])](#plugin.setExternalParamHelper)
     * [.setSideChainInput(inputTrackName)](#plugin.setSideChainInput)
     * [.loadTrkpreset(file)](#plugin.loadTrkpreset)
 
@@ -412,9 +451,9 @@ Changes the specified parameter to the explicit value provided.
 <a name="plugin.setParamNormalizedAt"></a>
 
 ### plugin.setParamNormalizedAt(paramName, normalizedValue, timeInQuarterNotes, curve)
-Changes the automation curve of the parameter value,
-adds a point to the curve at the specified normalized value and time.
-The server automatically adds a point at the default value of the parameter at time 0.
+Changes the automation curve of the parameter value, adds a point to the
+curve at the specified normalized value and time. The server automatically
+adds a point at the default value of the parameter at time 0.
 
 **Kind**: static method of [<code>plugin</code>](#plugin)  
 
@@ -423,23 +462,45 @@ The server automatically adds a point at the default value of the parameter at t
 | paramName | <code>string</code> | the name of the parameter |
 | normalizedValue | <code>number</code> | a normalized parameter value from 0 to 1 |
 | timeInQuarterNotes | <code>number</code> | time of parameter change in quarter notes |
-| curve | <code>number</code> | the curvature of the line formed by this point and the next point |
+| curve | <code>number</code> | A number from [-1, 1] (inclusive), which represents    the curvature of the line formed by this point and the next point. Zero    implies a linear change. Higher values create a curve that begins slowly    and accelerates. Lower values create a curve that begins quickly, and    decelerates. |
 
 <a name="plugin.setParamExplicitAt"></a>
 
-### plugin.setParamExplicitAt(paramName, paramValue, timeInQuarterNotes, curve)
-Changes the automation curve of the parameter value,
-adds a point to the curve at the specified value and time.
-The server automatically adds a point at the default value of the parameter at time 0.
+### plugin.setParamExplicitAt(paramName, paramValue, [timeInQuarterNotes], [curve])
+Changes the automation curve of the parameter value, adds a point to the
+curve at the specified value and time. The server automatically adds a
+point at the default value of the parameter at time 0.
 
 **Kind**: static method of [<code>plugin</code>](#plugin)  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| paramName | <code>string</code> | the name of the parameter |
-| paramValue | <code>number</code> | the explicit value of the parameter set |
-| timeInQuarterNotes | <code>number</code> | time of parameter change in quarter notes |
-| curve | <code>number</code> | the curvature of the line formed by this point and the next point |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| paramName | <code>string</code> |  | the name of the parameter |
+| paramValue | <code>number</code> |  | the explicit value of the parameter set |
+| [timeInQuarterNotes] | <code>number</code> | <code>0</code> | time of parameter change in quarter notes |
+| [curve] | <code>number</code> | <code>0</code> | A number from [-1, 1] (inclusive), which represents    the curvature of the line formed by this point and the next point. Zero    implies a linear change. Higher values create a curve that begins slowly    and accelerates. Lower values create a curve that begins quickly, and    decelerates. |
+
+<a name="plugin.setExternalParamHelper"></a>
+
+### plugin.setExternalParamHelper(paramName, paramValue, [timeInQuarterNotes], [curve])
+Helper that makes plugin speciffic modules easier to write. You probably
+do not need this unless you are writing an adapter.
+
+For Tracktion VSTs, all parameters are normalized, so setParamNormalized
+and setParamExplicit are effectively the same. This can make code that
+parameterizes VSTs difficult to read and write. To address this, plugin
+speciffic adapters can provide an abstraction layer that makes the code
+pretty and fun to read and write. This is a helper method that makes
+those adapters cleaner.
+
+**Kind**: static method of [<code>plugin</code>](#plugin)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| paramName | <code>string</code> |  | the name of the parameter |
+| paramValue | <code>number</code> |  | the explicit value of the parameter set |
+| [timeInQuarterNotes] | <code>number</code> | <code>0</code> | time of parameter change in quarter notes |
+| [curve] | <code>number</code> | <code>0</code> | A number from [-1, 1] (inclusive), which represents    the curvature of the line formed by this point and the next point. Zero    implies a linear change. Higher values create a curve that begins slowly    and accelerates. Lower values create a curve that begins quickly, and    decelerates. |
 
 <a name="plugin.setSideChainInput"></a>
 
@@ -465,7 +526,7 @@ Load a .trkpreset file on the client side, and send it to
 
 | Param | Type | Description |
 | --- | --- | --- |
-| file | <code>Buffer</code> \| <code>String</code> | A |
+| file | <code>String</code> \| <code>Buffer</code> | A filename or node Buffer object |
 
 <a name="sampler"></a>
 
@@ -503,6 +564,215 @@ Set loop points, and enable looping.
 | startQuarterNotes | <code>Number</code> \| <code>false</code> | The number of quarter notes at        which the loop should begin. Or `false`, which disables looping. |
 | lengthQuarterNotes | <code>Number</code> | The length of the loop, measured in        quarter notes. |
 
+<a name="pluginTStereoDelay"></a>
+
+## pluginTStereoDelay
+This is a helper class for Tracktion's #TStereoDelay VST2 plugin, which is
+available on Mac, Windows, and Linux. The #T series of plugins are part of
+Tracktion Waveform's "Daw Essentials" package:
+https://www.tracktion.com/products/daw-essentials-collection
+The "Daw Essentials" package comes bundled with OEM, Standard, and Extreme
+versions of Waveform (but unfortunately, not the "Basic" bundle).
+
+To use any method in this module other than `select`, make sure that a
+`#TStereo Delay` plugin instance is selected by first calling
+`pluginTStereoDelay.select()`.
+
+Internal Plugins like "volume", "insert", "auxsend", and "auxreturn" work
+with `fluid.plugin.setParamExplicit` AND `fluid.plugin.setParamNormalized`.
+
+`#TStereo Delay` has several wet/dry controls:
+- "Wet" - This is the value that appears in the UI
+- "Wet Level" - Extra control that appears only in tracktion's bottom bar
+- "Dry"
+- "Dry Level"
+This module uses "Wet" and "Dry", because it makes it easier to understand
+from when the plugin is viewed in a GUI.
+
+The `#TStereo Delay` has some limited tempo sync abilities. When sync is
+enabled, the following parameters indicate the delay time:
+- "L Note Delay"
+- "L Note Offset"
+- "R Note Delay"
+- "R Note Offset"
+When sync is disabled, the following params indicate the delay time:
+- "L Delay"
+- "R Delay"
+
+**Kind**: global constant  
+
+* [pluginTStereoDelay](#pluginTStereoDelay)
+    * [.select([pluginId])](#pluginTStereoDelay.select)
+    * [.zero()](#pluginTStereoDelay.zero)
+    * [.setDelayLeftMs(delayMs, [timeInQuarterNotes], [curve])](#pluginTStereoDelay.setDelayLeftMs)
+    * [.setDelayRightMs(delayMs, [timeInQuarterNotes], [curve])](#pluginTStereoDelay.setDelayRightMs)
+    * [.setDelayMs(delayMs, [timeInQuarterNotes], [curve])](#pluginTStereoDelay.setDelayMs)
+    * [.setWetDbfs(db, [timeInQuarterNotes], [curve])](#pluginTStereoDelay.setWetDbfs)
+    * [.setDryDbfs(db, [timeInQuarterNotes], [curve])](#pluginTStereoDelay.setDryDbfs)
+    * [.setCrossfeedLeft(pan, [timeInQuarterNotes], [curve])](#pluginTStereoDelay.setCrossfeedLeft)
+    * [.setCrossfeedRight(pan, [timeInQuarterNotes], [curve])](#pluginTStereoDelay.setCrossfeedRight)
+    * [.setFeedbackLeft(amt, [timeInQuarterNotes], [curve])](#pluginTStereoDelay.setFeedbackLeft)
+    * [.setFeedbackRight(amt, [timeInQuarterNotes], [curve])](#pluginTStereoDelay.setFeedbackRight)
+    * [.setFeedback(amt, [timeInQuarterNotes], [curve])](#pluginTStereoDelay.setFeedback)
+    * [.disableSync()](#pluginTStereoDelay.disableSync)
+
+<a name="pluginTStereoDelay.select"></a>
+
+### pluginTStereoDelay.select([pluginId])
+Get or Create a `#TStereo Delay` plugin on the given track
+
+**Kind**: static method of [<code>pluginTStereoDelay</code>](#pluginTStereoDelay)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [pluginId] | <code>number</code> | optional index of the plugin to use |
+
+<a name="pluginTStereoDelay.zero"></a>
+
+### pluginTStereoDelay.zero()
+Zero the selected `#TStereo Delay` plugin, resetting to sensible defaults.
+
+**Kind**: static method of [<code>pluginTStereoDelay</code>](#pluginTStereoDelay)  
+<a name="pluginTStereoDelay.setDelayLeftMs"></a>
+
+### pluginTStereoDelay.setDelayLeftMs(delayMs, [timeInQuarterNotes], [curve])
+**Kind**: static method of [<code>pluginTStereoDelay</code>](#pluginTStereoDelay)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| delayMs | <code>number</code> | delay time in milliseconds |
+| [timeInQuarterNotes] | <code>number</code> | time to insert automation point in    quarter notes. If no time is supplied, set the initial value |
+| [curve] | <code>number</code> | A number from [-1, 1] (inclusive), which represents    the curvature of the line formed by this point and the next point. Zero    implies a linear change. Higher values create a curve that begins slowly    and accelerates. Lower values create a curve that begins quickly, and    decelerates. |
+
+<a name="pluginTStereoDelay.setDelayRightMs"></a>
+
+### pluginTStereoDelay.setDelayRightMs(delayMs, [timeInQuarterNotes], [curve])
+**Kind**: static method of [<code>pluginTStereoDelay</code>](#pluginTStereoDelay)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| delayMs | <code>number</code> | delay time in milliseconds |
+| [timeInQuarterNotes] | <code>number</code> | time to insert automation point in    quarter notes. If no time is supplied, set the initial value |
+| [curve] | <code>number</code> | A number from [-1, 1] (inclusive), which represents    the curvature of the line formed by this point and the next point. Zero    implies a linear change. Higher values create a curve that begins slowly    and accelerates. Lower values create a curve that begins quickly, and    decelerates. |
+
+<a name="pluginTStereoDelay.setDelayMs"></a>
+
+### pluginTStereoDelay.setDelayMs(delayMs, [timeInQuarterNotes], [curve])
+Set Delay time for both left and right channels
+
+**Kind**: static method of [<code>pluginTStereoDelay</code>](#pluginTStereoDelay)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| delayMs | <code>number</code> | delay time in milliseconds |
+| [timeInQuarterNotes] | <code>number</code> | time to insert automation point in    quarter notes. If no time is supplied, set the initial value |
+| [curve] | <code>number</code> | A number from [-1, 1] (inclusive), which represents    the curvature of the line formed by this point and the next point. Zero    implies a linear change. Higher values create a curve that begins slowly    and accelerates. Lower values create a curve that begins quickly, and    decelerates. |
+
+<a name="pluginTStereoDelay.setWetDbfs"></a>
+
+### pluginTStereoDelay.setWetDbfs(db, [timeInQuarterNotes], [curve])
+Set the Wet signal level
+
+**Kind**: static method of [<code>pluginTStereoDelay</code>](#pluginTStereoDelay)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| db | <code>number</code> | Wet signal level in DBFS (0 = unity gain) |
+| [timeInQuarterNotes] | <code>number</code> | time to insert automation point in    quarter notes. If no time is supplied, set the initial value |
+| [curve] | <code>number</code> | A number from [-1, 1] (inclusive), which represents    the curvature of the line formed by this point and the next point. Zero    implies a linear change. Higher values create a curve that begins slowly    and accelerates. Lower values create a curve that begins quickly, and    decelerates. |
+
+<a name="pluginTStereoDelay.setDryDbfs"></a>
+
+### pluginTStereoDelay.setDryDbfs(db, [timeInQuarterNotes], [curve])
+Set the Dry signal level
+
+**Kind**: static method of [<code>pluginTStereoDelay</code>](#pluginTStereoDelay)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| db | <code>number</code> | Dry signal level in DBFS (0 = unity gain) |
+| [timeInQuarterNotes] | <code>number</code> | time to insert automation point in    quarter notes. If no time is supplied, set the initial value |
+| [curve] | <code>number</code> | A number from [-1, 1] (inclusive), which represents    the curvature of the line formed by this point and the next point. Zero    implies a linear change. Higher values create a curve that begins slowly    and accelerates. Lower values create a curve that begins quickly, and    decelerates. |
+
+<a name="pluginTStereoDelay.setCrossfeedLeft"></a>
+
+### pluginTStereoDelay.setCrossfeedLeft(pan, [timeInQuarterNotes], [curve])
+If the left channel has non-zero feedback, pan it accross the left/right
+inputs.
+
+**Kind**: static method of [<code>pluginTStereoDelay</code>](#pluginTStereoDelay)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pan | <code>number</code> | 0=center -1=left 1=right |
+| [timeInQuarterNotes] | <code>number</code> | time to insert automation point in    quarter notes. If no time is supplied, set the initial value |
+| [curve] | <code>number</code> | A number from [-1, 1] (inclusive), which represents    the curvature of the line formed by this point and the next point. Zero    implies a linear change. Higher values create a curve that begins slowly    and accelerates. Lower values create a curve that begins quickly, and    decelerates. |
+
+<a name="pluginTStereoDelay.setCrossfeedRight"></a>
+
+### pluginTStereoDelay.setCrossfeedRight(pan, [timeInQuarterNotes], [curve])
+If the right channel has non-zero feedback, pan it accross the left/right
+inputs.
+
+**Kind**: static method of [<code>pluginTStereoDelay</code>](#pluginTStereoDelay)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pan | <code>number</code> | 0=center -1=left 1=right |
+| [timeInQuarterNotes] | <code>number</code> | time to insert automation point in    quarter notes. If no time is supplied, set the initial value |
+| [curve] | <code>number</code> | A number from [-1, 1] (inclusive), which represents    the curvature of the line formed by this point and the next point. Zero    implies a linear change. Higher values create a curve that begins slowly    and accelerates. Lower values create a curve that begins quickly, and    decelerates. |
+
+<a name="pluginTStereoDelay.setFeedbackLeft"></a>
+
+### pluginTStereoDelay.setFeedbackLeft(amt, [timeInQuarterNotes], [curve])
+Set the feedback amount from the left delay back into the plugin input.
+
+**Kind**: static method of [<code>pluginTStereoDelay</code>](#pluginTStereoDelay)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| amt | <code>number</code> | Left feedback amount. 0=none 1=100% -1=100%(inverted) |
+| [timeInQuarterNotes] | <code>number</code> | time to insert automation point in    quarter notes. If no time is supplied, set the initial value |
+| [curve] | <code>number</code> | A number from [-1, 1] (inclusive), which represents    the curvature of the line formed by this point and the next point. Zero    implies a linear change. Higher values create a curve that begins slowly    and accelerates. Lower values create a curve that begins quickly, and    decelerates. |
+
+<a name="pluginTStereoDelay.setFeedbackRight"></a>
+
+### pluginTStereoDelay.setFeedbackRight(amt, [timeInQuarterNotes], [curve])
+Set the feedback amount from the right delay back into the plugin input.
+
+**Kind**: static method of [<code>pluginTStereoDelay</code>](#pluginTStereoDelay)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| amt | <code>number</code> | Right feedback amount. 0=none 1=100% -1=100%(inverted) |
+| [timeInQuarterNotes] | <code>number</code> | time to insert automation point in    quarter notes. If no time is supplied, set the initial value |
+| [curve] | <code>number</code> | A number from [-1, 1] (inclusive), which represents    the curvature of the line formed by this point and the next point. Zero    implies a linear change. Higher values create a curve that begins slowly    and accelerates. Lower values create a curve that begins quickly, and    decelerates. |
+
+<a name="pluginTStereoDelay.setFeedback"></a>
+
+### pluginTStereoDelay.setFeedback(amt, [timeInQuarterNotes], [curve])
+Set the feedback amount from both left and rights delays.
+
+**Kind**: static method of [<code>pluginTStereoDelay</code>](#pluginTStereoDelay)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| amt | <code>number</code> | Right feedback amount. 0=none 1=100% -1=100%(inverted) |
+| [timeInQuarterNotes] | <code>number</code> | time to insert automation point in    quarter notes. If no time is supplied, set the initial value |
+| [curve] | <code>number</code> | A number from [-1, 1] (inclusive), which represents    the curvature of the line formed by this point and the next point. Zero    implies a linear change. Higher values create a curve that begins slowly    and accelerates. Lower values create a curve that begins quickly, and    decelerates. |
+
+<a name="pluginTStereoDelay.disableSync"></a>
+
+### pluginTStereoDelay.disableSync()
+#TStereo Delay has a 'Sync' feature, which is not currently well supported
+by this fluid module. I recommend disabling it. If you want to use the sync
+feature, you must use the `fluid.plugin.setParam` methods.
+
+Note that Waveform's sync feature does not follow tempo automation, so it
+is probably best to just calculate tempos in milliseconds and specify them
+using the `fluid.pluginTStereoDelay.setDelayMs` helpers.
+
+**Kind**: static method of [<code>pluginTStereoDelay</code>](#pluginTStereoDelay)  
 <a name="noteObject"></a>
 
 ## noteObject : <code>Object</code>
