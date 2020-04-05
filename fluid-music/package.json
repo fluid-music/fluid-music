@@ -7,7 +7,8 @@
     "watch": "nodemon -e .js,.mjs,.json,.yaml,.yml src/index.js",
     "test": "mocha",
     "test-debug": "mocha --reporter spec --inspect-brk",
-    "docs": "jsdoc2md  --files 'src/fluid/*.js' > docs/fluid.md"
+    "docs": "jsdoc2md  --files 'src/fluid/*.js' > docs/fluid.md",
+    "generate-zebra2-code": "node src/fluid/zebra2/generate-code.js > src/fluid/plugin-zebra2-vst2.js"
   },
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
@@ -21,6 +22,7 @@
     "expr-eval": "^2.0.2",
     "osc-ipc-client": "^1.0.2",
     "osc-min": "^1.1.2",
+    "ramda": "^0.27.0",
     "sharp11": "^2.0.2",
     "yaml": "^1.7.2"
   },

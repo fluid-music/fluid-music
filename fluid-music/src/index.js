@@ -1,6 +1,7 @@
 // OSC Message Helpers
 const plugin = require('./fluid/plugin');
 const pluginTStereoDelay = require('./fluid/plugin-tstereodelay');
+const pluginZebra2Vst2 = require('./fluid/plugin-zebra2-vst2');
 const sampler = require('./fluid/sampler');
 const audiotrack = require('./fluid/audiotrack');
 const midiclip = require('./fluid/midiclip');
@@ -18,6 +19,7 @@ const Client = require('./FluidClient');
 const converters = require('./converters');
 const random = require('./random');
 
+
 module.exports = {
   audioclip,
   audiotrack,
@@ -29,6 +31,7 @@ module.exports = {
   midiclip,
   plugin,
   pluginTStereoDelay,
+  pluginZebra2Vst2,
   random,
   sampler,
   tab,

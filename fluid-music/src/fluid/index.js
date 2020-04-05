@@ -18,6 +18,8 @@ const global = require('./global');
 const clip = require('./clip');
 const tempo = require('./tempo');
 const pluginTStereoDelay = require('./plugin-tstereodelay');
+const pluginZebra2Vst2 = require('./plugin-zebra2-vst2');
+
 
 /**
  * @module fluid
@@ -30,6 +32,7 @@ module.exports = {
   midiclip,
   plugin,
   pluginTStereoDelay,
+  pluginZebra2Vst2,
   sampler,
   tempo,
   transport,
