@@ -145,6 +145,13 @@ const audiotrack = {
   removeClips() {
     return { address: '/audiotrack/remove/clips' };
   },
+
+  /**
+   * Remove all automation from the track and from all the tracks plugins.
+   */
+  removeAutomation() {
+    return { address: '/audiotrack/remove/automation'};
+  },
 }
 
 module.exports = audiotrack;

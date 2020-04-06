@@ -80,6 +80,7 @@ void FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/audiotrack/set/db"})) return setTrackGain(message);
     if (msgAddressPattern.matches({"/audiotrack/send/set/db"})) return ensureSend(message);
     if (msgAddressPattern.matches({"/audiotrack/remove/clips"})) return removeAudioTrackClips(message);
+    if (msgAddressPattern.matches({"/audiotrack/remove/automation"})) return removeAudioTrackAutomation(message);
     if (msgAddressPattern.matches({"/audiotrack/insert/wav"})) return insertWaveSample(message);
     if (msgAddressPattern.matches({"/audiotrack/mute"})) return muteTrack(true);
     if (msgAddressPattern.matches({"/audiotrack/unmute"})) return muteTrack(false);
@@ -115,6 +116,21 @@ void FluidOscServer::removeAudioTrackClips(const OSCMessage& message) {
 
     for (te::Clip* clip : clipsToRemove) {
         clip->removeFromParentTrack();
+    }
+}
+
+void FluidOscServer::removeAudioTrackAutomation(const OSCMessage& message) {
+    if (!selectedAudioTrack) {
+        std::cout << "Cannot remove audio track automation: no track selected" << std::endl;
+        return;
+    }
+
+    for (auto plugin : selectedAudioTrack->getAllPlugins()) {
+        for (te::AutomatableParameter* param : plugin->getAutomatableParameters()) {
+            if (param->hasAutomationPoints()) {
+                param->getCurve().clear();
+            }
+        }
     }
 }
 

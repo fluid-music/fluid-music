@@ -39,6 +39,7 @@ public:
     // message handlers
     void selectAudioTrack(const OSCMessage& message);
     void removeAudioTrackClips(const OSCMessage& message);
+    void removeAudioTrackAutomation(const OSCMessage& message);
     void selectReturnTrack(const OSCMessage& message);
     void selectMidiClip(const OSCMessage& message);
     void selectPlugin(const OSCMessage& message);
