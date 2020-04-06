@@ -41,7 +41,7 @@ const msg = [
   fluid.audiotrack.select('mallet'),
   fluid.midiclip.create('mallet', 0, bass.duration * 4, octaveUp(bass)),
   fluid.plugin.select('zebra2', 'vst'),
-  fluid.plugin.setParamNormalized('VCF1: Cutoff', 0.04),
+  fluid.pluginZebra2Vst2.setVCF1Cutoff(0.1),
   fluid.audiotrack.gain(0),
   fluid.plugin.select('volume'),
   fluid.plugin.setParamExplicit('pan', 0),
@@ -54,6 +54,13 @@ const msg = [
 
   // Setup Looping
   fluid.transport.loop(0, bass.duration * 4),
+
+  // Mid automation
+  fluid.audiotrack.select('mallet'),
+  fluid.audiotrack.removeAutomation(),
+  fluid.plugin.select('zebra2', 'vst'),
+  fluid.pluginZebra2Vst2.setVCF1Cutoff(0.01, 0),
+  fluid.pluginZebra2Vst2.setVCF1Cutoff(0.18, bass.duration * 4),
 ];
 
 
