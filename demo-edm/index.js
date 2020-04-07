@@ -1,6 +1,5 @@
 const fs      = require('fs');
 const path    = require('path');
-const _       = require('underscore');
 const R       = require('ramda');
 const YAML    = require('yaml');
 const fluid   = require('fluid-music');
@@ -23,6 +22,7 @@ const wiggle = R.pipe(
 
 
 const bassContent = R.clone(content.root);
+bassContent.noteLibrary = recipes.library.rotate(bassContent.noteLibrary, 0);
 bassContent.p = wiggle(content.p, 9);
 console.log(bassContent);
 
@@ -33,7 +33,7 @@ const msg = [
   // Bass
   fluid.audiotrack.select('kick'),
   fluid.audiotrack.removeClips(),
-  _.range(7*4).map((i) => fluid.audiotrack.insertWav('k'+i, i, kickPath)),
+  R.range(0, 7*4).map((i) => fluid.audiotrack.insertWav('k'+i, i, kickPath)),
   fluid.audiotrack.select('bass'),
   fluid.midiclip.create('bass', 0, bass.duration * 4, bass),
 
@@ -62,7 +62,6 @@ const msg = [
   fluid.pluginZebra2Vst2.setVCF1Cutoff(0.01, 0),
   fluid.pluginZebra2Vst2.setVCF1Cutoff(0.18, bass.duration * 4),
 ];
-
 
 const client = new fluid.Client(9999);
 client.send(msg);
