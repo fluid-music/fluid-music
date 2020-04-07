@@ -15,9 +15,16 @@
 InterprocessConnection* FluidIpcServer::createConnectionObject(){
     std::cout<<"Creating interprocess connection"<<std::endl;
     
+    while(ipcMap.find(ipc_num) != ipcMap.end()){
+        ipc_num += 1;
+        ipc_num %= threshold;
+    }
+        
     ipcMap[ipc_num].setFluidServer(*fluidOscServer);
-
-    return &ipcMap[ipc_num++];
+    ipcMap[ipc_num].setIpcServer(*this);
+    ipcMap[ipc_num].setIpcNum(ipc_num);
+    
+    return &ipcMap[ipc_num];
 }
 
 FluidIpcServer::FluidIpcServer(FluidOscServer& server) : fluidOscServer(&server){
@@ -28,8 +35,17 @@ void FluidIpc::setFluidServer(FluidOscServer& server){
     fluidOscServer = &server;
 }
 
+void FluidIpc::setIpcServer(FluidIpcServer& server){
+    fluidIpcServer = &server;
+}
+
 void FluidIpc::connectionMade(){
     std::cout<<"Connection Made"<<std::endl;
+    fluidIpcServer->ipcMap.erase(ipc_num);
+}
+
+void FluidIpc::setIpcNum(int num){
+    ipc_num = num;
 }
 
 void FluidIpc::connectionLost(){
