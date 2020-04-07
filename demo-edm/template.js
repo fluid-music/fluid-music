@@ -16,8 +16,8 @@ const msg = [
   fluid.audiotrack.select('bass'),
   fluid.plugin.loadTrkpreset(bassFilename),
   fluid.audiotrack.select('mallet'),
-  fluid.plugin.select('zebra2', 'vst'),
-  fluid.plugin.setParamNormalized('Delay1: Mix', 0),
+  fluid.pluginZebra2Vst2.select(),
+  fluid.pluginZebra2Vst2.setDelay1Mix(0),
   fluid.audiotrack.send('delayQuarterNote', -6),
   // create delays
   fluid.audiotrack.selectReturnTrack('delayQuarterNote'),

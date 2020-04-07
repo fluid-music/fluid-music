@@ -14,20 +14,20 @@ const content = YAML.parse(fs.readFileSync(yamlFilename, 'utf-8'));
 const wiggle = R.pipe(
   R.repeat,
   R.addIndex(R.map)((s, i) => {
-    if (R.contains(s[i], '._ ')) return null;
+    if (R.contains(s[i], '._- ')) return null;
     return R.insert(i+1, '-', s);
   }),
   R.filter(v => v !== null),
   R.map(R.join('')),
 );
 
-content.p = wiggle(content.p, 8);
-console.log(content);
 
-const bass = fluid.tab.parse(content);
+const bassContent = R.clone(content.root);
+bassContent.p = wiggle(content.p, 9);
+console.log(bassContent);
+
+const bass = fluid.tab.parse(bassContent);
 const octaveUp = R.map(n => {n.n += 36; return n});
-
-
 
 const msg = [
   // Bass
@@ -40,7 +40,7 @@ const msg = [
   // Mids
   fluid.audiotrack.select('mallet'),
   fluid.midiclip.create('mallet', 0, bass.duration * 4, octaveUp(bass)),
-  fluid.plugin.select('zebra2', 'vst'),
+  fluid.pluginZebra2Vst2.select(),
   fluid.pluginZebra2Vst2.setVCF1Cutoff(0.1),
   fluid.audiotrack.gain(0),
   fluid.plugin.select('volume'),
