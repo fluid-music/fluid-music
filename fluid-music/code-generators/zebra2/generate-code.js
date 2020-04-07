@@ -31,6 +31,14 @@ console.log(
 const plugin = require('./plugin');
 const fluid = { plugin };
 module.exports = {
+  /**
+   * Select a \`Zebra2\` vst2 plugin on the selected track, creating a new
+   * plugin instance if needed
+   * @param {number} [pluginId] - optional index of the plugin to select
+   */
+  select(pluginId) {
+    return fluid.plugin.select('Zebra2', 'vst', pluginId);
+  },
 `);
 
 const results = R.mapObjIndexed((funcName, paramName) => {

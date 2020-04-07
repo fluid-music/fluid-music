@@ -41,8 +41,9 @@ const ms2Time = v => v / 5000;       // For "L Delay" and "R Delay" params
  */
 const pluginTStereoDelay = {
   /**
-   * Get or Create a `#TStereo Delay` plugin on the given track
-   * @param {number} [pluginId] - optional index of the plugin to use
+   * Select a `#TStereo Delay` vst2 plugin on the selected track, creating a new
+   * plugin instance if needed
+   * @param {number} [pluginId] - optional index of the plugin to select
    */
   select(pluginId) {
     return fluid.plugin.select('#TStereo Delay', 'vst', pluginId);
