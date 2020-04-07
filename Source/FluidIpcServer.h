@@ -38,10 +38,11 @@ class FluidIpcServer : public InterprocessConnectionServer{
 public:
     FluidIpcServer(FluidOscServer& server);
     InterprocessConnection* createConnectionObject() override;
-    std::map<int, FluidIpc> ipcMap;
+    void removeIpcConn(int ipc_conn_num);
     
 private:
     int ipc_num = 0;
     int threshold = 1000000000;
+    std::map<int, FluidIpc> ipcMap;
     FluidOscServer* fluidOscServer = nullptr;
 };

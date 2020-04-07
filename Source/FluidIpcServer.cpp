@@ -30,6 +30,10 @@ InterprocessConnection* FluidIpcServer::createConnectionObject(){
 FluidIpcServer::FluidIpcServer(FluidOscServer& server) : fluidOscServer(&server){
 }
 
+void FluidIpcServer::removeIpcConn(int ipc_conn){
+    ipcMap.erase(ipc_conn);
+}
+
 //==============================================================================
 void FluidIpc::setFluidServer(FluidOscServer& server){
     fluidOscServer = &server;
@@ -41,7 +45,7 @@ void FluidIpc::setIpcServer(FluidIpcServer& server){
 
 void FluidIpc::connectionMade(){
     std::cout<<"Connection Made"<<std::endl;
-    fluidIpcServer->ipcMap.erase(ipc_num);
+    fluidIpcServer->removeIpcConn(ipc_num);
 }
 
 void FluidIpc::setIpcNum(int num){
