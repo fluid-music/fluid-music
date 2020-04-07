@@ -17,6 +17,24 @@ const rotate = (noteLibrary, amount=1) => {
   return result;
 };
 
+/**
+ * Create a 16 noteLibrary on an ascending minor scale noteLibrary. The
+ * noteLibrary begins on the specified midi note with '0', and counts upwards to
+ * 'f' in hexadecimal.
+ *
+ * @param {number} [startNote=33] Midi note number to begin the scale on. 33
+ *    creates an A-minor scale.
+ * @returns {object} A `noteLibrary` object
+ */
+const createMinorScale = (startNote=33) => {
+  //                    w  h  w  w  h   w | w   w   h   w   w   h   w | w   w
+  const intervals = [0, 2, 3, 5, 7, 8, 10, 12, 14, 15, 17, 19, 20, 22, 24, 26];
+  const keys      = [0, 1, 2, 3, 4, 5, 6,  7,  8,  9,  'a','b','c','d','e','f'];
+  const obj       = R.zipObj(keys, intervals);
+  return R.mapObjIndexed(n => n+startNote, obj);
+}
+
 module.exports = {
+  createMinorScale,
   rotate,
 };

@@ -20,10 +20,9 @@ const wiggle = R.pipe(
   R.map(R.join('')),
 );
 
-
 const bassContent = R.clone(content.root);
-bassContent.noteLibrary = recipes.library.rotate(bassContent.noteLibrary, 0);
-bassContent.p = wiggle(content.p, 9);
+bassContent.noteLibrary = recipes.library.createMinorScale();
+bassContent.p = wiggle(content.pv0, 9);
 console.log(bassContent);
 
 const bass = fluid.tab.parse(bassContent);
