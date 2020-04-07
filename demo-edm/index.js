@@ -22,6 +22,7 @@ const wiggle = R.pipe(
 
 const bassContent = R.clone(content.root);
 bassContent.noteLibrary = recipes.library.createMinorScale();
+bassContent.noteLibrary = recipes.library.rotate(bassContent.noteLibrary, -1);
 bassContent.p = wiggle(content.pv0, 9);
 console.log(bassContent);
 
