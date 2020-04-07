@@ -2,7 +2,7 @@ const R = require('ramda');
 
 /**
  * @param {Object} noteLibrary - A JavaScript object wherein values are numbers
- * @param {Number} amount An interger number of steps to rotate the values
+ * @param {Number} [amount=1] An interger number of steps to rotate the values
  * @returns {Object} a noteLibrary style object, wherein the keys all point to
  *    subsequent values.
  */
@@ -18,9 +18,8 @@ const rotate = (noteLibrary, amount=1) => {
 };
 
 /**
- * Create a 16 noteLibrary on an ascending minor scale noteLibrary. The
- * noteLibrary begins on the specified midi note with '0', and counts upwards to
- * 'f' in hexadecimal.
+ * Create a 16 noteLibrary on an ascending minor scale. The noteLibrary begins
+ * on the specified midi note with '0', and counts upwards to 'f' in hexadecimal.
  *
  * @param {number} [startNote=33] Midi note number to begin the scale on. 33
  *    creates an A-minor scale.
@@ -34,7 +33,24 @@ const createMinorScale = (startNote=33) => {
   return R.mapObjIndexed(n => n+startNote, obj);
 }
 
+/**
+ * Create a 16 noteLibrary on an ascending major scale. The noteLibrary begins
+ * on the specified midi note with '0', and counts upwards to 'f' in hexadecimal.
+ *
+ * @param {number} [startNote=33] Midi note number to begin the scale on. 33
+ *    creates an A-major scale.
+ * @returns {object} A `noteLibrary` object
+ */
+const createMajorScale = (startNote=33) => {
+  //                    w  w  h  w  w   w | h   w   w   h   w   w   w | h   w
+  const intervals = [0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19, 21, 23, 24, 26];
+  const keys      = [0, 1, 2, 3, 4, 5, 6,  7,  8,  9,  'a','b','c','d','e','f'];
+  const obj       = R.zipObj(keys, intervals);
+  return R.mapObjIndexed(n => n+startNote, obj);
+}
+
 module.exports = {
+  createMajorScale,
   createMinorScale,
   rotate,
 };
