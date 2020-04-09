@@ -11,3 +11,28 @@ pv0: '1342453-21'
 pv1: 'A-cdBdec-B'
 pv2: 'A.c dBc-BA'
 pv3: '12345678'
+
+patterns:
+  kickOnly: &k 'k..k..k..k..'
+  main:     &m '1342453-21'
+  hihat:    &h '.hh.hh.hh.H.'
+
+score:
+- drums: *k
+- drums:
+    k: *k
+    h: *h
+  mallet: 
+
+
+    
+    
+
+  
+tracks:
+  drums:
+    ks:   'k..k..k..k..'
+  bass:
+    main: 'AcdBdec-BA'
+  mallets:
+    p:    ''
