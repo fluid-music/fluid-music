@@ -379,30 +379,27 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
 }
 
 // similar to parse, except the resulting note objects are stored within a structured
-const parseScore = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrary, parentObject = {}, key) {
-  if (typeof parentObject.duration !== 'number') parentObject.duration = 0;
+// Whatever gets returned, it should have the `.duration` of the `object` that was passed in.
+const parseScore = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrary, parentObject = {}) {
   if (typeof startTime !== 'number') startTime = 0;
   if (object.hasOwnProperty('noteLibrary')) noteLibrary = object.noteLibrary;
   if (object.hasOwnProperty('vLibrary')) vLibrary = object.vLibrary;
   if (object.hasOwnProperty('r')) rhythm = object.r;
   if (object.hasOwnProperty('v')) vPattern = object.v;
-  if (object.hasOwnProperty('startTime'))
-    throw new Error('parse: startTime is not a legal pattern key');
+
   if (rhythm === undefined || noteLibrary === undefined)
     throw new Error('tab.parse could not find rhythm AND a noteLibrary');
 
-  
   if (Array.isArray(object)) {
+    let duration = 0;
     for (let o of object) {
-      let result = parseScore(o, rhythm, noteLibrary, startTime, vPattern, vLibrary, parentObject, key);
-      parentObject.duration += result.duration;
+      let result = parseScore(o, rhythm, noteLibrary, startTime + duration, vPattern, vLibrary, parentObject);
+      duration += result.duration;
     }
-    return parentObject;
+    if (duration > object.duration) object.duration = duration;
+    return {duration};
   } else if (typeof object === 'string') {
     // We have a string that can be parsed with parseTab
-    if (typeof key !== 'string')
-      throw new Error(`tab.parseScore got a string (${object}) but no key`);
-
     const a = parseRhythm(rhythm);
     const duration = a.totals[a.totals.length-1];
     const result = parseTab(rhythm, object, noteLibrary, vPattern, vLibrary);
@@ -414,18 +411,20 @@ const parseScore = function(object, rhythm, noteLibrary, startTime, vPattern, vL
 
     return result;
   } else {
-    let duration = 0;
+    // We have a JavaScript Object
+    const newObject = { duration: 0 };
     for (let [key, val] of Object.entries(object)) {
       if (reservedKeys.hasOwnProperty(key)) continue;
-      let child = {};
-      parentObject[key] = child;
-      let result = parseScore(val, rhythm, noteLibrary, startTime, vPattern, vLibrary, child, key);
+  
+      const child = { originalValue: val };
+      newObject[key] = child;
+      let result = parseScore(val, rhythm, noteLibrary, startTime, vPattern, vLibrary, child);
       
-      if (result.duration > parentObject.duration) parentObject.duration = result.duration;
+      if (result.duration > newObject.duration) newObject.duration = result.duration;
     }
-    return parentObject
+    return newObject
   }
-}
+};
 
 
 /**
@@ -437,9 +436,11 @@ const reservedKeys = {
   duration: null,
   startTime: null,
   noteLibrary : null,
+  originalValue: null,
   vLibrary: null,
   nLibrary: null,
   meta: null,
+  clips: null,
 }
 
 module.exports = {
