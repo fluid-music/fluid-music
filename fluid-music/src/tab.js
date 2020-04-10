@@ -32,13 +32,13 @@ const parseRhythm = function(rhythm) {
 };
 
 /**
- * Helper method to convert velocity string to an array corresponding to 
+ * Helper method to convert velocity string to an array corresponding to
  * velocties of each symbol in symbolsAndCounts.
  *
  * @param {string} vPattern - String representation of note velocities.
  * @param symbolsAndCounts from patternToSymbolsAndCounts
  * @param {number[]} vLibrary - an indexable array containing velocity values.
- * 
+ *
  * @returns {number[]} - an array representing the velocity of each symbol.
  */
 const parseVelocity = function(vPattern, symbolsAndCounts, vLibrary){
@@ -378,9 +378,28 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
   return notes;
 }
 
-// similar to parse, except the resulting note objects are stored within a structured
-// Whatever gets returned, it should have the `.duration` of the `object` that was passed in.
-const parseScore = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrary, parentObject = {}) {
+/**
+ * tab.parseScore recurses over a score object, typically extracted from a YAML
+ * file. It is somewhat similar to tab.parse, except that it expects a different
+ * input format, and outputs a more structured document that resembles the track
+ * and clip model that most DAWs use.
+ *
+ * @param {Object|Array|String} object - Typically this is the only argument you
+ *    need. This is a score object that represents multiple tracks.
+ *
+ * @param {string} [rhythm] rhythm string, if not specified, `object`
+ *    must have a `.r` property.
+ * @param {Object|Array} [noteLibrary] An object or array noteLibrary (see
+ *    parseTab for details). If not specified, `object` must have a
+ *    `.noteLibrary` property.
+ * @param {number} [startTime]
+ * @param {string} [vPattern]
+ * @param {Object|Array} [vLibrary]
+ * @param {Object} parentObject Used for recursion only. Internally, this object
+ *    is the target on which new clips will be added.
+ * @returns {Object} representation of the score
+ */
+const parseScore = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrary, parentObject) {
   if (typeof startTime !== 'number') startTime = 0;
   if (object.hasOwnProperty('noteLibrary')) noteLibrary = object.noteLibrary;
   if (object.hasOwnProperty('vLibrary')) vLibrary = object.vLibrary;
@@ -390,13 +409,33 @@ const parseScore = function(object, rhythm, noteLibrary, startTime, vPattern, vL
   if (rhythm === undefined || noteLibrary === undefined)
     throw new Error('tab.parse could not find rhythm AND a noteLibrary');
 
+  // Internally, there are three handlers for (1)arrays (2)strings (3)objects
+  //
+  // All three handlers must:
+  // - return an object that has a .duration property
+  //
+  // The array and object handlers must:
+  // - call parseScore on children
+  // - pass the appropriate parentObject to all children's parseScore call
+  //
+  // The string handler must:
+  // - create clips with a .startTime
+  // - add those clips to the parentObject.clips array
+  //
+  // The object handler:
+  // - Must return a fully parsed representation of the score
   if (Array.isArray(object)) {
     let duration = 0;
     for (let o of object) {
+      let parent = (Array.isArray(o) || typeof o === 'string') ? parentObject : {
+        duration: 0
+      }
       let result = parseScore(o, rhythm, noteLibrary, startTime + duration, vPattern, vLibrary, parentObject);
       duration += result.duration;
     }
-    if (duration > object.duration) object.duration = duration;
+    // If we want to add the duration of each segment, this is how:
+    // if (duration > object.duration) object.duration = duration;
+    // However, for now I'm avoiding modifying the input object.
     return {duration};
   } else if (typeof object === 'string') {
     // We have a string that can be parsed with parseTab
@@ -411,18 +450,25 @@ const parseScore = function(object, rhythm, noteLibrary, startTime, vPattern, vL
 
     return result;
   } else {
-    // We have a JavaScript Object
-    const newObject = { duration: 0 };
+    // Assume we have a JavaScript Object
+    if (parentObject === undefined) parentObject = { duration: 0, startTime };
+
     for (let [key, val] of Object.entries(object)) {
       if (reservedKeys.hasOwnProperty(key)) continue;
-  
-      const child = { originalValue: val };
-      newObject[key] = child;
-      let result = parseScore(val, rhythm, noteLibrary, startTime, vPattern, vLibrary, child);
-      
-      if (result.duration > newObject.duration) newObject.duration = result.duration;
+
+      // create a new parent, or use an existing one
+      let newParent;
+      if (parentObject.hasOwnProperty(key)) {
+        newParent = parentObject[key];
+      } else {
+        newParent = { originalValue: val, key, startTime, duration: 0 };
+        parentObject[key] = newParent;
+      }
+
+      let result = parseScore(val, rhythm, noteLibrary, startTime, vPattern, vLibrary, newParent);
+      if (result.duration > parentObject.duration) parentObject.duration = result.duration;
     }
-    return newObject
+    return parentObject;
   }
 };
 
@@ -441,6 +487,7 @@ const reservedKeys = {
   nLibrary: null,
   meta: null,
   clips: null,
+  key: null,
 }
 
 module.exports = {
