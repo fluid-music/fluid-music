@@ -14,8 +14,8 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "jsdoc-to-markdown": "^5.0.3",
-    "mocha": "^6.2.2",
-    "nodemon": "^2.0.1",
+    "mocha": "^6.2.3",
+    "nodemon": "^2.0.3",
     "should": "^13.2.3"
   },
   "dependencies": {
@@ -24,7 +24,7 @@
     "osc-min": "^1.1.2",
     "ramda": "^0.27.0",
     "sharp11": "^2.0.2",
-    "yaml": "^1.7.2"
+    "yaml": "^1.8.3"
   },
   "bin": {
     "fluid": "./cli.js"
