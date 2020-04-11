@@ -1,8 +1,8 @@
 const should = require('should');
 const mocha = require('mocha');
-const tab = require('../src/tab');
+const score = require('../src/score');
 
-describe('parseScore', () => {
+describe('score.parse', () => {
   const noteLibrary = [0, 1, 2, 3, 4, 5, 6];
 
   const r =  '1234'
@@ -19,7 +19,7 @@ describe('parseScore', () => {
   it('should parse a very simple object', () => {
     const obj = { noteLibrary, r, p1 }
 
-    tab.parseScore(obj).should.containDeep({
+    score.parse(obj).should.containDeep({
       p1: {
         clips: [clip1],
       },
@@ -30,8 +30,8 @@ describe('parseScore', () => {
     const s1 = { noteLibrary, r, p1: [p1]};
     const s2 = { noteLibrary, r, p1: p1 };
 
-    const result1 = tab.parseScore(s1);
-    const result2 = tab.parseScore(s2);
+    const result1 = score.parse(s1);
+    const result2 = score.parse(s2);
     result1.should.containDeep({
       p1: { clips: [ clip1 ]}
     });
@@ -47,7 +47,7 @@ describe('parseScore', () => {
       '.0..',
       '.1..',
     ]};
-    const result1 = tab.parseScore(s1);
+    const result1 = score.parse(s1);
 
     const clip1 = [{n: 0, s: 0.25, l: 0.25}];
     clip1.startTime = 0;
@@ -74,7 +74,7 @@ describe('parseScore', () => {
     const clip2 = [{n: 2, s: 0, l: 0.25}]; clip2.startTime = 2;
     const clip3 = [{n: 3, s: 0, l: 0.25}]; clip3.startTime = 3;
 
-    const result1 = tab.parseScore(s1);
+    const result1 = score.parse(s1);
     result1.should.containDeep({
       drums: {
         clips: [ clip0, clip1, clip2, clip3 ],
@@ -94,7 +94,7 @@ describe('parseScore', () => {
     const clip2 = [{n: 2, s: 0, l: 0.25}]; clip2.startTime = 2;
     const clip3 = [{n: 3, s: 0, l: 0.25}]; clip3.startTime = 3;
 
-    const result1 = tab.parseScore(s1);
+    const result1 = score.parse(s1);
     result1.should.containDeep({
       drums: {
         clips: [ clip0, clip2, clip3 ],
@@ -127,7 +127,7 @@ describe('parseScore', () => {
       },
     };
 
-    const result1 = tab.parseScore(s1);
+    const result1 = score.parse(s1);
     result1.should.containDeep(expectedResult);
   });
 
@@ -165,7 +165,7 @@ describe('parseScore', () => {
       },
     };
 
-    const result1 = tab.parseScore(s1);
+    const result1 = score.parse(s1);
     result1.should.containDeep(expectedResult);
   });
 });
