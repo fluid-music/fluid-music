@@ -14,28 +14,34 @@ const ms2Time = v => v / 5000;       // For "L Delay" and "R Delay" params
  * The "Daw Essentials" package comes bundled with OEM, Standard, and Extreme
  * versions of Waveform (but unfortunately, not the "Basic" bundle).
  *
+ * Internal Plugins like "volume", "insert", "auxsend", and "auxreturn" work
+ * with `fluid.plugin.setParamExplicit` AND `fluid.plugin.setParamNormalized`.
+ * However, for Tracktion's VSTs (and possibly all VSTs) `setParamExlicit`
+ * behaves the same as `setParamNormalized`. This helper enables #TStereoDelay
+ * configuration using useful units like dBFS and milliseconds instead of
+ * normalized 0-1 values.
+ *
  * To use any method in this module other than `select`, make sure that a
  * `#TStereo Delay` plugin instance is selected by first calling
  * `pluginTStereoDelay.select()`.
- *
- * Internal Plugins like "volume", "insert", "auxsend", and "auxreturn" work
- * with `fluid.plugin.setParamExplicit` AND `fluid.plugin.setParamNormalized`.
  *
  * `#TStereo Delay` has several wet/dry controls:
  * - "Wet" - This is the value that appears in the UI
  * - "Wet Level" - Extra control that appears only in tracktion's bottom bar
  * - "Dry"
  * - "Dry Level"
+ *
  * This module uses "Wet" and "Dry", because it makes it easier to understand
  * from when the plugin is viewed in a GUI.
  *
  * The `#TStereo Delay` has some limited tempo sync abilities. When sync is
- * enabled, the following parameters indicate the delay time:
+ * enabled, the following VST parameters control the delay time:
  * - "L Note Delay"
  * - "L Note Offset"
  * - "R Note Delay"
  * - "R Note Offset"
- * When sync is disabled, the following params indicate the delay time:
+ *
+ * When sync is disabled, the following params control the delay time:
  * - "L Delay"
  * - "R Delay"
  */
@@ -223,7 +229,7 @@ const pluginTStereoDelay = {
    * #TStereo Delay has a 'Sync' feature, which is not currently well supported
    * by this fluid module. I recommend disabling it. If you want to use the sync
    * feature, you must use the `fluid.plugin.setParam` methods.
-   * 
+   *
    * Note that Waveform's sync feature does not follow tempo automation, so it
    * is probably best to just calculate tempos in milliseconds and specify them
    * using the `fluid.pluginTStereoDelay.setDelayMs` helpers.
