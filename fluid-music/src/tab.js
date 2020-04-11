@@ -345,6 +345,7 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
   if (object.hasOwnProperty('v')) vPattern = object.v;
   if (object.hasOwnProperty('startTime'))
     throw new Error('parse: startTime is not a legal pattern key');
+
   if (rhythm === undefined || noteLibrary === undefined)
     throw new Error('tab.parse could not find rhythm AND a noteLibrary');
 

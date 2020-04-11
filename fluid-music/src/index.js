@@ -12,6 +12,7 @@ const clip = require('./fluid/clip');
 const tempo = require('./fluid/tempo');
 
 // Other Stuff
+const score = require('./score');
 const tab = require('./tab');
 const groove = require('./groove')
 const UdpClient = require('./FluidUdpClient');
@@ -34,6 +35,7 @@ module.exports = {
   pluginZebra2Vst2,
   random,
   sampler,
+  score,
   tab,
   tempo,
   transport,

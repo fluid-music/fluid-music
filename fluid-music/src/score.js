@@ -13,7 +13,7 @@ const reservedKeys = tab.reservedKeys;
 /**
  * Represents a collection of audio tracks, and clips on those tracks
  * @typedef {Object} TracksObject
- * @param {TracksObject} <trackName> TracksObjects can be deeply nestes
+ * @param {TracksObject} <trackName> TracksObjects can be deeply nested
  * @param {Array} <trackName>
  * @param {string} <trackName>
  */
@@ -28,7 +28,7 @@ const reservedKeys = tab.reservedKeys;
  * - In the output (TracksObject) arrays are a collection of clips (with
  *   `.duration` and `.startTime` properties)
  *
- * @param {ScoreObject|Array|String} object - Typically, `buildTracks` will be
+ * @param {ScoreObject|Array|String} object Typically, `buildTracks` will be
  *    called with a single `ScoreObject` as the sole argument. The other
  *    arguments are used internally when recursing over the properties of the
  *    ScoreObject input.
@@ -119,8 +119,31 @@ const buildTracks = function(object, rhythm, noteLibrary, startTime, vPattern, v
   }
 };
 
+const parse = function(scoreObject) {
+  const tracksObject = buildTracks(scoreObject);
+  const messages = [];
+  let i = 0;
+  for (let [trackName, track] of Object.entries(tracksObject)) {
+    if (tab.reservedKeys.hasOwnProperty(trackName)) {
+      continue;
+    }
+
+    if (!track.clips) {
+      console.log(`skipping ${trackName}, because it has no .clips`);
+      continue;
+    }
+
+    messages.push(fluid.audiotrack.select(trackName));
+    for (let clip of track.clips) {
+      messages.push(fluid.midiclip.create(`clip${i++}`, clip.startTime * 4, clip.duration * 4, clip));
+    }
+  }
+
+  return messages;
+};
 
 
 module.exports = {
   buildTracks,
+  parse,
 }
