@@ -45,7 +45,6 @@ void FluidIpc::setIpcServer(FluidIpcServer& server){
 
 void FluidIpc::connectionMade(){
     std::cout<<"Connection Made"<<std::endl;
-    fluidIpcServer->removeIpcConn(ipc_num);
 }
 
 void FluidIpc::setIpcNum(int num){
@@ -54,6 +53,7 @@ void FluidIpc::setIpcNum(int num){
 
 void FluidIpc::connectionLost(){
     std::cout<<"Connection Lost"<<std::endl;
+    fluidIpcServer->removeIpcConn(ipc_num);
 }
 
 void FluidIpc::messageReceived(const MemoryBlock &message){
