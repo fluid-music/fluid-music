@@ -80,8 +80,8 @@ const parseVelocity = function(vPattern, symbolsAndCounts, vLibrary){
  *        To create 'c' and 'd' quarter notes on beats 1 and 3 respectively:
  *        rhythm  = '1234'
  *        pattern = '0.1.'
- *        noteLibrary = ['c4', 'd4']
- *        noteLibrary = {'0': 'c4', '1': 'd4' }
+ *        noteLibrary = [60, 62]
+ *        noteLibrary = {'0': 60, '1': 62 }
  */
 const parseTab = function(rhythm, pattern, noteLibrary, vPattern, vLibrary) {
   if (pattern.length > rhythm.length)
@@ -94,7 +94,6 @@ const parseTab = function(rhythm, pattern, noteLibrary, vPattern, vLibrary) {
   let p = 0; // position (in the rhythmObject)
   const results = [];
 
-
   for (let [index, sc] of symbolsAndCounts.entries()) {
     let symbol = sc[0];
     let count = sc[1];
@@ -102,15 +101,15 @@ const parseTab = function(rhythm, pattern, noteLibrary, vPattern, vLibrary) {
       if (!noteLibrary.hasOwnProperty(symbol))
         throw new Error(`noteLibrary has no note or chord for "${symbol}"`);
       let notes = noteLibrary[symbol];
-      if (!Array.isArray(notes)) notes = [notes]
+      if (!Array.isArray(notes)) notes = [notes];
       notes.forEach((note) => {
         const start = (p === 0) ? 0 : rhythmObject.totals[p-1];
         const end = rhythmObject.totals[p+count-1];
-        const noteObject = {
-          n: valueToMidiNoteNumber(note),
+        let noteObject = {
           s: start,
           l: end - start,
-        }
+          n: note,
+        };
         if (vLibrary !== undefined) {
           noteObject.v = velocityArray[index];
         }

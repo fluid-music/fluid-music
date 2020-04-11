@@ -132,10 +132,10 @@ describe('tab.patternToSymbolsAndCounts', () => {
 describe('tab.parseTab', () => {
 
   const chords = [
-    ["e4", "a4", "b4", "c#5"],
-    ["f4", "g4", "a4", "c5"],
-    ["g4", "a4", "b4", "d5"],
-  ]
+    [64, 69, 71, 73],
+    [65, 67, 69, 72],
+    [67, 69, 71, 74],
+  ];
   const rhythm  = '1e+a2e+a3e+a4e+a';
   const pattern = '0-......1-....2.';
   const notes = [60, 64, 67];
@@ -204,5 +204,29 @@ describe('tab.parseTab', () => {
       ]);
     });
 
-  }); // velocities
-});
+  }); // describe velocities (vPattern/vLibrary)
+
+  describe('note objects', () => {
+    const rhythm      = '1+2+3+4+';
+    const pattern     = '0.1.2...';
+    const noteObject0 = { arbitrary: 0 };
+    const noteObject1 = { arbitrary: 1 };
+    const noteObject2 = { arbitrary: 2 };
+    const noteLibrary = {
+      0: noteObject0,
+      1: noteObject1,
+      2: noteObject2,
+    };
+
+    const vNotes = tab.parseTab(rhythm, pattern, noteLibrary);
+    it('should pass objects directly to .n when noteLibrary contains JS Objects', () => {
+      vNotes.should.deepEqual([
+        { n: noteObject0, s: 0.00, l: 0.125 },
+        { n: noteObject1, s: 0.25, l: 0.125 },
+        { n: noteObject2, s: 0.50, l: 0.125 },
+      ]);
+    });
+
+  }); // describe note objects
+
+}); // describe tab.parseTab

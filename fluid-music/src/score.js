@@ -18,7 +18,6 @@ const reservedKeys = tab.reservedKeys;
  * @param {string} <trackName>
  */
 
-
 /**
  * score.buildTracks recurses over a ScoreObject, often extracted from a YAML
  * file. It is somewhat similar to tab.parse, except that it expects a different

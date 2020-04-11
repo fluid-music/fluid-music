@@ -54,6 +54,9 @@ describe('valueToMidiNoteNumber', () => {
   it('should handle strings in the form "cb4-5"', () => {
     converters.valueToMidiNoteNumber('cb4-5').should.equal(54);
   });
+  it('should throw when passed a JavaScript object', () => {
+    should(() => { converters.valueToMidiNoteNumber({})}).throw();
+  });
 });
 
 describe('createMidiNoteMessage', () => {

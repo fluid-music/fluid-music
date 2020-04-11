@@ -1,9 +1,10 @@
 const converters = require('../converters');
-const audiotrack = require('./audiotrack');
+
 /**
  * Represents a MIDI note within midi clip
- * @typedef {Object} noteObject
- * @property {number} n note (probably a MIDI note number)
+ * @typedef {Object} NoteObject
+ * @property {number|Object} n probably a MIDI note number - however,
+ *  noteLibrary objects might also put other JavaScipt Objects in this field
  * @property {number} l length in whole notes
  * @property {number} s start time in whole notes
  * @property {number} [v=64] optional midi velocity
@@ -69,9 +70,9 @@ const midiclip = {
   /**
    * Build an OSC message that creates a clip with a bunch of midi notes
    * @param { string } clipName name of the clip.
-   * @param { number } startBeats - Clip start time in quarter notes
-   * @param { number} lengthBeats - Clip length in quarter notes
-   * @param { noteObject[] } notes - array of objects, which look like:
+   * @param { number } startBeats clip start time in quarter notes
+   * @param { number} lengthBeats clip length in quarter notes
+   * @param { noteObject[] } notes array of objects, which look like:
    *    { l: length, n: note, s: start }
    */
   create(clipName, startBeats, lengthBeats, notes) {
