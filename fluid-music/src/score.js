@@ -1,25 +1,41 @@
 const tab = require('./tab');
+const fluid = require('./fluid/index')
 
 const parseTab     = tab.parseTab;
 const parseRhythm  = tab.parseRhythm;
 const reservedKeys = tab.reservedKeys;
 
 /**
- * score.parse recurses over a score object, typically extracted from a YAML
+ * Represents a musical score. Often written in YAML.
+ * @typedef {Object} ScoreObject
+ */
+
+/**
+ * Represents a collection of audio tracks, and clips on those tracks
+ * @typedef {Object} TracksObject
+ * @param {TracksObject} <trackName> TracksObjects can be deeply nestes
+ * @param {Array} <trackName>
+ * @param {string} <trackName>
+ */
+
+
+/**
+ * score.buildTracks recurses over a ScoreObject, often extracted from a YAML
  * file. It is somewhat similar to tab.parse, except that it expects a different
- * input format, and outputs a more structured document that resembles the track
- * and clip model that most DAWs use.
+ * input format, and outputs a `ScoreObject` instead of an array of notes.
  *
- * In the input - arrays indicate a sequence
- * In the output - arrays are a collection of clips (with .duration/.startTime)
+ * - In the input (ScoreObject) arrays indicate a sequence
+ * - In the output (TracksObject) arrays are a collection of clips (with
+ *   `.duration` and `.startTime` properties)
  *
- * @param {Object|Array|String} object - Typically this is the only argument you
- *    need. This is a score object that represents multiple tracks.
- *
+ * @param {ScoreObject|Array|String} object - Typically, `buildTracks` will be
+ *    called with a single `ScoreObject` as the sole argument. The other
+ *    arguments are used internally when recursing over the properties of the
+ *    ScoreObject input.
  * @param {string} [rhythm] rhythm string, if not specified, `object`
  *    must have a `.r` property.
  * @param {Object|Array} [noteLibrary] An object or array noteLibrary (see
- *    parseTab for details). If not specified, `object` must have a
+ *    tab.parseTab for details). If not specified, `object` must have a
  *    `.noteLibrary` property.
  * @param {number} [startTime]
  * @param {string} [vPattern]
@@ -29,7 +45,7 @@ const reservedKeys = tab.reservedKeys;
  * @param {string} [trackKey] The name of the track that we are currently parsing.
  * @returns {Object} representation of the score.
  */
-const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrary, tracksObject, trackKey) {
+const buildTracks = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrary, tracksObject, trackKey) {
   if (typeof startTime !== 'number') startTime = 0;
   if (object.hasOwnProperty('noteLibrary')) noteLibrary = object.noteLibrary;
   if (object.hasOwnProperty('vLibrary')) vLibrary = object.vLibrary;
@@ -37,7 +53,7 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
   if (object.hasOwnProperty('v')) vPattern = object.v;
 
   if (rhythm === undefined || noteLibrary === undefined)
-    throw new Error('tab.parse could not find rhythm AND a noteLibrary');
+    throw new Error('score.buildTracks could not find rhythm AND a noteLibrary');
 
   // Internally, there are three handlers for (1)arrays (2)strings (3)objects
   //
@@ -49,20 +65,20 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
   //   - string: duration of the associated rhythm string
   //
   // The array and object handlers must:
-  // - call score.parse on children
-  // - pass the appropriate tracksObject/trackKey to each score.parse call
+  // - call score.buildTracks on children
+  // - pass the appropriate tracksObject/trackKey to each score.buildTracks call
   //
   // The string handler must:
   // - create clips with a .startTime and .duration
   // - add those clips to the tracksObjects[trackKey].clips array
   //
-  // The object handler:
-  // - Must return a fully parsed representation of the score
+  // The object handler must:
+  // - return a TracksObject representation of the ScoreObject input
   if (Array.isArray(object)) {
     let duration = 0;
     const results = [];
     for (let o of object) {
-      let result = parse(o, rhythm, noteLibrary, startTime + duration, vPattern, vLibrary, tracksObject, trackKey);
+      let result = buildTracks(o, rhythm, noteLibrary, startTime + duration, vPattern, vLibrary, tracksObject, trackKey);
       results.push(result);
       duration += result.duration;
     }
@@ -94,7 +110,7 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
         tracksObject[key] = { clips: [] };
       }
 
-      let result = parse(val, rhythm, noteLibrary, startTime, vPattern, vLibrary, tracksObject, key);
+      let result = buildTracks(val, rhythm, noteLibrary, startTime, vPattern, vLibrary, tracksObject, key);
       if (result.duration > duration) duration = result.duration;
     }
 
@@ -102,7 +118,9 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
     return tracksObject;
   }
 };
-  
+
+
+
 module.exports = {
-  parse,
+  buildTracks,
 }
