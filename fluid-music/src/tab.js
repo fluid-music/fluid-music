@@ -401,7 +401,7 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
  * @param {Object} [tracksObject] This is a container for all tracks. It is
  *    returned when `object` is a JS Object (as opposed to a string or array).
  * @param {string} [trackKey] The name of the track that we are currently parsing.
- * @returns {Object} representation of the score
+ * @returns {Object} representation of the score.
  */
 const parseScore = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrary, tracksObject, trackKey) {
   if (typeof startTime !== 'number') startTime = 0;
@@ -416,15 +416,19 @@ const parseScore = function(object, rhythm, noteLibrary, startTime, vPattern, vL
   // Internally, there are three handlers for (1)arrays (2)strings (3)objects
   //
   // All three handlers must:
-  // - return an object that has a .duration property
+  // - return an object that has a .duration property. Duration are interperated
+  //   differently for Arrays, Objects, and Strings found in the input object.
+  //   - Array:  sum of the duration of the array's elements
+  //   - Object: duration of the longest child
+  //   - string: duration of the associated rhythm string
   //
   // The array and object handlers must:
   // - call parseScore on children
-  // - pass the appropriate tracksObject to all children's parseScore call
+  // - pass the appropriate tracksObject/trackKey to all children's parseScore call
   //
   // The string handler must:
-  // - create clips with a .startTime
-  // - add those clips to the tracksObject.clips array
+  // - create clips with a .startTime and .duration
+  // - add those clips to the tracksObjects[trackKey].clips array
   //
   // The object handler:
   // - Must return a fully parsed representation of the score
