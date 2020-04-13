@@ -5,18 +5,6 @@ const parseTab     = tab.parseTab;
 const parseRhythm  = tab.parseRhythm;
 const reservedKeys = tab.reservedKeys;
 
-/**
- * Represents a musical score. Often written in YAML.
- * @typedef {Object} ScoreObject
- */
-
-/**
- * Represents a collection of audio tracks, and clips on those tracks
- * @typedef {Object} TracksObject
- * @param {TracksObject} <trackName> TracksObjects can be deeply nested
- * @param {Array} <trackName>
- * @param {string} <trackName>
- */
 
 /**
  * score.buildTracks recurses over a ScoreObject, often extracted from a YAML
@@ -140,7 +128,6 @@ const parse = function(scoreObject) {
 
   return messages;
 };
-
 
 module.exports = {
   buildTracks,

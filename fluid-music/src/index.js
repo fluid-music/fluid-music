@@ -20,6 +20,8 @@ const Client = require('./FluidClient');
 const converters = require('./converters');
 const random = require('./random');
 
+// JSDoc
+const jsDocTypes = require('./jsdoc-types');
 
 module.exports = {
   audioclip,
