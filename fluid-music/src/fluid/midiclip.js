@@ -62,8 +62,8 @@ const midiclip = {
    * @param { string } clipName name of the clip.
    * @param { number } startBeats clip start time in quarter notes
    * @param { number} lengthBeats clip length in quarter notes
-   * @param { noteObject[] } notes array of objects, which look like:
-   *    { l: length, n: note, s: start }
+   * @param { NoteObject[] } notes array of objects, which look like:
+   *    { l: lengthQuarterNotes, n: midiNoteNumber, s: startTimeQuarterNotes }
    */
   create(clipName, startBeats, lengthBeats, notes) {
     elements = [

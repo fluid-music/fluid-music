@@ -393,6 +393,7 @@ const reservedKeys = {
   meta: null,
   clips: null,
   key: null,
+  parent: null,
 }
 
 module.exports = {

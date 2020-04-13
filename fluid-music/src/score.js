@@ -1,10 +1,10 @@
 const tab = require('./tab');
 const fluid = require('./fluid/index')
+const R = require('ramda');
 
 const parseTab     = tab.parseTab;
 const parseRhythm  = tab.parseRhythm;
 const reservedKeys = tab.reservedKeys;
-
 
 /**
  * score.buildTracks recurses over a ScoreObject, often extracted from a YAML
@@ -21,16 +21,16 @@ const reservedKeys = tab.reservedKeys;
  *    ScoreObject input.
  * @param {string} [rhythm] rhythm string, if not specified, `object`
  *    must have a `.r` property.
- * @param {Object|Array} [noteLibrary] An object or array noteLibrary (see
+ * @param {NoteLibrary} [noteLibrary] An object or array noteLibrary (see
  *    tab.parseTab for details). If not specified, `object` must have a
  *    `.noteLibrary` property.
  * @param {number} [startTime]
  * @param {string} [vPattern]
- * @param {Object|Array} [vLibrary]
+ * @param {NoteLibrary} [vLibrary]
  * @param {Object} [tracksObject] This is a container for all tracks. It is
  *    returned when `object` is a JS Object (as opposed to a string or array).
  * @param {string} [trackKey] The name of the track that we are currently parsing.
- * @returns {Object} representation of the score.
+ * @returns {TracksObject} representation of the score.
  */
 const buildTracks = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrary, tracksObject, trackKey) {
   if (typeof startTime !== 'number') startTime = 0;
@@ -122,7 +122,15 @@ const parse = function(scoreObject) {
 
     messages.push(fluid.audiotrack.select(trackName));
     for (let clip of track.clips) {
-      messages.push(fluid.midiclip.create(`clip${i++}`, clip.startTime * 4, clip.duration * 4, clip));
+      let midiNotes = clip.filter(event => typeof event.n === 'number');
+      let samples   = clip.filter(event => event.n && event.n.type === 'file');
+      if (midiNotes.length) {
+        messages.push(fluid.midiclip.create(`clip${i++}`, clip.startTime * 4, clip.duration * 4, midiNotes));
+      }
+      for (let sample of samples) {
+        let startTime = (clip.startTime + sample.s) * 4;
+        messages.push(fluid.audiotrack.insertWav(`s${i++}`, startTime, sample.n.path));
+      }
     }
   }
 
