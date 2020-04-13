@@ -49,8 +49,21 @@ const createMajorScale = (startNote=33) => {
   return R.mapObjIndexed(n => n+startNote, obj);
 }
 
+/**
+ * Copy a NoteLibrary, transposed by `amount`
+ * @param {NoteLibrary} noteLibrary library to transpose
+ * @param {number} amount transposition interval
+ * @returns {NoteLibrary}
+ */
+const transposeNoteLibrary = (noteLibrary, amount) => {
+  return R.mapObjIndexed((v) => {
+    return (typeof v === 'number') ? v + amount : v;
+  }, noteLibrary);
+}
+
 module.exports = {
   createMajorScale,
   createMinorScale,
   rotate,
+  transposeNoteLibrary,
 };

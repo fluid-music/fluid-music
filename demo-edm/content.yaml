@@ -1,7 +1,7 @@
 patterns:
   kickOnly: &k 'k..k..k..k..'
   main:     &m '1342453-21'
-  hihat:    &h '.hh.hh.hh.H.'
+  hihat:    &h '.hh.hh.hh.hH'
 
 score:
   noteLibrary: {
@@ -17,12 +17,8 @@ score:
   v: '96685584465a'
   r: '1..2..3..4..'
   p:
-  - drums: *k
-  - drums:
-      drums.k: *k
-      drums.h: *h
-  - drums: *k
-    mallet: '1342453-21'
+  - kick: *k
+    melody:  *m
 
 
 p:   'AcdBdec-BA'
@@ -31,11 +27,3 @@ pv1: 'A-cdBdec-B'
 pv2: 'A.c dBc-BA'
 pv3: '12345678'
 
-
-tracks:
-  drums:
-    ks:   'k..k..k..k..'
-  bass:
-    main: 'AcdBdec-BA'
-  mallets:
-    p:    ''
