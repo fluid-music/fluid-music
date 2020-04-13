@@ -1,34 +1,37 @@
-root:
-  noteLibrary: {
-    C: 24,D: 26,E: 28,F: 29,G: 31,A: 33,B: 35,
-    c: 36,d: 38,e: 40,f: 41,g: 43,a: 45,b: 47, }
-  vLibrary: {
-    1: 20, 2: 30, 3: 40, 4: 50, 5: 60, 6: 70, 7: 80, 8: 90, 9: 100, 0: 110, a: 100 }
-  v: '96685584465a'
-  r: '1..2..3..4..'
-p:   'AcdBdec-BA'
-pv0: '1342453-21'
-pv1: 'A-cdBdec-B'
-pv2: 'A.c dBc-BA'
-pv3: '12345678'
-
 patterns:
   kickOnly: &k 'k..k..k..k..'
   main:     &m '1342453-21'
   hihat:    &h '.hh.hh.hh.H.'
 
 score:
-- drums: *k
-- drums:
-    k: *k
-    h: *h
-  mallet: 
+  noteLibrary: {
+    C: 24,D: 26,E: 28,F: 29,G: 31,A: 33,B: 35,
+    c: 36,d: 38,e: 40,f: 41,g: 43,a: 45,b: 47,
+    k: { type: file, path: SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/BD D SP 909 09.wav },
+    h: { type: file, path: SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/CH A SP 909 09.wav },
+    H: { type: file, path: SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/OH A SP 909 09.wav },
+  }
+
+  vLibrary: {
+    1: 20, 2: 30, 3: 40, 4: 50, 5: 60, 6: 70, 7: 80, 8: 90, 9: 100, 0: 110, a: 100 }
+  v: '96685584465a'
+  r: '1..2..3..4..'
+  p:
+  - drums: *k
+  - drums:
+      drums.k: *k
+      drums.h: *h
+  - drums: *k
+    mallet: '1342453-21'
 
 
-    
-    
+p:   'AcdBdec-BA'
+pv0: '1342453-21'
+pv1: 'A-cdBdec-B'
+pv2: 'A.c dBc-BA'
+pv3: '12345678'
 
-  
+
 tracks:
   drums:
     ks:   'k..k..k..k..'
