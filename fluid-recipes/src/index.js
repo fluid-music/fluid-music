@@ -3,6 +3,7 @@ const fromMars909 = require('./fromMars909');
 const cloud = require('./cloud');
 const fsHelpers = require('./fs-helpers');
 const library = require('./library-recipes');
+const mutators = require('./pattern-mutators');
 
 module.exports = {
   cloud,
@@ -10,4 +11,5 @@ module.exports = {
   fsHelpers,
   fromMars909,
   library,
+  mutators,
 };
