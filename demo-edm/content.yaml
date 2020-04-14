@@ -1,7 +1,7 @@
 patterns:
   kickOnly: &k 'k..k..k..k..'
   main:     &m '1342453-21'
-  hihat:    &h '.hh.hh.hh.hH'
+  hihat:    &h 'hhh.hh.hhHhh'
 
 config: &config
   vLibrary: { 0: 10, 1: 20, 2: 30, 3: 40, 4: 50, 5: 60, 6: 70, 7: 80, 8: 90, 9: 100, a: 110, b: 120, c: 127 }
@@ -17,18 +17,11 @@ config: &config
   }
 
 intro: &intro
-  << : *config
+  << :    *config
   name:   intro
   kick:   *k
   melody: *m
+  hat:    *h
 
 score:
-  <<: *config
-  p:
-  - *intro
-
-p:   'AcdBdec-BA'
-pv0: '1342453-21'
-pv1: 'A-cdBdec-B'
-pv2: 'A.c dBc-BA'
-pv3: '12345678'
+- *intro

@@ -13,6 +13,8 @@ const msg = [
   fluid.global.activate(editFilename, true),
   fluid.tempo.set(bpm),
   fluid.audiotrack.select('kick'),
+  fluid.audiotrack.select('hat'),
+  fluid.audiotrack.gain(-9),
   fluid.audiotrack.select('bass'),
   fluid.plugin.loadTrkpreset(bassFilename),
   fluid.audiotrack.select('mallet'),
