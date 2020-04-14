@@ -10,20 +10,10 @@ const kickPath = recipes.fromMars909.kit.k2.path
 const yamlFilename = path.join(__dirname, 'content.yaml');
 const content = YAML.parse(fs.readFileSync(yamlFilename, 'utf-8'));
 
-const wiggle = R.pipe(
-  R.repeat,
-  R.addIndex(R.map)((s, i) => {
-    if (R.contains(s[i], '._- ')) return null;
-    return R.insert(i+1, '-', s);
-  }),
-  R.filter(v => v !== null),
-  R.map(R.join('')),
-);
-
 const bassContent = R.clone(content.root);
 bassContent.noteLibrary = recipes.library.createMinorScale();
 bassContent.noteLibrary = recipes.library.rotate(bassContent.noteLibrary, -1);
-bassContent.p = wiggle(content.pv0, 9);
+bassContent.p = recipes.mutators.wiggle(content.pv0, 9);
 console.log(bassContent);
 
 const bass = fluid.tab.parse(bassContent);
