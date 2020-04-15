@@ -1,4 +1,5 @@
 const IpcClient = require("osc-ipc-client")
+const osc = require("osc-min")
 
 const options = {
     targetPort: 9999,
@@ -23,9 +24,19 @@ module.exports = class FluidOscSender{
         });
     }
 
+    _replyPromise(){
+        return new Promise(resolve => {
+            this.client.on("res", (data, address)=>{
+                // console.log(osc.fromBuffer(data), 'from', address);
+                resolve(osc.fromBuffer(data))
+                this.client.close();
+            })
+        })
+    }
+
     async send(msgObject, timetag){
         await this._connectPromise();
         await this.client.sendOsc(msgObject, timetag);
-        // this.client.close()
+        return this._replyPromise();
     }
 }
