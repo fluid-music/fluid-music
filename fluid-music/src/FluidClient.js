@@ -26,6 +26,6 @@ module.exports = class FluidOscSender{
     async send(msgObject, timetag){
         await this._connectPromise();
         await this.client.sendOsc(msgObject, timetag);
-        this.client.close()
+        // this.client.close()
     }
 }

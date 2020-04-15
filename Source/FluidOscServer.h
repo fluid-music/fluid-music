@@ -33,45 +33,45 @@ public:
     virtual void oscMessageReceived (const OSCMessage& message) override;
     virtual void oscBundleReceived (const OSCBundle& bundle) override;
     
-    void handleOscBundle(const OSCBundle& bundle, SelectedObjects parentSelection);
-    void handleOscMessage(const OSCMessage& message);
+    OSCBundle handleOscBundle(const OSCBundle& bundle, SelectedObjects parentSelection);
+    OSCMessage handleOscMessage(const OSCMessage& message);
 
     // message handlers
-    void selectAudioTrack(const OSCMessage& message);
-    void removeAudioTrackClips(const OSCMessage& message);
-    void selectReturnTrack(const OSCMessage& message);
-    void selectMidiClip(const OSCMessage& message);
-    void selectPlugin(const OSCMessage& message);
-    void setPluginParam(const OSCMessage& message);
-    void setPluginParamAt(const OSCMessage& message);
-    void setPluginSideChainInput(const OSCMessage& message);
-    void savePluginPreset(const OSCMessage& message);
-    void loadPluginPreset(const OSCMessage& message);
-    void loadPluginTrkpreset(const OSCMessage& message);
-    void ensureSend(const OSCMessage& message);
-    void clearMidiClip(const OSCMessage& message);
-    void insertMidiNote(const OSCMessage& message);
-    void insertWaveSample(const OSCMessage& message);
-    void saveActiveEdit(const OSCMessage& message);
-    void activateEditFile(const OSCMessage& message);
-    void changeWorkingDirectory(const OSCMessage& message);
-    void handleSamplerMessage(const OSCMessage& message);
-    void handleTransportMessage(const OSCMessage& message);
-    void setTrackGain(const OSCMessage& message);
-    void renderRegion(const OSCMessage& message);
-    void renderClip(const OSCMessage& message);
-    void setClipLength(const OSCMessage& message);
-    void trimClipBySeconds(const OSCMessage& message);
-    void selectClip(const OSCMessage& message);
-    void offsetClipSourceInSeconds(const OSCMessage& message);
-    void audioClipFadeInOutSeconds(const OSCMessage& message);
-    void setClipDb(const OSCMessage& message);
-    void setTempo(const OSCMessage& message);
+    OSCMessage selectAudioTrack(const OSCMessage& message);
+    OSCMessage removeAudioTrackClips(const OSCMessage& message);
+    OSCMessage selectReturnTrack(const OSCMessage& message);
+    OSCMessage selectMidiClip(const OSCMessage& message);
+    OSCMessage selectPlugin(const OSCMessage& message);
+    OSCMessage setPluginParam(const OSCMessage& message);
+    OSCMessage setPluginParamAt(const OSCMessage& message);
+    OSCMessage setPluginSideChainInput(const OSCMessage& message);
+    OSCMessage savePluginPreset(const OSCMessage& message);
+    OSCMessage loadPluginPreset(const OSCMessage& message);
+    OSCMessage loadPluginTrkpreset(const OSCMessage& message);
+    OSCMessage ensureSend(const OSCMessage& message);
+    OSCMessage clearMidiClip(const OSCMessage& message);
+    OSCMessage insertMidiNote(const OSCMessage& message);
+    OSCMessage insertWaveSample(const OSCMessage& message);
+    OSCMessage saveActiveEdit(const OSCMessage& message);
+    OSCMessage activateEditFile(const OSCMessage& message);
+    OSCMessage changeWorkingDirectory(const OSCMessage& message);
+    OSCMessage handleSamplerMessage(const OSCMessage& message);
+    OSCMessage handleTransportMessage(const OSCMessage& message);
+    OSCMessage setTrackGain(const OSCMessage& message);
+    OSCMessage renderRegion(const OSCMessage& message);
+    OSCMessage renderClip(const OSCMessage& message);
+    OSCMessage setClipLength(const OSCMessage& message);
+    OSCMessage trimClipBySeconds(const OSCMessage& message);
+    OSCMessage selectClip(const OSCMessage& message);
+    OSCMessage offsetClipSourceInSeconds(const OSCMessage& message);
+    OSCMessage audioClipFadeInOutSeconds(const OSCMessage& message);
+    OSCMessage setClipDb(const OSCMessage& message);
+    OSCMessage setTempo(const OSCMessage& message);
 
     // everything else
-    void muteTrack(bool mute);
-    void reverseAudioClip(bool reverse);
-    void activateEditFile(File file, bool forceEmptyEdit = false);
+    OSCMessage muteTrack(bool mute);
+    OSCMessage reverseAudioClip(bool reverse);
+    OSCMessage activateEditFile(File file, bool forceEmptyEdit = false);
     std::unique_ptr<CybrEdit> activeCybrEdit = nullptr;
 
     SelectedObjects getSelectedObjects();
@@ -83,6 +83,9 @@ private:
      that nested bundles do not leave behind a selection after they have been
      handled. */
 
+    void constructReply(OSCMessage &reply, int success, String message);
+    void constructReply(OSCMessage &reply, String message);
+    
     te::AudioTrack* selectedAudioTrack = nullptr;
     te::Clip* selectedClip = nullptr;
     te::Plugin* selectedPlugin = nullptr;

@@ -51,6 +51,10 @@
           file="Source/temp_OSCInputStream.cpp"/>
     <FILE id="UV8I0A" name="temp_OSCInputStream.h" compile="0" resource="0"
           file="Source/temp_OSCInputStream.h"/>
+    <FILE id="jRtzeL" name="temp_OSCOutputStream.cpp" compile="1" resource="0"
+          file="Source/temp_OSCOutputStream.cpp"/>
+    <FILE id="KFe72t" name="temp_OSCOutputStream.h" compile="0" resource="0"
+          file="Source/temp_OSCOutputStream.h"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2017 targetFolder="Builds/VisualStudio2017">
@@ -149,5 +153,6 @@
     <OSX/>
     <LINUX/>
   </LIVE_SETTINGS>
-  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_PLUGINHOST_VST3="1" JUCE_PLUGINHOST_VST="1"/>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_PLUGINHOST_VST3="1" JUCE_PLUGINHOST_VST="1"
+               JUCE_USE_MP3AUDIOFORMAT="1"/>
 </JUCERPROJECT>

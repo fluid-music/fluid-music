@@ -12,6 +12,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "temp_OSCInputStream.h"
+#include "temp_OSCOutputStream.h"
 #include "FluidOscServer.h"
 
 class FluidIpc;
@@ -24,6 +25,8 @@ public:
     void connectionLost() override;
     void messageReceived(const MemoryBlock& message) override;
     
+    bool sendOSCBundle(const OSCBundle& bundle);
+    bool sendOSCMessage(const OSCMessage& message);
     void setFluidServer(FluidOscServer& server);
     void setIpcServer(FluidIpcServer& server);
     void setIpcNum(int ipc_num);
