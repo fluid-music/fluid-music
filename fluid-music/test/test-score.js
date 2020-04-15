@@ -171,3 +171,12 @@ describe('score', () => {
     });
   }); // describe score.buildTracks
 }); // describe score
+
+describe('midiVelocityToDbfs', () => {
+  it('should work', () => {
+    score.midiVelocityToDbfs(127, 0, 6).should.equal(6);
+    score.midiVelocityToDbfs(0, 0, 6).should.equal(0);
+    score.midiVelocityToDbfs(0, -60, 0).should.equal(-60);
+    score.midiVelocityToDbfs(127, -60, 0).should.equal(0);
+  });
+});

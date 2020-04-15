@@ -112,7 +112,12 @@ const buildTracks = function(object, rhythm, noteLibrary, startTime, vPattern, v
   }
 };
 
-const parse = function(scoreObject) {
+function midiVelocityToDbfs(v, min = -60, max = 6) {
+  const range = max - min;
+  return R.clamp(min, max, v / 127 * range + min);
+}
+
+function parse(scoreObject) {
   const tracksObject = buildTracks(scoreObject);
   const messages = [];
   let i = 0;
@@ -135,7 +140,10 @@ const parse = function(scoreObject) {
       }
       for (let sample of samples) {
         let startTime = (clip.startTime + sample.s) * 4;
-        messages.push(fluid.audiotrack.insertWav(`s${i++}`, startTime, sample.n.path));
+        messages.push(
+          fluid.audiotrack.insertWav(`s${i++}`, startTime, sample.n.path),
+          fluid.audioclip.gain(midiVelocityToDbfs(sample.v, -10, 10)),
+        )
       }
     }
   }
@@ -145,5 +153,6 @@ const parse = function(scoreObject) {
 
 module.exports = {
   buildTracks,
+  midiVelocityToDbfs,
   parse,
 }
