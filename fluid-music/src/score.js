@@ -28,7 +28,9 @@ const reservedKeys = tab.reservedKeys;
  * @param {string} [vPattern]
  * @param {NoteLibrary} [vLibrary]
  * @param {Object} [tracksObject] This is a container for all tracks. It is
- *    returned when `object` is a JS Object (as opposed to a string or array).
+ *    returned when at least one of the following is true:
+ *    1. `object` is a JS Object (as opposed to a string or array).
+ *    2. `object` is an array, and no `tracksObject` was passed in. 
  * @param {string} [trackKey] The name of the track that we are currently parsing.
  * @returns {TracksObject} representation of the score.
  */
@@ -39,9 +41,8 @@ const buildTracks = function(object, rhythm, noteLibrary, startTime, vPattern, v
   if (object.hasOwnProperty('r')) rhythm = object.r;
   if (object.hasOwnProperty('v')) vPattern = object.v;
 
-  if (rhythm === undefined || noteLibrary === undefined)
-    throw new Error('score.buildTracks could not find rhythm AND a noteLibrary');
-
+  const isOutermost = (tracksObject === undefined);
+  if (isOutermost) tracksObject = { };
   // Internally, there are three handlers for (1)arrays (2)strings (3)objects
   //
   // All three handlers must:
@@ -65,14 +66,22 @@ const buildTracks = function(object, rhythm, noteLibrary, startTime, vPattern, v
     let duration = 0;
     const results = [];
     for (let o of object) {
+      if (o === undefined) debugger;
       let result = buildTracks(o, rhythm, noteLibrary, startTime + duration, vPattern, vLibrary, tracksObject, trackKey);
       results.push(result);
       duration += result.duration;
     }
     results.duration = duration;
-    return results
+    if (isOutermost) {
+      tracksObject.duration = duration;
+      return tracksObject;
+    }
+    return results;
   } else if (typeof object === 'string') {
     // We have a string that can be parsed with parseTab
+    if (rhythm === undefined || noteLibrary === undefined)
+    throw new Error(`score.buildTracks encountered a pattern (${object}), but could not find rhythm AND a noteLibrary`);
+
     const a = parseRhythm(rhythm);
     const duration = a.totals[a.totals.length-1];
     const result = parseTab(rhythm, object, noteLibrary, vPattern, vLibrary);
@@ -85,9 +94,6 @@ const buildTracks = function(object, rhythm, noteLibrary, startTime, vPattern, v
     return result;
   } else {
     // Assume we have a JavaScript Object
-    const isOutermost = (tracksObject === undefined);
-    if (isOutermost) tracksObject = { };
-
     let duration = 0;
     for (let [key, val] of Object.entries(object)) {
       if (reservedKeys.hasOwnProperty(key)) continue;

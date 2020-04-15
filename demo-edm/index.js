@@ -1,27 +1,51 @@
-const fs      = require('fs');
-const path    = require('path');
 const R       = require('ramda');
-const YAML    = require('yaml');
 const fluid   = require('fluid-music');
 const recipes = require('fluid-recipes');
 
-const kickPath = recipes.fromMars909.kit.k2.path
+const vLibrary = { 0: 10, 1: 20, 2: 30, 3: 40, 4: 50, 5: 60, 6: 70, 7: 80, 8: 90, 9: 100, a: 110, b: 120, c: 127 };
+const noteLibExplicit =  {   '0': 31,                            // 'te'
+  '1': 33, '2': 35, '3': 36, '4': 38, '5': 40, '6': 41, '7': 43, // C minor
+  '8': 45, '9': 47, 'a': 48, 'b': 50, 'c': 52, 'd': 53, 'e': 55, // C minor 8va
+  'f': 57,                                                       // 're'
+  k: { type: 'file', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/BD D SP 909 09.wav' },
+  h: { type: 'file', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/CH A SP 909 09.wav' },
+  H: { type: 'file', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/OH A SP 909 09.wav' },
+  s: { type: 'file', path: recipes.fromMars909.s3.path },
+  c: { type: 'file', path: recipes.fromMars909.kit.crash.path },
+};
 
-const yamlFilename = path.join(__dirname, 'content.yaml');
-const content = YAML.parse(fs.readFileSync(yamlFilename, 'utf-8'), {merge: true});
-const intro = content.intro;
+const intro = {
+  crash: 'c',
+  kick: [R.repeat('k..k..k..k..', 7), 'k..k..k..sss'],
+  hat:   R.repeat('.hh.hh.hh.hh', 4),
+  p: {
+    r:              '1 2 3 4 ',
+    hat:   R.repeat(' h h h h', 4),
+    snare: R.repeat('  s   s ', 7),
+  }
+};
 
-const melody = intro.melody;
-intro.bass = recipes.mutators.wiggle(melody, 8);
+const score = {
+  vLibrary,
+  noteLibrary: noteLibExplicit,
+  regions: [intro],
+  v:         '966855844655',
+  r:         '1..2..3..4..'};
+let melody = '1342453-21'   ;
+
+// melody = '15426536876';
+// melody = '875a864';
+// melody = R.reverse(melody);
+// melody = R.join('', R.move(0, -2, Array.from(melody)));
+
+intro.bass   = recipes.mutators.wiggle(melody, 8);
 intro.mallet = R.clone(intro.bass);
-intro.mallet.noteLibrary = recipes.library.transposeNoteLibrary(intro.noteLibrary, 24);
-intro.kick  = R.repeat(intro.kick, 7);
-if(intro.hat) intro.hat   = R.repeat(intro.hat, 7);
+intro.mallet.noteLibrary = recipes.library.transposeNoteLibrary(noteLibExplicit, 36);
 
 const section1 = R.clone(intro);
 delete section1.kick;
 delete section1.hat;
-content.score.push(section1);
+score.regions.push(section1);
 
 const msg = [
   // cleanup
@@ -43,8 +67,10 @@ const msg = [
   fluid.audiotrack.removeClips(),
   fluid.audiotrack.select('hat'),
   fluid.audiotrack.removeClips(),
+  fluid.audiotrack.select('snare'),
+  fluid.audiotrack.removeClips(),
 
-  fluid.score.parse(content.score),
+  fluid.score.parse(score),
 ];
 
 const client = new fluid.Client(9999);
