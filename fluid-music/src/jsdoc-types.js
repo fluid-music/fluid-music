@@ -41,7 +41,7 @@
  */
 
 /**
- * Represents any type of message that can be sent to from a client such as
+ * Represents any type of message that can be sent from a client such as
  * `FluidClient` or `FluidUdpClient` to the Fluid Engine.
  *
  * A simple example looks like this:
