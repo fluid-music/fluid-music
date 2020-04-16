@@ -25,43 +25,60 @@ void FluidOscServer::oscMessageReceived(const OSCMessage &message){
     handleOscMessage(message);
 }
 
+void FluidOscServer::constructReply(OSCMessage &reply, int success, String message){
+    reply.addInt32(success);
+    reply.addString(message);
+    std::cout<<message<<std::endl;
+}
+
+void FluidOscServer::constructReply(OSCMessage &reply, String message){
+    reply.addString(message);
+    std::cout<<message<<std::endl;
+}
+
 SelectedObjects FluidOscServer::getSelectedObjects() {
     return { selectedAudioTrack, selectedClip, selectedPlugin };
 }
 
-void FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects parentSelection) {
+OSCBundle FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects parentSelection) {
     SelectedObjects currBundle = parentSelection;
+    OSCBundle reply;
     for (const auto& element: bundle) {
         if (element.isMessage()) {
             // allow messages to update the current selection ("currBundle")
-            handleOscMessage(element.getMessage());
+            OSCMessage replyMessage = handleOscMessage(element.getMessage());
             currBundle.audioTrack = selectedAudioTrack;
             currBundle.clip = selectedClip;
             currBundle.plugin = selectedPlugin;
+            reply.addElement(replyMessage);
         } else if (element.isBundle()) {
             // After processing a bundle, selection will reset to "currBundle"
-            handleOscBundle(element.getBundle(), currBundle);
+            OSCBundle replyBundle = handleOscBundle(element.getBundle(), currBundle);
+            reply.addElement(replyBundle);
         }
     }
     
     selectedAudioTrack = parentSelection.audioTrack;
     selectedClip = parentSelection.clip;
     selectedPlugin = parentSelection.plugin;
+    return reply;
 }
 
-void FluidOscServer::handleOscMessage (const OSCMessage& message) {
+OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     const OSCAddressPattern msgAddressPattern = message.getAddressPattern();
 
     if (msgAddressPattern.matches({"/test"}) || msgAddressPattern.matches({"/print"})) {
         printOscMessage(message);
-        return;
+        return message;
     }
     if (msgAddressPattern.matches({"/file/activate"})) return activateEditFile(message);
 
     if (!activeCybrEdit) {
         std::cout << "NOTE: message failed, because there is no active CybrEdit: ";
         printOscMessage(message);
-        return;
+        OSCMessage error("/error");
+        constructReply(error, 1, "Cannot select audio track: no track name provided");
+        return error;
     }
 
     if (msgAddressPattern.matches({"/midiclip/insert/note"})) return insertMidiNote(message);
@@ -99,14 +116,18 @@ void FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/audioclip/fade/seconds"})) return audioClipFadeInOutSeconds(message);
     if (msgAddressPattern.matches({"/tempo/set/"})) return setTempo(message);
 
-    std::cout << "Unhandled message: ";
     printOscMessage(message);
+    OSCMessage error("/error");
+    constructReply(error, 1, "Unhandled Message");
+    return error;
 }
 
-void FluidOscServer::removeAudioTrackClips(const OSCMessage& message) {
+OSCMessage FluidOscServer::removeAudioTrackClips(const OSCMessage& message) {
+    OSCMessage reply("/audiotrack/remove/clips/reply");
     if (!selectedAudioTrack) {
-        std::cout << "Cannot remove audio track clips: no track selected" << std::endl;
-        return;
+        String errorString = "Cannot remove audio track clips: no track selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     te::Clip::Array clipsToRemove;
@@ -117,12 +138,17 @@ void FluidOscServer::removeAudioTrackClips(const OSCMessage& message) {
     for (te::Clip* clip : clipsToRemove) {
         clip->removeFromParentTrack();
     }
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::removeAudioTrackAutomation(const OSCMessage& message) {
+OSCMessage FluidOscServer::removeAudioTrackAutomation(const OSCMessage& message) {
+    OSCMessage reply("/audiotrack/remove/automation/reply");
+
     if (!selectedAudioTrack) {
-        std::cout << "Cannot remove audio track automation: no track selected" << std::endl;
-        return;
+        String errorString = "Cannot remove audio track automation: no track selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     for (auto plugin : selectedAudioTrack->getAllPlugins()) {
@@ -132,44 +158,59 @@ void FluidOscServer::removeAudioTrackAutomation(const OSCMessage& message) {
             }
         }
     }
+
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::setClipDb(const OSCMessage& message) {
+
+OSCMessage FluidOscServer::setClipDb(const OSCMessage& message) {
+    OSCMessage reply("/audioclip/set/db/reply");
+
     if (!selectedClip) {
-        std::cout << "Cannot set audio clip gain: no clip selected" << std::endl;
-        return;
+        String errorString = "Cannot set audio clip gain: no clip selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     auto* audioClip = dynamic_cast<te::AudioClipBase*>(selectedClip);
     if (!audioClip) {
-        std::cout << "Cannot set audio clip gain: selected clip is not an audio clip" << std::endl;
-        return;
+        String errorString = "Cannot set audio clip gain: selected clip is not an audio clip";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (!message.size() || !message[0].isFloat32()) {
-        std::cout << "Cannot set audio clip gain: missing db float argument" << std::endl;
-        return;
+        String errorString = "Cannot set audio clip gain: missing db float argument";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     double dBFS = message[0].getFloat32();
     if (dBFS > 40) {
-        std::cout << "Cannot set audio clip gain: " << dBFS << "db is dangerously loud" << std::endl;
-        return;
+        String errorString = "Cannot set audio clip gain: " + String(dBFS) + "db is dangerously loud";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     audioClip->setGainDB(dBFS);
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::audioClipFadeInOutSeconds(const OSCMessage& message) {
+OSCMessage FluidOscServer::audioClipFadeInOutSeconds(const OSCMessage& message) {
+    OSCMessage reply("/audioclip/fade/seconds/reply");
     if (!selectedClip) {
-        std::cout << "Cannot setup audio clip fade in/out: no clip selected" << std::endl;
-        return;
+        String errorString = "Cannot setup audio clip fade in/out: no clip selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     auto* audioClip = dynamic_cast<te::WaveAudioClip*>(selectedClip);
     if (!audioClip) {
-        std::cout << "Cannot setup audio clip fade in/out: selected clip is not an audio clip" << std::endl;
-        return;
+        String errorString = "Cannot setup audio clip fade in/out: selected clip is not an audio clip";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     // All args optional
@@ -191,20 +232,28 @@ void FluidOscServer::audioClipFadeInOutSeconds(const OSCMessage& message) {
             // TODO Set fade type?
         }
     }
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::reverseAudioClip(bool reverse) {
+OSCMessage FluidOscServer::reverseAudioClip(bool reverse) {
+    OSCMessage reply("/audioclip/reverse/reply");
     if (!selectedClip) {
-        std::cout << "Cannot update clip reverse status: no clip selected" << std::endl;
-        return;
+        String errorString = "Cannot update clip reverse status: no clip selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     auto* audioClip = dynamic_cast<te::WaveAudioClip*>(selectedClip);
     if (!audioClip) {
-        std::cout << "Cannot update clip reverse status: selected clip is not an audio clip" << std::endl;
-        return;
+        String errorString = "Cannot update clip reverse status: selected clip is not an audio clip";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
-    if (reverse == audioClip->getIsReversed()) return;
+    if (reverse == audioClip->getIsReversed()){
+        reply.addInt32(1);
+        return reply;
+    }
 
     // All the durations below are measured in seconds (after the speedRatio has
     // been applied).
@@ -245,26 +294,37 @@ void FluidOscServer::reverseAudioClip(bool reverse) {
     audioClip->setFadeInType(audioClip->getFadeOutType());
     audioClip->setFadeOut(fadeInTime);
     audioClip->setFadeOutType(fadeInType);
+    
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::offsetClipSourceInSeconds(const juce::OSCMessage& message) {
+OSCMessage FluidOscServer::offsetClipSourceInSeconds(const juce::OSCMessage& message) {
+    OSCMessage reply("/clip/source/offset/seconds/reply");
     if (!selectedClip) {
-        std::cout << "Cannot set clip source offset: no clip selected" << std::endl;
-        return;
+        String errorString = "Cannot set clip source offset: no clip selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (!message.size() || !message[0].isFloat32()) {
-        std::cout << "Cannot set clip source offset: missing offset value" << std::endl;
-        return;
+        String errorString = "Cannot set clip source offset: missing offset value";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
     double newOffset = message[0].getFloat32();
     selectedClip->setOffset(newOffset);
+    
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::trimClipBySeconds(const juce::OSCMessage& message) {
+OSCMessage FluidOscServer::trimClipBySeconds(const juce::OSCMessage& message) {
+    OSCMessage reply("/clip/trim/seconds/reply");
     if (!selectedClip) {
-        std::cout << "Cannot trim clip: No clip selected" << std::endl;
-        return;
+        String errorString = "Cannot trim clip: No clip selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     double startTrim = (message.size() >= 1 && message[0].isFloat32()) ? message[0].getFloat32() : 0;
@@ -273,23 +333,30 @@ void FluidOscServer::trimClipBySeconds(const juce::OSCMessage& message) {
     te::EditTimeRange newRange {currentRange.start + startTrim, currentRange.end - endTrim};
 
     if (newRange.getLength() <= 0) {
-        std::cout << "Cannot trim clip: duration of trimmed clip would be sub-zero" << std::endl;
-        return;
+        String errorString = "Cannot trim clip: duration of trimmed clip would be sub-zero";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
     // verify: does this work when the new start is after the old end, but before the new end????
     selectedClip->setStart(newRange.start, true, false);
     selectedClip->setEnd(newRange.end, true);
+    
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::setClipLength(const juce::OSCMessage& message) {
+OSCMessage FluidOscServer::setClipLength(const juce::OSCMessage& message) {
+    OSCMessage reply("/clip/set/length/reply");
     if (!selectedClip) {
-        std::cout << "Cannot set clip length: No clip selected" << std::endl;
-        return;
+        String errorString = "Cannot set clip length: No clip selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (!message.size() || !message[0].isFloat32()) {
-        std::cout << "Cannot set clip length: First argument must be a float duration" << std::endl;
-        return;
+        String errorString = "Cannot set clip length: First argument must be a float duration";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     bool trimStart = false;
@@ -301,8 +368,9 @@ void FluidOscServer::setClipLength(const juce::OSCMessage& message) {
     double durationInQuarterNotes = message[0].getFloat32();
 
     if (durationInQuarterNotes <= 0) {
-        std::cout << "Cannot set clip length: duration argument must be greater than 0" << std::endl;
-        return;
+        String errorString = "Cannot set clip length: duration argument must be greater than 0";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     te::EditTimeRange currentRange = selectedClip->getEditTimeRange();
@@ -324,51 +392,60 @@ void FluidOscServer::setClipLength(const juce::OSCMessage& message) {
         }
         selectedClip->setEnd(newEndSeconds, true);
     }
+    
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::selectClip(const juce::OSCMessage& message) {
+OSCMessage FluidOscServer::selectClip(const juce::OSCMessage& message) {
+    OSCMessage reply("/clip/select/reply");
     if (!selectedAudioTrack) {
-        std::cout << "Cannot select clip: No audio track selected" << std::endl;
-        return;
+        String errorString = "Cannot select clip: No audio track selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
     if (!message.size() || !message[0].isString()) {
-        std::cout << "Cannot select clip: First argument must be clip name string" << std::endl;
-        return;
+        String errorString = "Cannot select clip: First argument must be clip name string";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     String clipName = message[0].getString();
     for (auto clip : selectedAudioTrack->getClips()) {
         if (clip->getName().equalsIgnoreCase(clipName)) {
             selectedClip = clip;
-            std::cout
-                << "Selected " << clip->getName()
-                << " (" << clip->state.getType().toString() << ") on "
-                << selectedAudioTrack->getName() << std::endl;
-            return;
+            String replyString = "Selected " + clip->getName()
+             + " (" + clip->state.getType().toString() + ") on "
+            + selectedAudioTrack->getName();
+            constructReply(reply, 0, replyString);
+            return reply;
         }
     }
 
-    std::cout
-        << "Cannot select clip: \"" << clipName
-        << "\" not found on track " << selectedAudioTrack->getName() << std::endl;
+    String errorString = "Cannot select clip: \"" + clipName
+    + "\" not found on track " + selectedAudioTrack->getName();
+    constructReply(reply, 1, errorString);
+    return reply;
 }
 
-void FluidOscServer::renderRegion(const OSCMessage& message) {
+OSCMessage FluidOscServer::renderRegion(const OSCMessage& message) {
     // Args
     // 0 - (string, required) output filename
     // 1 - (float, optional) start quarterNotes
     // 2 - (float, optional) duration in quarterNotes
     // If both 1 and 2 are floats, render this time range in beats. Otherwise,
     // render the edit loop region.
-
+    OSCMessage reply("/audiotrack/region/render/reply");
     if (!selectedAudioTrack) {
-        std::cout << "Cannot render track region: No selected track" << std::endl;
-        return;
+        String errorString = "Cannot render track region: No selected track";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (message.size() < 1 || !message[0].isString()) {
-        std::cout << "Cannot render track region: Missing filename" << std::endl;
-        return;
+        String errorString = "Cannot render track region: Missing filename";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     String filename = message[0].getString();
@@ -387,31 +464,37 @@ void FluidOscServer::renderRegion(const OSCMessage& message) {
         range.end = endSeconds;
     }
     renderTrackRegion(outputFile, *selectedAudioTrack, range);
+    
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::renderClip(const juce::OSCMessage &message) {
+OSCMessage FluidOscServer::renderClip(const juce::OSCMessage &message) {
     // Args
     // 0 - (string, required) output filename
     // 1 - (float, optional) tail in seconds
-
+    OSCMessage reply("/clip/render/reply");
     if (message.size() < 1 || !message[0].isString()) {
-        std::cout << "Cannot render track region: Missing filename" << std::endl;
-        return;
+        String errorString = "Cannot render track region: Missing filename";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     String filename = message[0].getString();
     File outputFile = selectedAudioTrack->edit.filePathResolver(filename);
 
     if (!selectedClip) {
-        std::cout << "Cannot render selected clip: No clip selected" << std::endl;
-        return;
+        String errorString = "Cannot render selected clip: No clip selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     te::Track* track = selectedClip->getTrack();
     if (!track) {
         jassert(false);
-        std::cout << "Cannot render clip region: Failed to get clip's track" << std::endl;
-        return;
+        String errorString = "Cannot render clip region: Failed to get clip's track";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     double tail = (message.size() >= 2 && message[1].isFloat32()) ? message[1].getFloat32() : 0;
@@ -419,12 +502,16 @@ void FluidOscServer::renderClip(const juce::OSCMessage &message) {
     range.end += tail;
 
     renderTrackRegion(outputFile, *track, range);
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
+OSCMessage FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
+    OSCMessage reply("/file/save/reply");
     if (!activeCybrEdit) {
-        std::cout << "Cannot save active edit: No active edit" << std::endl;
-        return;
+        String errorString = "Cannot save active edit: No active edit";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     String filename = (message.size() && message[0].isString())
@@ -448,9 +535,12 @@ void FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
     }
 
     activeCybrEdit->saveActiveEdit(file, mode);
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::activateEditFile(File file, bool forceEmptyEdit) {
+OSCMessage FluidOscServer::activateEditFile(File file, bool forceEmptyEdit) {
+    OSCMessage reply("/file/activate/reply");
     if (forceEmptyEdit || !file.existsAsFile()) {
         std::cout << "Creating new edit: " << file.getFullPathName() << std::endl;
         activeCybrEdit = std::make_unique<CybrEdit>(createEmptyEdit(file, te::Engine::getInstance(), te::Edit::forEditing));
@@ -459,12 +549,15 @@ void FluidOscServer::activateEditFile(File file, bool forceEmptyEdit) {
         std::cout << "Loading edit: " << file.getFullPathName() << std::endl;
         activeCybrEdit = std::make_unique<CybrEdit>(createEdit(file, te::Engine::getInstance(), te::Edit::forEditing));
     }
+    return reply;
 }
 
-void FluidOscServer::activateEditFile(const juce::OSCMessage &message) {
+OSCMessage FluidOscServer::activateEditFile(const juce::OSCMessage &message) {
+    OSCMessage reply("/file/activate/reply");
     if (!message.size() || !message[0].isString()) {
-        std::cout << "ERROR: /file/activate missing message argument" << std::endl;
-        return;
+        String errorString = "ERROR: /file/activate missing message argument";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
     
     File file = File::getCurrentWorkingDirectory().getChildFile(message[0].getString());
@@ -476,41 +569,55 @@ void FluidOscServer::activateEditFile(const juce::OSCMessage &message) {
     return activateEditFile(file, forceEmptyEdit);
 }
 
-void FluidOscServer::changeWorkingDirectory(const OSCMessage& message) {
+OSCMessage FluidOscServer::changeWorkingDirectory(const OSCMessage& message) {
+    OSCMessage reply("/cd/reply");
     if (!message.size() || !message[0].isString()) {
-        std::cout << "ERROR: request to change directory without a path string" << std::endl;
-        return;
+        String errorString = "ERROR: request to change directory without a path string";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     String path = message[0].getString();
     File newWorkingDir = File::getCurrentWorkingDirectory().getChildFile(path);
 
     if (!newWorkingDir.isDirectory() || !newWorkingDir.setAsCurrentWorkingDirectory()) {
-        std::cout << "ERROR: Cannot change directory: " << newWorkingDir.getFullPathName() << std::endl;
+        String errorString = "ERROR: Cannot change directory: " + newWorkingDir.getFullPathName();
+        constructReply(reply, 1, errorString);
+        return reply;
     } else {
-        std::cout << "Current Working Directory: " << newWorkingDir.getFullPathName() << std::endl;
+        String replyString = "Current Working Directory: " + newWorkingDir.getFullPathName();
+        constructReply(reply, 0, replyString);
+        return reply;
     }
 }
 
-void FluidOscServer::selectAudioTrack(const juce::OSCMessage& message) {
+OSCMessage FluidOscServer::selectAudioTrack(const juce::OSCMessage& message) {
+    OSCMessage reply("/audiotrack/select/reply");
     if (!message.size() || !message[0].isString()){
-        std::cout << "Cannot select audio track: no track name provided" << std::endl;
-        return;
+        String errorString = "Cannot select audio track: no track name provided";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     String trackName = message[0].getString();
     selectedAudioTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), trackName);
+    
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
+OSCMessage FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
+    OSCMessage reply("/audiotrack/select/return/reply");
     if (!activeCybrEdit) {
-        std::cout << "Cannot select return track: no active edit"  << std::endl;
-        return;
+        String errorString = "Cannot select return track: no active edit";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (!message.size() || !message[0].isString()) {
-        std::cout << "Cannot select return track: no name provided" << std::endl;
-        return;
+        String errorString = "Cannot select return track: no name provided";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     te::Edit& edit = activeCybrEdit->getEdit();
@@ -518,8 +625,9 @@ void FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
     int busIndex = ensureBus(edit, busName);
 
     if (busIndex == -1) {
-        std::cout << "Cannot select return track: no available busses" << std::endl;
-        return;
+        String errorString = "Cannot select return track: no available busses";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     selectedAudioTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), busName);
@@ -530,11 +638,14 @@ void FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
     for (te::Plugin* checkPlugin : selectedAudioTrack->pluginList) {
         if (auto foundPlugin = dynamic_cast<te::AuxReturnPlugin*>(checkPlugin)) {
             if (foundPlugin->busNumber == busIndex) {
-                std::cout << "Skip insert aux return plugin. Edit already has " << busName << " return" << std::endl;
+                String replyString = "Skip insert aux return plugin. Edit already has " + busName + " return";
+                constructReply(reply, 0, replyString);
                 returnPlugin = foundPlugin;
                 break;
             } else {
-                std::cout << "Note: An unexpected auxreturn plugin was found while selecting return track (an additional one may be created)" << std::endl;
+                String replyString = "Note: An unexpected auxreturn plugin was found while selecting return track (an additional one may be created)";
+                constructReply(reply, 0, replyString);
+                returnPlugin = foundPlugin;
             }
         }
     }
@@ -546,20 +657,26 @@ void FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
             returnPlugin = foundPlugin;
             returnPlugin->busNumber = busIndex;
             selectedAudioTrack->pluginList.insertPlugin(foundPlugin, 0, nullptr);
-            std::cout << "Insert auxreturn plugin with busNumber: " << busIndex << std::endl;
+            
+            String replyString = "Insert auxreturn plugin with busNumber: " + String(busIndex);
+            constructReply(reply, 0, replyString);
         }
     }
+    return reply;
 }
 
-void FluidOscServer::ensureSend(const OSCMessage& message) {
+OSCMessage FluidOscServer::ensureSend(const OSCMessage& message) {
+    OSCMessage reply("/audiotrack/send/set/db/reply");
     if (!selectedAudioTrack) {
-        std::cout << "Cannot ensure send: no audio track selected" << std::endl;
-        return;
+        String errorString = "Cannot ensure send: no audio track selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (!message.size() || !message[0].isString()) {
-        std::cout << "Cannot ensure send: message needs name" << std::endl;
-        return;
+        String errorString = "Cannot ensure send: message needs name";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     String busName = message[0].getString();
@@ -577,13 +694,15 @@ void FluidOscServer::ensureSend(const OSCMessage& message) {
     int busIndex = ensureBus(selectedAudioTrack->edit, busName);
 
     if (busIndex == -1) {
-        std::cout << "Cannot create send: no available busses" << std::endl;
-        return;
+        String errorString = "Cannot create send: no available busses";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (!position.equalsIgnoreCase("post-gain")) {
-        std::cout << "Cannot ensure send: currently only post-gain sends are supported" << std::endl;
-        return;
+        String errorString = "Cannot ensure send: currently only post-gain sends are supported";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     // Look through plugins on the track, see if it already has an AuxSendPlugin
@@ -596,7 +715,8 @@ void FluidOscServer::ensureSend(const OSCMessage& message) {
         }
         if (auto foundPlugin = dynamic_cast<te::AuxSendPlugin*>(checkPlugin)) {
             if (foundPlugin->busNumber == busIndex) {
-                std::cout << "Skip insert aux send plugin. Edit already has " << busName << " send" << std::endl;
+                String replyString = "Skip insert aux send plugin. Edit already has " + busName + " send";
+                constructReply(reply, 0, replyString);
                 sendPlugin = foundPlugin;
                 break;
             }
@@ -609,21 +729,25 @@ void FluidOscServer::ensureSend(const OSCMessage& message) {
             sendPlugin = foundPlugin;
             sendPlugin->busNumber = busIndex;
             selectedAudioTrack->pluginList.insertPlugin(foundPlugin, -1, nullptr);
-            std::cout << "Insert auxsend plugin with busNumber: " << busIndex << std::endl;
+            String replyString = "Insert auxsend plugin with busNumber: " + String(busIndex);
+            constructReply(reply, 0, replyString);
         }
     }
 
     if (sendPlugin) {
         sendPlugin->setGainDb(gainLevel);
     }
+    return reply;
 }
 
-void FluidOscServer::selectPlugin(const OSCMessage& message) {
+OSCMessage FluidOscServer::selectPlugin(const OSCMessage& message) {
+    OSCMessage reply("/plugin/select");
     if (message.size() > 3 ||
         !message[0].isString() ||
         !message[1].isInt32() ){
-        std::cout<<"selectPlugin failed. Incorrect arguments."<<std::endl;
-        return;
+        String errorString = "selectPlugin failed. Incorrect arguments.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
     String pluginName = message[0].getString();
     int index = message[1].getInt32();
@@ -631,22 +755,31 @@ void FluidOscServer::selectPlugin(const OSCMessage& message) {
 
     if (message.size() > 2 && message[2].isString())
         pluginFormat = message[2].getString();
-    if (!selectedAudioTrack) return;
+    if (!selectedAudioTrack){
+        String errorString = "Cannot select plugin: No audio track selected";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
     selectedPlugin = getOrCreatePluginByName(*selectedAudioTrack, pluginName, pluginFormat, index);
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::setPluginParam(const OSCMessage& message) {
+OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
+    OSCMessage reply("/plugin/param/set");
     if (message.size() > 3 ||
         !message[0].isString() ||
         !message[1].isFloat32() ||
         !message[2].isString()) {
-        std::cout << "Setting parameter failed. Incorrect arguments." << std::endl;
-        return;
+        String errorString = "Setting parameter failed. Incorrect arguments.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (!selectedPlugin) {
-        std::cout << "Setting plugin parameter failed: No selected plugin" << std::endl;
-        return;
+        String errorString = "Setting plugin parameter failed: No selected plugin";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     String paramName = message[0].getString();
@@ -654,11 +787,10 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
     bool isNormalized = message[2].getString() == "normalized";
     if(isNormalized){
         if (paramValue > 1 || paramValue < 0){
-            std::cout
-                << "Setting parameter " << paramName
-                << " failed. Normalized value has to be between 0 and 1."
-                << std::endl;
-            return;
+            String errorString = "Setting parameter " + paramName
+            + " failed. Normalized value has to be between 0 and 1.";
+            constructReply(reply, 1, errorString);
+            return reply;
         }
     }
     
@@ -672,25 +804,35 @@ void FluidOscServer::setPluginParam(const OSCMessage& message) {
             << " to " << message[1].getFloat32()
             << " explicitvalue: " << param->valueToString(param->getCurrentExplicitValue())
             <<std::endl;
+            
+            String replyString = "set " + paramName
+            + " to " + String(message[1].getFloat32())
+            + " explicitvalue: "
+            + param->valueToString(param->getCurrentExplicitValue());
+            constructReply(reply, 0, replyString);
             break;
         }
     }
+    return reply;
 }
 
-void FluidOscServer::setPluginParamAt(const OSCMessage& message) {
+OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
+    OSCMessage reply("/plugin/param/set/at/reply");
     if (message.size() > 5 ||
         !message[0].isString() ||
         !message[1].isFloat32() ||
         !message[2].isFloat32() ||
         !message[3].isFloat32() ||
         !message[4].isString() ) {
-        std::cout << "Setting parameter failed. Incorrect arguments." << std::endl;
-        return;
+        String errorString = "Setting parameter failed. Incorrect arguments.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (!selectedPlugin) {
-        std::cout << "Setting plugin parameter failed: No selected plugin" << std::endl;
-        return;
+        String errorString = "Setting plugin parameter failed: No selected plugin";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
     
     String paramName = message[0].getString();
@@ -698,31 +840,28 @@ void FluidOscServer::setPluginParamAt(const OSCMessage& message) {
     bool isNormalized = message[4].getString() == "normalized";
     if (isNormalized){
         if (paramValue > 1 || paramValue < 0){
-            std::cout
-                << "Setting parameter " << paramName
-                << " failed. Normalized value has to be between 0 and 1."
-                << std::endl;
-            return;
+            String errorString = "Setting parameter " + paramName
+            + " failed. Normalized value has to be between 0 and 1.";
+            constructReply(reply, 1, errorString);
+            return reply;
         }
     }
     
     double changeQuarterNote = (double)message[2].getFloat32();
     if (changeQuarterNote < 0) {
-        std::cout
-            << "Setting parameter " << paramName
-            << " failed. Time has to be a positive number."
-            << std::endl;
-        return;
+        String errorString = "Setting parameter " + paramName
+        + " failed. Time has to be a positive number.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
     double changeTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(changeQuarterNote);
     
     float curveValue = message[3].getFloat32();
     if (curveValue > 1 || curveValue < -1) {
-        std::cout
-            << "Setting parameter " << paramName
-            << " failed. Curve has to be between -1 and 1."
-            << std::endl;
-        return;
+         String errorString = "Setting parameter " + paramName
+               + " failed. Curve has to be between -1 and 1.";
+         constructReply(reply, 1, errorString);
+         return reply;
     }
 
     for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
@@ -738,32 +877,36 @@ void FluidOscServer::setPluginParamAt(const OSCMessage& message) {
             curve.addPoint(changeTime, paramValue, curveValue);
             curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
             
-            std::cout
-                << "set " << paramName
-                << " to " << message[1].getFloat32() << " explicit value: " << param->valueToString(paramValue)
-                << " at " << changeQuarterNote << " Quarter Note(s)."
-                << std::endl;
-
+            
+            String replyString = "set " + paramName
+            + " to " + String(message[1].getFloat32()) + " explicit value: " + param->valueToString(paramValue)
+            + " at " + String(changeQuarterNote) + " Quarter Note(s).";
+            constructReply(reply, 0, replyString);
             break;
         }
     }
+    return reply;
 }
 
 
-void FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
+OSCMessage FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
+    OSCMessage reply("/plugin/sidechain/input/set/reply");
     if (!selectedPlugin) {
-        std::cout << "Cannot set plugin side chain input: No selected plugin" << std::endl;
-        return;
+        String errorString = "Cannot set plugin side chain input: No selected plugin";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (!selectedPlugin->canSidechain()) {
-        std::cout << "Cannot set plugin side chain input: Selected plugin cannot side chain" << std::endl;
-        return;
+        String errorString = "Cannot set plugin side chain input: Selected plugin cannot side chain";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (!message.size() || !message[0].isString()) {
-        std::cout << "Cannot set plugin side chain input: Missing input-track-name arg" << std::endl;
-        return;
+        String errorString = "Cannot set plugin side chain input: Missing input-track-name arg";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     String inputTrackname = message[0].getString();
@@ -775,58 +918,75 @@ void FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
         std::cout << "NOTE: when enabling a side chain in put on the internal compressor plugin, the side chain will be enabled by default. " << std::endl;
         compressor->useSidechainTrigger = true;
     }
+    
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
+OSCMessage FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
+    OSCMessage reply("/plugin/save/reply");
     if (!selectedPlugin) {
-        std::cout << "Cannot save plugin preset: No selected plugin" << std::endl;
-        return;
+        String errorString = "Cannot save plugin preset: No selected plugin";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
     if (message.size() < 1 || !message[0].isString()) {
-        std::cout << "Cannot save plugin preset: First argument must be a name string" << std::endl;
-        return;
+        String errorString = "Cannot save plugin preset: First argument must be a name string";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
     saveTracktionPreset(selectedPlugin, message[0].getString());
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::loadPluginTrkpreset(const juce::OSCMessage &message) {
-
+OSCMessage FluidOscServer::loadPluginTrkpreset(const juce::OSCMessage &message) {
+    OSCMessage reply("/plugin/load/trkpreset/reply");
     if (!selectedAudioTrack) {
-        std::cout << "Cannot load plugin preset: No audio track selected" << std::endl;
-        return;
+        String errorString = "Cannot load plugin preset: No audio track selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (!message.size() || !message[0].isBlob()) {
-        std::cout << "Cannot load trkpreset data: Mising blob" << std::endl;
-        return;
+        String errorString = "Cannot load trkpreset data: Mising blob";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     MemoryBlock blob = message[0].getBlob();
     String string = String::createStringFromData(blob.getData(), (int)blob.getSize());
     std::unique_ptr<XmlElement> xml = parseXML(string);
     if (!xml) {
-        std::cout << "Cannot load trkpreset data: XML parser error" << std::endl;
-        return;
+        String errorString = "Cannot load trkpreset data: XML parser error";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     ValueTree v = ValueTree::fromXml(*xml.get());
     if (!v.isValid()) {
-        std::cout << "Cannot load trkpreset data: Invalid ValueTree" << std::endl;
-        return;
+        String errorString = "Cannot load trkpreset data: Invalid ValueTree";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     loadTracktionPreset(*selectedAudioTrack, v);
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
+OSCMessage FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
+    OSCMessage reply("/plugin/load/reply");
     if (!selectedAudioTrack) {
-        std::cout << "Cannot load plugin preset: No audio track selected" << std::endl;
-        return;
+        String errorString = "Cannot load plugin preset: No audio track selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (message.size() < 1 || !message[0].isString()) {
-        std::cout << "Cannot load plugin preset: Message has no preset name" << std::endl;
-        return;
+        String errorString = "Cannot load plugin preset: Message has no preset name";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     String filename = message[0].getString();
@@ -849,16 +1009,29 @@ void FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     ValueTree v = loadXmlFile(file);
 
     if (!v.isValid()) {
-        std::cout << "Cannot load plugin preset: Failed to load and parse file" << std::endl;
-        return;
+        String errorString = "Cannot load plugin preset: Failed to load and parse file";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     loadTracktionPreset(*selectedAudioTrack, v);
+    
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
-    if (!selectedAudioTrack) return;
-    if (!message.size() || !message[0].isString()) return;
+OSCMessage FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
+    OSCMessage reply("/midiclip/select/reply");
+    if (!selectedAudioTrack){
+        String errorString = "Cannot load plugin preset: No audio track selected";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+    if (!message.size() || !message[0].isString()){
+        String errorString = "Cannot select Midi Clip: Missing arguments.";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
 
     String clipName = message[0].getString();
     selectedClip = getOrCreateMidiClipByName(*selectedAudioTrack, clipName);
@@ -877,18 +1050,23 @@ void FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
         double endTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeat);
         selectedClip->setEnd(endTime, true);
     }
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
+OSCMessage FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
+    OSCMessage reply("/midiclip/clear");
     if (!selectedClip) {
-        std::cout << "Cannot clear midi clip: No clip selected" << std::endl;
-        return;
+        String errorString = "Cannot clear midi clip: No clip selected";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     auto selectedMidiClip = dynamic_cast<te::MidiClip*>(selectedClip);
     if (!selectedMidiClip) {
-        std::cout << "Cannot clear midi clip: selected clip is not a midi clip" << std::endl;
-        return;
+        String errorString = "Cannot clear midi clip: selected clip is not a midi clip";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     auto exisiting = selectedMidiClip->state.getChildWithName(te::IDs::SEQUENCE);
@@ -902,25 +1080,37 @@ void FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
             track->injectLiveMidiMessage(MidiMessage::allNotesOff(i),
                                          te::MidiMessageArray::notMPE);
 
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
+OSCMessage FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
+    OSCMessage reply("/midiclip/insert/note/reply");
     if(!selectedClip){
-        std::cout << "Cannot insert midi note: No clip selected." << std::endl;
-        return;
+        String errorString = "Cannot insert midi note: No clip selected.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
     if(message.size() < 3){
-        std::cout << "Cannot insert midi note: Not enough arguments."<< std::endl;
-        return;
+        String errorString = "Cannot insert midi note: Not enough arguments.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     auto selectedMidiClip = dynamic_cast<te::MidiClip*>(selectedClip);
     if (!selectedMidiClip) {
-        std::cout << "Cannot insertMidiNoe: selected clip is not a midi clip" << std::endl;
-        return;
+        String errorString = "Cannot insertMidiNote: selected clip is not a midi clip";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
-    for (const auto& arg : message) { if (!arg.isInt32() && !arg.isFloat32()) return; }
+    for (const auto& arg : message) {
+        if (!arg.isInt32() && !arg.isFloat32()){
+            String errorString = "Cannot insertMidiNote: arguments have incorrect type";
+            constructReply(reply, 1, errorString);
+            return reply;
+        }
+    }
     double startBeat = 0;
     double lengthInBeats = 1;
     int noteNumber = 0;
@@ -948,34 +1138,43 @@ void FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
 
     te::MidiList& notes = selectedMidiClip->getSequence();
     notes.addNote(noteNumber, startBeat, lengthInBeats, velocity, colorIndex, nullptr);
+    
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
+OSCMessage FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
+    OSCMessage reply("/audiotrack/insert/wav/reply");
     if(!selectedAudioTrack){
-        std::cout << "Cannot insert wave sample: Must select Audio Track before inserting" << std::endl;
-        return;
+        String errorString = "Cannot insert wave sample: Must select Audio Track before inserting";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if(message.size() < 3){
-        std::cout << "Cannot insert wave file: only recieved " << message.size() << "arguments." << std::endl;
-        return;
+        String errorString = "Cannot insert wave file: only recieved " + String(message.size()) + "arguments.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (!message[0].isString()) {
-        std::cout << "Cannot insert wave file: first argument must be a clipName string" << std::endl;
-        return;
+        String errorString = "Cannot insert wave file: first argument must be a clipName string";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
     String clipName = message[0].getString();
 
     if (!message[1].isString()) {
-        std::cout << "Cannot insert wave file: second argument must be a filepath string" << std::endl;
-        return;
+        String errorString = "Cannot insert wave file: second argument must be a filepath string";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
     String filePath = message[1].getString();
 
     if (!message[2].isFloat32() && !message[2].isInt32()) {
-        std::cout << "Cannot insert wave file: third argument must be a quarterNote start time int or float" << std::endl;
-        return;
+        String errorString = "Cannot insert wave file: third argument must be a quarterNote start time int or float";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     double startBeat = 0;
@@ -999,8 +1198,9 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
 
     te::AudioFile audiofile(file);
     if(!audiofile.isWavFile()){
-        std::cout << "Cannot insert wave file: Must be valid WAV file." << std::endl;
-        return;
+        String errorString = "Cannot insert wave file: Must be valid WAV file.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     te::EditTimeRange timeRange = te::EditTimeRange(startSeconds, startSeconds+audiofile.getLength());
@@ -1009,56 +1209,78 @@ void FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     pos.time = timeRange;
     te::WaveAudioClip::Ptr c = selectedAudioTrack->insertWaveClip(clipName, file, pos, false);
     selectedClip = c.get();
+    
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::setTrackGain(const OSCMessage& message) {
+OSCMessage FluidOscServer::setTrackGain(const OSCMessage& message) {
+    OSCMessage reply("/audiotrack/set/db/reply");
     if (!selectedAudioTrack) {
-        std::cout << "Cannot set track gain: No track selected." << std::endl;
-        return;
+        String errorString = "Cannot set track gain: No track selected.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (!message.size() || !message[0].isFloat32()) {
-        std::cout << "Cannot set track gain: Missing arguments." << std::endl;
-        return;
+        String errorString = "Cannot set track gain: Missing arguments.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
         volumePlugin->setVolumeDb(message[0].getFloat32());
+        reply.addInt32(0);
     } else {
-        std::cout << "Cannot set track gain: Track is missing volume plugin." << std::endl;
+        String errorString = "Cannot set track gain: Track is missing volume plugin.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
-
+    
+    return reply;
 }
 
-void FluidOscServer::muteTrack(bool mute) {
+OSCMessage FluidOscServer::muteTrack(bool mute) {
+    OSCMessage reply("/audiotrack/mute/reply");
     if (!selectedAudioTrack) {
-        std::cout << "Cannot " << (mute ? "mute" : "unmute") << ": No track selected." << std::endl;
-        return;
+        String errorString = "Cannot " + String((mute ? "mute" : "unmute")) + ": No track selected.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     selectedAudioTrack->setMute(mute);
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::setTempo(const OSCMessage &message) {
+OSCMessage FluidOscServer::setTempo(const OSCMessage &message) {
+    OSCMessage reply("/tempo/set/reply");
     if (!message.size() || !message[0].isFloat32()) {
-        std::cout << "Cannot set tempo: missing tempo argument" << std::endl;
+        String errorString = "Cannot set tempo: missing tempo argument";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     float bpm = message[0].getFloat32();
     te::TempoSetting* tempo = activeCybrEdit->getEdit().tempoSequence.getTempo(0);
     tempo->setBpm(bpm);
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
+OSCMessage FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
+    OSCMessage reply("/plugin/sampler/reply");
     if (!selectedPlugin) {
-        std::cout << "Cannot update sampler. No plugin selected." << std::endl;
-        return;
+        String errorString = "Cannot update sampler. No plugin selected.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     te::SamplerPlugin* sampler = dynamic_cast<te::SamplerPlugin*>(selectedPlugin);
     if (!sampler) {
-        std::cout << "Cannot update sampler. No sampler selected." << std::endl;
-        return;
+        String errorString = "Cannot update sampler. No sampler selected.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
 
     const OSCAddressPattern pattern = message.getAddressPattern();
@@ -1078,13 +1300,15 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
         // 3) absolute
         // If the file is not found, it will still be added, but it will not play.
         if (message.size() < 3) {
-            std::cout << "Cannot add sampler sound: Not enough arguments" << std::endl;
-            return;
+            String errorString = "Cannot add sampler sound: Not enough arguments";
+            constructReply(reply, 1, errorString);
+            return reply;
         }
 
         if (!message[0].isString() || !message[1].isString() || ! message[2].isInt32()) {
-            std::cout << "Cannot add sampler sound: incorrect arguments" << std::endl;
-            return;
+            String errorString = "Cannot add sampler sound: incorrect arguments";
+            constructReply(reply, 1, errorString);
+            return reply;
         }
 
         int index = sampler->getNumSounds();
@@ -1116,12 +1340,16 @@ void FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
     } else if (pattern.matches({"/plugin/sampler/clear-all"})) {
         sampler->state.removeAllChildren(nullptr);
     }
+    reply.addInt32(0);
+    return reply;
 }
 
-void FluidOscServer::handleTransportMessage(const OSCMessage& message) {
+OSCMessage FluidOscServer::handleTransportMessage(const OSCMessage& message) {
+    OSCMessage reply("/transport/reply");
     if (!activeCybrEdit) {
-        std::cout << "Cannot update transport: No active edit" << std::endl;
-        return;
+        String errorString = "Cannot update transport: No active edit";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
     te::TransportControl& transport = activeCybrEdit->getEdit().getTransport();
 
@@ -1133,17 +1361,26 @@ void FluidOscServer::handleTransportMessage(const OSCMessage& message) {
         std::cout << "Stop!" << std::endl;
         transport.stop(false, false);
     } else if (pattern.matches({"/transport/to/seconds"})) {
-        if (message.size() < 1 || !message[0].isFloat32()) return;
+        if (message.size() < 1 || !message[0].isFloat32()){
+            String errorString = "Cannot update transport: Incorrect arguments";
+            constructReply(reply, 1, errorString);
+            return reply;
+        }
         transport.setCurrentPosition(message[0].getFloat32());
     } else if (pattern.matches({"/transport/to"})) {
-        if (message.size() < 1 || !message[0].isFloat32()) return;
+        if (message.size() < 1 || !message[0].isFloat32()){
+            String errorString = "Cannot update transport: Incorrect arguments";
+            constructReply(reply, 1, errorString);
+            return reply;
+        }
         double beats = message[0].getFloat32();
         double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(beats);
         transport.setCurrentPosition(startSeconds);
     } else if (pattern.matches({"/transport/loop"})) {
         if (message.size() < 2 || !message[0].isFloat32() || !message[1].isFloat32()) {
-            std::cout << "/transport/loop failed - requires loop start and duration" << std::endl;
-            return;
+            String errorString = "/transport/loop failed - requires loop start and duration";
+            constructReply(reply, 1, errorString);
+            return reply;
         }
 
         double startBeats = message[0].getFloat32();
@@ -1156,7 +1393,8 @@ void FluidOscServer::handleTransportMessage(const OSCMessage& message) {
             // To disable looping specify duration of 0
             std::cout << "Looping disabled!" << std::endl;
             transport.looping.setValue(false, nullptr);
-            return;
+            reply.addInt32(0);
+            return reply;
         }
 
         te::EditTimeRange range = transport.getLoopRange();
@@ -1173,4 +1411,6 @@ void FluidOscServer::handleTransportMessage(const OSCMessage& message) {
         // are looping a different region, playback will be unaffected).
         transport.looping.setValue(true, nullptr);
     }
+    reply.addInt32(0);
+    return reply;
 };

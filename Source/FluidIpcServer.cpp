@@ -56,6 +56,31 @@ void FluidIpc::connectionLost(){
     fluidIpcServer->removeIpcConn(ipc_num);
 }
 
+bool FluidIpc::sendOSCBundle(const OSCBundle& reply){
+    OSCOutputStream outstream;
+//    std::cout<<reply[0].getMessage().getAddressPattern().toString()<<std::endl;
+    if(outstream.writeBundle(reply)){
+        MemoryBlock reply_block(outstream.getData(), outstream.getDataSize());
+//        std::cout<<outstream.getDataSize()<<std::endl;
+//        std::cout<<reply_block.toBase64Encoding()<<std::endl;
+        if(this->sendMessage(reply_block)){
+            return 0;
+        }
+        
+    }
+    return 1;
+}
+
+bool FluidIpc::sendOSCMessage(const OSCMessage& reply){
+    OSCOutputStream outstream;
+    if(outstream.writeMessage(reply)){
+        MemoryBlock reply_block(outstream.getData(), outstream.getDataSize());
+        this->sendMessage(reply_block);
+        return 0;
+    }
+    return 1;
+}
+
 void FluidIpc::messageReceived(const MemoryBlock &message){
     OSCInputStream instream(message.getData(), message.getSize());
     OSCBundle::Element elem = instream.readElementWithKnownSize(message.getSize());
@@ -64,10 +89,20 @@ void FluidIpc::messageReceived(const MemoryBlock &message){
         // Pass the current selection in to the bundle handler
         SelectedObjects obj = fluidOscServer->getSelectedObjects();
         OSCBundle bundle = elem.getBundle();
-        fluidOscServer->handleOscBundle(bundle, obj);
+        OSCBundle reply = fluidOscServer->handleOscBundle(bundle, obj);
+        if(this->sendOSCBundle(reply)){
+            OSCMessage error("/error");
+            error.addString("sendOSCBundle failed");
+            this->sendOSCMessage(error);
+        }
     }
     else{
         OSCMessage msg = elem.getMessage();
-        fluidOscServer->handleOscMessage(msg);
+        OSCMessage reply = fluidOscServer->handleOscMessage(msg);
+        if(this->sendOSCMessage(reply)){
+            OSCMessage error("/error");
+            error.addString("sendOSCMessage failed");
+            this->sendOSCMessage(error);
+        }
     }
 }
