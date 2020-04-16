@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "expr-eval": "^2.0.2",
-    "osc-ipc-client": "^1.0.2",
+    "osc-ipc-client": "^1.0.3",
     "osc-min": "^1.1.2",
     "ramda": "^0.27.0",
     "sharp11": "^2.0.2",
