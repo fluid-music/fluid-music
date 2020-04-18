@@ -97,12 +97,6 @@ const buildTracks = function(object, rhythm, noteLibrary, startTime, vPattern, v
     let duration = 0;
     for (let [key, val] of Object.entries(object)) {
       if (reservedKeys.hasOwnProperty(key)) continue;
-
-      // Ensure track and track.clips exists
-      if (!tracksObject.hasOwnProperty(key)) {
-        tracksObject[key] = { clips: [] };
-      }
-
       let result = buildTracks(val, rhythm, noteLibrary, startTime, vPattern, vLibrary, tracksObject, key);
       if (result.duration > duration) duration = result.duration;
     }
@@ -151,8 +145,13 @@ function parse(scoreObject) {
   return messages;
 };
 
+function getDuration(score) {
+  return buildTracks(score).duration;
+};
+
 module.exports = {
   buildTracks,
+  getDuration,
   midiVelocityToDbfs,
   parse,
 }
