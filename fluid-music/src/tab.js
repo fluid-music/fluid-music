@@ -393,6 +393,7 @@ const reservedKeys = {
   originalValue: null,
   name: null,
   clips: null,
+  tracks: null,
   key: null,
   parent: null,
 }

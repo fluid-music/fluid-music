@@ -71,21 +71,20 @@ const buildTracks = function(object, config, session, tracks = {}) {
   // The object handler must:
   // - return a TracksObject representation of the ScoreObject input
   if (Array.isArray(object)) {
-    const results = [];
-    let duration = 0;
-    let startTime = config.startTime;
+    let arrayStartTime = config.startTime;
+    let returnValue = {
+      startTime: config.startTime,
+      duration: 0,
+      clips: [],
+      tracks,
+    }
     for (let o of object) {
-      config.startTime = startTime + duration;
+      config.startTime = arrayStartTime + returnValue.duration;
       let result = buildTracks(o, config, session, tracks);
-      results.push(result);
-      duration += result.duration;
+      returnValue.clips.push(result);
+      returnValue.duration += result.duration;
     }
-    results.duration = duration;
-    if (isOutermost) {
-      session.duration = duration;
-      return session;
-    }
-    return results;
+    return returnValue;
   } else if (typeof object === 'string') {
     // We have a string that can be parsed with parseTab
     if (config.r === undefined || config.noteLibrary === undefined)
