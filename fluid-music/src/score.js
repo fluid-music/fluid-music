@@ -19,14 +19,16 @@ const reservedKeys = tab.reservedKeys;
  *    called with a single `ScoreObject` as the sole argument. The other
  *    arguments are used internally when recursing over the properties of the
  *    ScoreObject input.
- * @param {string} [rhythm] rhythm string, if not specified, `object`
- *    must have a `.r` property.
- * @param {NoteLibrary} [noteLibrary] An object or array noteLibrary (see
+ * @param {Object} [config]
+ * @param {string} [config.rhythm] default rhythm string, which may be
+ *    overridden by values in `object`. If not specified, `object` must have a
+ *   `.r` property.
+ * @param {string} [config.vPattern]
+ * @param {NoteLibrary} [config.vLibrary]
+ * @param {NoteLibrary} [config.noteLibrary] An object or array noteLibrary (see
  *    tab.parseTab for details). If not specified, `object` must have a
  *    `.noteLibrary` property.
- * @param {number} [startTime]
- * @param {string} [vPattern]
- * @param {NoteLibrary} [vLibrary]
+ * @param {number} [config.startTime]
  * @param {Object} [tracksObject] This is a container for all tracks. It is
  *    returned when at least one of the following is true:
  *    1. `object` is a JS Object (as opposed to a string or array).
@@ -34,18 +36,19 @@ const reservedKeys = tab.reservedKeys;
  * @param {string} [trackKey] The name of the track that we are currently parsing.
  * @returns {TracksObject} representation of the score.
  */
-const buildTracks = function(object, config, noteLibrary, startTime, vPattern, vLibrary, tracksObject, trackKey) {
+const buildTracks = function(object, config, tracksObject, trackKey) {
   const isOutermost = (tracksObject === undefined);
   if (isOutermost) tracksObject = {};
 
   if (!config) config = {};
-  else config = Object.assign({}, config);
+  else config = Object.assign({}, config); // Shallow copy should be ok
 
-  if (typeof startTime !== 'number') startTime = 0;
   if (object.hasOwnProperty('noteLibrary')) config.noteLibrary = object.noteLibrary;
   if (object.hasOwnProperty('vLibrary'))    config.vLibrary = object.vLibrary;
   if (object.hasOwnProperty('r'))           config.r = object.r;
   if (object.hasOwnProperty('v'))           config.v = object.v;
+  // Note that we cannot specify a .startTime in a score like we can for rhythms
+  if (typeof config.startTime !== 'number') config.startTime = 0;
 
   // Internally, there are three handlers for (1)arrays (2)strings (3)objects
   //
@@ -67,10 +70,12 @@ const buildTracks = function(object, config, noteLibrary, startTime, vPattern, v
   // The object handler must:
   // - return a TracksObject representation of the ScoreObject input
   if (Array.isArray(object)) {
-    let duration = 0;
     const results = [];
+    let duration = 0;
+    let startTime = config.startTime;
     for (let o of object) {
-      let result = buildTracks(o, config, undefined, startTime + duration, undefined, undefined, tracksObject, trackKey);
+      config.startTime = startTime + duration;
+      let result = buildTracks(o, config, tracksObject, trackKey);
       results.push(result);
       duration += result.duration;
     }
@@ -88,7 +93,7 @@ const buildTracks = function(object, config, noteLibrary, startTime, vPattern, v
     const a = parseRhythm(config.r);
     const duration = a.totals[a.totals.length-1];
     const result = parseTab(config.r, object, config.noteLibrary, config.v, config.vLibrary);
-    result.startTime = startTime;
+    result.startTime = config.startTime;
     result.duration = duration;
 
     if (!tracksObject[trackKey]) tracksObject[trackKey] = {clips:[]};
@@ -100,7 +105,7 @@ const buildTracks = function(object, config, noteLibrary, startTime, vPattern, v
     let duration = 0;
     for (let [key, val] of Object.entries(object)) {
       if (reservedKeys.hasOwnProperty(key)) continue;
-      let result = buildTracks(val, config, undefined, startTime, undefined, undefined, tracksObject, key);
+      let result = buildTracks(val, config, tracksObject, key);
       if (result.duration > duration) duration = result.duration;
     }
 

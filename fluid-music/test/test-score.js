@@ -137,7 +137,7 @@ describe('score', () => {
         const result1 = score.buildTracks(
           drums,
           {r, noteLibrary},
-          undefined, undefined, undefined, undefined, undefined,
+          undefined,
           key);
 
         // expected result
