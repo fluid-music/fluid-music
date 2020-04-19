@@ -36,12 +36,11 @@ const reservedKeys = tab.reservedKeys;
  *    2. `object` is an array, and no `session` was passed in. 
  * @returns {TracksObject} representation of the score.
  */
-const buildTracks = function(object, config, session, tracks = {}) {
+const buildTracks = function(object, config, session, tracks={}) {
   const isOutermost = (session === undefined);
-  if (isOutermost) session = {tracks};
+  if (isOutermost) session = {};
 
   if (!config) config = {};
-  if (!config.session) config.session = {};
   else config = Object.assign({}, config); // Shallow copy should be ok
 
   if (object.hasOwnProperty('noteLibrary')) config.noteLibrary = object.noteLibrary;
@@ -70,18 +69,20 @@ const buildTracks = function(object, config, session, tracks = {}) {
   //
   // The object handler must:
   // - return a TracksObject representation of the ScoreObject input
+
+  const returnValue = {
+    startTime: config.startTime,
+    duration: 0,
+  };
+  if (isOutermost) returnValue.tracks = tracks;
+
   if (Array.isArray(object)) {
     let arrayStartTime = config.startTime;
-    let returnValue = {
-      startTime: config.startTime,
-      duration: 0,
-      clips: [],
-      tracks,
-    }
+    returnValue.regions = [];
     for (let o of object) {
       config.startTime = arrayStartTime + returnValue.duration;
       let result = buildTracks(o, config, session, tracks);
-      returnValue.clips.push(result);
+      returnValue.regions.push(result);
       returnValue.duration += result.duration;
     }
     return returnValue;
@@ -103,16 +104,14 @@ const buildTracks = function(object, config, session, tracks = {}) {
     return result;
   } else {
     // Assume we have a JavaScript Object
-    let duration = 0;
     for (let [key, val] of Object.entries(object)) {
       if (reservedKeys.hasOwnProperty(key) && key !== 'clips') continue;
       if (key !== 'clips') config.trackKey = key; // if key='clips' use parent key
       let result = buildTracks(val, config, session, tracks);
-      if (result.duration > duration) duration = result.duration;
+      if (result.duration > returnValue.duration) returnValue.duration = result.duration;
+      returnValue[config.trackKey] = result;
     }
-
-    session.duration = duration;
-    return session;
+    return returnValue;
   }
 };
 

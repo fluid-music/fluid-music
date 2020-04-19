@@ -30,19 +30,6 @@ describe('score', () => {
       });
     });
 
-    it('should treat a pattern array with .length=1 the same as a single string', () => {
-      const s1 = { noteLibrary, r, p1: [p1]};
-      const s2 = { noteLibrary, r, p1: p1 };
-
-      const result1 = score.buildTracks(s1);
-      const result2 = score.buildTracks(s2);
-      result1.tracks.should.containDeep({
-        p1: { clips: [ clip1 ]}
-      });
-
-      result1.should.deepEqual(result2);
-    });
-
     describe('arrays', () => {
       it('should handle arrays', () => {
         const s1 = { noteLibrary, r, drums: [
@@ -136,7 +123,7 @@ describe('score', () => {
       it('should accept arrays as input', () => {
         const trackKey = 'drums';
         const drums = [ ['0...', '1...'], '2...', '3...' ];
-        const result1 = score.buildTracks(
+        const result = score.buildTracks(
           drums,
           {r, noteLibrary, trackKey});
 
@@ -153,8 +140,8 @@ describe('score', () => {
             },
           },
         };
-
-        result1.should.containDeep(expectedResult); // eventually I want to get deepEqual here
+        console.dir(result, {depth: null});                                                  ///////console.dir
+        result.should.containDeep(expectedResult); // eventually I want to get deepEqual here
       });
     }); // score.buildTracks with arrays
 
@@ -186,10 +173,12 @@ describe('score', () => {
         d2:    { clips: [clip2] },
         // duration: 4,
       };
-      const result1 = score.buildTracks(s1);
+      const result = score.buildTracks(s1);
+      console.dir(result, {depth: null});                                                  ///////console.dir
+
 
       it('should handle deeply nested objects', () => {
-        result1.tracks.should.containDeep(expectedResult);
+        result.tracks.should.containDeep(expectedResult);
       });
       it('should not modify the input object', () => {
         s1.should.deepEqual(s1Copy);

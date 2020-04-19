@@ -396,7 +396,8 @@ const reservedKeys = {
   tracks: null,
   key: null,
   parent: null,
-}
+  regions: null,
+};
 
 module.exports = {
   parse,
