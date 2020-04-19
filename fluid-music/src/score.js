@@ -7,18 +7,16 @@ const parseRhythm  = tab.parseRhythm;
 const reservedKeys = tab.reservedKeys;
 
 /**
- * score.buildTracks recurses over a ScoreObject, often extracted from a YAML
- * file. It is somewhat similar to tab.parse, except that it expects a different
- * input format, and outputs a `ScoreObject` instead of an array of notes.
+ * score.buildTracks is somewhat similar to tab.parse, except that it expects a
+ * different input format, and outputs a `Session` instead of an array of notes.
  *
  * - In the input (ScoreObject) arrays indicate a sequence
  * - In the output (TracksObject) arrays are a collection of clips (with
  *   `.duration` and `.startTime` properties)
  *
  * @param {ScoreObject|Array|String} object Typically, `buildTracks` will be
- *    called with a single `ScoreObject` as the sole argument. The other
- *    arguments are used internally when recursing over the properties of the
- *    ScoreObject input.
+ *    called with an Array of regions and a config option. The other arguments
+ *    are used internally when recursing over the properties of the input.
  * @param {Object} [config]
  * @param {string} [config.rhythm] default rhythm string, which may be
  *    overridden by values in `object`. If not specified, `object` must have a
@@ -30,10 +28,7 @@ const reservedKeys = tab.reservedKeys;
  *    tab.parseTab for details). If not specified, `object` must have a
  *    `.noteLibrary` property.
  * @param {number} [config.startTime]
- * @param {Object} [session] This is a container for all tracks. It is
- *    returned when at least one of the following is true:
- *    1. `object` is a JS Object (as opposed to a string or array).
- *    2. `object` is an array, and no `session` was passed in. 
+ * @param {Object} [session]
  * @returns {TracksObject} representation of the score.
  */
 const buildTracks = function(object, config, session, tracks={}) {
