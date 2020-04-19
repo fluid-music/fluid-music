@@ -155,13 +155,8 @@ function parse(scoreObject) {
   return messages;
 };
 
-function getDuration(score) {
-  return buildTracks(score).duration;
-};
-
 module.exports = {
   buildTracks,
-  getDuration,
   midiVelocityToDbfs,
   parse,
 }

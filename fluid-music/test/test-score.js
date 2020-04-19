@@ -229,27 +229,4 @@ describe('score', () => {
       score.midiVelocityToDbfs(127, -60, 0).should.equal(0);
     });
   });
-
-  describe('score.getDuration', () => {
-    it('should handle arrays and nested objects', () => {
-      const s1 = { noteLibrary, r, main: [
-        {                 // length = 2
-          drums: '0...',
-          other: {
-            r: '12341234',
-            p: '1'
-          },
-          d2: '2'
-        },
-        { drums: '3...'}, // length = 1
-        '4...'            // length = 1
-      ]};
-      const s2 = R.clone(s1);
-      score.getDuration(s1).should.equal(4);
-      s2.main[0].other.r = 'www';
-      score.getDuration(s2).should.equal(5);
-      delete s2.main[0].other;
-      score.getDuration(s2).should.equal(3);
-    });
-  });
 }); // describe score
