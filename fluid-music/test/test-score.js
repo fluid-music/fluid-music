@@ -132,13 +132,11 @@ describe('score', () => {
       });
 
       it('should accept arrays as input', () => {
-        const key = 'drums';
+        const trackKey = 'drums';
         const drums = [ ['0...', '1...'], '2...', '3...' ];
         const result1 = score.buildTracks(
           drums,
-          {r, noteLibrary},
-          undefined,
-          key);
+          {r, noteLibrary, trackKey});
 
         // expected result
         const clip0 = [{n: 0, s: 0, l: 0.25}]; clip0.startTime = 0; clip0.duration = 1;

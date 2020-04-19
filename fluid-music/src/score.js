@@ -1,6 +1,6 @@
-const tab = require('./tab');
+const R     = require('ramda');
+const tab   = require('./tab');
 const fluid = require('./fluid/index')
-const R = require('ramda');
 
 const parseTab     = tab.parseTab;
 const parseRhythm  = tab.parseRhythm;
@@ -23,7 +23,8 @@ const reservedKeys = tab.reservedKeys;
  * @param {string} [config.rhythm] default rhythm string, which may be
  *    overridden by values in `object`. If not specified, `object` must have a
  *   `.r` property.
- * @param {string} [config.vPattern]
+ * @param {string} [config.trackKey] name of the track being parsed
+ * @param {string} [config.vPattern] optional velocity library
  * @param {NoteLibrary} [config.vLibrary]
  * @param {NoteLibrary} [config.noteLibrary] An object or array noteLibrary (see
  *    tab.parseTab for details). If not specified, `object` must have a
@@ -33,10 +34,9 @@ const reservedKeys = tab.reservedKeys;
  *    returned when at least one of the following is true:
  *    1. `object` is a JS Object (as opposed to a string or array).
  *    2. `object` is an array, and no `tracksObject` was passed in. 
- * @param {string} [trackKey] The name of the track that we are currently parsing.
  * @returns {TracksObject} representation of the score.
  */
-const buildTracks = function(object, config, tracksObject, trackKey) {
+const buildTracks = function(object, config, tracksObject) {
   const isOutermost = (tracksObject === undefined);
   if (isOutermost) tracksObject = {};
 
@@ -60,8 +60,8 @@ const buildTracks = function(object, config, tracksObject, trackKey) {
   //   - string: duration of the associated rhythm string
   //
   // The array and object handlers must:
-  // - call score.buildTracks on children
-  // - pass the appropriate tracksObject/trackKey to each score.buildTracks call
+  // - create an appropriate `config` object for each child
+  // - call score.buildTracks on each child
   //
   // The string handler must:
   // - create clips with a .startTime and .duration
@@ -75,7 +75,7 @@ const buildTracks = function(object, config, tracksObject, trackKey) {
     let startTime = config.startTime;
     for (let o of object) {
       config.startTime = startTime + duration;
-      let result = buildTracks(o, config, tracksObject, trackKey);
+      let result = buildTracks(o, config, tracksObject);
       results.push(result);
       duration += result.duration;
     }
@@ -96,6 +96,7 @@ const buildTracks = function(object, config, tracksObject, trackKey) {
     result.startTime = config.startTime;
     result.duration = duration;
 
+    const trackKey = config.trackKey;
     if (!tracksObject[trackKey]) tracksObject[trackKey] = {clips:[]};
     tracksObject[trackKey].clips.push(result);
 
@@ -105,7 +106,8 @@ const buildTracks = function(object, config, tracksObject, trackKey) {
     let duration = 0;
     for (let [key, val] of Object.entries(object)) {
       if (reservedKeys.hasOwnProperty(key)) continue;
-      let result = buildTracks(val, config, tracksObject, key);
+      config.trackKey = key;
+      let result = buildTracks(val, config, tracksObject);
       if (result.duration > duration) duration = result.duration;
     }
 
