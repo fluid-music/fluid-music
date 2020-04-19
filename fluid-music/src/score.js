@@ -30,17 +30,18 @@ const reservedKeys = tab.reservedKeys;
  *    tab.parseTab for details). If not specified, `object` must have a
  *    `.noteLibrary` property.
  * @param {number} [config.startTime]
- * @param {Object} [tracksObject] This is a container for all tracks. It is
+ * @param {Object} [session] This is a container for all tracks. It is
  *    returned when at least one of the following is true:
  *    1. `object` is a JS Object (as opposed to a string or array).
- *    2. `object` is an array, and no `tracksObject` was passed in. 
+ *    2. `object` is an array, and no `session` was passed in. 
  * @returns {TracksObject} representation of the score.
  */
-const buildTracks = function(object, config, tracksObject) {
-  const isOutermost = (tracksObject === undefined);
-  if (isOutermost) tracksObject = {};
+const buildTracks = function(object, config, session, tracks = {}) {
+  const isOutermost = (session === undefined);
+  if (isOutermost) session = {tracks};
 
   if (!config) config = {};
+  if (!config.session) config.session = {};
   else config = Object.assign({}, config); // Shallow copy should be ok
 
   if (object.hasOwnProperty('noteLibrary')) config.noteLibrary = object.noteLibrary;
@@ -65,7 +66,7 @@ const buildTracks = function(object, config, tracksObject) {
   //
   // The string handler must:
   // - create clips with a .startTime and .duration
-  // - add those clips to the tracksObjects[trackKey].clips array
+  // - add those clips to the sessions[trackKey].clips array
   //
   // The object handler must:
   // - return a TracksObject representation of the ScoreObject input
@@ -75,14 +76,14 @@ const buildTracks = function(object, config, tracksObject) {
     let startTime = config.startTime;
     for (let o of object) {
       config.startTime = startTime + duration;
-      let result = buildTracks(o, config, tracksObject);
+      let result = buildTracks(o, config, session, tracks);
       results.push(result);
       duration += result.duration;
     }
     results.duration = duration;
     if (isOutermost) {
-      tracksObject.duration = duration;
-      return tracksObject;
+      session.duration = duration;
+      return session;
     }
     return results;
   } else if (typeof object === 'string') {
@@ -97,8 +98,8 @@ const buildTracks = function(object, config, tracksObject) {
     result.duration = duration;
 
     const trackKey = config.trackKey;
-    if (!tracksObject[trackKey]) tracksObject[trackKey] = {clips:[]};
-    tracksObject[trackKey].clips.push(result);
+    if (!tracks[trackKey]) tracks[trackKey] = {clips:[]};
+    tracks[trackKey].clips.push(result);
 
     return result;
   } else {
@@ -107,12 +108,12 @@ const buildTracks = function(object, config, tracksObject) {
     for (let [key, val] of Object.entries(object)) {
       if (reservedKeys.hasOwnProperty(key) && key !== 'clips') continue;
       if (key !== 'clips') config.trackKey = key; // if key='clips' use parent key
-      let result = buildTracks(val, config, tracksObject);
+      let result = buildTracks(val, config, session, tracks);
       if (result.duration > duration) duration = result.duration;
     }
 
-    tracksObject.duration = duration;
-    return tracksObject;
+    session.duration = duration;
+    return session;
   }
 };
 
