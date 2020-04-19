@@ -251,7 +251,7 @@ OSCMessage FluidOscServer::reverseAudioClip(bool reverse) {
         return reply;
     }
     if (reverse == audioClip->getIsReversed()){
-        reply.addInt32(1);
+        reply.addInt32(0);
         return reply;
     }
 
