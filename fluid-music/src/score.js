@@ -105,8 +105,8 @@ const buildTracks = function(object, config, tracksObject) {
     // Assume we have a JavaScript Object
     let duration = 0;
     for (let [key, val] of Object.entries(object)) {
-      if (reservedKeys.hasOwnProperty(key)) continue;
-      config.trackKey = key;
+      if (reservedKeys.hasOwnProperty(key) && key !== 'clips') continue;
+      if (key !== 'clips') config.trackKey = key; // if key='clips' use parent key
       let result = buildTracks(val, config, tracksObject);
       if (result.duration > duration) duration = result.duration;
     }

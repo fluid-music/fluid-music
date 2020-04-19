@@ -191,6 +191,34 @@ describe('score', () => {
         s1.should.deepEqual(s1Copy);
       });
     }); // deeply nested objects
+
+    describe('skip over keys named "clips"', () => {
+      const s1 = { noteLibrary, r, main: [
+        '0...',
+        { drum: {
+          clips: ['1...', '2...']
+        }},
+        '3...'
+      ]};
+
+      // expected
+      const clip0 = [{n: 0, s: 0, l: 0.25}]; clip0.startTime = 0;
+      const clip1 = [{n: 1, s: 0, l: 0.25}]; clip1.startTime = 1;
+      const clip2 = [{n: 2, s: 0, l: 0.25}]; clip2.startTime = 2;
+      const clip3 = [{n: 3, s: 0, l: 0.25}]; clip3.startTime = 3;
+      const expectedResult = {
+        main: {
+          clips: [clip0, clip3],
+        },
+        drum: {
+          clips: [clip1, clip2],
+        },
+      };
+
+      const result1 = score.buildTracks(s1);
+      result1.should.containDeep(expectedResult);
+    });
+
   }); // describe score.buildTracks
 
   describe('score.midiVelocityToDbfs', () => {
