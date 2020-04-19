@@ -34,15 +34,19 @@ const reservedKeys = tab.reservedKeys;
  * @param {string} [trackKey] The name of the track that we are currently parsing.
  * @returns {TracksObject} representation of the score.
  */
-const buildTracks = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrary, tracksObject, trackKey) {
-  if (typeof startTime !== 'number') startTime = 0;
-  if (object.hasOwnProperty('noteLibrary')) noteLibrary = object.noteLibrary;
-  if (object.hasOwnProperty('vLibrary')) vLibrary = object.vLibrary;
-  if (object.hasOwnProperty('r')) rhythm = object.r;
-  if (object.hasOwnProperty('v')) vPattern = object.v;
-
+const buildTracks = function(object, config, noteLibrary, startTime, vPattern, vLibrary, tracksObject, trackKey) {
   const isOutermost = (tracksObject === undefined);
-  if (isOutermost) tracksObject = { };
+  if (isOutermost) tracksObject = {};
+
+  if (!config) config = {};
+  else config = Object.assign({}, config);
+
+  if (typeof startTime !== 'number') startTime = 0;
+  if (object.hasOwnProperty('noteLibrary')) config.noteLibrary = object.noteLibrary;
+  if (object.hasOwnProperty('vLibrary'))    config.vLibrary = object.vLibrary;
+  if (object.hasOwnProperty('r'))           config.r = object.r;
+  if (object.hasOwnProperty('v'))           config.v = object.v;
+
   // Internally, there are three handlers for (1)arrays (2)strings (3)objects
   //
   // All three handlers must:
@@ -66,8 +70,7 @@ const buildTracks = function(object, rhythm, noteLibrary, startTime, vPattern, v
     let duration = 0;
     const results = [];
     for (let o of object) {
-      if (o === undefined) debugger;
-      let result = buildTracks(o, rhythm, noteLibrary, startTime + duration, vPattern, vLibrary, tracksObject, trackKey);
+      let result = buildTracks(o, config, undefined, startTime + duration, undefined, undefined, tracksObject, trackKey);
       results.push(result);
       duration += result.duration;
     }
@@ -79,12 +82,12 @@ const buildTracks = function(object, rhythm, noteLibrary, startTime, vPattern, v
     return results;
   } else if (typeof object === 'string') {
     // We have a string that can be parsed with parseTab
-    if (rhythm === undefined || noteLibrary === undefined)
+    if (config.r === undefined || config.noteLibrary === undefined)
     throw new Error(`score.buildTracks encountered a pattern (${object}), but could not find rhythm AND a noteLibrary`);
 
-    const a = parseRhythm(rhythm);
+    const a = parseRhythm(config.r);
     const duration = a.totals[a.totals.length-1];
-    const result = parseTab(rhythm, object, noteLibrary, vPattern, vLibrary);
+    const result = parseTab(config.r, object, config.noteLibrary, config.v, config.vLibrary);
     result.startTime = startTime;
     result.duration = duration;
 
@@ -97,7 +100,7 @@ const buildTracks = function(object, rhythm, noteLibrary, startTime, vPattern, v
     let duration = 0;
     for (let [key, val] of Object.entries(object)) {
       if (reservedKeys.hasOwnProperty(key)) continue;
-      let result = buildTracks(val, rhythm, noteLibrary, startTime, vPattern, vLibrary, tracksObject, key);
+      let result = buildTracks(val, config, undefined, startTime, undefined, undefined, tracksObject, key);
       if (result.duration > duration) duration = result.duration;
     }
 
