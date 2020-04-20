@@ -1,8 +1,17 @@
 
 /**
- * Represents a musical score. Often written in YAML.
- * @typedef {Object} ScoreObject
+ * A structured musical score encoded with `fluid.tab` notation
+ * @typedef {Object.<string,ScoreObject>|Array<ScoreObject>} ScoreObject
  */
+
+ /**
+  * Session encapsulates the structure of a DAW Session.
+  * @typedef {Object,<string, Session>}} Session
+  * @property {number} startTime
+  * @property {number} duration
+  * @property {Session[]} [regions] (Only on sessions created from an array)
+  * @property {TrackObject} [tracks] (Only on top level/outermost sessions)
+  */
 
 /**
  * Represents a collection of audio tracks, and clips on those tracks.

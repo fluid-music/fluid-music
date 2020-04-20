@@ -7,7 +7,7 @@ describe('score', () => {
   const noteLibrary = [0, 1, 2, 3, 4, 5, 6];
   const r = '1234'
 
-  describe('score.buildTracks', () => {
+  describe('score.parse', () => {
     const p1 = '.0..'
     const clip1 = [{ n: 0, s: 0.25, l: 0.25 }];
     clip1.startTime = 0;
@@ -21,7 +21,7 @@ describe('score', () => {
     it('should parse a very simple object', () => {
       const obj = { noteLibrary, r, p1 }
 
-      score.buildTracks(obj).should.containDeep({
+      score.parse(obj).should.containDeep({
         tracks: {
           p1: {
             clips: [clip1],
@@ -36,7 +36,7 @@ describe('score', () => {
           '.0..',
           '.1..',
         ]};
-        const result1 = score.buildTracks(s1);
+        const result1 = score.parse(s1);
 
         const clip1 = [{n: 0, s: 0.25, l: 0.25}];
         clip1.startTime = 0;
@@ -63,7 +63,7 @@ describe('score', () => {
         const clip2 = [{n: 2, s: 0, l: 0.25}]; clip2.startTime = 2;
         const clip3 = [{n: 3, s: 0, l: 0.25}]; clip3.startTime = 3;
 
-        const result1 = score.buildTracks(s1);
+        const result1 = score.parse(s1);
         result1.tracks.should.containDeep({
           drums: {
             clips: [ clip0, clip1, clip2, clip3 ],
@@ -83,7 +83,7 @@ describe('score', () => {
         const clip2 = [{n: 2, s: 0, l: 0.25}]; clip2.startTime = 2;
         const clip3 = [{n: 3, s: 0, l: 0.25}]; clip3.startTime = 3;
 
-        const result1 = score.buildTracks(s1);
+        const result1 = score.parse(s1);
         result1.tracks.should.containDeep({
           drums: {
             clips: [ clip0, clip2, clip3 ],
@@ -116,14 +116,14 @@ describe('score', () => {
           },
         };
 
-        const result1 = score.buildTracks(s1);
+        const result1 = score.parse(s1);
         result1.tracks.should.containDeep(expectedResult);
       });
 
       it('should accept arrays as input', () => {
         const trackKey = 'drums';
         const drums = [ ['0...', '1...'], '2...', '3...' ];
-        const result = score.buildTracks(
+        const result = score.parse(
           drums,
           {r, noteLibrary, trackKey});
 
@@ -143,7 +143,7 @@ describe('score', () => {
         console.dir(result, {depth: null});                                                  ///////console.dir
         result.should.containDeep(expectedResult); // eventually I want to get deepEqual here
       });
-    }); // score.buildTracks with arrays
+    }); // score.parse with arrays
 
     describe('deeply nested objects', () => {
       const s1 = { noteLibrary, r, main: [
@@ -173,7 +173,7 @@ describe('score', () => {
         d2:    { clips: [clip2] },
         // duration: 4,
       };
-      const result = score.buildTracks(s1);
+      const result = score.parse(s1);
       console.dir(result, {depth: null});                                                  ///////console.dir
 
 
@@ -208,11 +208,11 @@ describe('score', () => {
         },
       };
 
-      const result1 = score.buildTracks(s1);
+      const result1 = score.parse(s1);
       result1.tracks.should.containDeep(expectedResult);
     });
 
-  }); // describe score.buildTracks
+  }); // describe score.parse
 
   describe('score.midiVelocityToDbfs', () => {
     it('should work', () => {

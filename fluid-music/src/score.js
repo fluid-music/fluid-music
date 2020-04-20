@@ -7,41 +7,39 @@ const parseRhythm  = tab.parseRhythm;
 const reservedKeys = tab.reservedKeys;
 
 /**
- * score.buildTracks is somewhat similar to tab.parse, except that it expects a
+ * score.parse is somewhat similar to tab.parse, except that it expects a
  * different input format, and outputs a `Session` instead of an array of notes.
  *
- * - In the input (ScoreObject) arrays indicate a sequence
- * - In the output (TracksObject) arrays are a collection of clips (with
- *   `.duration` and `.startTime` properties)
+ * Typically called with two arguments (other args are for internal use only)
+ * - A ScoreObject array
+ * - A config object with (at minimum) a `.noteLibrary` and `.r`hythm
  *
- * @param {ScoreObject|Array|String} object Typically, `buildTracks` will be
- *    called with an Array of regions and a config option. The other arguments
- *    are used internally when recursing over the properties of the input.
+ * @param {ScoreObject|String} scoreObject The Score Object to parse
  * @param {Object} [config]
+ * @param {number} [config.startTime=0]
  * @param {string} [config.rhythm] default rhythm string, which may be
- *    overridden by values in `object`. If not specified, `object` must have a
+ *    overridden by values in `scoreObject`. If not specified, `scoreObject` must have a
  *   `.r` property.
  * @param {string} [config.trackKey] name of the track being parsed
  * @param {string} [config.vPattern] optional velocity library
  * @param {NoteLibrary} [config.vLibrary]
- * @param {NoteLibrary} [config.noteLibrary] An object or array noteLibrary (see
- *    tab.parseTab for details). If not specified, `object` must have a
- *    `.noteLibrary` property.
- * @param {number} [config.startTime]
- * @param {Object} [session]
- * @returns {TracksObject} representation of the score.
+ * @param {NoteLibrary} [config.noteLibrary] (see tab.parseTab for details about
+ *   `NoteLibrary`). If not specified, `scoreObject` must have a `.noteLibrary` property.
+ * @param {Session} [session] Only used in recursion. Consuming cose should not
+ *    supply this argument.
+ * @returns {Session} representation of the score.
  */
-const buildTracks = function(object, config, session, tracks={}) {
+function parse(scoreObject, config, session, tracks={}) {
   const isOutermost = (session === undefined);
   if (isOutermost) session = {};
 
   if (!config) config = {};
   else config = Object.assign({}, config); // Shallow copy should be ok
 
-  if (object.hasOwnProperty('noteLibrary')) config.noteLibrary = object.noteLibrary;
-  if (object.hasOwnProperty('vLibrary'))    config.vLibrary = object.vLibrary;
-  if (object.hasOwnProperty('r'))           config.r = object.r;
-  if (object.hasOwnProperty('v'))           config.v = object.v;
+  if (scoreObject.hasOwnProperty('noteLibrary')) config.noteLibrary = scoreObject.noteLibrary;
+  if (scoreObject.hasOwnProperty('vLibrary'))    config.vLibrary = scoreObject.vLibrary;
+  if (scoreObject.hasOwnProperty('r'))           config.r = scoreObject.r;
+  if (scoreObject.hasOwnProperty('v'))           config.v = scoreObject.v;
   // Note that we cannot specify a .startTime in a score like we can for rhythms
   if (typeof config.startTime !== 'number') config.startTime = 0;
 
@@ -56,7 +54,7 @@ const buildTracks = function(object, config, session, tracks={}) {
   //
   // The array and object handlers must:
   // - create an appropriate `config` object for each child
-  // - call score.buildTracks on each child
+  // - call score.parse on each child
   //
   // The string handler must:
   // - create clips with a .startTime and .duration
@@ -71,24 +69,25 @@ const buildTracks = function(object, config, session, tracks={}) {
   };
   if (isOutermost) returnValue.tracks = tracks;
 
-  if (Array.isArray(object)) {
+  if (Array.isArray(scoreObject)) {
     let arrayStartTime = config.startTime;
     returnValue.regions = [];
-    for (let o of object) {
+    for (let o of scoreObject) {
       config.startTime = arrayStartTime + returnValue.duration;
-      let result = buildTracks(o, config, session, tracks);
+      let result = parse(o, config, session, tracks);
       returnValue.regions.push(result);
       returnValue.duration += result.duration;
     }
     return returnValue;
-  } else if (typeof object === 'string') {
+  } else if (typeof scoreObject === 'string') {
     // We have a string that can be parsed with parseTab
-    if (config.r === undefined || config.noteLibrary === undefined)
-    throw new Error(`score.buildTracks encountered a pattern (${object}), but could not find rhythm AND a noteLibrary`);
+    if (config.r === undefined)
+      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a rhythm`);
+    if (config.noteLibrary === undefined)
+      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a noteLibrary`);
 
-    const a = parseRhythm(config.r);
-    const duration = a.totals[a.totals.length-1];
-    const result = parseTab(config.r, object, config.noteLibrary, config.v, config.vLibrary);
+    const duration = R.last(parseRhythm(config.r).totals);
+    const result = parseTab(config.r, scoreObject, config.noteLibrary, config.v, config.vLibrary);
     result.startTime = config.startTime;
     result.duration = duration;
 
@@ -99,10 +98,10 @@ const buildTracks = function(object, config, session, tracks={}) {
     return result;
   } else {
     // Assume we have a JavaScript Object
-    for (let [key, val] of Object.entries(object)) {
+    for (let [key, val] of Object.entries(scoreObject)) {
       if (reservedKeys.hasOwnProperty(key) && key !== 'clips') continue;
       if (key !== 'clips') config.trackKey = key; // if key='clips' use parent key
-      let result = buildTracks(val, config, session, tracks);
+      let result = parse(val, config, session, tracks);
       if (result.duration > returnValue.duration) returnValue.duration = result.duration;
       returnValue[config.trackKey] = result;
     }
@@ -115,7 +114,7 @@ function midiVelocityToDbfs(v, min = -60, max = 6) {
   return R.clamp(min, max, v / 127 * range + min);
 }
 
-function parse(scoreObject) {
+function scoreToFluidMessage(scoreObject) {
   const tracksObject = buildTracks(scoreObject);
   const messages = [];
   let i = 0;
@@ -150,7 +149,7 @@ function parse(scoreObject) {
 };
 
 module.exports = {
-  buildTracks,
+  scoreToFluidMessage,
   midiVelocityToDbfs,
   parse,
 }
