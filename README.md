@@ -1,10 +1,14 @@
-# Fluid Engine
+# test-juce
 
-The fluid engine is a Swiss Army Knife CLI for working parsing/playing/editing/rendering `.tracktionedit` files using the [tracktion engine](https://github.com/Tracktion/tracktion_engine/).
+This is a hacky test I wrote to experiment with the `tracktion_engine` module for`juce`.
 
-This project does not use the `main` entrypoint, but subclasses [`juce::JUCEApplicationBase`](https://docs.juce.com/master/classJUCEApplicationBase.html#details).
+This project does not use the MAIN function, but subclasses [`juce::JUCEApplicationBase`](https://docs.juce.com/master/classJUCEApplicationBase.html#details)
 
-The Fluid Engine obsoletes these older repos
+Test projects include (this list may be out of date):
+
+- [cybr](https://github.com/CharlesHolbrow/test-juce)
+  - `CLIApp` subclasses `juce::JUCEApplicationBase` to init an app and run the event loop
+  - This was my original experiment (test-juce) but it's also the repo I'm pushing forward
 - [tracktionedit-player](https://github.com/CharlesHolbrow/tracktionedit-player) 
   - uses JUCE GUI to run a full application
   - loads a `.tracktionedit` and renders a file
