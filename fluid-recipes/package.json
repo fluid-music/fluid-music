@@ -1,0 +1,23 @@
+{
+  "name": "fluid-recipes",
+  "version": "0.0.1",
+  "description": "Official fluid-music recipes",
+  "main": "src/index.js",
+  "scripts": {
+    "link": "npm link ../fluid-music",
+    "test": "mocha"
+  },
+  "author": "Charles Holbrow",
+  "license": "UNLICENSED",
+  "peerDependencies": {
+    "fluid-music": "0.0.2-0"
+  },
+  "dependencies": {
+    "ramda": "^0.27.0",
+    "underscore": "^1.9.2"
+  },
+  "devDependencies": {
+    "mocha": "^7.1.1",
+    "should": "^13.2.3"
+  }
+}

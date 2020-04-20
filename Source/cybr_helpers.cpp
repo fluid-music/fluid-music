@@ -11,39 +11,39 @@
 #include "cybr_helpers.h"
 
 // Creates a new edit, and leaves deletion up to you
-te::Edit* createEmptyEdit(File inputFile, te::Engine& engine)
+te::Edit* createEmptyEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role)
 {
     std::cout << "Creating Edit Object" << std::endl;
     te::Edit::Options editOptions{ engine };
     editOptions.editProjectItemID = te::ProjectItemID::createNewID(0);
     editOptions.editState = te::createEmptyEdit();
     editOptions.numUndoLevelsToStore = 0;
-    editOptions.role = te::Edit::forRendering;
+    editOptions.role = role;
     editOptions.editFileRetriever = [inputFile] { return inputFile; };
     return new te::Edit(editOptions);
 }
 
 // Creates a new edit, and leaves deletion up to you
-te::Edit* createEdit(File inputFile, te::Engine& engine) {
+te::Edit* createEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role) {
     // we are assuming the file exists.
     ValueTree valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
     
     // Create the edit object.
-    // Note we cannot save an edit file without and ediit file retriever. It is
+    // Note we cannot save an edit file without and edit file retriever. It is
     // also used resolves audioclips that have source='./any/relative/path.wav'.
     std::cout << "Creating Edit Object" << std::endl;
     te::Edit::Options editOptions{ engine };
     editOptions.editProjectItemID = te::ProjectItemID::createNewID(0);
     editOptions.editState = valueTree;
     editOptions.numUndoLevelsToStore = 0;
-    editOptions.role = te::Edit::forRendering;
+    editOptions.role = role;
     editOptions.editFileRetriever = [inputFile] { return inputFile; };
     te::Edit* newEdit = new te::Edit(editOptions);
     
     // By default (and for simplicity), all clips in an in-memory edit should
     // have a source property with an absolute path value. We want to avoid
     // clip sources with project ids or relative path values.
-    setClipSourcesToDirectFileReferences(*newEdit, false, true);
+    setClipAndSamplerSourcesToDirectFileReferences(*newEdit, SamplePathMode::absolute, false);
     
     // List any missing plugins
     for (auto plugin : newEdit->getPluginCache().getPlugins()) {
@@ -73,12 +73,15 @@ CybrEdit* copyCybrEditForPlayback(CybrEdit& cybrEdit) {
     return newCybrEdit;
 }
 
-void setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelativePath, bool verbose = true)
+void setClipAndSamplerSourcesToDirectFileReferences(te::Edit& changeEdit, SamplePathMode mode, bool verbose)
 {
     int failures = 0;
-    if (verbose) std::cout << "Searching for audio clips and updating their sources to "
-        << (useRelativePath ? "relative" : "absolute")
-        << " file paths" << std::endl;
+    if (verbose) {
+        std::cout << "Searching for audio clips and updating their sources ";
+        if (mode == SamplePathMode::absolute) std::cout << "to absolute paths" << std::endl;
+        if (mode == SamplePathMode::relative) std::cout << "to relative paths" << std::endl;
+        if (mode == SamplePathMode::decide) std::cout << "to absolute paths, if sample is not in a subdirectory" << std::endl;
+    }
     
     for (auto track : te::getClipTracks(changeEdit)) { // for each track
         for (auto clip : track->getClips()) { // inspect each clip
@@ -88,11 +91,18 @@ void setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelative
                 if (file == File()) {
                     // We failed to get the filepath from the project manager
                     failures++;
-                    std::cerr
-                    << "ERROR: Failed to find and update source clip: " << audioClip->getName()
-                    << " source=\"" << sourceFileRef.source << "\"" << std::endl;
+                    std::cout
+                        << "ERROR: Failed to find and update source clip: " << audioClip->getName()
+                        << " source=\"" << sourceFileRef.source << "\"" << std::endl;
                 }
                 else {
+                    bool useRelativePath;
+                    if (mode == SamplePathMode::relative) useRelativePath = true;
+                    else if (mode == SamplePathMode::absolute) useRelativePath = false;
+                    else {
+                        File editFileDir = changeEdit.editFileRetriever().getParentDirectory();
+                        useRelativePath = file.isAChildOf(editFileDir) ? true : false;
+                    }
                     // We have a filepath. We are not certain the file exists.
                     // Even if the file does not exists, we may be able to
                     // update the source property.
@@ -119,6 +129,36 @@ void setClipSourcesToDirectFileReferences(te::Edit& changeEdit, bool useRelative
             }
         }
     }
+
+    for (auto plugin : changeEdit.getPluginCache().getPlugins()) {
+        if (auto sampler = dynamic_cast<te::SamplerPlugin*>(plugin)) {
+            // Annoyingly it does not work to use the sampler interface, because setters like
+            // sampler->setSoundMedia(...) update asynchronously. If we just changed the
+            // source file recently, its updated values will not yet be returned by the
+            // sampler's getter methods.
+            for (auto child : sampler->state) {
+                if (!child.hasType(te::IDs::SOUND)) continue;
+                String oldPath = child.getProperty(te::IDs::source);
+                if (oldPath.isEmpty()) continue;
+                File soundFile = changeEdit.filePathResolver(oldPath);
+                bool useRelativePath;
+                if (mode == SamplePathMode::relative) useRelativePath = true;
+                else if (mode == SamplePathMode::absolute) useRelativePath = false;
+                else {
+                    File editFileDir = changeEdit.editFileRetriever().getParentDirectory();
+                    useRelativePath = soundFile.isAChildOf(editFileDir) ? true : false;
+                }
+                String newPath = te::SourceFileReference::findPathFromFile(changeEdit, soundFile, useRelativePath);
+                if (oldPath != newPath && newPath.isNotEmpty()) {
+                    child.setProperty(te::IDs::source, newPath, nullptr);
+                    if (verbose) std::cout
+                        << "Updated sampler plugin source \"" << oldPath
+                        << "\" to \""  << newPath << "\"" << std::endl;
+                }
+            }
+        }
+    }
+
     if (failures > 0) {
         std::cerr
         << "ERROR: not all source clips could be identified!" << std::endl
@@ -224,6 +264,7 @@ void listMidiDevices(te::Engine& engine) {
 
 void scanVst3(te::Engine& engine)
 {
+#if (JUCE_PLUGINHOST_VST3 && (JUCE_MAC || JUCE_WINDOWS))
     std::cout << "Scanning for VST3 plugins..." << std::endl;
     
     juce::VST3PluginFormat vst3;
@@ -247,6 +288,13 @@ void scanVst3(te::Engine& engine)
         std::cout << "Failed to load plugin: " << filename << std::endl;
     }
     std::cout << std::endl;
+#else
+    #if (JUCE_LINUX)
+    std::cout << "VST3 is not supported on LINUX" << std::endl;
+    #endif
+    std::cout << "VST3 hosting is not enabled. Skipping VST 3 scan." << std::endl;
+    return;
+#endif
 }
 
 void scanVst2(te::Engine& engine) {
@@ -347,6 +395,7 @@ void listPluginParameters(te::Engine& engine, const String pluginName) {
     }
 }
 
+//TODO: Internal plugin will always return no midi programs
 void listPluginPresets(te::Engine& engine, const String pluginName) {
     std::unique_ptr<te::Edit> edit(createEmptyEdit(File(), engine));
     edit->ensureNumberOfAudioTracks(1);
@@ -366,6 +415,7 @@ void listPluginPresets(te::Engine& engine, const String pluginName) {
         std::cout << "Plugin::hasNameForMidiProgram for " << plugin->getName() << std::endl;
         for (int i = 0; i <= 127; i++) {
             String programName;
+            //Always returns false
             if (plugin->hasNameForMidiProgram(i, 0, programName))
                 std::cout << "Program: (" << i << ") " << programName << std::endl;
         }
@@ -391,17 +441,25 @@ void printPreset(te::Plugin* plugin) {
 
 void saveTracktionPreset(te::Plugin* plugin, String name) {
     if (!plugin) {
-        assert(false);
+        jassert(false);
+        return;
+    }
+
+    Array<File> presetDirs = CybrSearchPath(CYBR_PRESET).paths();
+    if (presetDirs.size() < 1) {
+        std::cout << "Cannot save preset. No preset paths found" << std::endl;
         return;
     }
 
     if (!name.endsWithIgnoreCase(".trkpreset")) name.append(".trkpreset", 10);
 
-    File file = File::getCurrentWorkingDirectory()
-        .getChildFile(File::createLegalFileName(name));
+    File file = presetDirs[0].getChildFile(File::createLegalFileName(name));
+    File saveDir = file.getParentDirectory();
 
     if (!file.hasWriteAccess()) {
-        std::cout << "Cannot write to file: does not have write access: " << file.getFullPathName() << std::endl;
+        std::cout
+            << "Cannot write preset file (do not have write access): "
+            << file.getFullPathName() << std::endl;
         return;
     }
     ValueTree state(te::IDs::PRESET);
@@ -411,8 +469,63 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
     state.setProperty(te::IDs::filename, file.getFileName(), nullptr);
     state.setProperty(te::IDs::path, file.getParentDirectory().getFullPathName(), nullptr);
     state.setProperty(te::IDs::tags, "cybr", nullptr);
+
     state.createXml()->writeTo(file);
     std::cout << "Save tracktion preset: " << file.getFullPathName() << std::endl;
+}
+
+void loadTracktionPreset(te::AudioTrack& audioTrack, ValueTree v) {
+    bool loaded = false;
+    for (ValueTree preset : v) {
+        if (!preset.hasType(te::IDs::PLUGIN)) continue;
+        if (!preset.hasProperty(te::IDs::type)) continue;
+        String type = preset[te::IDs::type];
+        String name = preset[te::IDs::name];
+
+        // Tracktion plugins have a type property but no name property.
+        // getOrCreatePluginByName expect 'name' to be the name of the vst or
+        // 'type' of the tracktion plugin (which does not have a name).
+        // This sillyness allows us to get a plugin from a preset
+        if (!preset.hasProperty(te::IDs::name)) {
+            name = type;
+            type = String();
+        }
+
+        if (name.isEmpty()) {
+            std::cout << "Cannot load plugin preset: plugin has invalid type: " << type << std::endl;
+            continue;
+        }
+
+        std::cout << "Found preset: " << type << "/" << name << std::endl;
+
+        if (te::Plugin* plugin = getOrCreatePluginByName(audioTrack, name, type)) {
+            ValueTree currentConfig = plugin->state;
+            // These should be correct on the preset, but just in case, get the ones
+            // returned by getOrCreatePluginByName, so we will be sure that we are not
+            // changing them.
+            if (currentConfig.hasProperty(te::IDs::type)) preset.setProperty(te::IDs::type, currentConfig[te::IDs::type], nullptr);
+            if (currentConfig.hasProperty(te::IDs::name)) preset.setProperty(te::IDs::name, currentConfig[te::IDs::name], nullptr);
+            if (currentConfig.hasProperty(te::IDs::uid)) preset.setProperty(te::IDs::uid, currentConfig[te::IDs::uid], nullptr);
+            if (currentConfig.hasProperty(te::IDs::filename)) preset.setProperty(te::IDs::filename, currentConfig[te::IDs::filename], nullptr);
+            if (currentConfig.hasProperty(te::IDs::id)) preset.setProperty(te::IDs::id, currentConfig[te::IDs::id], nullptr);
+            if (currentConfig.hasProperty(te::IDs::manufacturer)) preset.setProperty(te::IDs::manufacturer, currentConfig[te::IDs::manufacturer], nullptr);
+            if (currentConfig.hasProperty(te::IDs::programNum)) preset.setProperty(te::IDs::programNum, currentConfig[te::IDs::programNum], nullptr);
+
+            // Now copy over everything else from the preset. This should inlude the
+            // all-important 'state' property of external plugins. External plugins also
+            // have some mundane properties like windowLocked="1", enabled="1"
+            plugin->restorePluginStateFromValueTree(preset);
+
+            std::cout << "Loaded preset: " << name << std::endl;
+            loaded = true;
+        } else {
+            std::cout << "Cannot load plugin preset: failed to create plugin with type/name: " << type << "/" << name << std::endl;
+            continue;
+        };
+    }
+    if (loaded) std::cout
+        << "Loaded " << v[te::IDs::name].toString()
+        << " on " << audioTrack.getName() << std::endl;
 }
 
 ValueTree loadXmlFile(File file) {
@@ -426,6 +539,30 @@ ValueTree loadXmlFile(File file) {
     }
     return result;
 }
+
+int ensureBus(te::Edit& edit, String busName) {
+    int busIndex = -1;
+    // If there is already a bus with the name, find its index
+    for (int i = 0; i < 32; i++) {
+        if (edit.getAuxBusName(i).equalsIgnoreCase(busName)) {
+            busIndex = i;
+            break;
+        }
+    }
+
+    // If no bus with this name was found, create it
+    if (busIndex == -1) {
+        for (int i = 0; i < 32; i++) {
+            if (edit.getAuxBusName(i).isEmpty()) {
+                busIndex = i;
+                edit.setAuxBusName(i, busName);
+                break;
+            }
+        }
+    }
+    return busIndex;
+}
+
 
 void printOscMessage(const OSCMessage& message) {
     std::cout << message.getAddressPattern().toString();
@@ -464,7 +601,8 @@ te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name
     return clip;
 }
 
-te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, const String type) {
+te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, const String type, const int index) {
+    int nthPluginOfName = 0;
     for (te::Plugin* checkPlugin : track.pluginList) {
         // Internal plugins like "volume"
         // checkPlugin->getPluginType();   // "volume" - this is the "type" XML parameter
@@ -483,8 +621,11 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
             }
         }
         if (match) {
-            std::cout << "Plugin select found existing plugin: " << checkPlugin->getName() << std::endl;
-            return checkPlugin;
+            if (nthPluginOfName == index){
+                std::cout << "Plugin select found " << index << "'th " << checkPlugin->getName() <<" plugin."<<std::endl;
+                return checkPlugin;
+            }
+            nthPluginOfName++;
         }
     }
 
@@ -505,7 +646,6 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
     }
     if (!found) insertPoint = -1;
     std::cout << "Plugin insert index: " << insertPoint << std::endl;
-
     for (PluginDescription desc : track.edit.engine.getPluginManager().knownPluginList.getTypes()) {
         if (desc.name.equalsIgnoreCase(name)) {
             if (type.isNotEmpty()) {
@@ -535,3 +675,49 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
     return nullptr;
 }
 
+void renderTrackRegion(File outputFile, te::Track& track, te::EditTimeRange range) {
+    if (range.getLength() == 0) {
+        std::cout << "Cannot render track region: time range is zero." << std::endl;
+        return;
+    }
+
+    if (!outputFile.hasWriteAccess()) {
+        std::cout << "Cannot render track region: No write access: " << outputFile.getFullPathName() << std::endl;
+        return;
+    }
+
+    if (outputFile.exists()) {
+        if (!outputFile.deleteFile()) {
+            std::cout << "Cannot render track region: Failed to delete existing file" << std::endl;
+            return;
+        } else {
+            std::cout << "Overwrite: " << outputFile.getFullPathName() << std::endl;
+        }
+    }
+
+    String jobTitle = "Render " + track.getName() + " to " + outputFile.getFullPathName();
+    std::cout << jobTitle << std::endl;
+
+    BigInteger tracksToDo;
+    {
+        int i = 0;
+        track.edit.visitAllTracks([&i, &track, &tracksToDo] (te::Track& check) {
+            if (&track == &check) tracksToDo.setBit(i);
+            i++;
+            return true;
+        }, true);
+    }
+    jassert(tracksToDo.countNumberOfSetBits() == 1);
+
+    bool success = te::Renderer::renderToFile(jobTitle,
+                                              outputFile,
+                                              track.edit,
+                                              range,
+                                              tracksToDo);
+    if (success) {
+        std::cout << "Rendered: " << outputFile.getFullPathName() << std::endl;
+    } else {
+        std::cout << "Failed to render: " << outputFile.getFullPathName() << std::endl;
+        return;
+    }
+}

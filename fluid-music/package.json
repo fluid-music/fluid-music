@@ -1,0 +1,34 @@
+{
+  "name": "fluid-music",
+  "version": "0.0.2",
+  "description": "Basic cybr client examples",
+  "main": "src/index.js",
+  "scripts": {
+    "watch": "nodemon -e .js,.mjs,.json,.yaml,.yml src/index.js",
+    "test": "mocha",
+    "test-score": "mocha test/test-score.js",
+    "test-tab": "mocha test/test-tab.js",
+    "test-debug": "mocha --reporter spec --inspect-brk",
+    "docs": "jsdoc2md  --files 'src/fluid/*.js' > docs/fluid.md",
+    "generate-zebra2-code": "node code-generators/zebra2/generate-code.js > src/fluid/plugin-zebra2-vst2.js"
+  },
+  "author": "Charles Holbrow",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "jsdoc-to-markdown": "^5.0.3",
+    "mocha": "^6.2.3",
+    "nodemon": "^2.0.3",
+    "should": "^13.2.3"
+  },
+  "dependencies": {
+    "expr-eval": "^2.0.2",
+    "osc-ipc-client": "^1.0.3",
+    "osc-min": "^1.1.2",
+    "ramda": "^0.27.0",
+    "sharp11": "^2.0.2",
+    "yaml": "^1.8.3"
+  },
+  "bin": {
+    "fluid": "./cli.js"
+  }
+}

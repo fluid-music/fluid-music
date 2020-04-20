@@ -44,8 +44,8 @@ void AppJobs::record(CybrEdit& cybrEdit) {
         if (auto oscInstance = dynamic_cast<OscInputDeviceInstance*>(i))
         {
             std::cout << "Found OSC input: " << oscInstance->owner.getName() << std::endl;
-            i->setTargetTrack(cybrHostTrack, 0);
-            i->setRecordingEnabled(true); // Arm the track
+            i->setTargetTrack(*cybrHostTrack, 0, false);
+            i->setRecordingEnabled(*cybrHostTrack, true); // Arm the track
             // We just set the targetTrack, However, note that a single track can have
             // multiple inputs (the second argument, trackIndex, specified which slot
             // to set this to. We should be careful, because another input device
@@ -56,8 +56,8 @@ void AppJobs::record(CybrEdit& cybrEdit) {
             // increment the targetIndex.
         } else {
             // if there are any other inputs that are targeting this track, clear them.
-            i->setRecordingEnabled(false);
-            if (i->getTargetTrack() == cybrHostTrack) i->clearFromTrack();
+            i->setRecordingEnabled(*cybrHostTrack, false);
+            i->removeTargetTrack(*cybrHostTrack);
         }
     }
 

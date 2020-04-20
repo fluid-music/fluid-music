@@ -14,6 +14,7 @@
 #include "cybr_helpers.h"
 #include "CybrEdit.h"
 #include "FluidOscServer.h"
+#include "FluidIpcServer.h"
 
 namespace te = tracktion_engine;
 class AppJobs : public juce::ChangeBroadcaster {
@@ -35,6 +36,8 @@ public:
     void setRunForever(bool newFlag);
 
     FluidOscServer fluidOscServer;
+    std::unique_ptr<FluidIpcServer> fluidIpcServer;
+    
 private:
     juce::OwnedArray<CybrEdit> playingEdits;
     bool runForever = false;

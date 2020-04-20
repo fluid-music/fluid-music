@@ -1,0 +1,20 @@
+{
+  "name": "fluid-demo",
+  "version": "0.0.1",
+  "description": "Fluid Music Demo Song",
+  "main": "demo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "link": "npm link ../fluid-music; npm link ../fluid-recipes",
+    "watch": "nodemon -w demo-cloud.js -w ../fluid-recipes/src/cloud.js -- demo-cloud.js",
+    "postinstall": "npm run link"
+  },
+  "author": "Charles Holbrow",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "underscore": "^1.9.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}

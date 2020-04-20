@@ -1,0 +1,27 @@
+patterns:
+  kickOnly: &k 'k..k..k..k..'
+  main:     &m '1342453-21'
+  hihat:    &h 'hhh.hh.hhHhh'
+
+config: &config
+  vLibrary: { 0: 10, 1: 20, 2: 30, 3: 40, 4: 50, 5: 60, 6: 70, 7: 80, 8: 90, 9: 100, a: 110, b: 120, c: 127 }
+  v: '966855844655'
+  r: '1..2..3..4..'
+  noteLibrary: { '0': 31,                                          # 'te'
+    '1': 33, '2': 35, '3': 36, '4': 38, '5': 40, '6': 41, '7': 43, # C minor
+    '8': 45, '9': 47, 'a': 48, 'b': 50, 'c': 52, 'd': 53, 'e': 55, # C minor 8va
+    'f': 57,                                                       # 're'
+    k: { type: 'file', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/BD D SP 909 09.wav' },
+    h: { type: 'file', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/CH A SP 909 09.wav' },
+    H: { type: 'file', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/OH A SP 909 09.wav' },
+  }
+
+intro: &intro
+  << :    *config
+  name:   intro
+  kick:   *k
+  melody: *m
+  hat:    *h
+
+score:
+- *intro

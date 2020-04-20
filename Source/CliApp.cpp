@@ -40,8 +40,6 @@ void CLIApp::shutdown()
     // needed; the Project Manager settings will be saved anyway. I'm not %100
     // sure that this is the right way to do it, but for now I'm leaving it in.
     te::getApplicationSettings()->dispatchPendingMessages();
-
-    std::cout << "Shutdown!" << std::endl << std::endl;
 }
 
 const String CLIApp::getApplicationName() 
@@ -66,16 +64,24 @@ void CLIApp::onRunning()
         "Launch a server and listen for fluid engine OSC messages",
         "This runs a server that listens for OSC messages",
         [this](auto&) {
-            if (!appJobs.fluidOscServer.connect(options.listenPort)) {
-                std::cout << "FluidOscServer: Falied to connect" << std::endl;
+            appJobs.fluidIpcServer = std::make_unique<FluidIpcServer>(appJobs.fluidOscServer);
+            if (!appJobs.fluidIpcServer->beginWaitingForSocket(options.listenPort)) {
+                std::cout << "FluidIpcServer: Falied to connect" << std::endl;
                 return false;
             }
+            std::cout << "Listening for IPC Connections" << std::endl;
+            
+            if (!appJobs.fluidOscServer.connect(options.listenPort)) {
+                std::cout << "FluidOscServer falied to connect" << std::endl;
+                return false;
+            }
+            
             appJobs.setRunForever(true);
-            std::cout << "FluidOscServer: Connected!" << std::endl;
+            std::cout << "Listening for UDP Connections" << std::endl;
             if (cybrEdit) {
                 CybrEdit* newCybrEdit = copyCybrEditForPlayback(*cybrEdit);
                 appJobs.fluidOscServer.activeCybrEdit.reset(newCybrEdit);
-                std::cout << "FluidOscServer: Activated new cybr edit" << std::endl;
+                std::cout << "FluidOscServer activated cybr edit from CLI input" << std::endl;
             }
             return true;
         } });
@@ -160,8 +166,8 @@ void CLIApp::onRunning()
         "List all the projects from the project manager",
         "Edit files saved in Waveform may include references to projects from\n\
         the Waveform project manager. Print a list of all the projects found.\n\
-        If the list is empty, Waveform may not be installed, or you may need run\n\
-        with the --autodetect-pm option.",
+        If the list is empty, Waveform may not be installed, or you may need\n\
+        run with the --autodetect-pm option.",
         [this](auto&) { listProjects(engine); }
         });
 
@@ -408,6 +414,36 @@ void CLIApp::onRunning()
                 std::cout << "jack not supported" << std::endl;
             }
         } });
+
+    cApp.addCommand({
+        "--print-block-size",
+        "--print-block-size",
+        "print audio block size",
+        "undocumented",
+        [this](const ArgumentList& args) {
+            std::cout << "Block Size: " << engine.getDeviceManager().getBlockSize() << std::endl;
+        }
+
+    });
+
+    // App search paths
+    File prefsDir = engine.getPropertyStorage().getAppPrefsFolder();
+
+    // Preset search paths
+    File cybrPresets = prefsDir.getChildFile(CYBR_PRESET);
+    File tracktionPresets = getWaveformAppDir().getChildFile("Presets");
+    cybrPresets.createDirectory();
+    String presetSearchPaths =
+        cybrPresets.getFullPathName() + ";"
+        + tracktionPresets.getFullPathName();
+    CybrSearchPath presetSearchPath(CYBR_PRESET);
+    presetSearchPath.init(cApp, presetSearchPaths);
+
+    // Samples search path
+    File defaultSampleDir = prefsDir.getChildFile(CYBR_SAMPLE);
+    defaultSampleDir.createDirectory();
+    CybrSearchPath sampleSearchPath(CYBR_SAMPLE);
+    sampleSearchPath.init(cApp, defaultSampleDir.getFullPathName());
 
     // Because of the while loop below, we must not use the "default command"
     // functionality built into the juce::ConsoleApplication class. If there is

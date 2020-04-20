@@ -18,10 +18,12 @@
 #include "CybrEdit.h"
 #include "OscInputDevice.h"
 #include "FluidOscServer.h"
+#include "FluidIpcServer.h"
+#include "CybrSearchPath.h"
 
-class CybrProps : public te::PropertyStorage {
+class CybrPropertyStorage : public te::PropertyStorage {
 public:
-    CybrProps(const String appname) : te::PropertyStorage(appname) {};
+    CybrPropertyStorage(const String appname) : te::PropertyStorage(appname) {};
     File getAppPrefsFolder() override {
         // Using juce::PropertiesFile only to get a nice cross-platform application
         // data directory. te::ApplicationSettings and te::PropertyStorage handle
@@ -126,7 +128,7 @@ private:
         bool helpModeFlag = false;
     } options;
 
-    tracktion_engine::Engine engine{ std::make_unique<CybrProps>(getApplicationName()), std::make_unique<CliUiBehaviour>(), nullptr };
+    tracktion_engine::Engine engine{ std::make_unique<CybrPropertyStorage>(getApplicationName()), std::make_unique<CliUiBehaviour>(), nullptr };
     AppJobs appJobs;
 
     // cybrEdit is a wrapper around edit.
