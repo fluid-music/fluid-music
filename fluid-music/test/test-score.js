@@ -9,18 +9,25 @@ describe('score', () => {
 
   describe('score.parse', () => {
     const p1 = '.0..'
-    const clip1 = [{ n: 0, s: 0.25, l: 0.25 }];
-    clip1.startTime = 0;
-    clip1.duration = 1;
+    const clip1 = {
+      notes: [{ n: 0, s: 0.25, l: 0.25 }],
+      startTime: 0,
+      duration: 1,
+    };
 
     const p2 = '01..';
-    const clip2 = [{ n: 0, s: 0, l: 0.25 }, { n:1, s: 0.25, l: 0.25 }];
-    clip2.duration = 1;
+    const clip2 = {
+      notes: [{ n: 0, s: 0, l: 0.25 }, { n:1, s: 0.25, l: 0.25 }],
+      duration: 1,
+    };
 
+    const obj = {
+      p1,
+      noteLibrary: [0, 1, 2, 3, 4, 5, 6],
+      r: '1234',
+    };
 
     it('should parse a very simple object', () => {
-      const obj = { noteLibrary, r, p1 }
-
       score.parse(obj).should.containDeep({
         tracks: {
           p1: {
@@ -30,38 +37,46 @@ describe('score', () => {
       });
     });
 
-    describe('arrays', () => {
+
+    describe('score.parse on arrays', () => {
       it('should handle arrays', () => {
         const s1 = { noteLibrary, r, drums: [
           '.0..',
           '.1..',
         ]};
-        const result1 = score.parse(s1);
+        const result = score.parse(s1);
 
-        const clip1 = [{n: 0, s: 0.25, l: 0.25}];
-        clip1.startTime = 0;
-        clip1.duration  = 1;
+        const clip1 = {
+          notes: [{s: 0.25, l: 0.25, n: 0}],
+          duration: 1,
+          startTime: 0,
+        };
 
-        const clip2 = [{n: 1, s: 0.25, l: 0.25}];
-        clip2.startTime = 1;
-        clip2.duration  = 1;
+        const clip2 = {
+          notes: [{s: 0.25, l: 0.25, n: 1}],
+          duration: 1,
+          startTime: 1,
+        }
 
-        result1.tracks.should.containDeep({
+        const expected = {
           drums: {
             clips: [ clip1, clip2 ],
           }
-        });
+        };
+
+        result.tracks.should.containDeep(expected);
       });
+
 
       it('should handle nested arrays', () => {
         const s1 = { noteLibrary, r, drums: [
           ['0...', '1...'],
           '2...', '3...'
         ]};
-        const clip0 = [{n: 0, s: 0, l: 0.25}]; clip0.startTime = 0;
-        const clip1 = [{n: 1, s: 0, l: 0.25}]; clip1.startTime = 1;
-        const clip2 = [{n: 2, s: 0, l: 0.25}]; clip2.startTime = 2;
-        const clip3 = [{n: 3, s: 0, l: 0.25}]; clip3.startTime = 3;
+        const clip0 = { notes: [{n: 0, s: 0, l: 0.25}], startTime: 0, duration: 1 };
+        const clip1 = { notes: [{n: 1, s: 0, l: 0.25}], startTime: 1, duration: 1 };
+        const clip2 = { notes: [{n: 2, s: 0, l: 0.25}], startTime: 2, duration: 1 };
+        const clip3 = { notes: [{n: 3, s: 0, l: 0.25}], startTime: 3, duration: 1 };
 
         const result1 = score.parse(s1);
         result1.tracks.should.containDeep({
@@ -78,10 +93,10 @@ describe('score', () => {
           ['2...', '3...']
         ]};
 
-        const clip0 = [{n: 1, s: 0, l: 0.25}]; clip0.startTime = 0;
-        const clip1 = [{n: 0, s: 0, l: 0.25}, { n:1, s: 0.5, l: 0.25 }]; clip1.startTime = 1;
-        const clip2 = [{n: 2, s: 0, l: 0.25}]; clip2.startTime = 2;
-        const clip3 = [{n: 3, s: 0, l: 0.25}]; clip3.startTime = 3;
+        const clip0 = { notes: [{n: 1, s: 0, l: 0.25}], startTime: 0 };
+        const clip1 = { notes: [{n: 0, s: 0, l: 0.25}, { n:1, s: 0.5, l: 0.25 }], startTime: 1 };
+        const clip2 = { notes: [{n: 2, s: 0, l: 0.25}], startTime: 2 };
+        const clip3 = { notes: [{n: 3, s: 0, l: 0.25}], startTime: 3 };
 
         const result1 = score.parse(s1);
         result1.tracks.should.containDeep({
@@ -103,10 +118,10 @@ describe('score', () => {
         ]};
 
         // expected
-        const clip0 = [{n: 0, s: 0, l: 0.25}]; clip0.startTime = 0;
-        const clip1 = [{n: 1, s: 0, l: 0.25}]; clip1.startTime = 1;
-        const clip2 = [{n: 2, s: 0, l: 0.25}]; clip2.startTime = 2;
-        const clip3 = [{n: 3, s: 0, l: 0.25}]; clip3.startTime = 3;
+        const clip0 = { notes: [{n: 0, s: 0, l: 0.25}], startTime: 0, duration: 1 };
+        const clip1 = { notes: [{n: 1, s: 0, l: 0.25}], startTime: 1, duration: 1 };
+        const clip2 = { notes: [{n: 2, s: 0, l: 0.25}], startTime: 2, duration: 1 };
+        const clip3 = { notes: [{n: 3, s: 0, l: 0.25}], startTime: 3, duration: 1 };
         const expectedResult = {
           main: {
             clips: [clip0, clip3],
@@ -116,9 +131,10 @@ describe('score', () => {
           },
         };
 
-        const result1 = score.parse(s1);
-        result1.tracks.should.containDeep(expectedResult);
+        const result = score.parse(s1);
+        result.tracks.should.containDeep(expectedResult);
       });
+
 
       it('should accept arrays as input', () => {
         const trackKey = 'drums';
@@ -128,10 +144,10 @@ describe('score', () => {
           {r, noteLibrary, trackKey});
 
         // expected result
-        const clip0 = [{n: 0, s: 0, l: 0.25}]; clip0.startTime = 0; clip0.duration = 1;
-        const clip1 = [{n: 1, s: 0, l: 0.25}]; clip1.startTime = 1; clip1.duration = 1;
-        const clip2 = [{n: 2, s: 0, l: 0.25}]; clip2.startTime = 2; clip2.duration = 1;
-        const clip3 = [{n: 3, s: 0, l: 0.25}]; clip3.startTime = 3; clip3.duration = 1;
+        const clip0 = { notes: [{n: 0, s: 0, l: 0.25}], startTime: 0, duration: 1 };
+        const clip1 = { notes: [{n: 1, s: 0, l: 0.25}], startTime: 1, duration: 1 };
+        const clip2 = { notes: [{n: 2, s: 0, l: 0.25}], startTime: 2, duration: 1 };
+        const clip3 = { notes: [{n: 3, s: 0, l: 0.25}], startTime: 3, duration: 1 };
         const expectedResult = {
           duration: 4,
           tracks: {
@@ -140,12 +156,11 @@ describe('score', () => {
             },
           },
         };
-        console.dir(result, {depth: null});                                                  ///////console.dir
         result.should.containDeep(expectedResult); // eventually I want to get deepEqual here
       });
     }); // score.parse with arrays
 
-    describe('deeply nested objects', () => {
+    describe('score.parse on deeply nested objects', () => {
       const s1 = { noteLibrary, r, main: [
         {
           drums: '0...',
@@ -160,11 +175,11 @@ describe('score', () => {
       ]};
 
       const s1Copy = R.clone(s1);
-      const clip0 = [{n: 0, s: 0, l: 0.25}]; clip0.startTime = 0; clip0.duration = 1;
-      const clip1 = [{n: 1, s: 0, l: 0.25}]; clip1.startTime = 0; clip1.duration = 2;
-      const clip2 = [{n: 2, s: 0, l: 0.25}]; clip2.startTime = 0; clip2.duration = 1;
-      const clip3 = [{n: 3, s: 0, l: 0.25}]; clip3.startTime = 2; clip3.duration = 1;
-      const clip4 = [{n: 4, s: 0, l: 0.25}]; clip4.startTime = 3; clip4.duration = 1;
+      const clip0 = { notes: [{n: 0, s: 0, l: 0.25}], startTime: 0, duration: 1 };
+      const clip1 = { notes: [{n: 1, s: 0, l: 0.25}], startTime: 0, duration: 2 };
+      const clip2 = { notes: [{n: 2, s: 0, l: 0.25}], startTime: 0, duration: 1 };
+      const clip3 = { notes: [{n: 3, s: 0, l: 0.25}], startTime: 2, duration: 1 };
+      const clip4 = { notes: [{n: 4, s: 0, l: 0.25}], startTime: 3, duration: 1 };
 
       const expectedResult = {
         main:  { clips: [clip4] },
@@ -174,8 +189,6 @@ describe('score', () => {
         // duration: 4,
       };
       const result = score.parse(s1);
-      console.dir(result, {depth: null});                                                  ///////console.dir
-
 
       it('should handle deeply nested objects', () => {
         result.tracks.should.containDeep(expectedResult);
@@ -195,10 +208,10 @@ describe('score', () => {
       ]};
 
       // expected
-      const clip0 = [{n: 0, s: 0, l: 0.25}]; clip0.startTime = 0;
-      const clip1 = [{n: 1, s: 0, l: 0.25}]; clip1.startTime = 1;
-      const clip2 = [{n: 2, s: 0, l: 0.25}]; clip2.startTime = 2;
-      const clip3 = [{n: 3, s: 0, l: 0.25}]; clip3.startTime = 3;
+      const clip0 = { notes: [{n: 0, s: 0, l: 0.25}], startTime: 0, duration: 1 };
+      const clip1 = { notes: [{n: 1, s: 0, l: 0.25}], startTime: 1, duration: 1 };
+      const clip2 = { notes: [{n: 2, s: 0, l: 0.25}], startTime: 2, duration: 1 };
+      const clip3 = { notes: [{n: 3, s: 0, l: 0.25}], startTime: 3, duration: 1 };
       const expectedResult = {
         main: {
           clips: [clip0, clip3],
@@ -211,7 +224,6 @@ describe('score', () => {
       const result1 = score.parse(s1);
       result1.tracks.should.containDeep(expectedResult);
     });
-
   }); // describe score.parse
 
   describe('score.midiVelocityToDbfs', () => {

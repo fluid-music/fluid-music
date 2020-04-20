@@ -12,7 +12,7 @@ describe('parse', () => {
       p: '.0..',
     };
 
-    tab.parse(obj).should.containDeep([
+    tab.parse(obj).notes.should.containDeep([
       { n: 0, s: 0.25, l: 0.25 },
     ]);
   });
@@ -26,7 +26,7 @@ describe('parse', () => {
           '1...',
       ]
     };
-    tab.parse(obj).should.containDeep([
+    tab.parse(obj).notes.should.containDeep([
       { n: 0, s: 0.25, l: 0.25 },
       { n: 1, s: 1.00, l: 0.25 },
     ]);
@@ -42,7 +42,7 @@ describe('parse', () => {
       },
     };
 
-    tab.parse(obj).should.containDeep([
+    tab.parse(obj).notes.should.containDeep([
       { n: 0, s: 0.00, l: 0.25 },
       { n: 1, s: 0.25, l: 0.25 },
     ]);
@@ -59,7 +59,7 @@ describe('parse', () => {
       b: '...4',
     };
 
-    tab.parse(obj).should.containDeep([
+    tab.parse(obj).notes.should.containDeep([
       { n: 0, s: 0.25, l: 0.25 },
       { n: 1, s: 0.25, l: 0.25 },
       { n: 2, s: 1.00, l: 0.25 },
@@ -80,7 +80,7 @@ describe('parse', () => {
       b: '...5',
     };
 
-    tab.parse(obj).should.containDeep([
+    tab.parse(obj).notes.should.containDeep([
       { n: 0, s: 0.00, l: 0.50 },
       { n: 1, s: 0.50, l: 0.50 },
       { n: 20, s: 1.0, l: 0.25 },
@@ -102,15 +102,15 @@ describe('parse', () => {
     };
 
     const result = tab.parse(obj);
-    result.should.containDeep([
+    result.notes.should.containDeep([
       { n: 0, s: 0.0, l: 0.25 },
       { n: 1, s: 0.5, l: 0.25 },
     ]);
-    result.should.containDeep([
+    result.notes.should.containDeep([
       { n: 2, s: 1.0, l: 0.25 },
       { n: 3, s: 1.5, l: 0.25 },
     ]);
-    result.should.containDeep([
+    result.notes.should.containDeep([
       { n: 4, s: 2.0, l: 0.25 },
       { n: 5, s: 2.5, l: 0.25 },
       { n: 6, s: 2.75, l: 0.25 },
@@ -123,7 +123,7 @@ describe('parse', () => {
       r: '12',
       p: ['01', '23']
     };
-    tab.parse(obj).should.containDeep([
+    tab.parse(obj).notes.should.containDeep([
       { n: 0, s: 0.00, l: 0.25 },
       { n: 1, s: 0.25, l: 0.25 },
       { n: 2, s: 0.50, l: 0.25 },
@@ -140,7 +140,7 @@ describe('parse', () => {
         '2' // Should start after the longest pattern in the previous element
       ]
     };
-    tab.parse(obj).should.containDeep([
+    tab.parse(obj).notes.should.containDeep([
       { n: 0, s: 0.00, l: 1.0 },
       { n: 1, s: 0.00, l: 0.5 },
       { n: 2, s: 1.00, l: 1.0 },
@@ -159,7 +159,7 @@ describe('parse', () => {
         p: '.0..',
       };
   
-      tab.parse(obj).should.containDeep([
+      tab.parse(obj).notes.should.containDeep([
         { n: 0, s: 0.25, l: 0.25, v: 60},
       ]);
     });
@@ -174,7 +174,7 @@ describe('parse', () => {
             '1...',
         ]
       };
-      tab.parse(obj).should.containDeep([
+      tab.parse(obj).notes.should.containDeep([
         { n: 0, s: 0.25, l: 0.25, v: 60 },
         { n: 1, s: 1.00, l: 0.25 },
       ]);
@@ -192,7 +192,7 @@ describe('parse', () => {
         },
       };
   
-      tab.parse(obj).should.containDeep([
+      tab.parse(obj).notes.should.containDeep([
         { n: 0, s: 0.00, l: 0.25, v: 60 },
         { n: 1, s: 0.25, l: 0.25, v: 70 },
       ]);
@@ -210,7 +210,7 @@ describe('parse', () => {
         b: '...4',
       };
   
-      tab.parse(obj).should.containDeep([
+      tab.parse(obj).notes.should.containDeep([
         { n: 0, s: 0.25, l: 0.25, v: 70 },
         { n: 1, s: 0.25, l: 0.25, v: 70 },
         { n: 2, s: 1.00, l: 0.25, v: 60 },
@@ -232,7 +232,7 @@ describe('parse', () => {
         b: '...5',
       };
   
-      tab.parse(obj).should.containDeep([
+      tab.parse(obj).notes.should.containDeep([
         { n: 0, s: 0.00, l: 0.50, v: 60 },
         { n: 1, s: 0.50, l: 0.50, v: 70 },
         { n: 20, s: 1.0, l: 0.25, v: 120 },
@@ -255,15 +255,15 @@ describe('parse', () => {
       };
   
       const result = tab.parse(obj);
-      result.should.containDeep([
+      result.notes.should.containDeep([
         { n: 0, s: 0.0, l: 0.25, v: 60 },
         { n: 1, s: 0.5, l: 0.25, v: 70 },
       ]);
-      result.should.containDeep([
+      result.notes.should.containDeep([
         { n: 2, s: 1.0, l: 0.25, v: 80 },
         { n: 3, s: 1.5, l: 0.25, v: 90 },
       ]);
-      result.should.containDeep([
+      result.notes.should.containDeep([
         { n: 4, s: 2.0, l: 0.25, v: 100 },
         { n: 5, s: 2.5, l: 0.25, v: 110 },
         { n: 6, s: 2.75, l: 0.25, v: 110 },
@@ -277,7 +277,7 @@ describe('parse', () => {
         r: '12',
         p: ['01', {p:'23', v: '01'}]
       };
-      tab.parse(obj).should.containDeep([
+      tab.parse(obj).notes.should.containDeep([
         { n: 0, s: 0.00, l: 0.25 },
         { n: 1, s: 0.25, l: 0.25 },
         { n: 2, s: 0.50, l: 0.25, v: 60 },
@@ -296,7 +296,7 @@ describe('parse', () => {
           p: ['01', '23'],
         };
         const result = tab.parse(obj);
-        result.should.containDeep([
+        result.notes.should.containDeep([
           { n: 0, s: 0.00, l: 0.25 },
           { n: 1, s: 0.25, l: 0.25 },
           { n: 2, s: 1.00, l: 0.25 },
