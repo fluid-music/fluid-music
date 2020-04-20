@@ -15,16 +15,16 @@ const noteLibrary = {        '0': 31,                            // 'te'
 };
 
 let melody;
-const score = {
+const score = [];
+const config = {
   vLibrary,
   noteLibrary,
-  regions: [],
   v:     '966855844655',
   r:     '1..2..3..4..'};
-melody = '1342453-21'   ;
-// melody = '15426536876'  ;
-// melody = '875a8'        ;
+melody = '875a8'        ;
 // melody = '875a864'      ;
+// melody = '15426536876'  ;
+// melody = '1342453-21'   ; // default;
 // melody = R.reverse(melody);
 
 
@@ -46,15 +46,15 @@ const intro = {
 
 // Transpose intro.mallet
 if (intro.mallet) intro.mallet.noteLibrary = recipes.library.transposeNoteLibrary(noteLibrary, 36);
-score.regions.push(intro);
+score.push(intro);
 
 // Section A is a veriation on the intro
 const sectionA = R.clone(intro);
 delete sectionA.kick;
 delete sectionA.hat;
-score.regions.push(sectionA);
+score.push(sectionA);
 
-const drumGain = -10;
+const session = fluid.score.parse(score, config);
 const msg = [
   // cleanup
   fluid.audiotrack.select('kick'),
@@ -81,7 +81,7 @@ const msg = [
   fluid.pluginZebra2Vst2.setVCF1Resonance(0.01, 8*4),
   fluid.pluginZebra2Vst2.setVCF1Resonance(0.10, 8*4*2),
 
-  fluid.score.parse(score),
+  fluid.score.tracksToFluidMessage(session.tracks),
 ];
 
 const client = new fluid.Client(9999);
