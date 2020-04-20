@@ -3,7 +3,7 @@ const mocha = require('mocha');
 const tab = require('../src/tab');
 
 
-describe('parse', () => {
+describe('tab.parse', () => {
   const noteLibrary = [0, 1, 2, 3, 4, 5, 6];
   it('should parse a very simple object', () => {
     const obj = {
@@ -158,12 +158,12 @@ describe('parse', () => {
         r: '1234',
         p: '.0..',
       };
-  
+
       tab.parse(obj).notes.should.containDeep([
         { n: 0, s: 0.25, l: 0.25, v: 60},
       ]);
     });
-    
+
     it('should parse arrays sequentially and work when velocities are not all given', () => {
       const obj = {
         noteLibrary,
@@ -179,7 +179,7 @@ describe('parse', () => {
         { n: 1, s: 1.00, l: 0.25 },
       ]);
     });
-  
+
     it('should layer recursive objects', () => {
       const obj = {
         noteLibrary,
@@ -191,13 +191,13 @@ describe('parse', () => {
           v: '01..'
         },
       };
-  
+
       tab.parse(obj).notes.should.containDeep([
         { n: 0, s: 0.00, l: 0.25, v: 60 },
         { n: 1, s: 0.25, l: 0.25, v: 70 },
       ]);
     });
-  
+
     it('should mix and match recursive objects and arrays', () => {
       const obj = {
         noteLibrary,
@@ -209,7 +209,7 @@ describe('parse', () => {
         ],
         b: '...4',
       };
-  
+
       tab.parse(obj).notes.should.containDeep([
         { n: 0, s: 0.25, l: 0.25, v: 70 },
         { n: 1, s: 0.25, l: 0.25, v: 70 },
@@ -218,7 +218,7 @@ describe('parse', () => {
         { n: 4, s: 0.75, l: 0.25 },
       ]);
     });
-    
+
     it('should be able to update rhythm for nested objects', () => {
       const obj = {
         noteLibrary,
@@ -231,7 +231,7 @@ describe('parse', () => {
         ],
         b: '...5',
       };
-  
+
       tab.parse(obj).notes.should.containDeep([
         { n: 0, s: 0.00, l: 0.50, v: 60 },
         { n: 1, s: 0.50, l: 0.50, v: 70 },
@@ -241,7 +241,7 @@ describe('parse', () => {
         { n: 5, s: 0.75, l: 0.25 },
       ]);
     });
-  
+
     it('should handle nested arrays', () => {
       const obj = {
         noteLibrary,
@@ -253,7 +253,7 @@ describe('parse', () => {
           [{p: '4.', v: '4.'}, { p: '56', v: '55'}],
         ],
       };
-  
+
       const result = tab.parse(obj);
       result.notes.should.containDeep([
         { n: 0, s: 0.0, l: 0.25, v: 60 },
@@ -269,7 +269,7 @@ describe('parse', () => {
         { n: 6, s: 2.75, l: 0.25, v: 110 },
       ]);
     });
-  
+
     it('should handle arrays of strings and velocities', () => {
       const obj = {
         noteLibrary,
@@ -284,7 +284,7 @@ describe('parse', () => {
         { n: 3, s: 0.75, l: 0.25, v: 70 },
       ]);
     });
-    
+
   });
 
   describe('mismatched lengths between patterns and rhythms', () => {
@@ -315,9 +315,8 @@ describe('parse', () => {
         should(() => {
           const result = tab.parse(obj);
         }).throw();
-  
+
       })
     });
   });
 });
-  

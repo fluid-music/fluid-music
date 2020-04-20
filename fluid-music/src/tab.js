@@ -1,5 +1,4 @@
 const R = require('ramda');
-const valueToMidiNoteNumber = require('./converters').valueToMidiNoteNumber;
 
 /**
  * Convert rhythm string to a cumulative array of durations.
@@ -336,13 +335,17 @@ const patternToSymbolsAndCounts = function(pattern) {
  *        parseTab for details). If not specified, `object` must have a
  *        `.noteLibrary` property.
  * @param {Number} [startTime] - offset all the notes by this much
- * @returns {Object[]} An array of noteObjects. The array will have an
- *          additional `.duration` parameter.
+ * @returns {Clip} A Clip object containing all the notes from the input
  */
 const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrary) {
-  let notes = [];
-  notes.duration = 0;
   if (typeof startTime !== 'number') startTime = 0;
+
+  const clip = {
+    notes: [],
+    duration: 0,
+    startTime
+  };
+
   if (object.hasOwnProperty('noteLibrary')) noteLibrary = object.noteLibrary;
   if (object.hasOwnProperty('vLibrary')) vLibrary = object.vLibrary;
   if (object.hasOwnProperty('r')) rhythm = object.r;
@@ -355,32 +358,29 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
 
   if (Array.isArray(object)) {
     for (let o of object) {
-      let newNotes = parse(o, rhythm, noteLibrary, startTime, vPattern, vLibrary);
-      notes.push(...newNotes);
-      notes.duration += newNotes.duration;
-      startTime += newNotes.duration; // NOTE: must be '+=', not '='
+      let newClip = parse(o, rhythm, noteLibrary, startTime, vPattern, vLibrary);
+      clip.notes.push(...newClip.notes);
+      clip.duration += newClip.duration;
+      startTime += newClip.duration; // NOTE: must be '+=', not '='
     }
   } else if (typeof object === 'string') {
     // We have a string that can be parsed with parseTab
-    const result = parseTab(rhythm, object, noteLibrary, vPattern, vLibrary).map((n) => {
-      n.s += startTime;
-      return n;
-    });
-    notes = notes.concat(result);
-    const a = parseRhythm(rhythm);
-    notes.duration = a.totals[a.totals.length-1];
+    const newClip = parseTab(rhythm, object, noteLibrary, vPattern, vLibrary);
+    newClip.notes.forEach((n) => n.s += startTime);
+    newClip.startTime = startTime;
+    return newClip;
   } else {
     let duration = 0;
     for (let [key, val] of Object.entries(object)) {
       if (reservedKeys.hasOwnProperty(key)) continue;
-      let newNotes = parse(val, rhythm, noteLibrary, startTime, vPattern, vLibrary, );
-      notes.push(...newNotes);
-      if (newNotes.duration > duration) duration = newNotes.duration;
+      let newClip = parse(val, rhythm, noteLibrary, startTime, vPattern, vLibrary);
+      clip.notes.push(...newClip.notes);
+      if (newClip.duration > duration) duration = newClip.duration;
     }
-    notes.duration = duration;
+    clip.duration = duration;
   }
 
-  return notes;
+  return clip;
 }
 
 /**
