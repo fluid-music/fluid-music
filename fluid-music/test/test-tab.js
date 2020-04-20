@@ -142,7 +142,7 @@ describe('tab.parseTab', () => {
 
   it('should create the correct note objects', () => {
     const result = tab.parseTab(rhythm, pattern, notes);
-    result.should.deepEqual([
+    result.notes.should.deepEqual([
       { n: 60, s: 0.0,   l: 0.125 },
       { n: 64, s: 0.5,   l: 0.125 },
       { n: 67, s: 0.875, l: 0.0625 },
@@ -151,7 +151,7 @@ describe('tab.parseTab', () => {
 
   it('should parse arrays in the noteLibrary as chords', ()=>{
     const result = tab.parseTab(rhythm, pattern, chords);
-    result.should.deepEqual([
+    result.notes.should.deepEqual([
       { n: 64, s: 0.0, l: 0.125 },
       { n: 69, s: 0.0, l: 0.125 },
       { n: 71, s: 0.0, l: 0.125 },
@@ -189,15 +189,16 @@ describe('tab.parseTab', () => {
     const vPattern = '0.1.2...';
     const vLibrary    = [60, 70, 80];
     const noteLibrary = [0, 1, 2];
-    const vNotes = tab.parseTab(rhythm, pattern, noteLibrary, vPattern, vLibrary);
+    const clip = tab.parseTab(rhythm, pattern, noteLibrary, vPattern, vLibrary);
+
 
     it('should output notes with .v values if passed a vPattern and vLibrary', ()=>{
-      vNotes.length.should.equal(3);
-      vNotes.forEach((note) => should.exist(note.v));
+      clip.notes.length.should.equal(3);
+      clip.notes.forEach((note) => should.exist(note.v));
     });
 
     it('should add correct .v values when passed a vPattern and a vLibrary', ()=> {
-      vNotes.should.deepEqual([
+      clip.notes.should.deepEqual([
         { n: 0, s: 0.00, l: 0.125, v: 60 },
         { n: 1, s: 0.25, l: 0.125, v: 70 },
         { n: 2, s: 0.50, l: 0.125, v: 80 },
@@ -218,9 +219,9 @@ describe('tab.parseTab', () => {
       2: noteObject2,
     };
 
-    const vNotes = tab.parseTab(rhythm, pattern, noteLibrary);
+    const clip = tab.parseTab(rhythm, pattern, noteLibrary);
     it('should pass objects directly to .n when noteLibrary contains JS Objects', () => {
-      vNotes.should.deepEqual([
+      clip.notes.should.deepEqual([
         { n: noteObject0, s: 0.00, l: 0.125 },
         { n: noteObject1, s: 0.25, l: 0.125 },
         { n: noteObject2, s: 0.50, l: 0.125 },

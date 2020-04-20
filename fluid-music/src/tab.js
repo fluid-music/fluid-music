@@ -1,3 +1,4 @@
+const R = require('ramda');
 const valueToMidiNoteNumber = require('./converters').valueToMidiNoteNumber;
 
 /**
@@ -92,7 +93,10 @@ const parseTab = function(rhythm, pattern, noteLibrary, vPattern, vLibrary) {
   const velocityArray = parseVelocity(vPattern, symbolsAndCounts, vLibrary);
 
   let p = 0; // position (in the rhythmObject)
-  const results = [];
+  const clip = {
+    notes: [],
+    duration: R.last(rhythmObject.totals),
+  };
 
   for (let [index, sc] of symbolsAndCounts.entries()) {
     let symbol = sc[0];
@@ -113,12 +117,13 @@ const parseTab = function(rhythm, pattern, noteLibrary, vPattern, vLibrary) {
         if (vLibrary !== undefined) {
           noteObject.v = velocityArray[index];
         }
-        results.push(noteObject);
+        clip.notes.push(noteObject);
       });
     }
     p += count;
   }
-  return results;
+
+  return clip;
 };
 
 const isEmpty =   (char) => char === ' ' || char === '.';
