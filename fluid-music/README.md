@@ -229,6 +229,6 @@ The following are all equivalent:
 - A `[.25, .25, .25, .25]` deltas array
 - A `[.25, .50, .75, 1.0]` totals array
 
-### Durations measured in Whole Notes (except in OSC messages)
+### Durations measured in Whole Notes
 
 Where possible, I measure durations in whole notes. This means that an eighth note is `1/8` === `0.125`, which I find easier than measuring in quarter notes or seconds.

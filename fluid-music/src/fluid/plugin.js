@@ -100,7 +100,7 @@ const plugin = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setParamNormalizedAt(paramName, normalizedValue, timeInWholeNotes = 0, curve = 0) {
+  setParamNormalizedAt(paramName, normalizedValue, timeInWholeNotes=0, curve=0) {
     if (typeof paramName !== 'string')
       throw new Error('plugin.setParam needs a parameterName, got: ' + paramName);
     if (typeof normalizedValue !== 'number')

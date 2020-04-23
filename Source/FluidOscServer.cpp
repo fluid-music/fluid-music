@@ -101,10 +101,10 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/audiotrack/insert/wav"})) return insertWaveSample(message);
     if (msgAddressPattern.matches({"/audiotrack/mute"})) return muteTrack(true);
     if (msgAddressPattern.matches({"/audiotrack/unmute"})) return muteTrack(false);
+    if (msgAddressPattern.matches({"/audiotrack/region/render"})) return renderRegion(message);
     if (msgAddressPattern.matches({"/file/save"})) return saveActiveEdit(message);
     if (msgAddressPattern.matches({"/cd"})) return changeWorkingDirectory(message);
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
-    if (msgAddressPattern.matches({"/audiotrack/region/render"})) return renderRegion(message);
     if (msgAddressPattern.matches({"/clip/render"})) return renderClip(message);
     if (msgAddressPattern.matches({"/clip/set/length"})) return setClipLength(message);
     if (msgAddressPattern.matches({"/clip/select"})) return selectClip(message);
@@ -365,7 +365,7 @@ OSCMessage FluidOscServer::setClipLength(const juce::OSCMessage& message) {
             trimStart = true;
         }
     }
-    double durationInQuarterNotes = message[0].getFloat32();
+    double durationInQuarterNotes = message[0].getFloat32() * 4.0;
 
     if (durationInQuarterNotes <= 0) {
         String errorString = "Cannot set clip length: duration argument must be greater than 0";
@@ -431,9 +431,9 @@ OSCMessage FluidOscServer::selectClip(const juce::OSCMessage& message) {
 OSCMessage FluidOscServer::renderRegion(const OSCMessage& message) {
     // Args
     // 0 - (string, required) output filename
-    // 1 - (float, optional) start quarterNotes
-    // 2 - (float, optional) duration in quarterNotes
-    // If both 1 and 2 are floats, render this time range in beats. Otherwise,
+    // 1 - (float, optional) start wholeNotes
+    // 2 - (float, optional) duration in wholeNotes
+    // If both 1 and 2 are floats, render this time range. Otherwise,
     // render the edit loop region.
     OSCMessage reply("/audiotrack/region/render/reply");
     if (!selectedAudioTrack) {
@@ -455,8 +455,8 @@ OSCMessage FluidOscServer::renderRegion(const OSCMessage& message) {
     te::EditTimeRange range = transport.getLoopRange();
 
     if (message.size() >= 3 && message[1].isFloat32() && message[2].isFloat32()) {
-        double startBeats = message[1].getFloat32();
-        double durationBeats = message[2].getFloat32();
+        double startBeats = message[1].getFloat32() * 4.0;
+        double durationBeats = message[2].getFloat32() * 4.0;
         double endBeats = startBeats + durationBeats;
         double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
         double endSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeats);
@@ -847,7 +847,7 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
         }
     }
     
-    double changeQuarterNote = (double)message[2].getFloat32();
+    double changeQuarterNote = (double)message[2].getFloat32() * 4.0;
     if (changeQuarterNote < 0) {
         String errorString = "Setting parameter " + paramName
         + " failed. Time has to be a positive number.";
@@ -1038,13 +1038,13 @@ OSCMessage FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
 
     // Clip startBeats
     if (message.size() >= 2 && message[1].isFloat32()) {
-        double startBeats = message[1].getFloat32();
+        double startBeats = message[1].getFloat32() * 4.0;
         double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
         selectedClip->setStart(startSeconds, false, true);
     }
     // Clip length
     if (message.size() >= 3 && message[2].isFloat32()) {
-        double lengthInBeats = message[2].getFloat32();
+        double lengthInBeats = message[2].getFloat32() * 4.0;
         double startBeat = selectedClip->getStartBeat();
         double endBeat = startBeat + lengthInBeats;
         double endTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeat);
@@ -1120,11 +1120,11 @@ OSCMessage FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
     if (message[0].isInt32()) noteNumber = message[0].getInt32();
     else if (message[0].isFloat32()) noteNumber = (int)(message[0].getFloat32());
 
-    if (message[1].isFloat32()) startBeat = message[1].getFloat32();
-    else if (message[1].isInt32()) startBeat = message[1].getInt32();
+    if (message[1].isFloat32()) startBeat = message[1].getFloat32() * 4.0;
+    else if (message[1].isInt32()) startBeat = message[1].getInt32() * 4;
 
-    if (message[2].isFloat32()) lengthInBeats = message[2].getFloat32();
-    else if (message[2].isInt32()) lengthInBeats = (int)(message[2].getInt32());
+    if (message[2].isFloat32()) lengthInBeats = message[2].getFloat32() * 4.0;
+    else if (message[2].isInt32()) lengthInBeats = (int)(message[2].getInt32()) * 4;
 
     if (message.size() >= 4) {
         if (message[3].isInt32()) velocity = message[3].getInt32();
@@ -1172,14 +1172,14 @@ OSCMessage FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     String filePath = message[1].getString();
 
     if (!message[2].isFloat32() && !message[2].isInt32()) {
-        String errorString = "Cannot insert wave file: third argument must be a quarterNote start time int or float";
+        String errorString = "Cannot insert wave file: third argument must be a start time in whole notes (int or float)";
         constructReply(reply, 1, errorString);
         return reply;
     }
 
     double startBeat = 0;
-    if (message[2].isFloat32()) startBeat = message[2].getFloat32();
-    else if (message[2].isInt32()) startBeat = message[2].getInt32();
+    if (message[2].isFloat32()) startBeat = message[2].getFloat32() * 4.0;
+    else if (message[2].isInt32()) startBeat = message[2].getInt32() * 4;
     double startSeconds = selectedAudioTrack->edit.tempoSequence.beatsToTime(startBeat);
 
     // The default filePathResolver checks for an absolute file, then looks
@@ -1373,7 +1373,7 @@ OSCMessage FluidOscServer::handleTransportMessage(const OSCMessage& message) {
             constructReply(reply, 1, errorString);
             return reply;
         }
-        double beats = message[0].getFloat32();
+        double beats = message[0].getFloat32() * 4.0;
         double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(beats);
         transport.setCurrentPosition(startSeconds);
     } else if (pattern.matches({"/transport/loop"})) {
@@ -1383,9 +1383,9 @@ OSCMessage FluidOscServer::handleTransportMessage(const OSCMessage& message) {
             return reply;
         }
 
-        double startBeats = message[0].getFloat32();
+        double startBeats = message[0].getFloat32() * 4.0;
         double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
-        double durationBeats = message[1].getFloat32();
+        double durationBeats = message[1].getFloat32() * 4.0;
         double endBeats = startBeats + durationBeats;
         double endSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeats);
 

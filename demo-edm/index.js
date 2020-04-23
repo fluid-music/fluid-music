@@ -75,15 +75,15 @@ const msg = [
   fluid.audiotrack.removeAutomation(),
   fluid.pluginZebra2Vst2.select(),
   fluid.pluginZebra2Vst2.setVCF1Cutoff(0.01, 0),
-  fluid.pluginZebra2Vst2.setVCF1Cutoff(0.10, 8*4),
-  fluid.pluginZebra2Vst2.setVCF1Cutoff(0.20, 8*4*2),
+  fluid.pluginZebra2Vst2.setVCF1Cutoff(0.10, 8),
+  fluid.pluginZebra2Vst2.setVCF1Cutoff(0.20, 8*2),
   fluid.pluginZebra2Vst2.setVCF1Resonance(0.01, 0),
-  fluid.pluginZebra2Vst2.setVCF1Resonance(0.01, 8*4),
-  fluid.pluginZebra2Vst2.setVCF1Resonance(0.10, 8*4*2),
+  fluid.pluginZebra2Vst2.setVCF1Resonance(0.01, 8),
+  fluid.pluginZebra2Vst2.setVCF1Resonance(0.10, 8*2),
 
   fluid.score.tracksToFluidMessage(session.tracks),
 ];
-
+console.dir(msg[msg.length-1], {depth:null})
 const client = new fluid.Client(9999);
 client.send(msg);
-client.send(fluid.transport.loop(0, 8 * 4 * 2));
+client.send(fluid.transport.loop(0, 8 * 2));

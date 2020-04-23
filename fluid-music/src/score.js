@@ -145,10 +145,10 @@ function tracksToFluidMessage(tracksObject) {
       let midiNotes = clip.notes.filter(event => typeof event.n === 'number');
       let samples   = clip.notes.filter(event => event.n && event.n.type === 'file');
       if (midiNotes.length) {
-        messages.push(fluid.midiclip.create(`clip${i++}`, clip.startTime * 4, clip.duration * 4, midiNotes));
+        messages.push(fluid.midiclip.create(`clip${i++}`, clip.startTime, clip.duration, midiNotes));
       }
       for (let sample of samples) {
-        let startTime = (clip.startTime + sample.s) * 4;
+        let startTime = (clip.startTime + sample.s);
         messages.push(
           fluid.audiotrack.insertWav(`s${i++}`, startTime, sample.n.path),
           fluid.audioclip.gain(midiVelocityToDbfs(sample.v, -10, 10)),
