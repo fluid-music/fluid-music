@@ -223,13 +223,24 @@ void autodetectPmSettings(te::Engine& engine)
 void listWaveDevices(te::Engine& engine) {
     auto& dm = engine.getDeviceManager();
     dm.rebuildWaveDeviceListIfNeeded();
+    auto& jdm = dm.deviceManager;
 
-    std::cout << "Devices By Type (juce::AudioIODeviceType):" << std::endl;
-    for (auto d : dm.deviceManager.getAvailableDeviceTypes()) {
-        std::cout << d->getTypeName() << std::endl;
-        d->scanForDevices();
-        for (auto name : d->getDeviceNames()) {
-            std::cout << "  - " << name << std::endl;
+    // Show current device type and device
+    {
+        const juce::AudioIODevice* currentDevice = jdm.getCurrentAudioDevice();
+        String currentDeviceName = currentDevice ? currentDevice->getName() : "<none>";
+        std::cout
+            << "Current audio device type: \"" << jdm.getCurrentAudioDeviceType() << "\"" << std::endl
+            << "Current audio device:      \"" << currentDeviceName << "\"" << std::endl
+            << std::endl;
+
+        std::cout << "Devices By Type (juce::AudioIODeviceType):" << std::endl;
+        for (auto d : jdm.getAvailableDeviceTypes()) {
+            std::cout << d->getTypeName() << std::endl;
+            d->scanForDevices();
+            for (auto name : d->getDeviceNames()) {
+                std::cout << "  - " << name << std::endl;
+            }
         }
     }
     std::cout << std::endl;
@@ -252,6 +263,7 @@ void listWaveDevices(te::Engine& engine) {
         << d->getName() << " - " << d->getAlias()
         << (d->isEnabled() ? "" : " (disabled)") << std::endl;
     }
+    std::cout << std::endl;
 }
 
 void listMidiDevices(te::Engine& engine) {

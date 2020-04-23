@@ -313,8 +313,8 @@ void CLIApp::onRunning()
         cybr commands that accept a device index argument by its index should use\n\
         this convention",
         [this](auto&) {
-            listMidiDevices(engine);
             listWaveDevices(engine);
+            listMidiDevices(engine);
         } });
     
     cApp.addCommand({
