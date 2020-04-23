@@ -64,16 +64,13 @@ describe('createMidiNoteMessage', () => {
   let startTimeInWholeNotes = 0.375;
   let durationInWholeNotes =  0.125;
   let velocity = 64;
-  let startTimeInQuarterNotes = startTimeInWholeNotes * 4;
-  let durationInQuarterNotes = durationInWholeNotes * 4;
-
 
   const desiredResult = {
     address: '/midiclip/insert/note',
     args: [
       { type: 'integer', value: noteNum },
-      { type: 'float', value: startTimeInQuarterNotes },
-      { type: 'float', value: durationInQuarterNotes },
+      { type: 'float', value: startTimeInWholeNotes },
+      { type: 'float', value: durationInWholeNotes },
     ],
   };
 
@@ -125,21 +122,21 @@ describe('midiclip.create', () => {
       args: [
         { type: 'integer', value: 60 },
         { type: 'float',   value: 0 },
-        { type: 'float',   value: 1 },
+        { type: 'float',   value: 0.25 },
       ],
     }, {
       address: '/midiclip/insert/note',
       args: [
         { type: 'integer', value: 64 },
-        { type: 'float',   value: 2 },
-        { type: 'float',   value: 1 },
+        { type: 'float',   value: .5 },
+        { type: 'float',   value: 0.25 },
       ],
     }, {
       address: '/midiclip/insert/note',
       args: [
         { type: 'integer', value: 67 },
-        { type: 'float',   value: 4 },
-        { type: 'float',   value: 1 },
+        { type: 'float',   value: 1.0 },
+        { type: 'float',   value: 0.25 },
       ],
     }])
   });
