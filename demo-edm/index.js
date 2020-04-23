@@ -3,7 +3,7 @@ const fluid   = require('fluid-music');
 const recipes = require('fluid-recipes');
 
 const vLibrary = { 0: 10, 1: 20, 2: 30, 3: 40, 4: 50, 5: 60, 6: 70, 7: 80, 8: 90, 9: 100, a: 110, b: 120, c: 127 };
-const noteLibrary = {        '0': 31,                            // 'te'
+const nLibrary = {  '0': 31,                                     // 'te'
   '1': 33, '2': 35, '3': 36, '4': 38, '5': 40, '6': 41, '7': 43, // C minor
   '8': 45, '9': 47, 'a': 48, 'b': 50, 'c': 52, 'd': 53, 'e': 55, // C minor 8va
   'f': 57,                                                       // 're'
@@ -18,7 +18,7 @@ let melody;
 const score = [];
 const config = {
   vLibrary,
-  noteLibrary,
+  nLibrary,
   v:     '966855844655',
   r:     '1..2..3..4..'};
 melody = '875a8'        ;
@@ -45,7 +45,7 @@ const intro = {
 };
 
 // Transpose intro.mallet
-if (intro.mallet) intro.mallet.noteLibrary = recipes.library.transposeNoteLibrary(noteLibrary, 36);
+if (intro.mallet) intro.mallet.nLibrary = recipes.library.transposeNoteLibrary(nLibrary, 36);
 score.push(intro);
 
 // Section A is a veriation on the intro
@@ -83,7 +83,7 @@ const msg = [
 
   fluid.score.tracksToFluidMessage(session.tracks),
 ];
-console.dir(msg[msg.length-1], {depth:null})
+
 const client = new fluid.Client(9999);
 client.send(msg);
 client.send(fluid.transport.loop(0, 8 * 2));
