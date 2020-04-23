@@ -38,18 +38,18 @@ const clip = {
 
   /**
    * Change the length of the clip.
-   * @param {number} quarterNotes new length of the clip
+   * @param {number} durationInWholeNotes new length of the clip
    * @param {boolean} [trimStart=false] if true, trim the beginning of the clip,
-   *    effectively changing the start time.
+   *    effectively changing the start time
    */
-  length(quarterNotes, trimStart=false) {
-    if (typeof quarterNotes !== 'number')
+  length(durationInWholeNotes, trimStart=false) {
+    if (typeof durationInWholeNotes !== 'number')
       throw new Error('clip.length requires a duration in quarter notes');
 
     return {
       address: '/clip/set/length',
       args: [
-        { type: 'float', value: quarterNotes },
+        { type: 'float', value: durationInWholeNotes },
         { type: 'string', value: trimStart ? 'start' : 'end' },
       ],
     };

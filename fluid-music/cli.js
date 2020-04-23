@@ -79,7 +79,7 @@ commands.stop = function(){
   client.send(fluid.transport.stop());
 };
 
-addDocstring('to <quarterNotes>', 'Move the transport to a time in quarter notes');
+addDocstring('to <wholeNotes>', 'Move the transport to a time in whole notes');
 commands.to = function(){
   if (typeof parsedArgs.to !== 'number' || isNaN(parsedArgs.to))
     console.error('ERROR: "to" command must have a numeric argument');

@@ -13,16 +13,16 @@ const createFunctionString = (functionName, paramName) => {
   return `
   /**
    * @param {number} value a number between 0-1 to set the parameter to
-   * @param {number} [timeInQuarterNotes] time to insert automation point in
+   * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
-   * @param {number} [curve] A number from [-1, 1] (inclusive), which represents
-   *    the curvature of the line formed by this point and the next point. Zero
-   *    implies a linear change. Higher values create a curve that begins slowly
-   *    and accelerates. Lower values create a curve that begins quickly, and
-   *    decelerates.
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
    */
-  ${functionName}(value, timeInQuarterNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('${paramName}', value, timeInQuarterNotes, curve);
+  ${functionName}(value, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('${paramName}', value, timeInWholeNotes, curve);
   },`
 }
 

@@ -232,8 +232,3 @@ The following are all equivalent:
 ### Durations measured in Whole Notes (except in OSC messages)
 
 Where possible, I measure durations in whole notes. This means that an eighth note is `1/8` === `0.125`, which I find easier than measuring in quarter notes or seconds.
-
-The exception is in OSC messages. In OSC messages, durations are measure in quarter notes.
-
-- Most OSC libraries do not support double precision, and this allows for higher accuracy timing
-- Tracktion tends to measure things in seconds, but Midi notes are saved in `beats`, which typically means quarter notes.

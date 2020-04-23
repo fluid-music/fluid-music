@@ -19,21 +19,21 @@ const audiotrack = {
    * Insert a audio file clip into the selected audio track. No effect if there
    * is no selected track.
    * @param {string} clipName name the new clip
-   * @param {number} startBeats clip start time in quarter notes
+   * @param {number} startTimeInWholeNotes clip start time in quarter notes
    * @param {string} fileName
    */
-  insertWav (clipName, startBeats, fileName){
+  insertWav (clipName, startTimeInWholeNotes, fileName){
     if (typeof clipName !== 'string')
       throw new Error('audiotrack.insertWav: clipName must be a string');
-    if (typeof startBeats !== 'number')
-      throw new Error('audiotrack.insertWav: startBeats must be a number');
+    if (typeof startTimeInWholeNotes !== 'number')
+      throw new Error('audiotrack.insertWav: start time must be a number');
     if (typeof fileName !== 'string')
       throw new Error('audiotrack.insertWav: fileName must be a string');
 
     const args = [
       {type: 'string', value: clipName},
       {type: 'string', value: fileName},
-      {type: 'float', value: startBeats},
+      {type: 'float', value: startTimeInWholeNotes},
     ];
     return { address: '/audiotrack/insert/wav', args };
   },
@@ -111,18 +111,18 @@ const audiotrack = {
    * supplied, the engine should use the loop time range.
    *
    * @param {string} outFilename output filename
-   * @param {number} [startQuarterNotes] start time in quarter notes
-   * @param {number} [durationQuarterNotes] duration in quarter notes
+   * @param {number} [startTimeInWholeNotes] start time in whole notes
+   * @param {number} [durationInWholeNotes] duration in whole notes
    */
-  renderRegion(outFilename, startQuarterNotes, durationQuarterNotes) {
+  renderRegion(outFilename, startTimeInWholeNotes, durationInWholeNotes) {
     if (typeof outFilename !== 'string')
       throw new Error('audiotrack.renderRegion requires a outputFilename string');
 
     const args =  [{ type: 'string', value: outFilename }];
 
-    if (startQuarterNotes !== undefined || durationQuarterNotes !== undefined) {
-      if (typeof startQuarterNotes !== 'number' ||
-          typeof durationQuarterNotes !== 'number')
+    if (startTimeInWholeNotes !== undefined || durationInWholeNotes !== undefined) {
+      if (typeof startTimeInWholeNotes !== 'number' ||
+          typeof durationInWholeNotes !== 'number')
       {
         const msg =
           'An invalid time range was supplied to renderRegion: ' +
@@ -131,9 +131,9 @@ const audiotrack = {
       }
     }
 
-    if (typeof startQuarterNotes === 'number') {
-      args.push({ type: 'float', value: startQuarterNotes });
-      args.push({ type: 'float', value: durationQuarterNotes });
+    if (typeof startTimeInWholeNotes === 'number') {
+      args.push({ type: 'float', value: startTimeInWholeNotes });
+      args.push({ type: 'float', value: durationInWholeNotes });
     }
 
     return { args, address: '/audiotrack/region/render' }
