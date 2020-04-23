@@ -221,8 +221,20 @@ void autodetectPmSettings(te::Engine& engine)
 }
 
 void listWaveDevices(te::Engine& engine) {
-    std::cout << "Wave Input Devices:" << std::endl;
     auto& dm = engine.getDeviceManager();
+    dm.rebuildWaveDeviceListIfNeeded();
+
+    std::cout << "Devices By Type (juce::AudioIODeviceType):" << std::endl;
+    for (auto d : dm.deviceManager.getAvailableDeviceTypes()) {
+        std::cout << d->getTypeName() << std::endl;
+        d->scanForDevices();
+        for (auto name : d->getDeviceNames()) {
+            std::cout << "  - " << name << std::endl;
+        }
+    }
+    std::cout << std::endl;
+
+    std::cout << "Wave Input Devices:" << std::endl;
     for (int i = 0; i < dm.getNumWaveInDevices(); i++) {
         auto d = dm.getWaveInDevice(i);
         std::cout << i << ". "
@@ -234,11 +246,12 @@ void listWaveDevices(te::Engine& engine) {
     std::cout << "Wav Output Devices:" << std::endl;
     for (int i = 0; i < dm.getNumWaveOutDevices(); i++) {
         auto d = dm.getWaveOutDevice(i);
+        auto chanSet = d->getChannelSet();
+
         std::cout << i << ". "
         << d->getName() << " - " << d->getAlias()
         << (d->isEnabled() ? "" : " (disabled)") << std::endl;
     }
-    std::cout << std::endl;
 }
 
 void listMidiDevices(te::Engine& engine) {
