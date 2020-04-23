@@ -15,14 +15,14 @@ noTearsVerseNotes = tab.parseTab(verse.rhythm, verse.pattern, verse.chords);
 
 // A minimal drum beat in 4/4
 const beat = {
-  noteLibrary: { k: 36, h: 42, s: 38 }, // general midi drum convention
+  nLibrary: { k: 36, h: 42, s: 38 }, // general midi drum convention
   r:  '1 + 2 + 3 + 4 + ',
   ks: 'k . s . . . s k ',
   hh: 'h h h h h h h h ',
 };
 beatNotes = [
-  ...tab.parseTab(beat.r, beat.ks, beat.noteLibrary),
-  ...tab.parseTab(beat.r, beat.hh, beat.noteLibrary),
+  ...tab.parseTab(beat.r, beat.ks, beat.nLibrary),
+  ...tab.parseTab(beat.r, beat.hh, beat.nLibrary),
 ];
 
 module.exports = {

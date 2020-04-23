@@ -70,7 +70,7 @@ const parseVelocity = function(vPattern, symbolsAndCounts, vLibrary){
  *
  * @param {string} rhythm
  * @param {string} pattern
- * @param {(number[]|number[][]|object)} noteLibrary - an indexable object
+ * @param {NoteLibrary} noteLibrary - an indexable object
  *        containing notes or arrays of notes. Can be an object or an array.
  *        If it is an array, the pattern is limited symbols single digit
  *        numbers 0-9.
@@ -309,10 +309,10 @@ const patternToSymbolsAndCounts = function(pattern) {
  * Several important things to understand:
  * - The example above contains a sub pattern specified in the `.p' field. The
  *   key (`.p`) is arbitrary. It could also `.b`, `.c`, or `.pattern`. However,
- *   it must not be one of the reserved keys such as `.noteLibrary` or `.r`.
+ *   it must not be one of the reserved keys such as `.nLibrary` or `.r`.
  * - Pattern arrays imply a sequence of events
  * - Pattern objects imply layering of events
- * - Sub-patterns inherit their parent's `.r`hythm and `.noteLibrary` unless it
+ * - Sub-patterns inherit their parent's `.r`hythm and `.nLibrary` unless it
  *   is an object sub-pattern, in which case it may optionally specify its own.
  *
  * The following example contains has an pattern object, with two layers. One
@@ -333,7 +333,7 @@ const patternToSymbolsAndCounts = function(pattern) {
  *        must have a `.r` property.
  * @param {Object|Array} [noteLibrary] - An object or array noteLibrary (see
  *        parseTab for details). If not specified, `object` must have a
- *        `.noteLibrary` property.
+ *        `.nLibrary` property.
  * @param {Number} [startTime] - offset all the notes by this much
  * @returns {Clip} A Clip object containing all the notes from the input
  */
@@ -346,7 +346,7 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
     startTime
   };
 
-  if (object.hasOwnProperty('noteLibrary')) noteLibrary = object.noteLibrary;
+  if (object.hasOwnProperty('nLibrary')) noteLibrary = object.nLibrary;
   if (object.hasOwnProperty('vLibrary')) vLibrary = object.vLibrary;
   if (object.hasOwnProperty('r')) rhythm = object.r;
   if (object.hasOwnProperty('v')) vPattern = object.v;

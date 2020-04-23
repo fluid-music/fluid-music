@@ -8,11 +8,11 @@ const drumTrackName = '909';
 const drumsMsg = recipes.drumTrack909(drumTrackName);
 const sessionPath = path.join(__dirname, 'sessions/out.tracktionedit')
 
-const noteLibrary = { h: 42 };
+const nLibrary = { h: 42 };
 
 const r   = '1+2+3+4+'; // main rhythm
 const notes = fluid.tab.parse({
-  noteLibrary, r,
+  nLibrary, r,
   p: [
     { r:'1+2+3+4+', p: 'hhhhhhhh',} 
   ],

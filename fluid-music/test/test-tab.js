@@ -149,7 +149,7 @@ describe('tab.parseTab', () => {
     ]);
   });
 
-  it('should parse arrays in the noteLibrary as chords', ()=>{
+  it('should parse arrays in the NoteLibrary as chords', ()=>{
     const result = tab.parseTab(rhythm, pattern, chords);
     result.notes.should.deepEqual([
       { n: 64, s: 0.0, l: 0.125 },
@@ -188,8 +188,8 @@ describe('tab.parseTab', () => {
     const pattern  = '0.1.2...';
     const vPattern = '0.1.2...';
     const vLibrary    = [60, 70, 80];
-    const noteLibrary = [0, 1, 2];
-    const clip = tab.parseTab(rhythm, pattern, noteLibrary, vPattern, vLibrary);
+    const nLibrary = [0, 1, 2];
+    const clip = tab.parseTab(rhythm, pattern, nLibrary, vPattern, vLibrary);
 
 
     it('should output notes with .v values if passed a vPattern and vLibrary', ()=>{
@@ -213,14 +213,14 @@ describe('tab.parseTab', () => {
     const noteObject0 = { arbitrary: 0 };
     const noteObject1 = { arbitrary: 1 };
     const noteObject2 = { arbitrary: 2 };
-    const noteLibrary = {
+    const nLibrary = {
       0: noteObject0,
       1: noteObject1,
       2: noteObject2,
     };
 
-    const clip = tab.parseTab(rhythm, pattern, noteLibrary);
-    it('should pass objects directly to .n when noteLibrary contains JS Objects', () => {
+    const clip = tab.parseTab(rhythm, pattern, nLibrary);
+    it('should pass objects directly to .n when nLibrary contains JS Objects', () => {
       clip.notes.should.deepEqual([
         { n: noteObject0, s: 0.00, l: 0.125 },
         { n: noteObject1, s: 0.25, l: 0.125 },

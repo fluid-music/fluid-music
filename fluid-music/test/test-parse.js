@@ -4,10 +4,10 @@ const tab = require('../src/tab');
 
 
 describe('tab.parse', () => {
-  const noteLibrary = [0, 1, 2, 3, 4, 5, 6];
+  const nLibrary = [0, 1, 2, 3, 4, 5, 6];
   it('should parse a very simple object', () => {
     const obj = {
-      noteLibrary,
+      nLibrary,
       r: '1234',
       p: '.0..',
     };
@@ -19,7 +19,7 @@ describe('tab.parse', () => {
 
   it('should parse arrays sequentially', () => {
     const obj = {
-      noteLibrary,
+      nLibrary,
       r: '1234',
       p: [
           '.0..',
@@ -34,7 +34,7 @@ describe('tab.parse', () => {
 
   it('should layer recursive objects', () => {
     const obj = {
-      noteLibrary,
+      nLibrary,
       r: '1234',
       p: {
         a: '0...',
@@ -50,7 +50,7 @@ describe('tab.parse', () => {
 
   it('should mix and match recursive objects and arrays', () => {
     const obj = {
-      noteLibrary,
+      nLibrary,
       r: '1234',
       p: [
         { a: '.0..', b: '.1..' },
@@ -70,11 +70,11 @@ describe('tab.parse', () => {
 
   it('should be able to update rhythm for nested objects', () => {
     const obj = {
-      noteLibrary,
+      nLibrary,
       r: '1234',
       p: [
         { a: '0.', b: '.1', r: 'hh' },
-        { a: '2...', b: '3...', noteLibrary: {'2': 20, '3': 30 } },
+        { a: '2...', b: '3...', nLibrary: {'2': 20, '3': 30 } },
         { a: '4...'}
       ],
       b: '...5',
@@ -92,7 +92,7 @@ describe('tab.parse', () => {
 
   it('should handle nested arrays', () => {
     const obj = {
-      noteLibrary,
+      nLibrary,
       r: '12',
       p: [
         [{p: '0.'}, { p: '1.'}],
@@ -119,7 +119,7 @@ describe('tab.parse', () => {
 
   it('should handle arrays of strings', () => {
     const obj = {
-      noteLibrary,
+      nLibrary,
       r: '12',
       p: ['01', '23']
     };
@@ -133,7 +133,7 @@ describe('tab.parse', () => {
 
   it('Nested children should use the longest child', () => {
     const obj = {
-      noteLibrary,
+      nLibrary,
       r:'w',
       p: [
         { a1: {r: 'w', p: '0'}, a2: {r:'h', p:'1'} },
@@ -148,11 +148,11 @@ describe('tab.parse', () => {
   });
 
   describe('with vPattern and vLibrary arguments', () => {
-    const noteLibrary = [0, 1, 2, 3, 4, 5, 6];
+    const nLibrary = [0, 1, 2, 3, 4, 5, 6];
     const vLibrary    = [60, 70, 80, 90, 100, 110];
     it('should parse a very simple object', () => {
       const obj = {
-        noteLibrary,
+        nLibrary,
         vLibrary,
         v: '.0..',
         r: '1234',
@@ -166,7 +166,7 @@ describe('tab.parse', () => {
 
     it('should parse arrays sequentially and work when velocities are not all given', () => {
       const obj = {
-        noteLibrary,
+        nLibrary,
         r: '1234',
         vLibrary,
         p: [
@@ -182,7 +182,7 @@ describe('tab.parse', () => {
 
     it('should layer recursive objects', () => {
       const obj = {
-        noteLibrary,
+        nLibrary,
         vLibrary,
         r: '1234',
         p: {
@@ -200,7 +200,7 @@ describe('tab.parse', () => {
 
     it('should mix and match recursive objects and arrays', () => {
       const obj = {
-        noteLibrary,
+        nLibrary,
         vLibrary,
         r: '1234',
         p: [
@@ -221,12 +221,12 @@ describe('tab.parse', () => {
 
     it('should be able to update rhythm for nested objects', () => {
       const obj = {
-        noteLibrary,
+        nLibrary,
         vLibrary,
         r: '1234',
         p: [
           { a: '0.', b: '.1', r: 'hh', v: '01'},
-          { a: '2...', b: '3...', v:'0...', vLibrary:[120], noteLibrary: {'2': 20, '3': 30 } },
+          { a: '2...', b: '3...', v:'0...', vLibrary:[120], nLibrary: {'2': 20, '3': 30 } },
           { a: '4...', v: '0...'}
         ],
         b: '...5',
@@ -244,7 +244,7 @@ describe('tab.parse', () => {
 
     it('should handle nested arrays', () => {
       const obj = {
-        noteLibrary,
+        nLibrary,
         vLibrary,
         r: '12',
         p: [
@@ -272,7 +272,7 @@ describe('tab.parse', () => {
 
     it('should handle arrays of strings and velocities', () => {
       const obj = {
-        noteLibrary,
+        nLibrary,
         vLibrary,
         r: '12',
         p: ['01', {p:'23', v: '01'}]
@@ -291,7 +291,7 @@ describe('tab.parse', () => {
     describe('pattern string is shorter than the rhythm string', () => {
       it('should use the length from the pattern string', () => {
         const obj = {
-          noteLibrary,
+          nLibrary,
           r: '1234',
           p: ['01', '23'],
         };
@@ -308,7 +308,7 @@ describe('tab.parse', () => {
     describe('rhythm string is shorter than the pattern string', () => {
       it('should throw', () => {
         const obj = {
-          noteLibrary,
+          nLibrary,
           r: '12',
           p: '1234',
         };

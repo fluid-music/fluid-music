@@ -133,14 +133,14 @@ const ks3 = 'k . s . . . . . ';
 // Define a mapping of single character strings to MIDI notes.
 // This maps the characters in the beat strings above to midi notes.
 // General MIDI Percussion map: 36=bass-drum, 38=snare, 49=crash
-const noteLibrary = { k: 36, h: 42, s: 38, S: 40, c: 49, '🔥': [36, 49] };
+const nLibrary = { k: 36, h: 42, s: 38, S: 40, c: 49, '🔥': [36, 49] };
 
-// Parse a *rhythm*, *pattern*, and *noteLibrary* to create an array of *Note Objects*.
-const hhNotes = fluid.tab.parseTab(r, h,   noteLibrary);
-const ksNotes = fluid.tab.parseTab(r, ks0, noteLibrary);
+// Parse a *rhythm*, *pattern*, and *nLibrary* to create an array of *Note Objects*.
+const hhNotes = fluid.tab.parseTab(r, h,   nLibrary);
+const ksNotes = fluid.tab.parseTab(r, ks0, nLibrary);
 ```
 
-The power of the tablature system comes from `fluid.parse(...)` which processes deeply nested JavaScript objects containing complex combinations and sequences of **pattern**, **rhythm**, and **notelibrary** objects.
+The power of the tablature system comes from `fluid.parse(...)` which processes deeply nested JavaScript objects containing complex combinations and sequences of **pattern**, **rhythm**, and **nLibrary** objects.
 
 ```JavaScript
 const p0 = { h, ks0 }; // kick/snare/hat patterns
@@ -150,7 +150,7 @@ const p3 = { h, ks3 };
 const cr = { r: 'h', p: '🔥'};  // kick/crash on down beat ('h' rhythm is a half note)
 
 const notes = fluid.tab.parse({
-  noteLibrary, r,
+  nLibrary, r,
   p: [            // Use Arrays to create sequences
     {p0, cr}, p0, // Use Objects to create layers
     p1, p1,

@@ -6,7 +6,7 @@ chords:
 
 # This should be the same as no tears left to cry
 tab:
-  noteLibrary: [*c1, *c2, *c3]
+  nLibrary: [*c1, *c2, *c3]
   clips:
   - r: 1e+a2e+a3e+a4e+a
     p: 0-......1-....2.

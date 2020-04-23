@@ -103,8 +103,9 @@
 /**
  * Represents an event in a score, often a MIDI note within midi clip
  * @typedef {Object} NoteObject
- * @property {number|Object} n probably a MIDI note number - however,
- *  noteLibrary objects might also put other JavaScipt Objects in this field
+ * @property {number|Object} n probably a MIDI note number - however, nested
+ *  `NoteLibrary` objects might also put arbitrary JavaScipt Objects in this
+ *   field
  * @property {number} l length in whole notes
  * @property {number} s start time in whole notes
  * @property {number} [v=64] optional midi velocity

@@ -4,7 +4,7 @@ const mocha = require('mocha');
 const score = require('../src/score');
 
 describe('score', () => {
-  const noteLibrary = [0, 1, 2, 3, 4, 5, 6];
+  const nLibrary = [0, 1, 2, 3, 4, 5, 6];
   const r = '1234'
 
   describe('score.parse', () => {
@@ -23,7 +23,7 @@ describe('score', () => {
 
     const obj = {
       p1,
-      noteLibrary: [0, 1, 2, 3, 4, 5, 6],
+      nLibrary: [0, 1, 2, 3, 4, 5, 6],
       r: '1234',
     };
 
@@ -40,7 +40,7 @@ describe('score', () => {
 
     describe('score.parse on arrays', () => {
       it('should handle arrays', () => {
-        const s1 = { noteLibrary, r, drums: [
+        const s1 = { nLibrary, r, drums: [
           '.0..',
           '.1..',
         ]};
@@ -69,7 +69,7 @@ describe('score', () => {
 
 
       it('should handle nested arrays', () => {
-        const s1 = { noteLibrary, r, drums: [
+        const s1 = { nLibrary, r, drums: [
           ['0...', '1...'],
           '2...', '3...'
         ]};
@@ -87,7 +87,7 @@ describe('score', () => {
       });
 
       it('should handle arrays that contain objects', () => {
-        const s1 = { noteLibrary, r, drums: [
+        const s1 = { nLibrary, r, drums: [
           '1...',
           { k: '0.1.' },
           ['2...', '3...']
@@ -110,7 +110,7 @@ describe('score', () => {
       });
 
       it('should handle objects inside arrays', () => {
-        const s1 = { noteLibrary, r, main: [
+        const s1 = { nLibrary, r, main: [
           '0...',
           { drum: '1...'},
           { drum: '2...'},
@@ -141,7 +141,7 @@ describe('score', () => {
         const drums = [ ['0...', '1...'], '2...', '3...' ];
         const result = score.parse(
           drums,
-          {r, noteLibrary, trackKey});
+          {r, nLibrary, trackKey});
 
         // expected result
         const clip0 = { notes: [{n: 0, s: 0, l: 0.25}], startTime: 0, duration: 1 };
@@ -161,7 +161,7 @@ describe('score', () => {
     }); // score.parse with arrays
 
     describe('score.parse on deeply nested objects', () => {
-      const s1 = { noteLibrary, r, main: [
+      const s1 = { nLibrary, r, main: [
         {
           drums: '0...',
           other: {
@@ -199,7 +199,7 @@ describe('score', () => {
     }); // deeply nested objects
 
     describe('skip over keys named "clips"', () => {
-      const s1 = { noteLibrary, r, main: [
+      const s1 = { nLibrary, r, main: [
         '0...',
         { drum: {
           clips: ['1...', '2...']

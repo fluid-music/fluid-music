@@ -12,7 +12,7 @@ const reservedKeys = tab.reservedKeys;
  *
  * Typically called with two arguments (other args are for internal use only)
  * - A ScoreObject array
- * - A config object with (at minimum) a `.noteLibrary` and `.r`hythm
+ * - A config object with (at minimum) a `.nLibrary` and `.r`hythm
  *
  * @param {ScoreObject|String} scoreObject The Score Object to parse
  * @param {Object} [config]
@@ -23,8 +23,8 @@ const reservedKeys = tab.reservedKeys;
  * @param {string} [config.trackKey] name of the track being parsed
  * @param {string} [config.vPattern] optional velocity library
  * @param {NoteLibrary} [config.vLibrary]
- * @param {NoteLibrary} [config.noteLibrary] (see tab.parseTab for details about
- *   `NoteLibrary`). If not specified, `scoreObject` must have a `.noteLibrary` property.
+ * @param {NoteLibrary} [config.nLibrary] (see tab.parseTab for details about
+ *   `NoteLibrary`). If not specified, `scoreObject` must have a `.nLibrary` property.
  * @param {Session} [session] Only used in recursion. Consuming cose should not
  *    supply this argument.
  * @returns {Session} representation of the score.
@@ -36,10 +36,10 @@ function parse(scoreObject, config, session, tracks={}) {
   if (!config) config = {};
   else config = Object.assign({}, config); // Shallow copy should be ok
 
-  if (scoreObject.hasOwnProperty('noteLibrary')) config.noteLibrary = scoreObject.noteLibrary;
-  if (scoreObject.hasOwnProperty('vLibrary'))    config.vLibrary = scoreObject.vLibrary;
-  if (scoreObject.hasOwnProperty('r'))           config.r = scoreObject.r;
-  if (scoreObject.hasOwnProperty('v'))           config.v = scoreObject.v;
+  if (scoreObject.hasOwnProperty('nLibrary')) config.nLibrary = scoreObject.nLibrary;
+  if (scoreObject.hasOwnProperty('vLibrary')) config.vLibrary = scoreObject.vLibrary;
+  if (scoreObject.hasOwnProperty('r'))        config.r = scoreObject.r;
+  if (scoreObject.hasOwnProperty('v'))        config.v = scoreObject.v;
   // Note that we cannot specify a .startTime in a score like we can for rhythms
   if (typeof config.startTime !== 'number') config.startTime = 0;
 
@@ -83,11 +83,11 @@ function parse(scoreObject, config, session, tracks={}) {
     // We have a string that can be parsed with parseTab
     if (config.r === undefined)
       throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a rhythm`);
-    if (config.noteLibrary === undefined)
-      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a noteLibrary`);
+    if (config.nLibrary === undefined)
+      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a nLibrary`);
 
     const duration = R.last(parseRhythm(config.r).totals);
-    const result = parseTab(config.r, scoreObject, config.noteLibrary, config.v, config.vLibrary);
+    const result = parseTab(config.r, scoreObject, config.nLibrary, config.v, config.vLibrary);
     result.startTime = config.startTime;
     result.duration = duration;
 
