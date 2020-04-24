@@ -405,13 +405,15 @@ void CLIApp::onRunning()
         "check if jack audio is supported",
         "check if jack audio I/O devices are supported.",
         [](const ArgumentList&) {
-            static AudioIODeviceType* d = juce::AudioIODeviceType::createAudioIODeviceType_JACK();
-            if (d)
+            std::unique_ptr<AudioIODeviceType> d(juce::AudioIODeviceType::createAudioIODeviceType_JACK());
+            if (d) {
+                d->scanForDevices();
+                std::cout << "JACK Devices:" << std::endl;
                 for (auto s : d->getDeviceNames()) {
-                    std::cout << s << std::endl;
+                    std::cout << "  - " << s << std::endl;
                 }
-            else {
-                std::cout << "jack not supported" << std::endl;
+            } else {
+                std::cout << "JACK not supported" << std::endl;
             }
         } });
 
@@ -422,9 +424,7 @@ void CLIApp::onRunning()
         "undocumented",
         [this](const ArgumentList& args) {
             std::cout << "Block Size: " << engine.getDeviceManager().getBlockSize() << std::endl;
-        }
-
-    });
+        } });
 
     // App search paths
     File prefsDir = engine.getPropertyStorage().getAppPrefsFolder();

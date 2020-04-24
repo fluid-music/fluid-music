@@ -66,30 +66,30 @@ The Fluid Engine aims to bridge the gap between DAWs and existing procedural aud
   - integration with procedural and ML workflows
 
 **Traditional DAWs**
-  - Useful if you want:
-    - precise timeline-based editing. No other tool works as well for common timeline based sound design like precise parameter automation, audio editing, and mixing, arranging
-    - great for both realtime editing and offline audio rendering
-    - professional plugin ecosystem
-  - Not helpful if you need to:
-    - insert any kind of computation or procedural content into the the production pipeline
-    - deploy dynamic content to a web server or mobile devices
+- Useful if you want:
+  - precise timeline-based editing. No other tool works as well for common timeline based sound design like precise parameter automation, audio editing, and mixing, arranging
+  - great for both realtime editing and offline audio rendering
+  - professional plugin ecosystem
+- Not helpful if you need to:
+  - insert any kind of computation or procedural content into the the production pipeline
+  - deploy dynamic content to a web server or mobile devices
 
 **Graphical programming languages like Max and PureData**
-  - Useful when you want to:
-    - prototype realtime interactive systems
-  - Not useful if you need:
-    - precise timeline-based editing
-    - design systems that are too complex to manage in a graphical programming environment
+- Useful when you want to:
+  - prototype realtime interactive systems
+- Not useful if you need:
+  - precise timeline-based editing
+  - design systems that are too complex to manage in a graphical programming environment
 
 **Code based languages like SuperCollider and ChucK, and CSound**
-  - Useful when you want to:
-    - design complex interactive audio graphs
-    - deploy on a server or in mobile app
-    - do experimental sound design
-  - Not useful if you need:
-    - precise timeline-based editing/composing on a timeline (while Csound is built on the concept of a text based "score," it is very clumsy to work with when compared with a DAW)
-    - support for pro quality plugins
-    - precise audio editing support
+- Useful when you want to:
+  - design complex interactive audio graphs
+  - deploy on a server or in mobile app
+  - do experimental sound design
+- Not useful if you need:
+  - precise timeline-based editing/composing on a timeline (while Csound is built on the concept of a text based "score," it is very clumsy to work with when compared with a DAW)
+  - support for pro quality plugins
+  - precise audio editing support
 
 ## Workflow
 
