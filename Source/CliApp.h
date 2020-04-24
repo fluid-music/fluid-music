@@ -40,7 +40,7 @@ public:
 
 class CybrEngineBehavior : public te::EngineBehaviour {
 public:
-    bool autoInitialiseDeviceManager() override { return true; }
+    bool autoInitialiseDeviceManager() override { return false; }
 };
 
 class CLIApp : public JUCEApplicationBase, ChangeListener {

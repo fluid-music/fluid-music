@@ -21,33 +21,38 @@ void CLIApp::unhandledException(const std::exception*, const String&, int)
     jassertfalse;
 }
 
-void CLIApp::initialise(const String& commandLine) 
+void CLIApp::initialise(const String& commandLine)
 {
+    // By default the te::DeviceManager is initialised automatically. However we
+    // pass disable the default initialisation by pasing a custom EngineBehavior
+    // to the te::Engine constructor, necessitating an explicit .initialise()
+    engine.getDeviceManager().initialise();
+
     engine.getPluginManager().createBuiltInType<OpenFrameworksPlugin>();
     appJobs.addChangeListener(this);
     MessageManager::getInstance()->callAsync([this] { onRunning(); });
 }
 
-void CLIApp::shutdown() 
+void CLIApp::shutdown()
 {
     // Gurantee that changes to the settings file will be written to disk.
     // Careful, dispatch may only be called from the main message thread.
     engine.getPluginManager().knownPluginList.dispatchPendingMessages();
     // I'm calling dispatchPendingMessages on the application settings too, in
     // hopes that this will guarantee that changes to the project manager
-    // manager info will be saved (for example, when using 
+    // manager info will be saved (for example, when using
     // --autodetect-pm). A very Cursory test suggests that this is not
     // needed; the Project Manager settings will be saved anyway. I'm not %100
     // sure that this is the right way to do it, but for now I'm leaving it in.
     te::getApplicationSettings()->dispatchPendingMessages();
 }
 
-const String CLIApp::getApplicationName() 
+const String CLIApp::getApplicationName()
 {
     return "cybr";
 }
 
-const String CLIApp::getApplicationVersion() 
+const String CLIApp::getApplicationVersion()
 {
     return "0.1.0";
 }
@@ -70,12 +75,12 @@ void CLIApp::onRunning()
                 return false;
             }
             std::cout << "Listening for IPC Connections" << std::endl;
-            
+
             if (!appJobs.fluidOscServer.connect(options.listenPort)) {
                 std::cout << "FluidOscServer falied to connect" << std::endl;
                 return false;
             }
-            
+
             appJobs.setRunForever(true);
             std::cout << "Listening for UDP Connections" << std::endl;
             if (cybrEdit) {
@@ -271,7 +276,7 @@ void CLIApp::onRunning()
             }
             appJobs.play(*cybrEdit);
         } });
-    
+
     cApp.addCommand({
         "-r",
         "-r",
@@ -316,7 +321,7 @@ void CLIApp::onRunning()
             listWaveDevices(engine);
             listMidiDevices(engine);
         } });
-    
+
     cApp.addCommand({
         "--list-edit-inputs",
         "--list-edit-inputs",
@@ -388,7 +393,7 @@ void CLIApp::onRunning()
         cursory test it was sending every 1ms with with ~0.1ms jitter (as measured on\n\
         receieving end). The test was on a 2015 MacbookPro. Default=100",
         [this](const ArgumentList& args) {
-            if (oscSource) { 
+            if (oscSource) {
                 std::cout << "There is already an oscSource. Cannot start a seconds one" << std::endl;
                 return;
             }
@@ -398,7 +403,7 @@ void CLIApp::onRunning()
                                                     period > 0 ? period : 100);
             appJobs.setRunForever(true);
         } });
-    
+
     cApp.addCommand({
         "--jack-test",
         "--jack-test",
