@@ -21,6 +21,26 @@ git checkout develop
 git submodule update --init --recursive
 ```
 
+### Building in Linux
+
+First open `cybr.jucer` in [Projucer](https://juce.com/discover/projucer).
+
+If you do not need [JACK](https://jackaudio.org/) support, disable it in the
+projucer project via `modules -> juce_audio_devices -> JUCE_JACK`. If you leave
+JACK enabled, make sure that you have the JACK development files installed:
+
+```
+sudo apt install libjack-jackd2-dev # Ubuntu/Debian
+```
+
+Save the projucer project with `^+p` to generate `Builds/LinuxMakefile/Makefile`.
+
+```sh
+cd Builds/LinuxMakefile/
+make                     # build debug binary
+env CONFIG=Release make  # build release binary
+```
+
 ## Comparison with other tools
 
 The Fluid Engine aims to bridge the gap between DAWs and existing procedural audio languages by integrating computational code-based techniques directly into a conventional audio workstation. The following design choices show a balance between timeline-centric, GUI-based DAWs, and other systems for imperative computational sound design.
