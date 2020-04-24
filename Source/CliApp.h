@@ -21,6 +21,7 @@
 #include "FluidIpcServer.h"
 #include "CybrSearchPath.h"
 
+//==============================================================================
 class CybrPropertyStorage : public te::PropertyStorage {
 public:
     CybrPropertyStorage(const String appname) : te::PropertyStorage(appname) {};
@@ -38,11 +39,13 @@ public:
     }
 };
 
+//==============================================================================
 class CybrEngineBehavior : public te::EngineBehaviour {
 public:
     bool autoInitialiseDeviceManager() override { return false; }
 };
 
+//==============================================================================
 class CLIApp : public JUCEApplicationBase, ChangeListener {
 
     /** Returns the global instance of the application object being run. */
@@ -145,5 +148,5 @@ private:
 
     // onRunning should be called once, and only after the MessageManager is
     // also running. There is where I am putting the body of the application.
-    void onRunning();
+    void onRunning(ArgumentList argumentList);
 };

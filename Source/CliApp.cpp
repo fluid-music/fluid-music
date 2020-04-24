@@ -10,6 +10,8 @@
 
 #include "CliApp.h"
 
+#define DRIVER_CLI_OPTION "--driver"
+
 bool CLIApp::moreThanOneInstanceAllowed() { return true; }
 void CLIApp::anotherInstanceStarted(const String&) {}
 void CLIApp::suspended() {}
@@ -23,14 +25,46 @@ void CLIApp::unhandledException(const std::exception*, const String&, int)
 
 void CLIApp::initialise(const String& commandLine)
 {
+    te::DeviceManager& dm     = engine.getDeviceManager();
+    ArgumentList argumentList = ArgumentList(getApplicationName(), getCommandLineParameterArray());
+
+    // Before anything else, check if the user specified an audio driver.
+    // Im using getValueForOption instead of removeValueForOption, because if
+    // the option gets removed, then we can no longer access the detailed info
+    // with `$ cybr -h --driver`
+    String driverArgument = argumentList.getValueForOption(DRIVER_CLI_OPTION);
+    if (driverArgument.isNotEmpty()) {
+        // Annoyingly, setCurrentAudioDevice doesn’t do anything until the
+        // private juce::AudioDeviceManager::scanDevicesIfNeeded() has been
+        // called. We can circumvent the private call by calling
+        // getAvailableDeviceTypes, which indirectly calls scanDevicesIfNeeded.
+        // Here getAvailableDeviceTypes serves a dual purpose. We also use it to
+        // check if the value (argument) is an available driver type.
+        String found;
+        for (auto d : dm.deviceManager.getAvailableDeviceTypes()) {
+            if (d->getTypeName().equalsIgnoreCase(driverArgument)) {
+                found = String(d->getTypeName());
+            }
+        }
+        if (found.isNotEmpty()) {
+            dm.deviceManager.setCurrentAudioDeviceType(found, false);
+        } else {
+            std::cout << "Invalid " << DRIVER_CLI_OPTION << " value. Driver not available: " << driverArgument << std::endl;
+            quit();
+            return;
+        }
+    }
+
     // By default the te::DeviceManager is initialised automatically. However we
     // pass disable the default initialisation by pasing a custom EngineBehavior
     // to the te::Engine constructor, necessitating an explicit .initialise()
-    engine.getDeviceManager().initialise();
+    // call. This enables us to configure a default audio device type before
+    // tracktion engine and juce initialize access to the hardware.
+    dm.initialise();
 
     engine.getPluginManager().createBuiltInType<OpenFrameworksPlugin>();
     appJobs.addChangeListener(this);
-    MessageManager::getInstance()->callAsync([this] { onRunning(); });
+    MessageManager::getInstance()->callAsync([this, argumentList] { onRunning(argumentList); });
 }
 
 void CLIApp::shutdown()
@@ -59,10 +93,20 @@ const String CLIApp::getApplicationVersion()
 
 
 
-void CLIApp::onRunning()
+void CLIApp::onRunning(ArgumentList argumentList)
 {
-    ArgumentList argumentList = ArgumentList(String{ "cybr" }, getCommandLineParameterArray());
     ConsoleApplication cApp;
+
+    cApp.addCommand({
+        DRIVER_CLI_OPTION,
+        DRIVER_CLI_OPTION + String("=JACK"),
+        "Select the audio driver",
+        "Select a non-default driver. ALSA or JACK on Linux. ASIO or DirectSound\n\
+        on Windows. Use --list-io to see which drivers are available. This\n\
+        command is not useful on MacOS were only CoreAudio is available.",
+        [](auto&){ return; } // --driver is handled in initialise. Use noop
+    });
+
     cApp.addCommand({
         "-f|--fluid-server",
         "-f|--fluid-server",
@@ -412,13 +456,9 @@ void CLIApp::onRunning()
         [](const ArgumentList&) {
             std::unique_ptr<AudioIODeviceType> d(juce::AudioIODeviceType::createAudioIODeviceType_JACK());
             if (d) {
-                d->scanForDevices();
-                std::cout << "JACK Devices:" << std::endl;
-                for (auto s : d->getDeviceNames()) {
-                    std::cout << "  - " << s << std::endl;
-                }
+                std::cout << "JACK is available. Use --list-io to show available streams. Use --driver=jack to enable." << std::endl;
             } else {
-                std::cout << "JACK not supported" << std::endl;
+                std::cout << "JACK is NOT available" << std::endl;
             }
         } });
 
