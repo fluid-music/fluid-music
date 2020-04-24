@@ -38,6 +38,11 @@ public:
     }
 };
 
+class CybrEngineBehavior : public te::EngineBehaviour {
+public:
+    bool autoInitialiseDeviceManager() override { return true; }
+};
+
 class CLIApp : public JUCEApplicationBase, ChangeListener {
 
     /** Returns the global instance of the application object being run. */
@@ -128,7 +133,10 @@ private:
         bool helpModeFlag = false;
     } options;
 
-    tracktion_engine::Engine engine{ std::make_unique<CybrPropertyStorage>(getApplicationName()), std::make_unique<CliUiBehaviour>(), nullptr };
+    te::Engine engine {
+        std::make_unique<CybrPropertyStorage>(getApplicationName()),
+        std::make_unique<CliUiBehaviour>(),
+        std::make_unique<CybrEngineBehavior>() };
     AppJobs appJobs;
 
     // cybrEdit is a wrapper around edit.

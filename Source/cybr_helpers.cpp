@@ -228,10 +228,11 @@ void listWaveDevices(te::Engine& engine) {
     // Show current device type and device
     {
         const juce::AudioIODevice* currentDevice = jdm.getCurrentAudioDevice();
-        String currentDeviceName = currentDevice ? currentDevice->getName() : "<none>";
+        String currentDeviceType = "\"" + jdm.getCurrentAudioDeviceType() + "\"";
+        String currentDeviceName = currentDevice ? "\"" + currentDevice->getName() + "\"" : "<none>";
         std::cout
-            << "Current audio device type: \"" << jdm.getCurrentAudioDeviceType() << "\"" << std::endl
-            << "Current audio device:      \"" << currentDeviceName << "\"" << std::endl
+            << "Current audio device type: " << currentDeviceType << std::endl
+            << "Current audio device:      " << currentDeviceName <<  std::endl
             << std::endl;
 
         std::cout << "Devices By Type (juce::AudioIODeviceType):" << std::endl;
@@ -242,8 +243,8 @@ void listWaveDevices(te::Engine& engine) {
                 std::cout << "  - " << name << std::endl;
             }
         }
+        std::cout << std::endl;
     }
-    std::cout << std::endl;
 
     std::cout << "Wave Input Devices:" << std::endl;
     for (int i = 0; i < dm.getNumWaveInDevices(); i++) {
