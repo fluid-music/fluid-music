@@ -11,6 +11,7 @@
 #include "CliApp.h"
 
 #define DRIVER_CLI_OPTION "--driver"
+#define DEVICE_CLI_OPTION "--device"
 
 bool CLIApp::moreThanOneInstanceAllowed() { return true; }
 void CLIApp::anotherInstanceStarted(const String&) {}
@@ -40,14 +41,14 @@ void CLIApp::initialise(const String& commandLine)
         // getAvailableDeviceTypes, which indirectly calls scanDevicesIfNeeded.
         // Here getAvailableDeviceTypes serves a dual purpose. We also use it to
         // check if the value (argument) is an available driver type.
-        String found;
+        String driverName;
         for (auto d : dm.deviceManager.getAvailableDeviceTypes()) {
             if (d->getTypeName().equalsIgnoreCase(driverArgument)) {
-                found = String(d->getTypeName());
+                driverName = String(d->getTypeName());
             }
         }
-        if (found.isNotEmpty()) {
-            dm.deviceManager.setCurrentAudioDeviceType(found, false);
+        if (driverName.isNotEmpty()) {
+            dm.deviceManager.setCurrentAudioDeviceType(driverName, false);
         } else {
             std::cout << "Invalid " << DRIVER_CLI_OPTION << " value. Driver not available: " << driverArgument << std::endl;
             quit();
@@ -61,6 +62,36 @@ void CLIApp::initialise(const String& commandLine)
     // call. This enables us to configure a default audio device type before
     // tracktion engine and juce initialize access to the hardware.
     dm.initialise();
+
+    // Now check if the user specified an audio device. This has to be done
+    // after initialization, dm.devideManager.getCurrentDeviceTypeObject()
+    // will return a null pointer.
+    String deviceArgument = argumentList.getValueForOption(DEVICE_CLI_OPTION);
+    if (deviceArgument.isNotEmpty()) {
+        AudioIODeviceType* driver = dm.deviceManager.getCurrentDeviceTypeObject();
+        if (!driver) {
+            std::cout << "Failed to set device. No audio driver active" << std::endl;
+            quit();
+            return;
+        }
+
+        String deviceName;
+        for (auto checkDeviceName : driver->getDeviceNames()) {
+            if (checkDeviceName.equalsIgnoreCase(deviceArgument)) {
+                deviceName = checkDeviceName;
+            }
+        }
+        if (deviceName.isNotEmpty()) {
+            auto setup = dm.deviceManager.getAudioDeviceSetup();
+            setup.inputDeviceName = deviceName;
+            setup.outputDeviceName = deviceName;
+            dm.deviceManager.setAudioDeviceSetup(setup, false);
+        } else {
+            std::cout << "Invalid " << DEVICE_CLI_OPTION << " value. Device not avilable: " << deviceName << std::endl;
+            quit();
+            return;
+        }
+    }
 
     engine.getPluginManager().createBuiltInType<OpenFrameworksPlugin>();
     appJobs.addChangeListener(this);
@@ -104,6 +135,14 @@ void CLIApp::onRunning(ArgumentList argumentList)
         "Select a non-default driver. ALSA or JACK on Linux. ASIO or DirectSound\n\
         on Windows. Use --list-io to see which drivers are available. This\n\
         command is not useful on MacOS were only CoreAudio is available.",
+        [](auto&){ return; } // --driver is handled in initialise. Use noop
+    });
+
+    cApp.addCommand({
+        DEVICE_CLI_OPTION,
+        DEVICE_CLI_OPTION + String("=system"),
+        "Select Active input+output device (ex. USB Audio Interface)",
+        "Use --list-io to see avaiable device names (nested under drivers)",
         [](auto&){ return; } // --driver is handled in initialise. Use noop
     });
 
@@ -350,17 +389,24 @@ void CLIApp::onRunning(ArgumentList argumentList)
         "--list-io",
         "--list-io",
         "Print the engine's MIDI and Wave IO devices",
-        "Output a list of devices from TracktionEngine's device manager. The device\n\
-        manager API includes many ways to refer to devices.\n\
-        - dm.getInputDevice(int)    // Indexes wave then midi devices\n\
-        - dm.getOutputDeviceAt(int) // Note inconsistent name\n\
-        - dm.get[Wave|Midi][In|Out]Device(int)\n\
-        - dm.findOutputDeviceWithName(String)\n\
-        - dm.get[Midi|Wave][Input|Output]Device(int) // Index all devices\n\
-        All the methods really do the same thing, which is iterate over the one or\n\
-        more of four raw arrays for each of wave and MIDI input and output devices.\n\
-        cybr commands that accept a device index argument by its index should use\n\
-        this convention",
+        "Output a list of devices from TracktionEngine's device manager and JUCE's\n\
+        AudioDeviceManager.\n\
+        \n\
+        The TracktionEngine API includes several ways to refer to devices.\n\
+        These are an abstraction layer over actual devices that is used in\n\
+        tracktionedit files.\n\
+          - dm.getInputDevice(int)    // Indexes wave then midi devices\n\
+          - dm.getOutputDeviceAt(int) // Note inconsistent name\n\
+          - dm.get[Wave|Midi][In|Out]Device(int)\n\
+          - dm.findOutputDeviceWithName(String)\n\
+          - dm.get[Midi|Wave][Input|Output]Device(int) // Index all devices\n\
+        All these methods really do the same thing, which is iterate over the one\n\
+        or more of four raw arrays for each of wave and MIDI input and output\n\
+        devices. cybr commands that accept a device index argument by its index\n\
+        should use this convention\n\
+        \n\
+        The JUCE API also has a lower level manager called AudioDeviceManager,\n\
+        These represent audio devices such as a connected USB audio interface",
         [this](auto&) {
             listWaveDevices(engine);
             listMidiDevices(engine);
