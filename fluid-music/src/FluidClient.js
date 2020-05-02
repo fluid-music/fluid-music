@@ -15,47 +15,49 @@ module.exports = class FluidClient{
     if (typeof targetPort === 'number')
       ipcOptions.targetPort = targetPort;
     this.client = new IpcClient(ipcOptions);
+    this.timeout = ipcOptions.timeout;
   }
 
   async send(msgObject, timetag){
     
     const connectPromise = () => {
-        return new Promise((resolve, reject) => {
-          this.client.once('connect', () => {
-            resolve('connected');
-          });
-    
-          this.client.once('error', (error) => {reject(error)});
-          this.client.once('close', (error) => {reject(error)});
-          this.client.once('timeout', () => {reject("Connection Timed Out")});
+      return new Promise((resolve, reject) => {
+        this.client.once('connect', () => {
+          resolve('connected');
         });
+  
+        this.client.once('error', (error) => {this.client.close(); reject(error);});
+        this.client.once('close', (error) => {reject(error)});
+        this.client.once('timeout', () => {this.client.close(); reject("Connection Timed Out")});
+      });
     }
 
     const replyPromise = () => {
-        return new Promise((resolve, reject) => {
-          this.client.on("res", (data)=>{
-            try{
-                resolve(osc.fromBuffer(data))
-            }
-            catch (err){
-                console.log(err);
-            }
-            this.client.close();
-          })
-    
-          this.client.once('error', (error) => {reject(error)});
-          this.client.once('close', (error) => {reject(error)});
-          this.client.once('timeout', () => {reject("Connection Timed Out")});
-        })
+      return new Promise((resolve, reject) => {
+        this.client.on("res", (data)=>{
+          try{
+              resolve(osc.fromBuffer(data, true))
+          }
+          catch (err){
+              reject(err);
+          }
+          this.client.close();
+        });
+  
+        this.client.once('error', (error) => {this.client.close(); reject(error);});
+        this.client.once('close', (error) => {reject(error)});
+
+        const timeoutCallback = () => {this.client.close();}
+        setTimeout(function() {
+          timeoutCallback();
+          reject('Promise timed out after ' + this.timeout + ' ms');
+        }, this.timeout);
+      });
     }
-    try{
-        await connectPromise();
-        await this.client.sendOsc(msgObject, timetag);
-        return replyPromise();
-    }
-    catch (err){
-        console.log(err);
-    }
+
+    await connectPromise();
+    await this.client.sendOsc(msgObject, timetag);
+    return replyPromise();
   }
 
   get targetPort() {
