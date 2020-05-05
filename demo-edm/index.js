@@ -48,13 +48,87 @@ const intro = {
 if (intro.mallet) intro.mallet.nLibrary = recipes.library.transposeNoteLibrary(nLibrary, 36);
 score.push(intro);
 
-// Section A is a veriation on the intro
+// Section A is a variation on the intro
 const sectionA = R.clone(intro);
 delete sectionA.kick;
 delete sectionA.hat;
 score.push(sectionA);
 
 const session = fluid.score.parse(score, config);
+
+/**
+ * Insert two automation points that span of a given region. One point will be
+ * inserted at the beginning, and one point at the end.
+ *
+ * Make sure that the desired track and plugin are both selected before pusing
+ * this message onto the call stack.
+ *
+ * @param {Object} region Any object with a startTime and duration.
+ *    {@link Session}, {@link Clip}, are appropriate. Also the `.regions[]`
+ *    array that comes with `Session`s created from an array can use be used.
+ * @param {number} region.startTime
+ * @param {number} region.duration
+ * @param {string} paramName The plugin parameter name to
+ * @param {number} startValue Automation value to insert at `.startTime`
+ * @param {number} endValue Automation vlaue to insert at `.startTime+.duration`
+ * @param {number} [curve1] Automation curve for the span [-1,1]. Negative
+ *    values begin fast, Positive values begin slow. defaults to 0 (linear)
+ * @param {number} [curve2] Automation curve following the  region.
+ */
+function rampOverRegion(region, paramName, startValue, endValue, curve1, curve2) {
+  if (typeof region.startTime !== 'number' || typeof region.duration !== 'number')
+    throw new Error('rampOverRegion needs an object with a .startTime and .duration  number, got: '+ JSON.serialize(region));
+
+  if (typeof paramName !== 'string')
+    throw new Error('rampOverRegion requires a paramName string, got: ' + JSON.serialize(paramName));
+
+  const startTime = region.startTime;
+  const endTime = region.startTime + region.duration;
+  return [
+    fluid.plugin.setParamExplicitAt(paramName, startValue, startTime, curve1),
+    fluid.plugin.setParamExplicitAt(paramName, endValue, endTime, curve2),
+  ];
+};
+
+/**
+ * Get the end time of clips, sessions, and regions
+ * @param {Object} region Any object with a startTime and duration.
+ *    {@link Session}, {@link Clip}, are appropriate. Also the `.regions[]`
+ *    array that comes with `Session`s created from an array can use be used.
+ * @param {number} region.startTime
+ * @param {number} region.duration
+ * @returns {number} The time that the region ends.
+ */
+function endTime(region) { return region.startTime + region.duration; }
+function startTime(region) { return region.startTime; }
+
+function linearAutomationSegments(region, paramName, values) {
+  if (typeof region.startTime !== 'number' || typeof region.duration !== 'number')
+    throw new Error('linearAutomationSegments needs an object with a .startTime and .duration  number, got: '+ JSON.serialize(region));
+
+  if (typeof paramName !== 'string')
+    throw new Error('linearAutomationSegments requires a paramName string, got: ' + JSON.serialize(paramName));
+
+  const startTime = region.startTime;
+  const duration = region.duration;
+  const steps = values.length;
+  const times = R.range(1, steps + 1).map(v => startTime + v / steps * duration);
+  return R.zip(values, times).map(tuple => {
+    const [value, time] = tuple;
+    return fluid.plugin.setParamExplicitAt(paramName, value, time);
+  });
+}
+
+
+const malletAutomation = [
+  // fluid.audiotrack.select('mallet'),
+  fluid.pluginZebra2Vst2.select(),
+  fluid.pluginZebra2Vst2.setVCF1Cutoff   (0.01, 0),
+  fluid.pluginZebra2Vst2.setVCF1Resonance(0.01, 0),
+  linearAutomationSegments(session, 'VCF1: Cutoff',    [0.1,  0.2]),
+  linearAutomationSegments(session, 'VCF1: Resonance', [0.01, 0.2]),
+];
+
 const msg = [
   // cleanup
   fluid.audiotrack.select('kick'),
@@ -73,14 +147,7 @@ const msg = [
   fluid.audiotrack.removeClips(),
   // automation
   fluid.audiotrack.removeAutomation(),
-  fluid.pluginZebra2Vst2.select(),
-  fluid.pluginZebra2Vst2.setVCF1Cutoff(0.01, 0),
-  fluid.pluginZebra2Vst2.setVCF1Cutoff(0.10, 8),
-  fluid.pluginZebra2Vst2.setVCF1Cutoff(0.20, 8*2),
-  fluid.pluginZebra2Vst2.setVCF1Resonance(0.01, 0),
-  fluid.pluginZebra2Vst2.setVCF1Resonance(0.01, 8),
-  fluid.pluginZebra2Vst2.setVCF1Resonance(0.10, 8*2),
-
+  malletAutomation,
   fluid.score.tracksToFluidMessage(session.tracks),
 ];
 
