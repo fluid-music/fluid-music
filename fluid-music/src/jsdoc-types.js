@@ -60,7 +60,7 @@
   * }
   * ```
   *
-  * @typedef {Object,<string, Session>}} Session
+  * @typedef {Object,<string, Session>} Session
   * @property {number} startTime
   * @property {number} duration
   * @property {Session[]} [regions] (Only on sessions created from an array)
