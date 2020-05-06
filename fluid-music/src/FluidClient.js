@@ -23,13 +23,6 @@ module.exports = class FluidClient{
   }
 
   async send(msgObject, timetag){
-
-    try{osc.toBuffer(msgObject, true)}
-    catch (err){ 
-      this.client.close();
-      return Promise.reject(); 
-    }
-    
     const connectPromise = () => {
       return new Promise((resolve, reject) => {
         this.client.once('connect', () => {
@@ -66,7 +59,10 @@ module.exports = class FluidClient{
     }
 
     if(this.connected === false) await connectPromise();
-    await this.client.sendOsc(msgObject, timetag);
+    await this.client.sendOsc(msgObject, timetag).catch((err) => {
+      this.client.close();
+      return Promise.reject(err);
+    });
     return replyPromise();
   }
 
