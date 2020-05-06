@@ -88,7 +88,7 @@ describe('fluid.Client (TCP/IPC Client)', function() {
     toBreak.listen(22555);
     toBreak.on('listening', done);
   });
-  
+
   it('When client connects and sends valid message, the promise returned by client.send should be resolved', (function() {
     const client = new fluid.Client(22354);
     const result = client.send({ address: '/test/valid' });
@@ -138,7 +138,11 @@ describe('fluid.Client (TCP/IPC Client)', function() {
     return result.should.be.rejected();
   }));
 
-  
+  it('When the client sends an incomplete message, the promise should be rejected', (function() {
+    const client = new fluid.Client(22354);
+    const result = client.send({});
+    return result.should.be.rejected();
+  }));
 
   it('When server takes too long to respond, the promise should be rejected', (function() {
     const client = new fluid.Client(22354);
@@ -153,8 +157,6 @@ describe('fluid.Client (TCP/IPC Client)', function() {
     toBreak.close();
     return result.should.be.rejected();
   }));
-
-  
 
   after(function() {
     server.close();
