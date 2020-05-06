@@ -75,7 +75,6 @@ describe('fluid.Client (TCP/IPC Client)', function() {
   const PORT = 22354;
   let server;
   let toBreak;
-  let brokenConnClient;
 
   before(function(done) {
     server = net.createServer(onConnection);
