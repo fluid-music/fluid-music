@@ -134,7 +134,7 @@ void CLIApp::onRunning(ArgumentList argumentList)
         "Select the audio driver",
         "Select a non-default driver. ALSA or JACK on Linux. ASIO or DirectSound\n\
         on Windows. Use --list-io to see which drivers are available. This\n\
-        command is not useful on MacOS were only CoreAudio is available.",
+        command is not useful in MacOS were only CoreAudio is available.",
         [](auto&){ return; } // --driver is handled in initialise. Use noop
     });
 
@@ -143,7 +143,7 @@ void CLIApp::onRunning(ArgumentList argumentList)
         DEVICE_CLI_OPTION + String("=system"),
         "Select Active input+output device (ex. USB Audio Interface)",
         "Use --list-io to see avaiable device names (nested under drivers)",
-        [](auto&){ return; } // --driver is handled in initialise. Use noop
+        [](auto&){ return; } // --device is handled in initialise. Use noop
     });
 
     cApp.addCommand({
