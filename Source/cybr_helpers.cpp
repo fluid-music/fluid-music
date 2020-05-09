@@ -324,15 +324,21 @@ void scanVst3(te::Engine& engine)
 }
 
 void scanVst2(te::Engine& engine) {
-#if JUCE_PLUGINHOST_VST
+#if (JUCE_PLUGINHOST_VST)
     juce::VSTPluginFormat vst2;
-    std::cout << "Scanning for VST2 plugins in: " << vst2.getDefaultLocationsToSearch().toString() << std::endl;
-    
+    FileSearchPath paths = vst2.getDefaultLocationsToSearch();
+
+#if (JUCE_LINUX)
+    paths.addIfNotAlreadyThere(File("/usr/lib/lxvst")); // Helm
+#endif
+
+    std::cout << "Scanning for VST2 plugins in: " << paths.toString() << std::endl;
+
     juce::String deadPlugins;
     juce::PluginDirectoryScanner pluginScanner{
         engine.getPluginManager().knownPluginList,
         vst2,
-        vst2.getDefaultLocationsToSearch(),
+        paths,
         true,
         deadPlugins
     };

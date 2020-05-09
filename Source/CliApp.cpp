@@ -57,7 +57,7 @@ void CLIApp::initialise(const String& commandLine)
     }
 
     // By default the te::DeviceManager is initialised automatically. However we
-    // pass disable the default initialisation by pasing a custom EngineBehavior
+    // disabled the default initialisation by pasing a custom EngineBehavior
     // to the te::Engine constructor, necessitating an explicit .initialise()
     // call. This enables us to configure a default audio device type before
     // tracktion engine and juce initialize access to the hardware.
