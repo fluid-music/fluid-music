@@ -16,16 +16,19 @@ module.exports = class FluidClient{
       ipcOptions.targetPort = targetPort;
     this.client = new IpcClient(ipcOptions);
     this.timeout = ipcOptions.timeout;
+    this.connected = false;
+    this.client.once('connect', () => {
+      this.connected = true;
+    });
   }
 
   async send(msgObject, timetag){
-    
     const connectPromise = () => {
       return new Promise((resolve, reject) => {
         this.client.once('connect', () => {
-          resolve('connected');
+          resolve("connected");
         });
-  
+        
         this.client.once('error', (error) => {this.client.close(); reject(error);});
         this.client.once('close', (error) => {reject(error)});
         this.client.once('timeout', () => {this.client.close(); reject("Connection Timed Out")});
@@ -55,8 +58,11 @@ module.exports = class FluidClient{
       });
     }
 
-    await connectPromise();
-    await this.client.sendOsc(msgObject, timetag);
+    if(this.connected === false) await connectPromise();
+    await this.client.sendOsc(msgObject, timetag).catch((err) => {
+      this.client.close();
+      return Promise.reject(err);
+    });
     return replyPromise();
   }
 
