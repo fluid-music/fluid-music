@@ -37,6 +37,14 @@ module.exports = class FluidClient{
 
     const replyPromise = () => {
       return new Promise((resolve, reject) => {
+
+        const timeoutCallback = () => {this.client.close();}
+        const clearMe = setTimeout(function() {
+          timeoutCallback();
+          reject('Promise timed out after ' + this.timeout + ' ms');
+        }, this.timeout);
+        const clear = () => clearTimeout(clearMe);
+
         this.client.on("res", (data)=>{
           try{
               resolve(osc.fromBuffer(data, true))
@@ -45,16 +53,11 @@ module.exports = class FluidClient{
               reject(err);
           }
           this.client.close();
+          clear();
         });
   
-        this.client.once('error', (error) => {this.client.close(); reject(error);});
-        this.client.once('close', (error) => {reject(error)});
-
-        const timeoutCallback = () => {this.client.close();}
-        setTimeout(function() {
-          timeoutCallback();
-          reject('Promise timed out after ' + this.timeout + ' ms');
-        }, this.timeout);
+        this.client.once('error', (error) => {clear(); this.client.close(); reject(error);});
+        this.client.once('close', (error) => {clear(); reject(error)});
       });
     }
 
