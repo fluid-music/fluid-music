@@ -15,36 +15,58 @@ module.exports = class FluidClient{
     if (typeof targetPort === 'number')
       ipcOptions.targetPort = targetPort;
     this.client = new IpcClient(ipcOptions);
-  }
-
-  _connectPromise(){
-    return new Promise((resolve, reject) => {
-      this.client.once('connect', () => {
-        resolve('connected');
-      });
-
-      // IpcClient emits an error when the port is not listening. How else can
-      // it fail?
-      this.client.once('error', (error) => {
-        reject(error);
-      });
+    this.timeout = ipcOptions.timeout;
+    this.connected = false;
+    this.client.once('connect', () => {
+      this.connected = true;
     });
   }
 
-  _replyPromise(){
-    return new Promise((resolve, reject) => {
-      this.client.on("res", (data, address)=>{
-        // console.log(osc.fromBuffer(data), 'from', address);
-        resolve(osc.fromBuffer(data))
-        this.client.close();
-      })
-    })
-  }
-
   async send(msgObject, timetag){
-    await this._connectPromise();
-    await this.client.sendOsc(msgObject, timetag);
-    return this._replyPromise();
+    const connectPromise = () => {
+      return new Promise((resolve, reject) => {
+        this.client.once('connect', () => {
+          resolve("connected");
+        });
+        
+        this.client.once('error', (error) => {this.client.close(); reject(error);});
+        this.client.once('close', (error) => {reject(error)});
+        this.client.once('timeout', () => {this.client.close(); reject("Connection Timed Out")});
+      });
+    }
+
+    const replyPromise = () => {
+      return new Promise((resolve, reject) => {
+
+        const timeoutCallback = () => {this.client.close();}
+        const clearMe = setTimeout(function() {
+          timeoutCallback();
+          reject('Promise timed out after ' + this.timeout + ' ms');
+        }, this.timeout);
+        const clear = () => clearTimeout(clearMe);
+
+        this.client.on("res", (data)=>{
+          try{
+              resolve(osc.fromBuffer(data, true))
+          }
+          catch (err){
+              reject(err);
+          }
+          this.client.close();
+          clear();
+        });
+  
+        this.client.once('error', (error) => {clear(); this.client.close(); reject(error);});
+        this.client.once('close', (error) => {clear(); reject(error)});
+      });
+    }
+
+    if(this.connected === false) await connectPromise();
+    await this.client.sendOsc(msgObject, timetag).catch((err) => {
+      this.client.close();
+      return Promise.reject(err);
+    });
+    return replyPromise();
   }
 
   get targetPort() {

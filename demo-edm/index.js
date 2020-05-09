@@ -149,8 +149,8 @@ const msg = [
   fluid.audiotrack.removeAutomation(),
   malletAutomation,
   fluid.score.tracksToFluidMessage(session.tracks),
+  fluid.transport.loop(0, session.duration),
 ];
 
 const client = new fluid.Client(9999);
 client.send(msg);
-client.send(fluid.transport.loop(0, 8 * 2));
