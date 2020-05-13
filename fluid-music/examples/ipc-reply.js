@@ -1,8 +1,6 @@
-const fluid = require('../src/index');
-const Client = require('../src/FluidClient');
+const fluid = require('../');
 
-const client = new Client(9999);
-
+const client = new fluid.Client(9999);
 
 const m1 = [
   fluid.audiotrack.select('hi'),
@@ -11,5 +9,5 @@ const m1 = [
 
 client.send(m1)
 .then((data) => {
-    console.log(data)
+    console.dir(data, {depth:null})
 });
