@@ -78,7 +78,7 @@ OscInputDevice::OscInputDevice(te::Engine& e, const String& name, int listenPort
 void OscInputDevice::masterTimeUpdate (double streamTime)
 {
     adjustSecs = streamTime - Time::getMillisecondCounterHiRes() * 0.001;
-    atomicAdjustSecs = adjustSecs;
+    atomicAdjustSecs.store(adjustSecs, std::memory_order_relaxed); // Charles: I'm not sure if this is the correct memory order
 
     auto received = incomingMessages.read();
     for (auto&& msg : received) {

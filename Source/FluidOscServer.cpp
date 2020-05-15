@@ -57,7 +57,7 @@ OSCBundle FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjec
             reply.addElement(replyBundle);
         }
     }
-    
+
     selectedAudioTrack = parentSelection.audioTrack;
     selectedClip = parentSelection.clip;
     selectedPlugin = parentSelection.plugin;
@@ -294,7 +294,7 @@ OSCMessage FluidOscServer::reverseAudioClip(bool reverse) {
     audioClip->setFadeInType(audioClip->getFadeOutType());
     audioClip->setFadeOut(fadeInTime);
     audioClip->setFadeOutType(fadeInType);
-    
+
     reply.addInt32(0);
     return reply;
 }
@@ -314,7 +314,7 @@ OSCMessage FluidOscServer::offsetClipSourceInSeconds(const juce::OSCMessage& mes
     }
     double newOffset = message[0].getFloat32();
     selectedClip->setOffset(newOffset);
-    
+
     reply.addInt32(0);
     return reply;
 }
@@ -340,7 +340,7 @@ OSCMessage FluidOscServer::trimClipBySeconds(const juce::OSCMessage& message) {
     // verify: does this work when the new start is after the old end, but before the new end????
     selectedClip->setStart(newRange.start, true, false);
     selectedClip->setEnd(newRange.end, true);
-    
+
     reply.addInt32(0);
     return reply;
 }
@@ -392,7 +392,7 @@ OSCMessage FluidOscServer::setClipLength(const juce::OSCMessage& message) {
         }
         selectedClip->setEnd(newEndSeconds, true);
     }
-    
+
     reply.addInt32(0);
     return reply;
 }
@@ -464,7 +464,7 @@ OSCMessage FluidOscServer::renderRegion(const OSCMessage& message) {
         range.end = endSeconds;
     }
     renderTrackRegion(outputFile, *selectedAudioTrack, range);
-    
+
     reply.addInt32(0);
     return reply;
 }
@@ -559,12 +559,12 @@ OSCMessage FluidOscServer::activateEditFile(const juce::OSCMessage &message) {
         constructReply(reply, 1, errorString);
         return reply;
     }
-    
+
     File file = File::getCurrentWorkingDirectory().getChildFile(message[0].getString());
     if (!file.hasFileExtension(".tracktionedit")) {
         std::cout << "WARNING: /file/activate argument does not have .tracktionedit extention: " << file.getFileName() << std::endl;
     }
-    
+
     bool forceEmptyEdit = (message.size() >= 2 && message[1].isInt32()) ? message[1].getInt32() : false;
     return activateEditFile(file, forceEmptyEdit);
 }
@@ -601,7 +601,7 @@ OSCMessage FluidOscServer::selectAudioTrack(const juce::OSCMessage& message) {
 
     String trackName = message[0].getString();
     selectedAudioTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), trackName);
-    
+
     reply.addInt32(0);
     return reply;
 }
@@ -657,7 +657,7 @@ OSCMessage FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
             returnPlugin = foundPlugin;
             returnPlugin->busNumber = busIndex;
             selectedAudioTrack->pluginList.insertPlugin(foundPlugin, 0, nullptr);
-            
+
             String replyString = "Insert auxreturn plugin with busNumber: " + String(busIndex);
             constructReply(reply, 0, replyString);
         }
@@ -793,18 +793,26 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
             return reply;
         }
     }
-    
+
     for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
         if (param->paramName.equalsIgnoreCase(paramName)) {
             param->beginParameterChangeGesture();
             if(isNormalized) param->setNormalisedParameter(paramValue, NotificationType::sendNotification);
             else param->setParameter(paramValue, NotificationType::sendNotification);
             param->endParameterChangeGesture();
-            std::cout << "set " << paramName
-            << " to " << message[1].getFloat32()
+
+            std::cout << "set " << param->paramName
+            << " to " << paramValue
             << " explicitvalue: " << param->valueToString(param->getCurrentExplicitValue())
-            <<std::endl;
-            
+            << " valueRange: " << param->getValueRange().getStart() << "->" << param->getValueRange().getEnd()
+            << " currentValue: " << param->getCurrentValue()
+            << " valueAsStringWLabel: " << param->getCurrentValueAsStringWithLabel() // helm always returns 0
+            << " isDiscrete: " << (param->isDiscrete() ? "true" : "false")
+            << " numStates: " << param->getNumberOfStates()
+            << " autoActive: " << (param->isAutomationActive() ? "true" : "false")
+            << " paramActive " << (param->isParameterActive() ? "true" : "false") // extermal params area always active
+            << std::endl;
+
             String replyString = "set " + paramName
             + " to " + String(message[1].getFloat32())
             + " explicitvalue: "
@@ -834,7 +842,7 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
         constructReply(reply, 1, errorString);
         return reply;
     }
-    
+
     String paramName = message[0].getString();
     float paramValue = message[1].getFloat32();
     bool isNormalized = message[4].getString() == "normalized";
@@ -846,7 +854,7 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
             return reply;
         }
     }
-    
+
     double changeQuarterNote = (double)message[2].getFloat32() * 4.0;
     if (changeQuarterNote < 0) {
         String errorString = "Setting parameter " + paramName
@@ -855,7 +863,7 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
         return reply;
     }
     double changeTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(changeQuarterNote);
-    
+
     float curveValue = message[3].getFloat32();
     if (curveValue > 1 || curveValue < -1) {
          String errorString = "Setting parameter " + paramName
@@ -873,11 +881,11 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
             if(!param->hasAutomationPoints()) {
                 curve.addPoint(0, param->getCurrentValue(), 0);
             }
-            
+
             curve.addPoint(changeTime, paramValue, curveValue);
             curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
-            
-            
+
+
             String replyString = "set " + paramName
             + " to " + String(message[1].getFloat32()) + " explicit value: " + param->valueToString(paramValue)
             + " at " + String(changeQuarterNote) + " Quarter Note(s).";
@@ -918,7 +926,7 @@ OSCMessage FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
         std::cout << "NOTE: when enabling a side chain in put on the internal compressor plugin, the side chain will be enabled by default. " << std::endl;
         compressor->useSidechainTrigger = true;
     }
-    
+
     reply.addInt32(0);
     return reply;
 }
@@ -1015,7 +1023,7 @@ OSCMessage FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     }
 
     loadTracktionPreset(*selectedAudioTrack, v);
-    
+
     reply.addInt32(0);
     return reply;
 }
@@ -1138,7 +1146,7 @@ OSCMessage FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
 
     te::MidiList& notes = selectedMidiClip->getSequence();
     notes.addNote(noteNumber, startBeat, lengthInBeats, velocity, colorIndex, nullptr);
-    
+
     reply.addInt32(0);
     return reply;
 }
@@ -1196,7 +1204,7 @@ OSCMessage FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
         else std::cout << "Cannot insert wave file: file not found: " << filePath << std::endl;
     }
 
-    te::AudioFile audiofile(file);
+    te::AudioFile audiofile(selectedAudioTrack->edit.engine, file);
     if(!audiofile.isWavFile()){
         String errorString = "Cannot insert wave file: Must be valid WAV file.";
         constructReply(reply, 1, errorString);
@@ -1209,7 +1217,7 @@ OSCMessage FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     pos.time = timeRange;
     te::WaveAudioClip::Ptr c = selectedAudioTrack->insertWaveClip(clipName, file, pos, false);
     selectedClip = c.get();
-    
+
     reply.addInt32(0);
     return reply;
 }
@@ -1236,7 +1244,7 @@ OSCMessage FluidOscServer::setTrackGain(const OSCMessage& message) {
         constructReply(reply, 1, errorString);
         return reply;
     }
-    
+
     return reply;
 }
 

@@ -16,7 +16,7 @@ te::Edit* createEmptyEdit(File inputFile, te::Engine& engine, te::Edit::EditRole
     std::cout << "Creating Edit Object" << std::endl;
     te::Edit::Options editOptions{ engine };
     editOptions.editProjectItemID = te::ProjectItemID::createNewID(0);
-    editOptions.editState = te::createEmptyEdit();
+    editOptions.editState = te::createEmptyEdit(engine);
     editOptions.numUndoLevelsToStore = 0;
     editOptions.role = role;
     editOptions.editFileRetriever = [inputFile] { return inputFile; };
@@ -26,7 +26,7 @@ te::Edit* createEmptyEdit(File inputFile, te::Engine& engine, te::Edit::EditRole
 // Creates a new edit, and leaves deletion up to you
 te::Edit* createEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role) {
     // we are assuming the file exists.
-    ValueTree valueTree = te::loadEditFromFile(inputFile, te::ProjectItemID::createNewID(0));
+    ValueTree valueTree = te::loadEditFromFile(engine, inputFile, te::ProjectItemID::createNewID(0));
     
     // Create the edit object.
     // Note we cannot save an edit file without and edit file retriever. It is
@@ -206,7 +206,7 @@ void autodetectPmSettings(te::Engine& engine)
                     // folders is the element that contains the following two children
                     // - te::IDs::LIBRARY
                     // - te::IDs::ACTIVE
-                    te::ProjectManager::getInstance()->folders = folders;
+                    engine.getProjectManager().folders = folders;
                     std::cout
                     << "LIBRARY uid: " << folders.getChildWithName(te::IDs::LIBRARY).getProperty("uid").toString() << std::endl
                     << "ACTIVE uid:  " << folders.getChildWithName(te::IDs::ACTIVE).getProperty("uid").toString() << std::endl
@@ -399,13 +399,13 @@ void listPlugins(te::Engine& engine)
 
 void listProjects(te::Engine& engine) {
     std::cout << "List Projects..." << std::endl;
-    const auto& pm = te::ProjectManager::getInstance();
-    for (auto project : pm->getAllProjects(pm->getLibraryProjectsFolder()))
+    auto& pm = engine.getProjectManager();
+    for (auto project : pm.getAllProjects(pm.getLibraryProjectsFolder()))
     {
         std::cout << project->getName() << " - " << project->getProjectFile().getFullPathName() << std::endl;
     }
     std::cout << "Active Projects: " << std::endl;
-    for (auto project : pm->getAllProjects(pm->getActiveProjectsFolder()))
+    for (auto project : pm.getAllProjects(pm.getActiveProjectsFolder()))
     {
         std::cout << project->getName() << " - " << project->getProjectFile().getFullPathName() << std::endl;
     }

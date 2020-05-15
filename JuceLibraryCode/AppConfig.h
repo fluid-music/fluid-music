@@ -302,6 +302,10 @@
 //==============================================================================
 // tracktion_engine flags:
 
+#ifndef    TRACKTION_ENABLE_SINGLETONS
+ #define   TRACKTION_ENABLE_SINGLETONS 1
+#endif
+
 #ifndef    TRACKTION_ENABLE_ARA
  //#define TRACKTION_ENABLE_ARA 0
 #endif
@@ -352,6 +356,10 @@
 
 #ifndef    TRACKTION_AIR_WINDOWS
  //#define TRACKTION_AIR_WINDOWS 0
+#endif
+
+#ifndef    ENABLE_EXPERIMENTAL_TRACKTION_GRAPH
+ //#define ENABLE_EXPERIMENTAL_TRACKTION_GRAPH 0
 #endif
 
 //==============================================================================
