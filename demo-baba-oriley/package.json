@@ -1,0 +1,14 @@
+{
+  "name": "demo-baba-oriley",
+  "version": "0.0.1",
+  "description": "synth part of Baba O'Riley written in fluid music",
+  "main": "run.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Charles Holbrow",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "ramda": "^0.27.0"
+  }
+}

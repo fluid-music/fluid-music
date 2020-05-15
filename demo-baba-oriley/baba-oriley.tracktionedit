@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<EDIT appVersion="Unknown" projectID="0/f9bea6" creationTime="1589518138545"
+      lastSignificantChange="17216aa03ab" modifiedBy="charles">
+  <TRANSPORT/>
+  <MACROPARAMETERS id="1001"/>
+  <TEMPOSEQUENCE>
+    <TEMPO startBeat="0.0" bpm="120.0" curve="1.0"/>
+    <TIMESIG numerator="4" denominator="4" startBeat="0.0"/>
+  </TEMPOSEQUENCE>
+  <PITCHSEQUENCE>
+    <PITCH startBeat="0.0" pitch="60"/>
+  </PITCHSEQUENCE>
+  <VIDEO/>
+  <AUTOMAPXML/>
+  <CLICKTRACK level="0.6000000238418579"/>
+  <ID3VORBISMETADATA trackNumber="1" date="2020"/>
+  <MASTERVOLUME>
+    <PLUGIN type="volume" volume="0.6376281380653381" id="1003" enabled="1">
+      <MACROPARAMETERS id="1005"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+  </MASTERVOLUME>
+  <RACKS/>
+  <MASTERPLUGINS/>
+  <AUXBUSNAMES/>
+  <INPUTDEVICES/>
+  <TRACKCOMPS/>
+  <ARADOCUMENT/>
+  <CONTROLLERMAPPINGS/>
+  <CYBR/>
+  <ARRANGERTRACK name="Arranger" id="1025">
+    <MACROPARAMETERS id="1027"/>
+    <MODIFIERS/>
+  </ARRANGERTRACK>
+  <TEMPOTRACK name="Global" id="1030">
+    <MACROPARAMETERS id="1032"/>
+    <MODIFIERS/>
+  </TEMPOTRACK>
+  <MARKERTRACK id="1007">
+    <MACROPARAMETERS id="1009"/>
+    <MODIFIERS/>
+  </MARKERTRACK>
+  <CHORDTRACK name="Chords" id="1035">
+    <MACROPARAMETERS id="1037"/>
+    <MODIFIERS/>
+  </CHORDTRACK>
+  <TRACK id="1012" midiVProp="0.28125" midiVOffset="0.359375">
+    <MACROPARAMETERS id="1014"/>
+    <MODIFIERS/>
+    <OUTPUTDEVICES>
+      <DEVICE name="(default audio output)"/>
+    </OUTPUTDEVICES>
+    <PLUGIN type="volume" id="1017" enabled="1" remapOnTempoChange="1">
+      <MACROPARAMETERS id="1018"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <PLUGIN type="level" id="1021" enabled="1">
+      <MACROPARAMETERS id="1022"/>
+    </PLUGIN>
+  </TRACK>
+  <TRACK id="1040" midiVProp="0.28125" midiVOffset="0.359375" name="organ2">
+    <MACROPARAMETERS id="1042"/>
+    <MODIFIERS/>
+    <OUTPUTDEVICES>
+      <DEVICE name="(default audio output)"/>
+    </OUTPUTDEVICES>
+    <PLUGIN type="vst" uid="48656c6d" filename="/usr/lib/lxvst/helm.so" name="helm"
+            manufacturer="Matt Tytel" windowLocked="1" id="1053" enabled="1"
+            programNum="0" state="4228.CMlaKA....fQBMDZ....AfTYr0F...fV..P.R.............................................................................................................................................................................vCjuWCJ.BHhvVZiUlayUlH5.hHPEFcigFHnLVJfHVdf3BHfPEZoMGHvEFcigFHoMGHrk1Xk41bkQFH04FYkIGHgAxPxUVXzklckAxPu0Vau41bfDDczIWZhUGco8lafPiKv.RRtQWYx4VXzk1atEFafvTZiUlayUlKf.RVuUGHyg1a0wFYffVX1UFHxU1XkklckQFHgAxXuAWdf7lYfPGZkABaoMVYtMWYfDFau41YfbWZzgFHzgVZyAxcuI2Zt.BHIYFHt8Fcr.xbkUFH7fFczAmNu7xXxUVXzklckM1as01atMmKuI2YuvVZiUlayU1buHVduPiKv7hOtHBKMn.HfHxb44Fcn8kckI2bo8lahnCHh.iK43BLhvRCJ.BHh.WXzMFZe4VXsUlH5.hHhvRCJ.BHhX1arQVYx8kag0VYhnCHhHBKMn.HfHRX0QGZuImH5.hHhvRCJ.BHhLWYzQWZtc1bhnCH60fBf.BHfHRXsA2WgQGcgM1ZhnCHv3RLvjSMzTCLv.CLv.CLv.CLvLCM3vRCJ.BHf.hHg0FbeQVYiEVdhnCHw3RMrzfBf.BHfHRXsA2WxUFakE1bkIhNf.iKxjSN4jSN4jSN4jSN4jSN4fCN4vRCJ.BHf.hHg0FbeMWcyQWXo4lH5.RLrzfBf.BHfHRXxA2WlIWYwUWYtMVdhnCHxvRCJ.BHf.hHgIGbecVXzUlH5.BLtTCKMn.Hf.BHhDlbv80aiQWX1U1bhnCHwvRCJ.BHf.hHgIGbe8lahnCHvvRCJ.BHf.hHgIGbeAWXzQWYx4lH5.BLrzfBf.BHfHRXxA2WykmaiIhNfDCKMn.Hf.BHhDlbv8Eck0FbuIhNfjCKMn.Hf.BHhHVYgQ2beAWYx8Uao4VczUlH5.hLrzfBf.BHfHxXx81by8UauQVcrEFco8lahnCHvvRCJ.BHf.hHiUGcuYlYhnCH3.CKMn.Hf.BHhPVYrEVdeQlb480ckQmH5.BLtTCKMn.Hf.BHhPVYrEVdeYVYkQlXgM1ZhnCHv3BMv.CLv.CLv.CLv.CLv.CLxHiLrzfBf.BHfHBYkwVX48kYxUVb0UlaikmH5.hLrzfBf.BHfHBYkwVX480atIhNf.CKMn.Hf.BHhPVYrEVdeMWdtMlH5.RLrzfBf.BHfHBYkwVX48Eck0FbuIhNfjCKMn.Hf.BHhPVZyQ2axQWZu41WjIWZ1UlH5.BLrzfBf.BHfHBYoMGcuIGco8lae0VZ3IhNfDCKMn.Hf.BHhPVZyQ2axQWZu41Wu4lH5.BLrzfBf.BHfHBYoMGcuIGco8laeQWdvUlH5.BLrzfBf.BHfHhYow1WgQGcgM1ZhnCHvvRCJ.BHf.hHlkFaeQVYiEVdhnCHw3RMrzfBf.BHfHhYow1Wk4lceQVYvQGZhnCHvvRCJ.BHf.hHlkFaeIWYrUVXyUlH5.RLtTCKMn.Hf.BHhXVZr80b0MGcgklahnCHv3RMrzfBf.BHfHhYowFckI2WhwVYtQlH5.BLrzfBf.BHfHhYowFckI2WjIWZ1UlH5.BLrzfBf.BHfHhYowFckI2Wu4lH5.BLrzfBf.BHfHhYowFckI2WygVYrYlH5.BLrzfBf.BHfHhYowFckI2WyQWdrUlH5.BLrzfBf.BHfHhYuIWag4Fce8lahnCHvvRCJ.BHf.hHl8lbsElaz8EdhnCHv3RMrzfBf.BHfHhYuIWag4FcekmH5.BLtTCKMn.Hf.BHhrVY4QmbgM1ZhnCHvvRCJ.BHf.hHrU1YgQ2ahnCHvvRCJ.BHf.hHs8FYeEFczE1XqIhNf.CKMn.Hf.BHhz1aj8EYkMVX4IhNfDiK0vRCJ.BHf.hHs8FYeIWYrUVXyUlH5.RLtTCKMn.Hf.BHhz1aj80b0MGcgklahnCHv3RMrzfBf.BHfHRau41aewlYu8ULeEVavwVZzUGYkIhNfDCKMn.Hf.BHhz1at81WrY1aeEyWlIWYwUWYtMVdhnCHwvRCJ.BHf.hHs8lau8Eal81Ww7kbkQmboc1YkImH5.hLrzfBf.BHfHRau41aewlYu8ULeMWdtMlH5.RLrzfBf.BHfHRau41aewlYu8ULeQWYsA2ahnCH1vRCJ.BHf.hHs8lau8Eal81Ww70cgYWYl8lbsIhNf.CKMn.Hf.BHhz1at81WrY1aeIyWg0FbrkFc0QVYhnCHwvRCJ.BHf.hHs8lau8Eal81Wx7kYxUVb0UlaikmH5.RLrzfBf.BHfHRau41aewlYu8kLeIWYzIWZmcVYxIhNfHCKMn.Hf.BHhz1at81WrY1aeIyWykmaiIhNfDCKMn.Hf.BHhz1at81WrY1aeIyWzUVav8lH5.xMrzfBf.BHfHRau41aewlYu8kLecWX1UlYuIWahnCHvvRCJ.BHf.hHt8VZyU1W18Fa00VYhnCHvvRCJ.BHf.hHtUWaeMGckA2bhnCH3vRCJ.BHf.hHuM2XeEyWzIWXtMGbuMWYhnCHvvRCJ.BHf.hHuM2XeEyWzUmakIhNf.CKMn.Hf.BHh71bi8ULeUmaoM2at8EYkQWctUlH5.RLvvRCJ.BHf.hHuM2XeEyW04VZy8laeY2aoMVYyIhNfDCKMn.Hf.BHh71bi8ULeY2arUWakIhNf.iK0PyM2HiL0TyMzjSN4jSN4fCM1PCKMn.Hf.BHh71bi8ULecWX1UlYuIWahnCHzvRCJ.BHf.hHuM2XeIyWzIWXtMGbuMWYhnCHvvRCJ.BHf.hHuM2XeIyWzUmakIhNf.CKMn.Hf.BHh71bi8kLeUmaoM2at8EYkQWctUlH5.RLvvRCJ.BHf.hHuM2XeIyW04VZy8laeY2aoMVYyIhNfDCKMn.Hf.BHh71bi8kLeY2arUWakIhNf.iK0PyM2HiL0TyMzjSN4jSN4fCM1PCKMn.Hf.BHh71bi8kLecWX1UlYuIWahnCHzvRCJ.BHf.hHuM2XeYVYkQlXgM1ZeEVauUmazIhNf.CKMn.Hf.BHh71bi8kYkUFYhE1Xq8EcxElayA2ayUlH5.BLrzfBf.BHfHxayM1WlUVYjIVXis1WzUmakIhNf.CKMn.Hf.BHh.WZzMFZeIVYtQ1WxElamUlH5.hLrzfBf.BHfHBbuwVdewlYu8UXsAGaoQWcjUlH5.RLrzfBf.BHfHBbuwVdewlYu8kYxUVb0UlaikmH5.RLrzfBf.BHfHBbuwVdewlYu80b441XhnCHwvRCJ.BHf.hHv8Fa48Eal81WzUVav8lH5.xMrzfBf.BHfHBbuwVdewlYu80cgYWYl8lbsIhNf.CKMn.Hf.BHh.2arkGbn8la4IhNfPCKMn.Hf.BHh.2axQWXsUlaz8lH5.RK2vRCJ.BHf.hHv8lbzEVak4Fcu8Ec4AWYhnCHvvRCJ.BHf.hHxU1bu4VXtMVYhnCHv3RMrzfBf.BHfHhbkYWYxI1WjEVavklamIhNf.iK0vRCJ.BHf.hHxUlckImXeQlb480ckQmH5.BLtTCKMn.Hf.BHhHWY1Ulbh8kYkUFYhE1XqIhNf.iK4.CLv.CLv.CLv.CLv.CLvHiLxvRCJ.BHf.hHxUlckImXe8lahnCHvvRCJ.BHf.hHyQWYv8kYxUVb0UlaikmH5.hLrzfBf.BHfHxbzUFbeMWYw8ELvHhNf.CKMn.Hf.BHhLGckA2WyUVbeASLhnCHvvRCJ.BHf.hHyQWYv80bkE2WvHiH5.BLrzfBf.BHfHxbzUFbeMWYw8ELyHhNf.CKMn.Hf.BHhLGckA2WyUVbeACMhnCHvvRCJ.BHf.hHyQWYv80bkE2WvTiH5.BLrzfBf.BHfHxbzUFbeMWYw8EL1HhNf.CKMn.Hf.BHhLGckA2WyUVbeAyMhnCHvvRCJ.BHf.hHyQWYv80bkE2WvfiH5.BLrzfBf.BHfHxbzUFbeMWYw8EL4HhNf.CKMn.Hf.BHhLGckA2WyUVbeECLhnCHvvRCJ.BHf.hHyQWYv80bkE2WwDiH5.BLrzfBf.BHfHxbzUFbeMWYw8ULxHhNf.CKMn.Hf.BHhLGckA2WyUVbeEyLhnCHvvRCJ.BHf.hHyQWYv80bkE2WwPiH5.BLrzfBf.BHfHxbzUFbeMWYw8UL0HhNf.CKMn.Hf.BHhLGckA2WyUVbeEiMhnCHvvRCJ.BHf.hHyQWYv80bkE2WwbiH5.BLrzfBf.BHfHxbzUFbeMWYw8UL3HhNf.CKMn.Hf.BHhLGckA2WyUVbeESNhnCHvvRCJ.BHf.hHyQWYv80bkE2Wx.iH5.BLrzfBf.BHfHxbzUFbeMWYw8kLwHhNf.CKMn.Hf.BHhLGckA2WyUVbeIiLhnCHvvRCJ.BHf.hHyQWYv80bkE2WxLiH5.BLrzfBf.BHfHxbzUFbeMWYw8kLzHhNf.CKMn.Hf.BHhLGckA2WyUVbeISMhnCHvvRCJ.BHf.hHyQWYv80bkE2WxXiH5.BLrzfBf.BHfHxbzUFbeMWYw8kL2HhNf.CKMn.Hf.BHhLGckA2WyUVbeICNhnCHvvRCJ.BHf.hHyQWYv80bkE2WxjiH5.BLrzfBf.BHfHxbzUFbeMWYw80LvHhNf.CKMn.Hf.BHhLGckA2WyUVbeMSLhnCHvvRCJ.BHf.hHyQWYv80bkEWck41XkI2WxUFcxk1YmUlbhnCHxvRCJ.BHf.hHyQWYv80bkEWck41XkI2WykmaiIhNfDCKMn.Hf.BHhLGckA2WyUVb0UlaiUlbeQWYsA2ahnCH2vRCJ.BHf.hHyQWYv80bs81azgVZtclH5.BLrzfBf.BHfHxbzUGczUlbeYlbkEWck41X4IhNfLCKMn.Hf.BHhLGc0QGckI2Wu4lH5.BLrzfBf.BHfHxbzUGczUlbeIWYyEVavwVYeYlbkEWck41X4IhNfDCKMn.Hf.BHhLGc0QGckI2WxU1bg0FbrU1WykmaiIhNfDCKMn.Hf.BHhLGc0QGckI2WxU1bg0FbrU1WzUVav8lH5.hMrzfBf.BHfHxbzUGczUlbeM2alQmakM2bhnCHv3hLv.CLv.CLv.CLv.CLv.CLwDSLrzfBf.BHfHxbzUGczUlbeMWdtMlH5.RLrzfBf.BHfHxbzUGczUlbeQWYsA2ahnCH3vRCJ.BHf.hHyUmXe81XzElckIhNf.CKMn.Hf.BHhLWch80bnUmYlwVYhnCHvvRCJ.BHf.hHyUmXeY2arUWakIhNf.CKMn.Hf.BHhLWch80cgYWYl8lbsIhNfHCKMn.Hf.BHhTmaoM2at8ULegVXx01atkldkIhNf.CKMn.Hf.BHhTmaoM2at8kLegVXx01atkldkIhNf.CKMn.Hf.BHhXWYr81XoQWdeQmbgM1ZhnCHvvRCJ.BHf.hH18Fa00VYhnCHv3xMvbSLvXCNv.CLv.CLv.CLyTyLwvRCJ.BHf.hHs8FY0wVXzk1atMmH5.xVc0fBf.ReMnPe.."
+            base64:layout="55.LETVOUEU..P.A7TUTAUUTME..DP.BU0T.Df.o4FYkgG.ATP......vVX48VczAP.ET.SfHE...">
+      <MACROPARAMETERS id="1054"/>
+      <MODIFIERASSIGNMENTS/>
+      <AUTOMATIONCURVE paramID="63">
+        <POINT t="0.0" v="0.5" c="0.0"/>
+        <POINT t="0.2000000029802322" v="0.6274170279502869" c="0.0"/>
+      </AUTOMATIONCURVE>
+      <AUTOMATIONCURVE paramID="0">
+        <POINT t="0.0" v="0.02738624997437" c="0.0"/>
+        <POINT t="0.0" v="0.7071067690849304" c="0.0"/>
+        <POINT t="2.0" v="0.75" c="0.0"/>
+      </AUTOMATIONCURVE>
+    </PLUGIN>
+    <PLUGIN type="volume" id="1045" enabled="1" remapOnTempoChange="1">
+      <MACROPARAMETERS id="1046"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <PLUGIN type="level" id="1049" enabled="1">
+      <MACROPARAMETERS id="1050"/>
+    </PLUGIN>
+  </TRACK>
+</EDIT>
