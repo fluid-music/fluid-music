@@ -3,28 +3,28 @@ const fluid   = require('../fluid-music');
 const recipes = require('../fluid-recipes');
 
 const nLibrary = {
-  F: 41, c: 48, f: 53, d: 50, e: 52,
+  F: 53, c: 60, f: 65, d: 62, e: 64,
 };
 
-let r1     = '1 + 2 + ';
-let organ1 = 'FFccffcc';
+let r1     = '1 e + a 2 e + a ';
+let organ  = 'F F c c f f c c ';
 
-let r2     =  '1 e + a 2 e + a 3 e + a 4 e + a ';
+let r      =  '1 e + a 2 e + a 3 e + a 4 e + a ';
+let organ1 =  'F F c c f f c c F F c c f f c c ';
 let organ2 = [' d d d d e               d d e e',
-              '   d d e e               d d e e',
+              '         d dfefe         d d e e',
 ];
 
 const score = {
-  1: {r: r1, organ1: R.repeat(organ1, 32)},
-  2: {r: r2, organ2: organ2 },
+  organ1: R.repeat(organ1, 16),
+  organ2: ['', '', organ2],
 };
 
-const session = fluid.score.parse(score, {nLibrary});
+const session = fluid.score.parse(score, {nLibrary, r});
 const message = [
   fluid.score.tracksToFluidMessage(session.tracks),
   fluid.audiotrack.select('organ1'),
-  fluid.pluginHelm.select(),
-  fluid.pluginHelm.setOsc2Transpose(0.627417), // 8va
+  fluid.transport.loop(0, session.duration),
 ];
 
 const client = new fluid. Client();

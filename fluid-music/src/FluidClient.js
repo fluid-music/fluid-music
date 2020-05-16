@@ -5,7 +5,7 @@ const options = {
   targetPort: 9999,
   targetHost: '127.0.0.1',
   header: 0xf2b49e2c,
-  timeout: 3000,
+  timeout: 120000,
   isUnixDomainSocket: false,
 };
 
@@ -39,7 +39,7 @@ module.exports = class FluidClient{
       return new Promise((resolve, reject) => {
 
         const timeoutCallback = () => {this.client.close();}
-        const clearMe = setTimeout(function() {
+        const clearMe = setTimeout(() => {
           timeoutCallback();
           reject('Promise timed out after ' + this.timeout + ' ms');
         }, this.timeout);

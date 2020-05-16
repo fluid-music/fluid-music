@@ -1,32 +1,45 @@
 const path     = require('path');
-const R        = require('ramda');
 const fluid    = require('../fluid-music');
-const recipes  = require('../fluid-recipes');
 
-const filename = path.join(__dirname, 'baba-oriley.tracktionedit');
+const editFile   = path.join(__dirname, 'baba-oriley.tracktionedit');
+const presetFile = path.join(__dirname, 'Zebra2BabaOriley.trkpreset');
 
-const calc = (v) => Math.sqrt(v/16);
-const helmPreset = [
-  fluid.pluginHelm.setOsc2Transpose(0.627417), // 8va
-  fluid.plugin.setParamExplicitAt(fluid.pluginHelm.params.ampAttack, calc(8), 0),
-];
+const bpm      = 118.6;        // Tempo of the intro
+const ms4note  = 60000 / bpm;  // Milliseconds in a quarter note
+const ms16note =  ms4note / 4; // Milliseconds in a sixteenth note
 
 const message = [
-  fluid.global.activate(filename, true),
-  //fluid.tempo.set(118.6),              // Tempo of the intro
-  //fluid.audiotrack.select('organ1'),
-  //fluid.plugin.select('helm', 'vst'),
-  //helmPreset,
-  
-  fluid.audiotrack.select('organ2'),
-  fluid.pluginHelm.select(),
-  fluid.pluginHelm.setOsc2Transpose(0.627417, 0.1), // 8va
-  fluid.plugin.setParamExplicitAt(fluid.pluginHelm.params.ampAttack, calc(8), 0),
-  fluid.plugin.setParamExplicitAt(fluid.pluginHelm.params.ampAttack, calc(9), 1),
+  fluid.global.activate(editFile, true),
+  fluid.tempo.set(bpm),
 
-  // fluid.pluginTStereoDelay.select(),
-  // fluid.pluginTStereoDelay.setDelayRightMs(1234),
+  // Create a reverb send
+  fluid.audiotrack.selectReturnTrack('verb'),
+  fluid.plugin.select('#TReverber8'),
+  fluid.plugin.setParamNormalized('Mix', 1),
+
+  // Create a delay send
+  fluid.audiotrack.selectReturnTrack('16th note delay'),
+  fluid.pluginTStereoDelay.select(),
+  fluid.pluginTStereoDelay.zero(),               // unity gain, 100% wet
+  fluid.pluginTStereoDelay.setDelayMs(ms16note), // sixteenth note delay
+  fluid.pluginTStereoDelay.setFeedback(.2),      // ...with 20% feedback
+  fluid.pluginTStereoDelay.setLowPassFreq(2800), // low pass filter 2.8khz
+  fluid.audiotrack.send('verb', -20),            // verb send @ -20 dBFS
+  
+  fluid.audiotrack.select('organ1'),
+  fluid.plugin.loadTrkpreset(presetFile),
+  fluid.audiotrack.send('16th note delay', -2.3),
+  fluid.audiotrack.send('verb', -12),
+
+  fluid.audiotrack.select('organ2'),
+  fluid.pluginZebra2Vst2.select(),
+  fluid.plugin.loadTrkpreset(presetFile),
+  fluid.audiotrack.gain(-3),
+  fluid.audiotrack.send('16th note delay', -6),
+  fluid.audiotrack.send('verb', -12),
 ];
 
 const client = new fluid.Client();
-client.send(message);
+client.send(message)
+  .then(result => console.log('OK'))
+  .catch(error => console.log('ERROR:', error));

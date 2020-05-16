@@ -229,8 +229,10 @@ const plugin = {
   },
 
   /**
-   * Load a .trkpreset file on the client side, and send it to
-   * @param {String|Buffer} file - A filename or node Buffer object
+   * Load a .trkpreset file from the client. Request that the server load that
+   * preset on the currently selected track.
+   * @param {String|Buffer} file A .trkpreset filename string OR a node Buffer
+   *    object containing the contents of a .trkpreset file
    */
   loadTrkpreset(file) {
     let buffer;
@@ -247,9 +249,10 @@ const plugin = {
     }
 
     // Pad with \0 as required by OSC spec
-    const requiredPadding = buffer.length % 4;
-    if (requiredPadding)
-      buffer = Buffer.concat([buffer, Buffer.alloc(requiredPadding)]);
+    const paddingLength = (4 - (buffer.length % 4)) % 4;
+    const padding = Buffer.alloc(paddingLength);
+    if (paddingLength)
+      buffer = Buffer.concat([buffer, padding]);
 
     return {
       address: '/plugin/load/trkpreset',

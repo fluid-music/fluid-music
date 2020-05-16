@@ -4,7 +4,13 @@ const fluid = { plugin };
 // These helpers convert "useful" units like DBfs and milliseconds to the
 // normalized equvalients that work with "#TStereo Delay" parameters.
 const db2Level = v => (v + 50) / 68; // For "Wet" and "Dry" params
-const ms2Time = v => v / 5000;       // For "L Delay" and "R Delay" params
+const ms2Time  = v => v / 5000;      // For "L Delay" and "R Delay" params
+
+// For "L High Cut", "R High Cut"
+// 0-1 maps to 20-20000, with an exponential curve (^2)
+// Calculated freq2V by inverting: https://www.desmos.com/calculator/jmecinvjjh
+const denom = Math.sqrt(19980);
+const freq2V = v => Math.sqrt(v-20) / denom;
 
 /**
  * This is a helper class for Tracktion's #TStereoDelay VST2 plugin, which is
@@ -236,6 +242,60 @@ const pluginTStereoDelay = {
    */
   disableSync() {
     return fluid.plugin.setParamExplicit('Sync', 0);
+  },
+
+  /**
+   * Set low pass cutoff frequency on the left channel of the delay
+   * @param {number} freq frequency between 20 and 20000
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    whole  notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setLowPassFreqLeft(freq, timeInWholeNotes, curve) {
+    freq = Math.min(freq, 20000);
+    freq = Math.max(freq, 20);
+    const amt = freq2V(freq);
+    return fluid.plugin.setExternalParamHelper('L High Cut', amt, timeInWholeNotes, curve);
+  },
+
+  /**
+   * Set low pass cutoff frequency on the right channel of the delay
+   * @param {number} freq frequency between 20 and 20000
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    whole  notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setLowPassFreqRight(freq, timeInWholeNotes, curve) {
+    freq = Math.min(freq, 20000);
+    freq = Math.max(freq, 20);
+    const amt = freq2V(freq);
+    return fluid.plugin.setExternalParamHelper('R High Cut', amt, timeInWholeNotes, curve);
+  },
+
+  /**
+   * Set low pass cutoff frequency on both channel of the delay
+   * @param {number} freq frequency between 20 and 20000
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    whole  notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setLowPassFreq(freq, timeInWholeNotes, curve) {
+    return [
+      pluginTStereoDelay.setLowPassFreqLeft(freq, timeInWholeNotes, curve),
+      pluginTStereoDelay.setLowPassFreqRight(freq, timeInWholeNotes, curve),
+    ];
   },
 }
 

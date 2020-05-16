@@ -796,21 +796,25 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
 
     for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
         if (param->paramName.equalsIgnoreCase(paramName)) {
-            param->beginParameterChangeGesture();
-            if(isNormalized) param->setNormalisedParameter(paramValue, NotificationType::sendNotification);
+
+            param->parameterChangeGestureBegin();
+            if (isNormalized) param->setNormalisedParameter(paramValue, NotificationType::sendNotification);
             else param->setParameter(paramValue, NotificationType::sendNotification);
-            param->endParameterChangeGesture();
+            param->parameterChangeGestureEnd();
 
             std::cout << "set " << param->paramName
-            << " to " << paramValue
-            << " explicitvalue: " << param->valueToString(param->getCurrentExplicitValue())
-            << " valueRange: " << param->getValueRange().getStart() << "->" << param->getValueRange().getEnd()
-            << " currentValue: " << param->getCurrentValue()
-            << " valueAsStringWLabel: " << param->getCurrentValueAsStringWithLabel() // helm always returns 0
-            << " isDiscrete: " << (param->isDiscrete() ? "true" : "false")
-            << " numStates: " << param->getNumberOfStates()
-            << " autoActive: " << (param->isAutomationActive() ? "true" : "false")
-            << " paramActive " << (param->isParameterActive() ? "true" : "false") // extermal params area always active
+            << " to " << paramValue << std::endl
+            << "  explicitvalue:     " <<  param->valueToString(param->getCurrentExplicitValue()) << std::endl
+            << "  valueRange:        " <<  param->getValueRange().getStart() << "->" << param->getValueRange().getEnd() << std::endl
+            << "  currentValue:      " <<  param->getCurrentValue()                  << std::endl
+            << "  valStringLabl:     " <<  param->getCurrentValueAsStringWithLabel() << std::endl // helm always returns 0
+            << "  valString:         " <<  param->getCurrentValueAsString()          << std::endl // helm always returns 0
+            << "  currBaseVal:       " <<  param->getCurrentBaseValue()              << std::endl
+            << "  currNormVal:       " <<  param->getCurrentNormalisedValue()        << std::endl
+            << "  isDiscrete/states: " << (param->isDiscrete() ? "true" : "false") << "/" << param->getNumberOfStates() << std::endl
+            << "  autoActive:        " << (param->isAutomationActive() ? "true" : "false")  << std::endl
+            << "  paramActive        " << (param->isParameterActive() ? "true" : "false")   << std::endl // extermal params are always active
+            << "  hasAutomation:     " << (param->hasAutomationPoints() ? "true" : "false") << std::endl
             << std::endl;
 
             String replyString = "set " + paramName
