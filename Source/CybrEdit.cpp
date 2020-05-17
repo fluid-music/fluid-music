@@ -122,6 +122,15 @@ void CybrEdit::listTracks() {
     std::cout << std::endl;
 }
 
+void CybrEdit::removeTracksNamed(const String name) {
+    for (auto track : te::getAllTracks(*edit)) {
+        if (track->getName().equalsIgnoreCase(name)) {
+            edit->deleteTrack(track);
+        }
+    }
+}
+
+
 void CybrEdit::listState() {
     int count = edit->state.getNumChildren();
     std::cout << "Printing all top level element types" << std::endl;

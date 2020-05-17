@@ -50,6 +50,8 @@ public:
     te::Edit& getEdit() { return *edit; }
     /** Ensure that all the most recent changes are applied to the state */
     void flushPendingChanges();
+    /** Remove All Tracks with the name (case insensitive) */
+    void removeTracksNamed(const String name);
 
     /** WIP - testing custom plugin */
     void junk();

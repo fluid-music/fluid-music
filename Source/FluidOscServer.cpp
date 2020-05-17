@@ -544,6 +544,11 @@ OSCMessage FluidOscServer::activateEditFile(File file, bool forceEmptyEdit) {
     if (forceEmptyEdit || !file.existsAsFile()) {
         std::cout << "Creating new edit: " << file.getFullPathName() << std::endl;
         activeCybrEdit = std::make_unique<CybrEdit>(createEmptyEdit(file, te::Engine::getInstance(), te::Edit::forEditing));
+        // This is a little hacky, but I want the engine to stop putting
+        // "Track 1" in everything. Note that there may be other places that
+        // cybr calls createEmptyEdit, and it is not guaranteed that all of them
+        // remove "Track 1" (even if they probably should)
+        activeCybrEdit->removeTracksNamed("Track 1");
         if (!file.existsAsFile()) activeCybrEdit->saveActiveEdit(file);
     } else {
         std::cout << "Loading edit: " << file.getFullPathName() << std::endl;
@@ -802,8 +807,7 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
             else param->setParameter(paramValue, NotificationType::sendNotification);
             param->parameterChangeGestureEnd();
 
-            std::cout << "set " << param->paramName
-            << " to " << paramValue << std::endl
+            std::cout << "Set " << param->paramName << " to " << paramValue << std::endl
             << "  explicitvalue:     " <<  param->valueToString(param->getCurrentExplicitValue()) << std::endl
             << "  valueRange:        " <<  param->getValueRange().getStart() << "->" << param->getValueRange().getEnd() << std::endl
             << "  currentValue:      " <<  param->getCurrentValue()                  << std::endl
@@ -814,8 +818,7 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
             << "  isDiscrete/states: " << (param->isDiscrete() ? "true" : "false") << "/" << param->getNumberOfStates() << std::endl
             << "  autoActive:        " << (param->isAutomationActive() ? "true" : "false")  << std::endl
             << "  paramActive        " << (param->isParameterActive() ? "true" : "false")   << std::endl // extermal params are always active
-            << "  hasAutomation:     " << (param->hasAutomationPoints() ? "true" : "false") << std::endl
-            << std::endl;
+            << "  hasAutomation:     " << (param->hasAutomationPoints() ? "true" : "false") << std::endl;
 
             String replyString = "set " + paramName
             + " to " + String(message[1].getFloat32())
