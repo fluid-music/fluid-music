@@ -1,15 +1,13 @@
-const path       = require('path');
-const fluid      = require('../fluid-music');
-const editFile   = path.join(__dirname, 'baba-oriley.tracktionedit');
-const presetFile = path.join(__dirname, 'Zebra2BabaOriley.trkpreset');
+const path        = require('path');
+const fluid       = require('../fluid-music');
+const sessionFile = path.join(__dirname, 'baba-oriley.tracktionedit');
+const presetFile  = path.join(__dirname, 'Zebra2BabaOriley.trkpreset');
 
-const bpm      = 118.6;       // Beats-per-minute in the intro
-const ms4note  = 60000 / bpm; // Millisec per quarter note
-const ms16note = ms4note / 4; // Millisec per sixteenth note
 
+const BPM     = 118.6; // Beats-per-minute
 const message = [
-  fluid.global.activate(editFile, true),
-  fluid.tempo.set(bpm),
+  fluid.global.activate(sessionFile, true),
+  fluid.tempo.set(BPM),
 
   // Create a reverb send
   fluid.audiotrack.selectReturnTrack('reverb'),
@@ -24,12 +22,12 @@ const message = [
   // Create a delay send
   fluid.audiotrack.selectReturnTrack('16th delay'),
   fluid.pluginTStereoDelay.select(),
-  fluid.pluginTStereoDelay.zero(),               // unity gain, 100% wet
-  fluid.pluginTStereoDelay.setDelayMs(ms16note), // sixteenth note delay
-  fluid.pluginTStereoDelay.setFeedback(.2),      // ...with 20% feedback
-  fluid.pluginTStereoDelay.setLowPassFreq(2800), // low pass filter 2.8khz
-  fluid.audiotrack.send('reverb', -20),          // reverb send @ -20 dBFS
-  
+  fluid.pluginTStereoDelay.zero(),                // unity gain, 100% wet
+  fluid.pluginTStereoDelay.setDelayMs(15000/BPM), // sixteenth note delay
+  fluid.pluginTStereoDelay.setFeedback(.2),       // ...with 20% feedback
+  fluid.pluginTStereoDelay.setLowPassFreq(2800),  // low pass filter 2.8khz
+  fluid.audiotrack.send('reverb', -20),           // reverb send @ -20 dBFS
+
   // Organ 1
   fluid.audiotrack.select('organ1'),
   fluid.plugin.loadTrkpreset(presetFile),
