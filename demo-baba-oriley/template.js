@@ -3,7 +3,6 @@ const fluid      = require('../fluid-music');
 const editFile   = path.join(__dirname, 'baba-oriley.tracktionedit');
 const presetFile = path.join(__dirname, 'Zebra2BabaOriley.trkpreset');
 
-
 const bpm      = 118.6;       // Beats-per-minute in the intro
 const ms4note  = 60000 / bpm; // Millisec per quarter note
 const ms16note = ms4note / 4; // Millisec per sixteenth note
