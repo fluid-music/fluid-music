@@ -37,12 +37,16 @@ const message = [
   fluid.audiotrack.gain(-6),
   fluid.audiotrack.send('16th delay', -2.3),
   fluid.audiotrack.send('reverb', -12),
+
   // Organ 2
   fluid.audiotrack.select('organ2'),
   fluid.plugin.loadTrkpreset(presetFile),
   fluid.audiotrack.gain(-9),
   fluid.audiotrack.send('16th delay', -6),
   fluid.audiotrack.send('reverb', -12),
+
+  fluid.audiotrack.select('kick'),
+  fluid.audiotrack.gain(-12),
 ];
 
 const client = new fluid.Client();
