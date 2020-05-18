@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<EDIT appVersion="Unknown" projectID="0/f9bea6" creationTime="1589518138545"
-      lastSignificantChange="17216aa03ab" modifiedBy="charles">
-  <TRANSPORT/>
+<EDIT appVersion="Unknown" projectID="0/28785d1" creationTime="1589764539342"
+      lastSignificantChange="172256022a0" modifiedBy="charles">
+  <TRANSPORT loopPoint1="2.023608795006593" loopPoint2="34.40134951511209"
+             looping="1"/>
   <MACROPARAMETERS id="1001"/>
   <TEMPOSEQUENCE>
-    <TEMPO startBeat="0.0" bpm="120.0" curve="1.0"/>
+    <TEMPO startBeat="0.0" bpm="118.5999984741211" curve="1.0"/>
     <TIMESIG numerator="4" denominator="4" startBeat="0.0"/>
   </TEMPOSEQUENCE>
   <PITCHSEQUENCE>
@@ -23,8 +24,15 @@
   </MASTERVOLUME>
   <RACKS/>
   <MASTERPLUGINS/>
-  <AUXBUSNAMES/>
-  <INPUTDEVICES/>
+  <AUXBUSNAMES>
+    <NAME bus="0" name="reverb"/>
+    <NAME bus="1" name="16th delay"/>
+  </AUXBUSNAMES>
+  <INPUTDEVICES>
+    <INPUTDEVICE name="Midi Through Port-0"/>
+    <INPUTDEVICE name="Input 1"/>
+    <INPUTDEVICE name="Input 2"/>
+  </INPUTDEVICES>
   <TRACKCOMPS/>
   <ARADOCUMENT/>
   <CONTROLLERMAPPINGS/>
@@ -45,48 +53,1387 @@
     <MACROPARAMETERS id="1037"/>
     <MODIFIERS/>
   </CHORDTRACK>
-  <TRACK id="1012" midiVProp="0.28125" midiVOffset="0.359375">
-    <MACROPARAMETERS id="1014"/>
+  <TRACK id="1013" midiVProp="0.28125" midiVOffset="0.359375" name="reverb">
+    <MACROPARAMETERS id="1016"/>
     <MODIFIERS/>
     <OUTPUTDEVICES>
       <DEVICE name="(default audio output)"/>
     </OUTPUTDEVICES>
-    <PLUGIN type="volume" id="1017" enabled="1" remapOnTempoChange="1">
-      <MACROPARAMETERS id="1018"/>
+    <PLUGIN type="auxreturn" windowLocked="1" id="1046" enabled="1" busNum="0">
+      <MACROPARAMETERS id="1047"/>
+    </PLUGIN>
+    <PLUGIN type="vst" uid="52657662" filename="/home/charles/.vst/DAW Essentials Collection/#TReverber8.so"
+            name="#TReverber8" manufacturer="Tracktion" windowLocked="1"
+            id="1050" enabled="1" programNum="0" state="648.CMlaKA....fQBMDZ....AHUY1IF.A..I....Q.............................................................................................................................................................................P.nCkTOcjTA0D.AP.brU2Yo4VRDAP.LT.URUlckImXkIGN..mbuclbg0FQoIGc4AP.AHvX0Imbk4FcPI2amIWXsAP.QTfQgMFcuIWdfPTYlEVcrQG.vI2amIWXskDQ..P.J.UPRETS.Df.oQF.ArPAhElajcWZjQGZ.XWXrUWY.DPBD.........+O..UPRETS.Df.oQF.AjPAjEVavklamAfcgwVckAP.IP.............TAIUPMAP.BjFY.DvAEPVYiEVd.XWXrUWY.DPBD.........9O..UPRETS.Df.oQF.AjPAjUlaykFc4AfcgwVckAP.IP.........3+..TAIUPMAP.BjFY.DvBETVXxwVdrEFckAfcgwVckAP.IP.....PyLy3+..TAIUPMAP.BjFY.D.BETlagIFakAfcgwVckAP.IP.........7+..TAIUPMAP.BjFY.DfAEbVXo4F.1EFa0UF.Aj.A........v+C.PEjTA0D.AHPZjAP.ETPaogG.1EFa0UF.Aj.A........v+C.PEjTA0D.AHPZjAP.JT.bxUFYkwVX4AfcgwVckAP.IP.........3+..TAIUPMAP.BjFY.DfAELWZ5UF.1EFa0UF.Aj.A....fOJbc+C."
+            base64:layout="99.LETVOUEU..P.BjjSPUEUSA..ADfPUME.AHPZtQVY3AP.ED......rEVduUGc.DPAEvDHRA..OUEUPUEUSA..ADfPUME.AHPZtQVY3AP.ED......rEVduUGc.DPAEvDHRA..">
+      <MACROPARAMETERS id="1051"/>
       <MODIFIERASSIGNMENTS/>
     </PLUGIN>
-    <PLUGIN type="level" id="1021" enabled="1">
-      <MACROPARAMETERS id="1022"/>
+    <PLUGIN type="volume" id="1023" enabled="1" remapOnTempoChange="1">
+      <MACROPARAMETERS id="1024"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <PLUGIN type="level" id="1042" enabled="1">
+      <MACROPARAMETERS id="1043"/>
     </PLUGIN>
   </TRACK>
-  <TRACK id="1040" midiVProp="0.28125" midiVOffset="0.359375" name="organ2">
-    <MACROPARAMETERS id="1042"/>
+  <TRACK id="1054" midiVProp="0.28125" midiVOffset="0.359375" name="16th delay">
+    <MACROPARAMETERS id="1056"/>
     <MODIFIERS/>
     <OUTPUTDEVICES>
       <DEVICE name="(default audio output)"/>
     </OUTPUTDEVICES>
-    <PLUGIN type="vst" uid="48656c6d" filename="/usr/lib/lxvst/helm.so" name="helm"
-            manufacturer="Matt Tytel" windowLocked="1" id="1053" enabled="1"
-            programNum="0" state="4228.CMlaKA....fQBMDZ....AfTYr0F...fV..P.R.............................................................................................................................................................................vCjuWCJ.BHhvVZiUlayUlH5.hHPEFcigFHnLVJfHVdf3BHfPEZoMGHvEFcigFHoMGHrk1Xk41bkQFH04FYkIGHgAxPxUVXzklckAxPu0Vau41bfDDczIWZhUGco8lafPiKv.RRtQWYx4VXzk1atEFafvTZiUlayUlKf.RVuUGHyg1a0wFYffVX1UFHxU1XkklckQFHgAxXuAWdf7lYfPGZkABaoMVYtMWYfDFau41YfbWZzgFHzgVZyAxcuI2Zt.BHIYFHt8Fcr.xbkUFH7fFczAmNu7xXxUVXzklckM1as01atMmKuI2YuvVZiUlayU1buHVduPiKv7hOtHBKMn.HfHxb44Fcn8kckI2bo8lahnCHh.iK43BLhvRCJ.BHh.WXzMFZe4VXsUlH5.hHhvRCJ.BHhX1arQVYx8kag0VYhnCHhHBKMn.HfHRX0QGZuImH5.hHhvRCJ.BHhLWYzQWZtc1bhnCH60fBf.BHfHRXsA2WgQGcgM1ZhnCHv3RLvjSMzTCLv.CLv.CLv.CLvLCM3vRCJ.BHf.hHg0FbeQVYiEVdhnCHw3RMrzfBf.BHfHRXsA2WxUFakE1bkIhNf.iKxjSN4jSN4jSN4jSN4jSN4fCN4vRCJ.BHf.hHg0FbeMWcyQWXo4lH5.RLrzfBf.BHfHRXxA2WlIWYwUWYtMVdhnCHxvRCJ.BHf.hHgIGbecVXzUlH5.BLtTCKMn.Hf.BHhDlbv80aiQWX1U1bhnCHwvRCJ.BHf.hHgIGbe8lahnCHvvRCJ.BHf.hHgIGbeAWXzQWYx4lH5.BLrzfBf.BHfHRXxA2WykmaiIhNfDCKMn.Hf.BHhDlbv8Eck0FbuIhNfjCKMn.Hf.BHhHVYgQ2beAWYx8Uao4VczUlH5.hLrzfBf.BHfHxXx81by8UauQVcrEFco8lahnCHvvRCJ.BHf.hHiUGcuYlYhnCH3.CKMn.Hf.BHhPVYrEVdeQlb480ckQmH5.BLtTCKMn.Hf.BHhPVYrEVdeYVYkQlXgM1ZhnCHv3BMv.CLv.CLv.CLv.CLv.CLxHiLrzfBf.BHfHBYkwVX48kYxUVb0UlaikmH5.hLrzfBf.BHfHBYkwVX480atIhNf.CKMn.Hf.BHhPVYrEVdeMWdtMlH5.RLrzfBf.BHfHBYkwVX48Eck0FbuIhNfjCKMn.Hf.BHhPVZyQ2axQWZu41WjIWZ1UlH5.BLrzfBf.BHfHBYoMGcuIGco8lae0VZ3IhNfDCKMn.Hf.BHhPVZyQ2axQWZu41Wu4lH5.BLrzfBf.BHfHBYoMGcuIGco8laeQWdvUlH5.BLrzfBf.BHfHhYow1WgQGcgM1ZhnCHvvRCJ.BHf.hHlkFaeQVYiEVdhnCHw3RMrzfBf.BHfHhYow1Wk4lceQVYvQGZhnCHvvRCJ.BHf.hHlkFaeIWYrUVXyUlH5.RLtTCKMn.Hf.BHhXVZr80b0MGcgklahnCHv3RMrzfBf.BHfHhYowFckI2WhwVYtQlH5.BLrzfBf.BHfHhYowFckI2WjIWZ1UlH5.BLrzfBf.BHfHhYowFckI2Wu4lH5.BLrzfBf.BHfHhYowFckI2WygVYrYlH5.BLrzfBf.BHfHhYowFckI2WyQWdrUlH5.BLrzfBf.BHfHhYuIWag4Fce8lahnCHvvRCJ.BHf.hHl8lbsElaz8EdhnCHv3RMrzfBf.BHfHhYuIWag4FcekmH5.BLtTCKMn.Hf.BHhrVY4QmbgM1ZhnCHvvRCJ.BHf.hHrU1YgQ2ahnCHvvRCJ.BHf.hHs8FYeEFczE1XqIhNf.CKMn.Hf.BHhz1aj8EYkMVX4IhNfDiK0vRCJ.BHf.hHs8FYeIWYrUVXyUlH5.RLtTCKMn.Hf.BHhz1aj80b0MGcgklahnCHv3RMrzfBf.BHfHRau41aewlYu8ULeEVavwVZzUGYkIhNfDCKMn.Hf.BHhz1at81WrY1aeEyWlIWYwUWYtMVdhnCHwvRCJ.BHf.hHs8lau8Eal81Ww7kbkQmboc1YkImH5.hLrzfBf.BHfHRau41aewlYu8ULeMWdtMlH5.RLrzfBf.BHfHRau41aewlYu8ULeQWYsA2ahnCH1vRCJ.BHf.hHs8lau8Eal81Ww70cgYWYl8lbsIhNf.CKMn.Hf.BHhz1at81WrY1aeIyWg0FbrkFc0QVYhnCHwvRCJ.BHf.hHs8lau8Eal81Wx7kYxUVb0UlaikmH5.RLrzfBf.BHfHRau41aewlYu8kLeIWYzIWZmcVYxIhNfHCKMn.Hf.BHhz1at81WrY1aeIyWykmaiIhNfDCKMn.Hf.BHhz1at81WrY1aeIyWzUVav8lH5.xMrzfBf.BHfHRau41aewlYu8kLecWX1UlYuIWahnCHvvRCJ.BHf.hHt8VZyU1W18Fa00VYhnCHvvRCJ.BHf.hHtUWaeMGckA2bhnCH3vRCJ.BHf.hHuM2XeEyWzIWXtMGbuMWYhnCHvvRCJ.BHf.hHuM2XeEyWzUmakIhNf.CKMn.Hf.BHh71bi8ULeUmaoM2at8EYkQWctUlH5.RLvvRCJ.BHf.hHuM2XeEyW04VZy8laeY2aoMVYyIhNfDCKMn.Hf.BHh71bi8ULeY2arUWakIhNf.iK0PyM2HiL0TyMzjSN4jSN4fCM1PCKMn.Hf.BHh71bi8ULecWX1UlYuIWahnCHzvRCJ.BHf.hHuM2XeIyWzIWXtMGbuMWYhnCHvvRCJ.BHf.hHuM2XeIyWzUmakIhNf.CKMn.Hf.BHh71bi8kLeUmaoM2at8EYkQWctUlH5.RLvvRCJ.BHf.hHuM2XeIyW04VZy8laeY2aoMVYyIhNfDCKMn.Hf.BHh71bi8kLeY2arUWakIhNf.iK0PyM2HiL0TyMzjSN4jSN4fCM1PCKMn.Hf.BHh71bi8kLecWX1UlYuIWahnCHzvRCJ.BHf.hHuM2XeYVYkQlXgM1ZeEVauUmazIhNf.CKMn.Hf.BHh71bi8kYkUFYhE1Xq8EcxElayA2ayUlH5.BLrzfBf.BHfHxayM1WlUVYjIVXis1WzUmakIhNf.CKMn.Hf.BHh.WZzMFZeIVYtQ1WxElamUlH5.hLrzfBf.BHfHBbuwVdewlYu8UXsAGaoQWcjUlH5.RLrzfBf.BHfHBbuwVdewlYu8kYxUVb0UlaikmH5.RLrzfBf.BHfHBbuwVdewlYu80b441XhnCHwvRCJ.BHf.hHv8Fa48Eal81WzUVav8lH5.xMrzfBf.BHfHBbuwVdewlYu80cgYWYl8lbsIhNf.CKMn.Hf.BHh.2arkGbn8la4IhNfPCKMn.Hf.BHh.2axQWXsUlaz8lH5.RK2vRCJ.BHf.hHv8lbzEVak4Fcu8Ec4AWYhnCHvvRCJ.BHf.hHxU1bu4VXtMVYhnCHv3RMrzfBf.BHfHhbkYWYxI1WjEVavklamIhNf.iK0vRCJ.BHf.hHxUlckImXeQlb480ckQmH5.BLtTCKMn.Hf.BHhHWY1Ulbh8kYkUFYhE1XqIhNf.iK4.CLv.CLv.CLv.CLv.CLvHiLxvRCJ.BHf.hHxUlckImXe8lahnCHvvRCJ.BHf.hHyQWYv8kYxUVb0UlaikmH5.hLrzfBf.BHfHxbzUFbeMWYw8ELvHhNf.CKMn.Hf.BHhLGckA2WyUVbeASLhnCHvvRCJ.BHf.hHyQWYv80bkE2WvHiH5.BLrzfBf.BHfHxbzUFbeMWYw8ELyHhNf.CKMn.Hf.BHhLGckA2WyUVbeACMhnCHvvRCJ.BHf.hHyQWYv80bkE2WvTiH5.BLrzfBf.BHfHxbzUFbeMWYw8EL1HhNf.CKMn.Hf.BHhLGckA2WyUVbeAyMhnCHvvRCJ.BHf.hHyQWYv80bkE2WvfiH5.BLrzfBf.BHfHxbzUFbeMWYw8EL4HhNf.CKMn.Hf.BHhLGckA2WyUVbeECLhnCHvvRCJ.BHf.hHyQWYv80bkE2WwDiH5.BLrzfBf.BHfHxbzUFbeMWYw8ULxHhNf.CKMn.Hf.BHhLGckA2WyUVbeEyLhnCHvvRCJ.BHf.hHyQWYv80bkE2WwPiH5.BLrzfBf.BHfHxbzUFbeMWYw8UL0HhNf.CKMn.Hf.BHhLGckA2WyUVbeEiMhnCHvvRCJ.BHf.hHyQWYv80bkE2WwbiH5.BLrzfBf.BHfHxbzUFbeMWYw8UL3HhNf.CKMn.Hf.BHhLGckA2WyUVbeESNhnCHvvRCJ.BHf.hHyQWYv80bkE2Wx.iH5.BLrzfBf.BHfHxbzUFbeMWYw8kLwHhNf.CKMn.Hf.BHhLGckA2WyUVbeIiLhnCHvvRCJ.BHf.hHyQWYv80bkE2WxLiH5.BLrzfBf.BHfHxbzUFbeMWYw8kLzHhNf.CKMn.Hf.BHhLGckA2WyUVbeISMhnCHvvRCJ.BHf.hHyQWYv80bkE2WxXiH5.BLrzfBf.BHfHxbzUFbeMWYw8kL2HhNf.CKMn.Hf.BHhLGckA2WyUVbeICNhnCHvvRCJ.BHf.hHyQWYv80bkE2WxjiH5.BLrzfBf.BHfHxbzUFbeMWYw80LvHhNf.CKMn.Hf.BHhLGckA2WyUVbeMSLhnCHvvRCJ.BHf.hHyQWYv80bkEWck41XkI2WxUFcxk1YmUlbhnCHxvRCJ.BHf.hHyQWYv80bkEWck41XkI2WykmaiIhNfDCKMn.Hf.BHhLGckA2WyUVb0UlaiUlbeQWYsA2ahnCH2vRCJ.BHf.hHyQWYv80bs81azgVZtclH5.BLrzfBf.BHfHxbzUGczUlbeYlbkEWck41X4IhNfLCKMn.Hf.BHhLGc0QGckI2Wu4lH5.BLrzfBf.BHfHxbzUGczUlbeIWYyEVavwVYeYlbkEWck41X4IhNfDCKMn.Hf.BHhLGc0QGckI2WxU1bg0FbrU1WykmaiIhNfDCKMn.Hf.BHhLGc0QGckI2WxU1bg0FbrU1WzUVav8lH5.hMrzfBf.BHfHxbzUGczUlbeM2alQmakM2bhnCHv3hLv.CLv.CLv.CLv.CLv.CLwDSLrzfBf.BHfHxbzUGczUlbeMWdtMlH5.RLrzfBf.BHfHxbzUGczUlbeQWYsA2ahnCH3vRCJ.BHf.hHyUmXe81XzElckIhNf.CKMn.Hf.BHhLWch80bnUmYlwVYhnCHvvRCJ.BHf.hHyUmXeY2arUWakIhNf.CKMn.Hf.BHhLWch80cgYWYl8lbsIhNfHCKMn.Hf.BHhTmaoM2at8ULegVXx01atkldkIhNf.CKMn.Hf.BHhTmaoM2at8kLegVXx01atkldkIhNf.CKMn.Hf.BHhXWYr81XoQWdeQmbgM1ZhnCHvvRCJ.BHf.hH18Fa00VYhnCHv3xMvbSLvXCNv.CLv.CLv.CLyTyLwvRCJ.BHf.hHs8FY0wVXzk1atMmH5.xVc0fBf.ReMnPe.."
+    <PLUGIN type="auxreturn" windowLocked="1" id="1067" enabled="1" busNum="1">
+      <MACROPARAMETERS id="1068"/>
+    </PLUGIN>
+    <PLUGIN type="vst" uid="5344656c" filename="/home/charles/.vst/DAW Essentials Collection/#TStereo Delay.so"
+            name="#TStereo Delay" manufacturer="Tracktion" windowLocked="1"
+            id="1071" enabled="1" programNum="0" state="1206.CMlaKA....fQBMDZ....ALEQkwF.A..I....K..............................................................................................................................................................................AV.kTOcjTA0D.AP.brU2Yo4VRDAP.OT.USQWYxU1afPTYrEVd..mbuclbg0FQoIGc4AP.AHvX0Imbk4FcPI2amIWXsAP.QTfQgMFcuIWdfPTYlEVcrQG.vI2amIWXskDQ..P.W.UPRETS.Df.oQF.ArPAjUFagk2b441X.XWXrUWY.DPBD.............UPRETS.Df.oQF.AbPAjIWdjIF.1EFa0UF.Aj.A........IAL.PEjTA0D.AHPZjAP.HTPYtElXrUF.1EFa0UF.Aj.A........v+C.PEjTA0D.AHPZjAP.GTPZtAWczAfcgwVckAP.IP.............TAIUPMAP.BjFY.D.DEv1Xx81byYVYkQlXgM1Z.XWXrUWY.DPBD.............UPRETS.Df.oQF.AnPArQVYrEVdsMG.1EFa0UF.Aj.A.......neAD.PEjTA0D.AHPZjAP.LT.ajUFagkmauQWY.XWXrUWY.DPBD........f.P..UPRETS.Df.oQF.A3PArQVYrEVduYlYyUFc.XWXrUWY.DPBD.........+O..UPRETS.Df.oQF.ArPArYVYkQlXgM1Z.XWXrUWY.DPBD........PCP..UPRETS.Df.oQF.AnPArgVZmg1X0QG.1EFa0UF.Aj.A.......3kBD.PEjTA0D.AHPZjAP.IT.ar81ciUGc.XWXrUWY.DPBD........PCP..UPRETS.Df.oQF.AXPArAWXtAfcgwVckAP.IP.........7+B.TAIUPMAP.BjFY.DPBEv1buUmbiUF.1EFa0UF.Aj.A........v+C.PEjTA0D.AHPZjAP.PTfbiI2ayMmYkUFYhE1XqAfcgwVckAP.IP.............TAIUPMAP.BjFY.DfBEHGYkwVX401b.XWXrUWY.DPBD.......f9EP..UPRETS.Df.oQF.AvPAxQVYrEVdt8FckAfcgwVckAP.IP.........B.A.TAIUPMAP.BjFY.DfCEHGYkwVX48lYlMWYzAfcgwVckAP.IP.........7+..TAIUPMAP.BjFY.DvBEHmYkUFYhE1XqAfcgwVckAP.IP.........M.A.TAIUPMAP.BjFY.DfBEHGZocFZiUGc.XWXrUWY.DPBD.......fWJP..UPRETS.Df.oQF.AjPAxw1a2MVczAfcgwVckAP.IP.........M.A.TAIUPMAP.BjFY.DfAEHGbg4F.1EFa0UF.Aj.A........v+C.PEjTA0D.AHPZjAP.ITfby8VcxMVY.XWXrUWY.DPBD..........P..UPRETS.Df.oQF.AbPA2UFcjIF.1EFa0UF.Aj.A............"
+            base64:layout="99.LETVOUEU..P.BjjSPUEUSA..ADfPUME.AHPZtQVY3AP.ED......rEVduUGc.DPAEvDHRA..OUEUPUEUSA..ADfPUME.AHPZtQVY3AP.ED......rEVduUGc.DPAEvDHRA..">
+      <MACROPARAMETERS id="1072"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <PLUGIN type="volume" id="1059" enabled="1" remapOnTempoChange="1">
+      <MACROPARAMETERS id="1060"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <PLUGIN type="level" id="1063" enabled="1">
+      <MACROPARAMETERS id="1064"/>
+    </PLUGIN>
+    <PLUGIN type="auxsend" windowLocked="1" id="1075" enabled="1" quickParamName="send level"
+            busNum="0" auxSendSliderPos="0.2725317776203156">
+      <MACROPARAMETERS id="1076"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+  </TRACK>
+  <TRACK id="1079" midiVProp="0.28125" midiVOffset="0.359375" name="organ1">
+    <MACROPARAMETERS id="1081"/>
+    <MODIFIERS/>
+    <MIDICLIP name="clip0" start="2.023608795006593" length="2.023608795006593"
+              offset="0.0" id="1145" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip1" start="4.047217590013187" length="2.023608795006593"
+              offset="0.0" id="1172" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip2" start="6.07082638501978" length="2.023608795006593"
+              offset="0.0" id="1193" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip3" start="8.094435180026373" length="2.023608795006593"
+              offset="0.0" id="1208" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip4" start="10.11804397503297" length="2.023608795006593"
+              offset="0.0" id="1228" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip5" start="12.14165277003956" length="2.023608795006593"
+              offset="0.0" id="1243" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip6" start="14.16526156504615" length="2.023608795006593"
+              offset="0.0" id="1256" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip7" start="16.18887036005275" length="2.023608795006595"
+              offset="0.0" id="1268" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip8" start="18.21247915505934" length="2.023608795006595"
+              offset="0.0" id="1282" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip9" start="20.23608795006593" length="2.023608795006592"
+              offset="0.0" id="1292" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip10" start="22.25969674507252" length="2.023608795006595"
+              offset="0.0" id="1311" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip11" start="24.28330554007912" length="2.023608795006595"
+              offset="0.0" id="1335" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip12" start="26.30691433508571" length="2.023608795006595"
+              offset="0.0" id="1363" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip13" start="28.33052313009231" length="2.023608795006592"
+              offset="0.0" id="1394" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip14" start="30.3541319250989" length="2.023608795006595"
+              offset="0.0" id="1411" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip15" start="32.37774072010549" length="2.023608795006595"
+              offset="0.0" id="1442" sync="0" colour="ffaaff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="41" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="53" b="0.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="0.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="0.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="29" b="1.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="1.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.5" l="0.125" v="60" c="0"/>
+        <NOTE p="34" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.75" l="0.125" v="70" c="0"/>
+        <NOTE p="41" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="53" b="2.0" l="0.125" v="90" c="0"/>
+        <NOTE p="41" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="53" b="2.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="2.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="2.75" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="29" b="3.0" l="0.125" v="80" c="0"/>
+        <NOTE p="41" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="29" b="3.25" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.5" l="0.125" v="70" c="0"/>
+        <NOTE p="34" b="3.75" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.75" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <PLUGIN type="vst" uid="534d4432" filename="/home/charles/.vst/u-he/Zebra2.64.so"
+            name="Zebra2" manufacturer="u-he" windowLocked="1" id="1092"
+            enabled="1" programNum="0" state="26570.CMlaKA....fQBMDZ....ALUSDIC...P.....A.............................................................................................................................................................................vYpLBbm0VOBElXgAxSxkFakkGHwnvKp.TSkQWXJnPP0QGZuImNJbxPnElbrU1bffzarIlbuc2IJnfJunfBiDTS8nUYhIWXxnvHVUlby0iLvTCLvnvHE4FYoEla8vVZzQGakovHt0VOyPiBiz1b831atUlBiz1b8zzajcEZrovHsMWOPkFcig1UJLRay0yPzIGaAovHsMWOCQmbrIjBiz1b8vjYucTLJLRay0CSl81QxnvHsMWOGEFckovHsMWOKUVdF8FaJLRay0yRkkmQuwlLJLRay0iUkw1aikFc4ovHsMWOAQ0a0MFZJLRay0SPxAWSuQlBiz1b8Djbv0DYxnvHsMWOE4lcwnvHsMWOE4lcxnvHsMWOE4lcynvHsMWOE4lcznvHsMWOMMUQGEiBiz1b8zzTEcjLJLRay0SSSUzQynvHsMWOMMUQGQiBiz1b8vjYuEiBiz1b8vjYuIiBiz1b8vjYuMiBiz1b8vjYuQiBiz1b8zTSgAWLJLRay0SSMEFbxnvHsMWOM0TXvMiBiz1b8zTSgAGMJLRay0SSMkFdwnvHsMWOM0TZ3IiBiz1b8zTSog2LJLRay0SSMkFdznvHtYWO0nvHsYWOGEFckovHsYWOE4lcwnvHsYWOE4lcxnvHsYWOE4lcynvHsYWOE4lcznvHi0VOsEVZtovPi8Db8DCLv3BLvnvHLYzSG0SLJLBSF8zQxzSLJLxXs0CTC8lbko.VeESOv3BLvnPVeESOv3BLvn.VeISOv3BLvnPVeISOv3BLvn.VeMSOv3BLvnPVeMSOv3BLvn.VeQSOv3BLvnPVeQSOv3BLvnPSTESL831atUlNgM2boclakQlBMwTLwzCLt.CLJzjTwDSOv3BLvnPSTEiL831atUlNgM2boclakQlBMwTLxzSMv3BLvnPSREiL8zRMv3BLvnPSTEyL831atUlNgM2boclakQlBMwTLyzSMv3BLvnPSREyL8zRMv3BLvnPSTECM831atUlNgM2boclakQlBMwTLzzSMv3BLvnPSRECM8zRMv3BLvnPSTESM831atUlNgM2boclakQlBMwTL0zSMv3BLvnPSRESM8zRMv3BLvnPSTEiM831atUlNgM2boclakQlBMwTL1zSMv3BLvnPSREiM8zRMv3BLvnPSTEyM831atUlNgM2boclakQlBMwTL2zSMv3BLvnPSREyM8zRMv3BLvnPSTECN831atUlNgM2boclakQlBMwTL3zSMv3BLvnPSRECN8zRMv3BLvnPSTISL831atUlNgM2boclakQlBMwjLwzCLt.CLJzjTxDSOv3BLvnPSTIiL831atUlNgM2boclakQlBMwjLxzSMv3BLvnPSRIiL8zRMv3BLvnPSTIyL831atUlNgM2boclakQlBMwjLyzSMv3BLvnPSRIyL8zRMv3BLvnPSTICM831atUlNgM2boclakQlBMwjLzzSMv3BLvnPSRICM8zRMv3BLvnPSTISM831atUlNgM2boclakQlBMwjL0zSMv3BLvnPSRISM8zRMv3BLvnPSTIiM831atUlNgM2boclakQlBMwjL1zSMv3BLvnPSRIiM8zRMv3BLvnPSTIyM831atUlNgM2boclakQlBMwjL2zSMv3BLvnPSRIyM8zRMv3BLvnPSTICN831atUlNgM2boclakQlBMwjL3zSMv3BLvnPSRICN8zRMv3BLvnPSTMSL831atUlNgM2boclakQlBMwzLwzCLt.CLJzjTyDSOv3BLvnPSTMiL831atUlNgM2boclakQlBMwzLxzSMv3BLvnPSRMiL8zRMv3BLvnPSTMyL831atUlNgM2boclakQlBMwzLyzSMv3BLvnPSRMyL8zRMv3BLvnPSTMCM831atUlNgM2boclakQlBMwzLzzSMv3BLvnPSRMCM8zRMv3BLvnPSTMSM831atUlNgM2boclakQlBMwzL0zSMv3BLvnPSRMSM8zRMv3BLvnPSTMiM831atUlNgM2boclakQlBMwzL1zSMv3BLvnPSRMiM8zRMv3BLvnPSTMyM831atUlNgM2boclakQlBMwzL2zSMv3BLvnPSRMyM8zRMv3BLvnPSTMCN831atUlNgM2boclakQlBMwzL3zSMv3BLvnPSRMCN8zRMv3BLvnPSTQSL831atUlNgM2boclakQlBMwDMwzCLt.CLJzjTzDSOv3BLvnPSTQiL831atUlNgM2boclakQlBMwDMxzSMv3BLvnPSRQiL8zRMv3BLvnPSTQyL831atUlNgM2boclakQlBMwDMyzSMv3BLvnPSRQyL8zRMv3BLvnPSTQCM831atUlNgM2boclakQlBMwDMzzSMv3BLvnPSRQCM8zRMv3BLvnPSTQSM831atUlNgM2boclakQlBMwDM0zSMv3BLvnPSRQSM8zRMv3BLvnPSTQiM831atUlNgM2boclakQlBMwDM1zSMv3BLvnPSRQiM8zRMv3BLvnPSTQyM831atUlNgM2boclakQlBMwDM2zSMv3BLvnPSRQyM8zRMv3BLvnPSTQCN831atUlNgM2boclakQlBMwDM3zSMv3BLvnPSRQCN8zRMv3BLvnPSTUSL831atUlNgM2boclakQlBMwTMwzCLt.CLJzjT0DSOv3BLvnPSTUiL831atUlNgM2boclakQlBMwTMxzCLt.CLJzjT0HSOv3BLvnPSTUyL831atUlNgM2boclakQlBMwTMyzSMv3BLvnPSRUyL8zRMv3BLvnPSTUCM831atUlNgM2boclakQlBMwTMzzSMv3BLvnPSRUCM8zRMv3BLvnPSTUSM831atUlNgM2boclakQlBMwTM0zSMv3BLvnPSRUSM8zRMv3BLvnPSTUiM831atUlNgM2boclakQlBMwTM1zSMv3BLvnPSRUiM8zRMv3BLvnPSTUyM831atUlNgM2boclakQlBMwTM2zSMv3BLvnPSRUyM8zRMv3BLvnPSTUCN831atUlNgM2boclakQlBMwTM3zSMv3BLvnPSRUCN8zRMv3BLvnPSTYSL831atUlNgM2boclakQlBMwjMwzCLt.CLJzjT1DSOv3BLvnPSTYiL831atUlNgM2boclakQlBMwjMxzCLt.CLJzjT1HSOv3BLvnPSTYyL831atUlNgM2boclakQlBMwjMyzSMv3BLvnPSRYyL8zRMv3BLvnPSTYCM831atUlNgM2boclakQlBMwjMzzSMv3BLvnPSRYCM8zRMv3BLvnPSTYSM831atUlNgM2boclakQlBMwjM0zSMv3BLvnPSRYSM8zRMv3BLvnPSTYiM831atUlNgM2boclakQlBMwjM1zSMv3BLvnPSRYiM8zRMv3BLvnPSTYyM831atUlNgM2boclakQlBMwjM2zSMv3BLvnPSRYyM8zRMv3BLvnPSTYCN831atUlNgM2boclakQlBMwjM3zSMv3BLvnPSRYCN8zRMv3BLvnPSTcSL831atUlNgM2boclakQlBMwzMwzCLt.CLJzjT2DSOv3BLvnPSTciL831atUlNgM2boclakQlBMwzMxzSMv3BLvnPSRciL8zRMv3BLvnPSTcyL831atUlNgM2boclakQlBMwzMyzSMv3BLvnPSRcyL8zRMv3BLvnPSTcCM831atUlNgM2boclakQlBMwzMzzSMv3BLvnPSRcCM8zRMv3BLvnPSTcSM831atUlNgM2boclakQlBMwzM0zSMv3BLvnPSRcSM8zRMv3BLvnPSTciM831atUlNgM2boclakQlBMwzM1zSMv3BLvnPSRciM8zRMv3BLvnPSTcyM831atUlNgM2boclakQlBMwzM2zSMv3BLvnPSRcyM8zRMv3BLvnPSTcCN831atUlNgM2boclakQlBMwzM3zSMv3BLvnPSRcCN8zRMv3BLvnPSTgSL831atUlNgM2boclakQlBMwDNwzCLt.CLJzjT3DSOv3BLvnPSTgiL831atUlNgM2boclakQlBMwDNxzSMv3BLvnPSRgiL8zRMv3BLvnPSTgyL831atUlNgM2boclakQlBMwDNyzSMv3BLvnPSRgyL8zRMv3BLvnPSTgCM831atUlNgM2boclakQlBMwDNzzSMv3BLvnPSRgCM8zRMv3BLvnPSTgSM831atUlNgM2boclakQlBMwDN0zSMv3BLvnPSRgSM8zRMv3BLvnPSTgiM831atUlNgM2boclakQlBMwDN1zSMv3BLvnPSRgiM8zRMv3BLvnPSTgyM831atUlNgM2boclakQlBMwDN2zSMv3BLvnPSRgyM8zRMv3BLvnPSTgCN831atUlNgM2boclakQlBMwDN3zSMv3BLvnPSRgCN8zRMv3BLvnPSMQUL831atUlNgM2boclakQlBM0zTwzCLJzTSDESOv3BLvnPSMY0TwzCLJzTSVQTL8.iKv.iBM0DUxziau4VY5D1byk1YtUFYJzTSSISOvnPSMQjL8.iKv.iBM0jUSISOvnPSMYEQxzCLt.CLJzTSTMSOt8lakoSXyMWZm4VYjoPSMM0L8.iBM0DQyzCLt.CLJzTSVM0L8.iBM0jUDMSOv3BLvnPSMQEM831atUlNgM2boclakQlBM0zTzzCLJzTSDQSOv3BLvnPSMY0TzzCLJzTSVQDM8.iKv.iBM0DU0ziau4VY5D1byk1YtUFYJzTSSUSOvnPSMQTM8.iKv.iBM0jUSUSOvnPSMYEQ0zCLt.CLJzTSTYSOt8lakoSXyMWZm4VYjoPSMMkM8.iBM0DQ1zCLt.CLJzTSVMkM8.iBM0jUDYSOv3BLvnPSMQ0M831atUlNgM2boclakQlBM0zT2zCLJzTSDcSOv3BLvnPSMY0T2zCLJzTSVQzM8.iKv.iBM0DU3ziau4VY5D1byk1YtUFYJzTSSgSOvnPSMQDN8.iKv.iBM0jUSgSOvnPSMYEQ3zCLt.CLJzTSTkSOt8lakoSXyMWZm4VYjoPSMMUN8.iBM0DQ4zCLt.CLJzTSVMUN8.iBM0jUDkSOv3BLvnPSMQULvziau4VY5D1byk1YtUFYJzTSSECL8.iBM0DQw.SOv3BLvnPSMY0Tw.SOvnPSMYEQw.SOv3BLvnPSMQULwziau4VY5D1byk1YtUFYJzTSSESL8.iBM0DQwDSOv3BLvnPSMY0TwDSOvnPSMYEQwDSOv3BLvnPSMQULxziau4VY5D1byk1YtUFYJzTSSEiL8.iBM0DQwHSOv3BLvnPSMY0TwHSOvnPSMYEQwHSOv3BLvnvTBE1bk0CMJL0co41Y8.iKv.iBSQkbocVOwn.TPI2ap0yLJ.kQuwFY8.iBPYTZrUVOwnvQFkFak0iLJbzTiEFak0CLJLDZLEVd8.iBSUmbx8TOwnfTkYWO3HSM1n.SEQTOv3BLvn.TAcTQ8.iBPE1YkM2St0CLJLzaxUlS8LiBSwVZiUVOznPUI80av0iMJzTZjkVP8TiBMkFYoAUO1n.QF8Faj0yMJLDcxwVP8HiBCQmbrITOwDiBiLVa8vjQOcjBSkmai0CMJPkbocVOvnvUgYWY8.iBPg1bk0CLt.CLJHUXzUVOw.CLt.CLJDTav0SLv.iKv.iBSwVY20SLJ3zbzAWOwXiBSQGby0CNJT0U10CLJLxXs0CSF8zQxnvT441X8PiBTIWZm0CLJbUX1UVOvn.TnMWY8.iKv.iBREFck0SLv.iKv.iBA0Fb8DCLv3BLvnvTrU1c8DiBNMGcv0SL1nvTzA2b8jiBUckc8.iBiLVa8X0PCovHLYzSwzSLJLBSF8jL8DiBivjQOMSOwnvHLYzSzzSLJX0aoMVYy0SLJX0aoMVZtcVOvnPSuQVY8.iBP8lbzEVOv3BLvn.TB0iLJ.kPD0iLJDjbSMVOznPPx8jbj0CLJDjbLAWOvnPPx8zXz0SLJDjbLwTOwXiBAIGUx0CLJPjblQWOwnPSTUmaS0CLJzDU04lS8DCLJzDU04FU8DSLJPkbyAWOsDiLJXDU04VOv3BLvn.TuIGcRcVOw.CLt.CLJ.0axQWXM0CLJ.0axQWXxzCLt.CLJDzYzUVL8HiBAQmbvESOvnPP181XwzSLJDTa0wVL8DiBA01ajESOvnPPMQDbzESOv3BLvnPPMQDbBESOv3BLvnPPmQWYxziLJDDcxAmL8.iBAY2aiISOwnPPsUGaxzSLJDTauQlL8.iBA0DQvQmL8.iKv.iBA0DQvIjL8.iKv.iBAcFckMSOxnPPzIGbyzCLJDjcuM1L8DiBA0VcrMSOwnPPs8FYyzCLJDTSDAGcyzCLt.CLJDTSDAmPyzCLt.CLJDzYzUFM8HiBAQmbvQSOvnPP181XzzSLJDTa0wFM8DiBA01ajQSOvnPPMQDbzQSOv3BLvnPPMQDbBQSOv3BLvnPPmQWY0ziLJDDcxAWM8.iBAY2aiUSOwnPPsUGa0zSLJDTauQVM8.iBA0DQvQWM8.iKv.iBA0DQvITM8.iKv.iBAcFckYSOxnPPzIGb1zCLJDjcuMlM8DiBA0VcrYSOwnPPs8FY1zCLJDTSDAGc1zCLt.CLJDTSDAmP1zCLt.CLJDzYzU1M8HiBAQmbvcSOvnPP181X2zSLJDTa0w1M8DiBA01ajcSOvnPPMQDbzcSOv3BLvnPPMQDbBcSOv3BLvnPPmQWY3ziLJDDcxAGN8.iBAY2aigSOwnPPsUGa3zSLJDTauQFN8.iBA0DQvQGN8.iKv.iBA0DQvIDN8.iKv.iBAcFckkSOxnPPzIGb4zCLJDjcuMVN8DiBA0VcrkSOwnPPs8FY4zCLJDTSDAGc4zCLt.CLJDTSDAmP4zCLt.CLJDzYzUVLvziLJDDcxAWLvzCLJDjcuMVLvzSLJDTa0wVLvzSLJDTauQVLvzCLJDTSDAGcw.SOv3BLvnPPMQDbBECL8.iKv.iBAcFckESL8HiBAQmbvESL8.iBAY2aiESL8DiBA0VcrESL8DiBA01ajESL8.iBA0DQvQWLwzCLt.CLJDTSDAmPwDSOv3BLvnPPmQWYwHSOxnPPzIGbwHSOvnPP181XwHSOwnPPsUGawHSOwnPPs8FYwHSOvnPPMQDbzEiL8.iKv.iBA0DQvITLxzCLt.CLJDzYzUVLyziLJDDcxAWLyzCLJDjcuMVLyzSLJDTa0wVLyzSLJDTauQVLyzCLJDTSDAGcwLSOv3BLvnPPMQDbBEyL8.iKv.iBAcFckECM8HiBAQmbvECM8.iBAY2aiECM8DiBA0VcrECM8DiBA01ajECM8.iBA0DQvQWLzzCLt.CLJDTSDAmPwPSOv3BLvnPPmQWYwTSOxnPPzIGbwTSOvnPP181XwTSOwnPPsUGawTSOwnPPs8FYwTSOvnPPMQDbzESM8.iKv.iBA0DQvITL0zCLt.CLJDzYzUVL1ziLJDDcxAWL1zCLJDjcuMVL1zSLJDTa0wVL1zSLJDTauQVL1zCLJDTSDAGcwXSOv3BLvnPPMQDbBEiM8.iKv.iBiLVa8TjSVEiBM8FYk0iLJjVSuQVY8.iBy0zajUVOvnPZtkFc8.iKv.iBAQ2Z8LiK0.iBDU1X8TCLt.CLJLUcy0CNv3BLvnvT0MGU8.iKv.iBSU2bxzCLt.CLJHUYr0SL03BLvnfUkwVOv3BLvnfUxjTOv3BLvnfUxDTOv3BLvnfUxPTOv3BLvnfUxLUOv3BLvnfUxXjT8.iKv.iBVIyTxzCLt.CLJXkLR0CLt.CLJrjLI0CLt.CLJrjLA0CLt.CLJrjLD0CLt.CLJrjLS0CLt.CLJrjLFIUOv3BLvnvRxLkL8.iKv.iBKIiT8.iKv.iBSw1avUVOsXCLt.CLJPkPgMWY8.iBiLVa8TjSVIiBM8FYk0iLJjVSuQVY8.iBy0zajUVOvnPZtkFc8.iKv.iBAQ2Z8.iKv.iBDU1X8TCLt.CLJLUcy0CNv3BLvnvT0MGU8.iKv.iBSU2bxzCLt.CLJHUYr0SL03BLvnfUkwVOv3BLvnfUxjTOv3BLvnfUxDTOv3BLvnfUxPTOv3BLvnfUxLUOv3BLvnfUxXjT8.iKv.iBVIyTxzCLt.CLJXkLR0CLt.CLJrjLI0CLt.CLJrjLA0CLt.CLJrjLD0CLt.CLJrjLS0CLt.CLJrjLFIUOv3BLvnvRxLkL8.iKv.iBKIiT8.iKv.iBSw1avUVOsXCLt.CLJPkPgMWY8.iBiLVa8TjSVMiBM8FYk0iLJjVSuQVY8.iBy0zajUVOvnPZtkFc8.iKv.iBAQ2Z8.iKv.iBDU1X8DiLtTCLJLUcy0CLt.CLJLUcyQUOv3BLvnvT0MmL8.iKv.iBRUFa8DSMt.CLJXUYr0CLt.CLJXkLI0CLt.CLJXkLA0CLt.CLJXkLD0CLt.CLJXkLS0CLt.CLJXkLFIUOv3BLvnfUxLkL8.iKv.iBVIiT8.iKv.iBKISR8.iKv.iBKISP8.iKv.iBKICQ8.iKv.iBKIyT8.iKv.iBKIiQR0CLt.CLJrjLSISOv3BLvnvRxHUOv3BLvnvTr8Fbk0SK1.iKv.iBTITXyUVOvnvHi0VOE4jUznPSuQVY8HiBo0zajUVOvnvbM8FYk0CLJjlaoQWOv3BLvnPPzsVOv3BLvn.QkMVO0.iKv.iBSU2b8fCLt.CLJLUcyQUOv3BLvnvT0MmL8.iKv.iBRUFa8DSMt.CLJXUYr0CLt.CLJXkLI0CLt.CLJXkLA0CLt.CLJXkLD0CLt.CLJXkLS0CLt.CLJXkLFIUOv3BLvnfUxLkL8.iKv.iBVIiT8.iKv.iBKISR8.iKv.iBKISP8.iKv.iBKICQ8.iKv.iBKIyT8.iKv.iBKIiQR0CLt.CLJrjLSISOv3BLvnvRxHUOv3BLvnvTr8Fbk0SK1.iKv.iBTITXyUVOvnvHi0VOMMUQGEiBT0VUt0SLJTja10SLxnfUkwVOv3BLvnPPzsVOv3BLvn.SvQWOv3BLvnfTkwVOv3BLvn.Uxk1Y8.iBiLVa8zzTEcjLJPUaU4VOwnPQtYWOwLiBVUFa8.iKv.iBAQ2Z8.iKv.iBLAGc8.iKv.iBRUFa8.iKv.iBTIWZm0CLJLxXs0SSSUzQyn.UsUka8DiBE4lc8DCMJXUYr0CLt.CLJDDcq0CLt.CLJvDbz0CLt.CLJHUYr0CLt.CLJPkbocVOvnvHi0VOMMUQGQiBT0VUt0SLJTja10SL0nfUkwVOv3BLvnPPzsVOv3BLvn.SvQWOv3BLvnfTkwVOv3BLvn.Uxk1Y8.iBiLVa8vjQOEiBSkmai0SL4n.Uxk1Y8.iBWElck0CLJ.EZyUVOv3BLvnfTgQWY8DCLv3BLvnPPsAWOw.CLt.CLJLEakcWOwnfSyQGb8DiMJLEcvMWOwXiBUckc8.iBDwVd8.iKv.iBD0zTwzCLJPTSDESOv3BLvnfQMMUL8.iBF0DQwzCLt.CLJLxXs0CSF8jLJLUdtMVOzn.Uxk1Y8.iBWElck0CLJ.EZyUVOv3BLvnfTgQWY8DCLv3BLvnPPsAWOw.CLt.CLJLEakcWOwnfSyQGb8DiMJLEcvMWOwbiBUckc8.iBDwVd8.iKv.iBD0zTwzCLJPTSDESOv3BLvnfQMMUL8.iBF0DQwzCLt.CLJLxXs0CSF8zLJLUdtMVOzn.Uxk1Y8.iBWElck0CLJ.EZyUVOv3BLvnfTgQWY8DCLv3BLvnPPsAWOw.CLt.CLJLEakcWOwnfSyQGb8DiMJLEcvMWOwfiBUckc8.iBDwVd8.iKv.iBD0zTwzCLJPTSDESOv3BLvnfQMMUL8.iBF0DQwzCLt.CLJLxXs0CSF8DMJLUdtMVOzn.Uxk1Y8.iBWElck0CLJ.EZyUVOv3BLvnfTgQWY8DCLv3BLvnPPsAWOw.CLt.CLJLEakcWOwnfSyQGb8DiMJLEcvMWOwjiBUckc8.iBDwVd8.iKv.iBD0zTwzCLJPTSDESOv3BLvnfQMMUL8.iBF0DQwzCLt.CLJLxXs0SSMEFbwnPSuQVY8LiBMMkbi0CLJLEcvMWOx.iBNUWa8DyMJLxXs0SSMEFbxnPSuQVY8LiBMMkbi0CLJLEcvMWOxDiBNUWa8DyMJLxXs0SSMEFbynPSuQVY8LiBMMkbi0CLJLEcvMWOxHiBNUWa8DyMJLxXs0SSMEFbznPSuQVY8LiBMMkbi0CLJLEcvMWOxLiBNUWa8DyMJLxXs0SSMkFdwn.U4AWY8.iBM8FYwzCLJzzajISOvnPSuQ1L8.iBCMGc8TCLt.CLJLxXs0SSMkFdxn.U4AWY8.iBM8FYwzCLJzzajISOvnPSuQ1L8.iBCMGc8TCLt.CLJLxXs0SSMkFdyn.U4AWY8.iBM8FYwzCLJzzajISOvnPSuQ1L8.iBCMGc8TCLt.CLJLxXs0SSMkFdzn.U4AWY8.iBM8FYwzCLJzzajISOvnPSuQ1L8.iBCMGc8TCLt.CLJLxXs0yQxkFYJbjboQVOxPiBGITdv0CLJLxXs0ySSMTLJbUX1UVOvn.U04VY8DiLt.CLJrTY4M0Xr0SLv.iKv.iBT0zTxMVOvn.UMQDbz0CLt.CLJ.EZyUVO0.iKv.iBPg1bMMkbi0CLJ.EZy0DQvQWOv3BLvnvUNUWa8LiKv.iBWA0TxMVOvnvUPQDbz0CLt.CLJXEcuQTOv3BLvnvP0Imck0iL0n.TxU1X8TiKv.iBFgULTAWOvnvTFgUL8.iKv.iBFgULSMVOvnfQXECQz0CLt.CLJXDVxPEb8.iBSYDVxzCLt.CLJXDVxL0X8.iBFgkLDQWOv3BLvn.TuwVd8DiBDQWct0CLt.CLJrjUyMVOxXiBV8Fa8DCLv3BLvnfUuw1Ti0CLJX0arQDc8.iKv.iBPEla8.iKv.iBPElaSMVOvn.Tg4FQz0CLt.CLJLUdtMVOv3BLvnvTtM1Ti0CLJLkaiQDc8.iKv.iBS41XO4VOvn.Tuw1U8TCLt.CLJ.0cs8ja8.iBWEFUh0iL2nfTkAEZy0CLJ3zax0VOv3BLvnfTk4FY8.iBF0Fc5UVOvnvUT4TXsUVOxfiBiLVa87zTCIiBWElck0CLJPUctUVOxPiKv.iBKUVdSMFa8DCLv3BLvn.UMMkbi0CLJPUSDAGc8.iKv.iBPg1bk0SM23BLvn.TnMWSSI2X8.iBPg1bMQDbz0CLt.CLJbkS00VO43RLvnvUPMkbi0CLJbETDAGc8.iKv.iBVQ2aD0CLt.CLJLTcxYWY8HSNJ.kbkMVO03BLvnfQXECUv0CLJLkQXESOv3BLvnfQXEyTi0CLJXDVwPDc8.iKv.iBFgkLTAWOvnvTFgkL8.iKv.iBFgkLSMVOvnfQXICQz0CLt.CLJ.0arkWOvn.QzUma8.iKv.iBKY0bi0yLvnfUuwVOw.CLt.CLJX0arM0X8.iBV8FaDQWOv3BLvn.Tg4VOwPiKv.iBPElaSMVO3n.Tg4FQz0CMv3BLvnvT441X8.iKv.iBS41XSMVOvnvTtMFQz0CLt.CLJLkai8ja8.iBP8FaW0SMv3BLvn.T201St0SLJbUXTIVOyDiBRUFTnMWOvnfSuIWa8.iKv.iBRUlaj0CLJXTazoWY8.iBWQkSg0VY8LiLJLxXs0ySSMzLJbUX1UVOvn.U04VY8DiLt.CLJrTY4M0Xr0SLv.iKv.iBT0zTxMVOvn.UMQDbz0CLt.CLJ.EZyUVO0.iKv.iBPg1bMMkbi0CLJ.EZy0DQvQWOv3BLvnvUNUWa8DiKv.iBWA0TxMVOvnvUPQDbz0CLt.CLJXEcuQTOv3BLvnvP0Imck0yLyn.TxU1X8TiKv.iBFgULTAWOvnvTFgUL8.iKv.iBFgULSMVOvnfQXECQz0CLt.CLJXDVxPEb8.iBSYDVxzCLt.CLJXDVxL0X8.iBFgkLDQWOv3BLvn.TuwVd8.iBDQWct0CLt.CLJrjUyMVOyPiBV8Fa8DCLv3BLvnfUuw1Ti0CLJX0arQDc8.iKv.iBPEla8.iKv.iBPElaSMVOvn.Tg4FQz0CLt.CLJLUdtMVOv3BLvnvTtM1Ti0CLJLkaiQDc8.iKv.iBS41XO4VOvn.Tuw1U8TCLt.CLJ.0cs8ja8.iBWEFUh0yL0nfTkAEZy0CLJ3zax0VOv3BLvnfTk4FY8.iBF0Fc5UVOvnvUT4TXsUVOyXiBiLVa87zTCQiBWElck0CLJPUctUVOv3BLvnvRkk2TiwVOw.CLt.CLJPUSSI2X8.iBT0DQvQWOv3BLvn.TnMWY8TCLt.CLJ.EZy0zTxMVOvn.TnMWSDAGc8.iKv.iBW4Tcs0SLt.CLJbETSI2X8.iBWAEQvQWOv3BLvnfUz8FQ8.iKv.iBCUmb1UVOybiBPIWYi0SMt.CLJXDVwPEb8.iBSYDVwzCLt.CLJXDVwL0X8.iBFgULDQWOv3BLvnfQXICUv0CLJLkQXISOv3BLvnfQXIyTi0CLJXDVxPDc8.iKv.iBP8Fa40CLJPDc04VOv3BLvnvRVM2X8LCNJX0ar0SLv.iKv.iBV8FaSMVOvnfUuwFQz0CLt.CLJ.UXt0CLt.CLJ.UXtM0X8.iBPElaDQWOv3BLvnvT441X8.iKv.iBS41XSMVOvnvTtMFQz0CLt.CLJLkai8ja8.iBP8FaW0SMv3BLvn.T201St0SLJbUXTIVOyjiBRUFTnMWOvnfSuIWa8.iKv.iBRUlaj0CLJXTazoWY8.iBWQkSg0VY8PCLJLxXs0iSuk1bkEiBTkGbk0CLJXTL8DCLv3BLvnfQwLkbi0CLJXTLDAGc8.iKv.iBFISOv3BLvnfQxLkbi0CLJXjLDAGc8.iKv.iBKY0bi0CMwnfUuwVOw.CLt.CLJX0arM0X8.iBV8FaDQWOv3BLvn.Tg4VOv3BLvn.Tg41Ti0CLJ.UXtQDc8.iKv.iBP8Fa40CLJ.0arcUO0.iKv.iBiLVa83zaoMWYxn.U4AWY8.iBFESOw.CLt.CLJXTLSI2X8.iBFECQvQWOv3BLvnfQxzCLt.CLJXjLSI2X8.iBFICQvQWOv3BLvnvRVM2X8PiLJX0ar0SLv.iKv.iBV8FaSMVOvnfUuwFQz0CLt.CLJ.UXt0CLt.CLJ.UXtM0X8.iBPElaDQWOv3BLvn.TuwVd8.iBP8FaW0SMv3BLvnvHi0VOVMjQwn.U4AWOynvP0QWOw.iMt.CLJHUYy0iM43RMvn.QxYWOv3BLvnvQgkla8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8.iKv.iBFMkL8.iBKUVdSMFa8DCLv3BLvnvHi0VOVMjQxn.U4AWOwDiBCUGc8PSLt.CLJHUYy0yM03BLvn.QxYWOzPiK0.iBGEVZt0CLt.CLJXTSwzCLt.CLJXzTwzCLJXTSxzCLt.CLJXzTxzCLJrTY4M0Xr0SLv.iKv.iBiLVa8X0PFMiBTkGb8.iBCUGc8biKv.iBRU1b8HiMtTCLJPjb10iM03BLvnvQgkla8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8biLt.CLJXzTxzSL1nvRkk2TiwVO3jiKv.iBiLVa8X0PFQiBTkGb8.iBCUGc8DSMv3BLvnfTkMWOv3BLvn.QxYWOv3BLvnvQgkla8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8.iKv.iBFMkL8.iBKUVdSMFa8.iKv.iBiLVa8XTSOEiBWElck0CLJPUctUVOv3BLvnvRkk2TiwVOw.CLt.CLJPUSSI2X8.iBT0DQvQWOv3BLvnfQM0CLt.CLJXTSSI2X8.iBF0DQvQWOv3BLvnfUz8FQ8.iKv.iBDQWct0CLt.CLJrjUyMVOzLiBV8Fa8DCLv3BLvnfUuw1Ti0CLJX0arQDc8.iKv.iBPEla8.iKv.iBPElaSMVOvn.Tg4FQz0CLt.CLJ.0arkWOvn.Tuw1U8TCLt.CLJbTYzIWOvnvHi0VOF0zSxnvUgYWY8.iBTUmak0CLt.CLJrTY4M0Xr0SLv.iKv.iBT0zTxMVOvn.UMQDbz0CLt.CLJXTS8.iKv.iBF0zTxMVOvnfQMQDbz0CLt.CLJXEcuQTOv3BLvn.QzUma8.iKv.iBKY0bi0CMznfUuwVOw.CLt.CLJX0arM0X8.iBV8FaDQWOv3BLvn.Tg4VOv3BLvn.Tg41Ti0CLJ.UXtQDc8.iKv.iBP8Fa40CLJ.0arcUO0.iKv.iBGUFcx0CLJLxXs0iQM8zLJbUX1UVOvn.U04VY8.iKv.iBKUVdSMFa8DCLv3BLvn.UMMkbi0CLJPUSDAGc8.iKv.iBF0TOv3BLvnfQMMkbi0CLJXTSDAGc8.iKv.iBVQ2aD0CLt.CLJPDc04VOv3BLvnvRVM2X8PSMJX0ar0SLv.iKv.iBV8FaSMVOvnfUuwFQz0CLt.CLJ.UXt0CLt.CLJ.UXtM0X8.iBPElaDQWOv3BLvn.TuwVd8.iBP8FaW0SMv3BLvnvQkQmb8.iBiLVa8XTSOQiBWElck0CLJPUctUVOv3BLvnvRkk2TiwVOw.CLt.CLJPUSSI2X8.iBT0DQvQWOv3BLvnfQM0CLt.CLJXTSSI2X8.iBF0DQvQWOv3BLvnfUz8FQ8.iKv.iBDQWct0CLt.CLJrjUyMVOzXiBV8Fa8DCLv3BLvnfUuw1Ti0CLJX0arQDc8.iKv.iBPEla8.iKv.iBPElaSMVOvn.Tg4FQz0CLt.CLJ.0arkWOvn.Tuw1U8TCLt.CLJbTYzIWOvnvHi0VOC8VahEiBM8FYk0CLJPUctUVOv3BLvnvRkk2TiwVOw.CLt.CLJPUSSI2X8.iBT0DQvQWOv3BLvn.QkQma8.iKv.iBVQ2aD0CLt.CLJXjP8.iKv.iBFIzTxMVOvnfQBQDbz0CLt.CLJPTXsAWOv3BLvn.QsA2TxMVOvn.QsAGQvQWOv3BLvnPQ3MVOv3BLvnPRtoVOv3BLvnPRto1TxMVOvnPRtoFQvQWOv3BLvn.UtUVO0.iKv.iBT4VYSI2X8.iBT4VYDAGc8.iKv.iBSU1X8.iKv.iBSU1XSI2X8.iBSU1XDAGc8.iKv.iBDk1bz0CLt.CLJPjb40CLt.CLJX0ar0SLv.iKv.iBV8FaSMVOvnfUuwFQz0CLt.CLJ.UXt0CLt.CLJ.UXtM0X8.iBPElaDQWOv3BLvn.TuwVd8.iBP8FaW0SMv3BLvnfQowFa8.iBiLVa8LzasIlLJzzajUVOvn.U04VY8.iKv.iBKUVdSMFa8DCLv3BLvn.UMMkbi0CLJPUSDAGc8.iKv.iBDUFct0CLt.CLJXEcuQTOv3BLvnfQB0CLt.CLJXjPSI2X8.iBFIDQvQWOv3BLvn.Qg0Fb8.iKv.iBD0FbSI2X8.iBD0FbDAGc8.iKv.iBEg2X8.iKv.iBI4lZ8.iKv.iBI4lZSI2X8.iBI4lZDAGc8.iKv.iBT4VY8TCLt.CLJPkakMkbi0CLJPkakQDbz0CLt.CLJLUYi0CLt.CLJLUYiMkbi0CLJLUYiQDbz0CLt.CLJPTZyQWOv3BLvn.QxkWOv3BLvnfUuwVOw.CLt.CLJX0arM0X8.iBV8FaDQWOv3BLvn.Tg4VOv3BLvn.Tg41Ti0CLJ.UXtQDc8.iKv.iBP8Fa40CLJ.0arcUO0.iKv.iBFkFar0CLJLxXs0yTnEFbkEiBTkGbk0CLJPTYvQGZ8.iKv.iBD0zTxMVOvn.QMQDbz0CLt.CLJTDYmUVO2TiKv.iBE0zTxMVOvnPQMQDbz0CLt.CLJjjavUGc8.iKv.iBOUGcvUGc8.iKv.iBHk1S0QWOv3BLvnvHi0VOSgVXvUlLJPUdvUVOvn.QkAGcn0CLt.CLJPTSSI2X8.iBD0DQvQWOv3BLvnPQjcVY8bSMt.CLJTTSSI2X8.iBE0DQvQWOv3BLvnPRtAWcz0CLt.CLJ7TczAWcz0CLt.CLJfTZOUGc8.iKv.iBiLVa8zTZ3EiBPEla8.iKv.iBMkFd8TCLt.CLJ.kaMQVOvn.Tt0DQ8.iKv.iBP4VSS0CLJLxXs0SSogmLJ.UXt0CLt.CLJzTZ30SMv3BLvn.Tt0DY8.iBP4VSD0CLt.CLJ.kaMMUOvnvHi0VOMkFdyn.Tg4VOv3BLvnPSogWO0.iKv.iBP4VSj0CLJ.kaMQTOv3BLvn.Tt0zT8.iBiLVa8zTZ3QiBPEla8.iKv.iBMkFd8TCLt.CLJ.kaMQVOvn.Tt0DQ8.iKv.iBP4VSS0CLJLxXs0CVMYTLJPUdv0CLJLTcz0SL0.iKv.iBRU1b8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8.iKv.iBFMkL8.iBKUVdSMFa8.iKv.iBF8jYl0CLt.CLJXzSM8FY8.iKv.iBF8zTxMVOvn.VF0TOv3BLvn.VF0DQ8.iKv.iBXYTSS0CLJHTZgMWOv3BLvnvSL8VXj0CLt.CLJLDaoM1Z8.iKv.iBDImc8DiBR8Vcz0CLJPUdvISOsDiBiLVa8fUSFIiBTkGb8.iBCUGc8DSMv3BLvnfTkMWOv3BLvnfQMESOv3BLvnfQSESOvnfQMISOv3BLvnfQSISOvnvRkk2TiwVOv3BLvnfQOYlY8.iKv.iBF8TSuQVOv3BLvnfQOMkbi0CLJfkQM0CLt.CLJfkQMQTOv3BLvn.VF0zT8.iBBkVXy0CLt.CLJ7DSuEFY8.iKv.iBCwVZisVOv3BLvn.QxYWOwnfTuUGc8.iBTkGbxzSKwnvHi0VOSITLJHUXtcVY8.iBFIWYw0CLt.CLJXTSSI2X8.iBF0DQvQWOv3BLvnvSlY1b8.iKv.iBO0zTxMVOvnvSMQDbz0CLt.CLJzTZ30SMv3BLvnPSMMkbi0CLJzTSDAGc8.iKv.iBiLVa8LkPxnfTg41Yk0CLJXjbkEWOv3BLvnfQMMkbi0CLJXTSDAGc8.iKv.iBOYlYy0CLt.CLJ7TSSI2X8.iBO0DQvQWOv3BLvnPSogWO0.iKv.iBM0zTxMVOvnPSMQDbz0CLt.CLJLxXs0CQoMGcwn.U4AWY8.iBI4Fb0QWOv3BLvnvS0QGb0QWOv3BLvn.TxUFUowFc8.iKv.iBPMGcTkFaz0CLt.CLJLjazYjbkEWOw.CLt.CLJvza20CLt.CLJfTZmgVOv3BLvn.TuMGcFwFc8.iBiLVa8PTZyQmLJPUdvUVOvnPRtAWcz0CLt.CLJ7TczAWcz0CLt.CLJ.kbkQUZrQWOv3BLvn.TyQGUowFc8.iKv.iBC4FcFIWYw0SLv.iKv.iBL81c8.iKv.iBHk1Yn0CLt.CLJ.0ayQmQrQWOvnvHi0VOF8FajEiBRkFbvwVYy0CMJXzarQ1b8DCLt.CLJXTSuQVOv3BLvnfQSI2X8.iBBkVXy0CLt.CLJHTSuQVOv3BLvnfPSI2X8.iBFIUXzk1a8TCLt.CLJXzTr8Fbk0SLv3BLvnvPA41Yr0SMv3BLvn.SoYWY8.iBiLVa8XzarQlLJHUZvAGakMWOznfQuwFYy0SLv3BLvnfQM8FY8.iKv.iBFMkbi0CLJHTZgMWOv3BLvnfPM8FY8.iKv.iBBMkbi0CLJXjTgQWZu0SMv3BLvnfQSw1avUVOw.iKv.iBCEjamwVO0.iKv.iBLklck0CLJLxXs0iUCETLJ.UXtESOv3BLvn.Tg4VSSESOvn.Tg4VSDESOv3BLvnfUuwVL8TCLt.CLJX0PAESOwnPSuQ1TxMVL8.iBM8FYDAGcwzCLt.CLJ.UXtISO33BLvn.Tg4VSSISOvn.Tg4VSDISOv3BLvnfUuwlL8HCNtTCLJX0PAISOwnPSuQ1TxMlL8.iBM8FYDAGcxzCLt.CLJ.UXtMSOv3BLvn.Tg4VSSMSOvn.Tg4VSDMSOv3BLvnfUuw1L8DiLt.CLJX0PAMSOxnPSuQ1TxM1L8.iBM8FYDAGcyzCLt.CLJ.UXtQSOv3BLvn.Tg4VSSQSOvn.Tg4VSDQSOv3BLvnfUuwFM8TCLt.CLJX0PAQSOwnPSuQ1TxMFM8.iBM8FYDAGczzCLt.CLJzDUwzCLJzDUxzCLJzDUyzCLJzDUzzCLJ.kPwzCLJ.kPxzCLJ.kPyzCLJ.kPzzCLJHTcyESOvnfP0MmL8.iBBU2byzCLJHTcyQSOvnvTk4FYwzCLt.CLJLkaSI2XwzCLJLkaDAGcwzCLt.CLJLUYtQlL8.iKv.iBS41TxMlL8.iBS4FQvQmL8.iKv.iBAQGcS0SLJLxXs0yQxkFYFgkBGIWZj0CM2nvQBkGb8.iBiLVa8zzajYDVwnPSuQVY8.iBCUlaz0iLv3BLvnvTvUFY8TCLt.CLJ.EZOYlY8TCLt.CLJPDbzgVO0.iKv.iBFUVYB0CLt.CLJzTZ30SMv3BLvn.SCUGc8.iKv.iBHMTcz0SLv.iKv.iBQUWXj0CLt.CLJDEbnMWOxTiKv.iBLUVb8.iKv.iBHUVb8.iKv.iBQESOv3BLvnPTxzCLt.CLJTTTu4VOwnvHi0VOM8FYFgkLJzzajUVOvnvPk4Fc8HCLt.CLJLEbkQVO0.iKv.iBPg1SlYVO0.iKv.iBDAGcn0SMv3BLvnfQkUlP8.iKv.iBMkFd8TCLt.CLJvzP0QWOv3BLvn.RCUGc8DCLv3BLvnPT0EFY8.iKv.iBQAGZy0iL03BLvn.SkEWOv3BLvn.RkEWOv3BLvnPTwzCLt.CLJDkL8.iKv.iBEE0at0SLJLxXs0CQkwVX4EiBM8FYk0CLJzTZ30CLt.CLJXjP8DCLt.CLJLjP8HSMt.CLJvDT8DCLv3BLvn.RP0CLt.CLJPjb10CLt.CLJLUdtMVL8PiBSkmaiISOznvT441XyzCMJLUdtMFM8PiBTASOw.CLt.CLJPUL8DCLv3BLvn.UxzSLv.iKv.iBTMSOw.CLt.CLJ.UXtESOsDCLv3BLvn.Tg4lL8DCLv3BLvn.Tg41L8zRLv.iKv.iBPElazzSLv.iKv.iBiLVa8PTYrEVdxnPSuQVY8.iBMkFd8.iKv.iBFITOw.iKv.iBCITOxTiKv.iBLAUOw.CLt.CLJfDT8.iKv.iBDImc8.iKv.iBSkmaiESOznvT441XxzCMJLUdtM1L8PiBSkmaiQSOzn.UvzSLv.iKv.iBTESOw.CLt.CLJPkL8DCLv3BLvn.UyzSLv.iKv.iBPElawzSKw.CLt.CLJ.UXtISOw.CLt.CLJ.UXtMSOsDCLv3BLvn.Tg4FM8DCLv3BLvnvHi0VOSgVXvU1LJPUdvUVOvn.QkAGcn0iLy3RMvn.QMMkbi0CLJPTSDAGc8.iKv.iBEQ1Yk0CM23RMvnPQMMkbi0CLJTTSDAGc8.iKv.iBI4Fb0QWOv3BLvnvS0QGb0QWOv3BLvn.Ro8Tcz0CLt.CLJLxXs0yTnEFbkQiBTkGbk0CLJPTYvQGZ8.iKv.iBD0zTxMVOvn.QMQDbz0CLt.CLJTDYmUVO2TiKv.iBE0zTxMVOvnPQMQDbz0CLt.CLJjjavUGc8.iKv.iBOUGcvUGc8.iKv.iBHk1S0QWOv3BLvnvHi0VOMkFd0n.Tg4VOv3BLvnPSogWO0.iKv.iBP4VSj0CLJ.kaMQTOv3BLvn.Tt0zT8.iBiLVa8zTZ3YiBPEla8.iKv.iBMkFd8TCLt.CLJ.kaMQVOvn.Tt0DQ8.iKv.iBP4VSS0CLJLxXs0iTkYWLJzzajUVOvn.QxkWO3HiKv.iBWUFc8TiLt.CLJXjP8PyLt.CLJPTXsAWOz3BLvnvTooWY8bSMt.CLJLEbj0SMv3BLvn.QvQWO0.iKv.iBDYjP8bCLt.CLJPzTooWY8TCLt.CLJTTSogWOw.CLt.CLJPTSuQVO0.iKv.iBDMEbj0SM03BLvn.TxUVOv3BLvnvHi0VOC8VavEiBTkGbk0SLJHUXz0SLt.CLJPEZxU1b8zhLv3BLvnPPzQWOy.iKv.iBRUFa8TCLt.CLJjjavUGc8.iKv.iBOUGcvUGc8.iKv.iBiLVa8LzasAmLJPUdvUVOwnfTgQWOw3BLvn.UnIWYy0SKx.iKv.iBAQGc8LCLt.CLJHUYr0SMv3BLvnPRtAWcz0CLt.CLJ7TczAWcz0CLt.CLJLxXs0SQQEiBlMVL8HCLt.CLJHWYyESOxTiKv.iBmEVZtESOv3BLvnfYiISOz.iKv.iBxU1bxziL03BLvnvYgklaxzCLt.CLJX1XyziMv3BLvnfbkM2L8HSMt.CLJbVXo41L8.iKv.iBlMFM8fCLt.CLJHWYyQSOxTiKv.iBmEVZtQSOv3BLvnvHi0VOEEkLJX1XwziLv3BLvnfbkMWL8HSMt.CLJbVXo4VL8.iKv.iBlMlL8PCLt.CLJHWYyISOxTiKv.iBmEVZtISOv3BLvnfYiMSO1.iKv.iBxU1byziL03BLvnvYgklayzCLt.CLJX1XzzCNv3BLvnfbkMGM8HSMt.CLJbVXo4FM8.iKv.iBiLVa8X0PFUiBTkGb8.iBCUGc8DSMv3BLvnfTkMWOv3BLvn.QxYWOv3BLvnvQgkla8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8.iKv.iBFMkL8.iBKUVdSMFa8.iKv.iBiLVa8X0PFYiBTkGb8.iBCUGc8DSMv3BLvnfTkMWOv3BLvn.QxYWOv3BLvnvQgkla8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8.iKv.iBFMkL8.iBKUVdSMFa8.iKv.iBiLVa8LkPynfTg41Yk0CLJXjbkEWOv3BLvnfQMMkbi0CLJXTSDAGc8.iKv.iBOYlYy0CLt.CLJ7TSSI2X8.iBO0DQvQWOv3BLvnPSogWO0.iKv.iBM0zTxMVOvnPSMQDbz0CLt.CLJLxXs0CVMYzLJPUdv0CLJLTcz0SL0.iKv.iBRU1b8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8.iKv.iBFMkL8.iBKUVdSMFa8.iKv.iBF8jYl0CLt.CLJXzSM8FY8.iKv.iBF8zTxMVOvn.VF0TOv3BLvn.VF0DQ8.iKv.iBXYTSS0CLJHTZgMWOv3BLvnvSL8VXj0CLt.CLJLDaoM1Z8.iKv.iBDImc8DiBR8Vcz0CLJPUdvISOsDiBiLVa8PTZyQ2LJPUdvUVOvnPRtAWcz0CLt.CLJ7TczAWcz0CLt.CLJ.kbkQUZrQWOv3BLvn.TyQGUowFc8.iKv.iBC4FcFIWYw0SLv.iKv.iBL81c8.iKv.iBHk1Yn0CLt.CLJ.0ayQmQrQWOvnvHi0VODk1bzQiBTkGbk0CLJjjavUGc8.iKv.iBOUGcvUGc8.iKv.iBPIWYTkFaz0CLt.CLJ.0bzQUZrQWOv3BLvnvPtQmQxUVb8DCLv3BLvn.SucWOv3BLvn.RocFZ8.iKv.iBP81bzYDaz0CLJLxXs0iS0IUY1EiBPIWY8.iKv.iBDEVav0CNv3BLvn.QkMVX40SMv3BLvnvTooWY8DCLv3BLvn.Uu4VY8.iKv.iBWkFYzgVO2TiKv.iBMkFd8HCLt.CLJLxXs0iVME1bJHUYzESOv3BLvnfTkQmL8.iKv.iBME1bz0SLv.iKv.iBXkULL0CM3n.VYICS8PSNJfUVyvTO0.iBXkEML0SMwn.VYECU8TiLJfUVxPUO0LiBXk0LT0SMzn.VYQCU8TSMJ7zTCESO0XiBOM0PxzSM2nvSSMzL8TCNJ7zTCQSO0jiBMMUQGESO1.iBMMUQGISO1DiBMMUQGMSO1HiBMMUQGQSO1LiBMMUQGUSO1PiBMMUQGYSO1TiBMMUQGcSO1XiBMMUQGgSO1biBRUlcwziM3n.TtMSOwLiBP4FM8.iBP4VM8.iBP4lM8.iBP41M8.iBP4FN8.iBP4VN8.iBP4VLvzCLJ.kawDSOvnfTgM1ZvziM4nfTgM1ZwzyMvnvHi0VOLEVdMUVaJvTX40TYsESOvn.SgkWSk0lL8.iBLEVdMUVayzCLJvTX40TYsQSOvn.SgkWSk0VM8.iBJnfBu7BHSU1Xzk1atAhYuIGH0cFa4AxXu0FbxU1byUFYfHVZtElb4ABQgQWXJ7xKfPzSNcBUfP0SUMDRfPERIMkBJPBIjPxM2LCMvnvOgEVXgkVXjAmNpslZpolZr8lNmQ1YiUlakIlNgEVXgkVXrAmNgEVXgEVXjAmNgEVXgEVXkElNiEVXgEVXgElNJDFYgEVXgEVX5DVYgEVXgEVX5DVXmY1YmclX5DVX5T1X5PFb5vFb5v1a5P1a5jVX5TVX5LVX5blY5PVa5TlX5DlBqoSagoyYsoyZgoiXgoCZgoCZooCYtoyYgoSXloCZkoCYgoyagoCatExbAElXAkyXvYlYnQlRnMVPxTCLygTPwn.LBclXmM1YhkTYvg1Xmo1SJglZIQlXi81YoQ1XREDM1LGRAcCMygTPw.yZlQVYgwlYioVagMVaiUlYo0lass1aJPlZqcFVkAWZjMFYhYVVlQVZj0FZlcFZqEFZkU1ZtUVZmglamUVZvcVTiY1anszau8laYMFZpclRgcFYr0FZiQlBiUVZvsTXnc1XYoFbgkFahI1Yt0lZr8VajwVXjA2YtQFajMWdAcCTtUFZrElZyETXhETNkQ1YoclXnM1SJgFYIoPYocFbOc1XnM1YvgFZAICMvL2QAEyL3LWPgIVPxXSMycTP1DWPwHyMycTP1DWPwHyMygTPw.idnY1SWkDZjcFYJblXOoTPxHSb1ETLHESPwbDRAECTHETLNgTPwjERyETXiETMwEzLwYWPwfTLAEyQHETLPgTPw3DRAESVHEjLLEjBwDESAESRLETLXwTPwfDSAEiYgwTPwTESAEiTLETLGwTPwjVZLETLpEFSAEiZowTPw.ESAEyZowTPwvVXLETLroPZLETLNwTPwzVZLETLtEFSAEiaowTPwjESAEyaowTPw.WXLETLvkFSAIiPAESXkITPwDVZBETLg0lPAESTBETLJHVYBETLhklPAEiXsITPwjjPAEyXkITPwLVZBETLi0lPAECVBETLjUlPAECYoITPwrjPAECRBETLkUlPAESYoIjBAESYsITPwXVXBETLlUlPAEiYoITPwXVaBETLUITPwbVYBETLmklPAEySBETLRITPwbkPAEyTBETLn0lPAEyQBoPPwj1XBETLoUlPAESZmITPwjVZBETLoslPAESZsITPwj1aBETLpElPAEiZiITPwnVYBETLpclPAEiZoITPwn1ZJHTPwnVaBETLp8lPAECTBETLqMlPAEyZkITPwr1YBETLqklPAEyZqITPwrVaBETLq8lPAECagITPwv1XBETLrUlBBETLrclPAECaoITPwv1ZBETLr0lPAESQBETLNITPwz1XBETLsUlPAESamITPwzVZBETLsslPAESasITPwz1aBoPPw3VXBETLtMlPAEiakITPw31YBETLtklPAEiaqITPw3VaBETLt8lPAESVBETLuMlPAEyakITPw71YBETLuklPJDTLuslPAEyasITPw71aBETLvElPAECbiITPw.WYBETLvclPAECboITPw.2ZBETLv0lPAECbuIzbXE1XAUSbAMiB3E1XAISXiEjLgIVdAIiLxYWbAMibAESVHETLHMTPyHWPwfDSAcibAEyQLEzMxETLPwTP2HWPw3DSAcibAESVLoPP2HWPxHTP2HWPwDkPAcibAESRBEzMxETLXITP2HWPwfjPAcibAEiYgITP2HWPwTkPAcibAEiTBEzMxETLGITPJbibAESZoITP2HWPwnVXBEzMxETLpklPAcibAECTBEzMxETLqklPAcibAECagITP2HWPwvVZBEzMxETLNITP2HmBAESaoITP2HWPw3VXBEzMxETLtklPAcibAESVBEzMxETLuklPAcibAECbgITP2HWPw.WZBEzMxETL0LGVgMVP0nPbAMCdgMVPxD1XAISXhkWPxHib1EWPyHWPwjERAECRCEzLxETLHwTP2HWPwbDSAcibAECTLEzMxETLNwTP2HWPJDSVLEzMxEjLBEzMxETLQITP2HWPwjjPAcibAECVBEzMxETLHITP2HWPwXVXBEzMxETLUITP2HWPwHkPAcibAEiBGITP2HWPwjVZBEzMxETLpElPAcibAEiZoITP2HWPw.kPAcibAEyZoITP2HWPwvVXBEzMxETLrklPAcibAEiSBoPP2HWPwzVZBEzMxETLtElPAcibAEiaoITP2HWPwjkPAcibAEyaoITP2HWPw.WXBEzMxETLvklPAcibAESMygUXJLVP0DWPyfWXiEjLgMVPxDlX4EjLxHmcwEzLxETLYgTPwfzPAMibAECRLEzMxETLGwTP2HWPw.ESAcibAEiSLEjB2HWPwjESAcibAIiPAcibAESTBEzMxETLIITP2HWPwfkPAcibAECRBEzMxETLlElPAcibAESUBEzMxETLRITP2nfbAEyQBEzMxETLoklPAcibAEiZgITP2HWPwnVZBEzMxETLPITP2HWPwrVZBEzMxETLrElPAcibAECaoITP2HWPJDiSBEzMxETLsklPAcibAEiagITP2HWPw3VZBEzMxETLYITP2HWPw7VZBEzMxETLvElPAcibAECboITP2HWPwTiBygUXiETMwEzL3E1XAISXiEjLgIVdAIiLxYWbAMibAESVHETLHMTPyHWPwfDSAcibAEyQLEzMxETLPwTP2HWPwnfSLEzMxETLYwTP2HWPxHTP2HWPwDkPAcibAESRBEzMxETLXITP2HWPwfjPAcibAEiYgITP2HWPwTkPAcibAEiTJHTP2HWPwbjPAcibAESZoITP2HWPwnVXBEzMxETLpklPAcibAECTBEzMxETLqklPAcibAECagITP2HWPwvVZBEjB2HWPw3jPAcibAESaoITP2HWPw3VXBEzMxETLtklPAcibAESVBEzMxETLuklPAcibAECbgITP2HWPw.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.QqUlXhsDQGgTYoYDVqcVZmUDag01ahglQo0VYqIVZDoVXvoFbvUTPg0FYpMTYkAUSCcEVgwFQtEVZoglaC8VZJL1XiIFQl0lZtYVZCYVagAWYvQDTngVXvYzQk81Zlo0UmMVXtMzTlQlZsYTPoQ1YnMDRocVarQkXoslXtQlQq0lBKMFaD8VZpY1XjQzQoAGZqYDaokjZhUjSmcVXsQkagU1aVQTTtMFbpUDasE1YiU1PgklYj0FaF0VZugFZvMzbAoPXiETMwkzYi8lXFYVYvcFSCIkXqMFbFczXjQlXF4VZpoFZiQjZkAWXSQDVtI1XiUTTr0FbrUTPrUlXoQEbsg1YJH1XDQVYuclXjQTRjoVZuYTUqolYqYjXsAWYBMTaoYlXtQlQqklXnMlaCgDYqYVYEEjZqwFYjwVXkM0YrQDRsYlBnwFQYYFakcVQrUVLQQjaog1aq8VQtkVanIzPIY1ZnQ1Pjk1XvkFZEYVYtclXpQzQhkVasoUao0VYFQTXo4lYoovaE0VYnsVYsMTZoA2Zns1PN01ZnAWQtk1YnwVZEk0aukEUNsjZmUjSv0Faso0XsgFYnc1PvUFboY1ZCkjVhgVQJDTZpoVZEE0anIFZFAWYjUVXpQTUlAGQEoVZkk1XoMjasA2XMMDao4FbvgVQpklQiUFQAYFagMFUhklao4lYEcjBlkFagwVaGg1XSMTYoE1XlY1PtE1anY1YEYVZtcVavUDVqwVZoYzQlslYjUjZg8VYhslQhUVYkclXDYVXqAWYuo.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.yLVEjLyEkBAYiclkVYsszXkgFbyTUYogkXogFbyLWP2EjL1EDNwjSLycWP2X1ZjMVRlg1Yhg1YJc0Yhc1XOoTRkY1TRcFbnovXWETLxLWXkcWPxXWP2TWbAESL4TWbAESL2vVZjMVcwETLwjScwETLwjScwETLwjScwETLwjScwETLwjScwETLJDSN0EWPwDSN0EWPwDSN0EWPwDSN0EWPwDSN0EWPwDSN0EWPwDSN0EWPwDSN0EWPwDSMzEzLwETLwTCcAMSbAEiBwTCcAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcAMSbAESL0PWPyDWPwnPL0PWPyDWPwDSMzEzLwETLwTCcAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcAMSbAQiLvbSdyEUP1X2YhYlXKMVYJjzXpgFbwTUYogkXogFbyLWP2EjL1EDNwjSLycWP2X1ZjMVRlg1Yhg1YJc0Yhc1XOoTRkY1TRcFbnM1UAEiLyElBkcWPxXWP2TWbAESL4TWbAESL4TWbAESL4TWbAESL4TWbAESL4TWbAESL4TWbAESL4TWbAESL4TWbAESL4TWbAoPLwjScwETLwjScwETLwjScwETLwjScwETLwjScwETLwjScwETLwTCcAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcJDzLwETLwTCcAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcAMSbAESL0PmBAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcAMSbAESL0PWPyDWPzHCL2j2bQEjM1YVZk01RiUFZvMSUkkFVhkFZvovLyEzcAIicAgSL4Dyb2EzMlsFYikjYnclXnclRWclXmM1SJkTYlMkTmAGZicUPwHybQEjM1Y1XlIVYlEDZvQCZJ7FRCgFbyLWTAYiclMlYhUlYAgFbzf1aHMDZvMybQEjM1YVZk01RiUFZvMSUkkFVhkFZvMybQEjM1YVZk01RiUlBnA2LUUVZXIVZnA2LyEUP1XmYoUVaKMVYnA2LUUVZXIVZnA2LyEUP1XmYoUVaKMVYnA2LUUVZXIVZnA2LyEVa3oPPxDWYkUlZlMVYngWXmEjLk41YvcVYkclYoQlXAESXoIlXAESYtcFbmUVYmYVZjMVPwzjXiETLkUlROclXnoFYJHVPwzjXkETLyXFYmk1YhIkRjQVPwDVZhIVPwXFYmk1YhIkRjUVPwzjXiETLk41YpMEYlEzLMcUPwLiYmUFYkclBjYVPyDlXhIVPwX1Xmo1YucFZjQVPxzDZiETLkQ1YvclaRQlXAISShUVPwTFYmA2YtIEYiEjLMIVZAESYlYlXjofXAQSShIVPwTlYlIFYiEDMMI1XAEiYioDZmQlXAMSShIVTAY1YkQVYmQ1YAMSXiIVZAEiYjIDYjEDMMIlXAEiYJjVYtU1YjQVPyzDZiETLkU1YpgFYWQFYAISShUVPwTVYmoFZjcEYkEjLMIVZAESYuglYlMlRncFYhETLMIlXQEjBkUlROclXnoFYiETLMIVZAESYtclZSQ1YAMSSSEDM4Lyb2EDNmo1SWoDZigFYAkDZi8VZgQ1YoIlZhUlXiETLYovRGoVZuo1RpklSuA2Rg4VPxL2cAgyYp8zUJg1Xk41YvcVYAY1ajU1YoIlZhUlXiEjLjkVUFYEYooVZNEFbjkVXJvVPxL2cAgyYug1YlQlTJEyYkEzXlUlajc1YoIlZhUlXiETLQQ1YtE1SQQ1YpklShAGYmI1XAIyb2EDNJ8zYhglBpEjL1LWPgIVPw.CZlc0Yvc1YwjzXmkjYioDZjcFbm81Yhc1amQlRAszQpk1apsjZo4zavsTXtEjLsMFZh4VZpoPYAMSRnM1aoEFYv01am8FbKAWZuc1avsTXnEjLVETXjYUXhEjLoYlZo8lZKEzZl4FZ3EDMRg1XukFdAQCdUMFYJ71ZKMkUnslZlwVXggVSVkVZuIFbvQjXjAmXlElZpwVZs4lYtA0Qpk1apsDdGoVZuo1RWMFYus1RAUSVKwVXgglBMYEaoA2Yl4FTmU1YtcFYm4VXsEjLrgVavc1YpY1TVg1ZpYFagEFZMY0Xo81XvAGQgglaic1YpYVPsklanEFYroPXggVSVEVaAIyYkclamQ1YtEzL4EzLv01ahAGbDkVZUoDTkYVSnslZlMkUnslZloVZUoDTgUVYnc1YPgTTMY0XJTVXkETLtglZg4VZpUFbgIlYuo1R4EVaAIybAElXAECLmo1SWoDZikTYtcFbmUFZl8zYhc0YpcFbm8VPwPVZUYjBVQVZpklSgAGYoEFaAISaiglXtklZkEzLIMlZl8FYkoVYtYVXvQVZpElalEFbjkVdg4VPqwVXiElXAIiRFYEYooPPqYlangWPzH0XpY1ajUVP2fmTjolUjk1TVg1ZpYVVlglUjkVZo8lXvAGQhQFbhYVXpoFao0lal4FTUYjUjkFdJTkQVQVZoUFYpYEYoEjMjkVVlglUjkFaoA2Yl4FTmU1YtcFYm4VXsEjLrgVavc1YpY1TVg1ZpYVVlglUjk1Xo8lBiAGbDEFZtM1YmolYAwlZtgVXjkkYnYEYoEVaAIyYkclamQ1YtEzL4EzLv01ahAGbDkVZUoDTkYVSnslZlMkUnovZpYlZoUkRPEVYkg1YmAEbg01auc1XsMVYgUVPw3FZpElaooVYUQ1ZVQVZVEjLg0VPxLWPgIVPw.yYug1YJ8zYJ.mTJkTYkozYjclXnoVRicVRlMlROozYhgFYJkjYkclZm4lRnQVPwz1XnIlaooVYAMiTiYVYtQ1Yk0VaiIFbjclBkkVaiIFbjcVXmEjLVETZhEFYgIVPx3lYOEEYmEzZl4FZ3EDMNMlYk4FYmEzM3I0Xp4laKMkUnslZlcTXj4FZKoPZo8lXvAGQhQFbhYVXpoFao0lal4FTtE1SQQ1Y34VXOEEYmkVYiolatsTP0DEYmcTXj4FZKwVZvclYtA0YkclaJbFYm4VXsEjLrgVavc1YpY1TVg1ZpY1QgQlanszXo81XvAGQgglaic1YpYVPsQlanEFYGEFYtg1Rg0VPxbVYm4lBmQ1YtEzL4EzLv01ahAGbDkVZUoDTkYVSnslZlMkUnslZloVZUoDTgUVYnc1YPYVXg4VTjc1XkEVYAEianoVXtoPZpUlZgMVaQQ1YgcVPxDVaAIybAElXAECLmo1TIM1YIU1YJEyYkc1XmI1YjcFaAICMwL2cAgCbnk1agcVPyTFZJ7lZiYVXhETLw.UXmolagIVPyL2cAgyYpc1ai4lYjclXng1XtYVXOgFYi4lYjglXnYVP2vVXSMFahgVXhEjLp0lBycWP3.GZo8VXmEzLkg1apMlYgIVPwDCTgclZtElXAMyb2EDNJ8TLnQVRkc1SmolTwnDZiETL2DlXycWP2nGZlovSWETL1TlYm8FZmQ1XAMyb2EzM5glYOcUPwXSYlc1ancFYjEzLycWP2nGZl8zUAEiMkY1Yug1YjUVPyL2cAcidJflYOcUPwXSYtYFYkYVYnQlXAIyb2EzM5glYOcUPxPyb2EzM5glYOcUPxPyb2EzM5glYOcUPxPyb2EzM5glYOckBAICMycWP2nGZl8zUAEiMk4lYjUlYkgFYiEjLyETXhEDNBEjL0TybAElXAgiPAISM0zCN1XCNzjiB..."
             base64:layout="55.LETVOUEU..P.A7TUTAUUTME..DP.BU0T.Df.o4FYkgG.ATP......vVX48VczAP.ET.SfHE...">
-      <MACROPARAMETERS id="1054"/>
+      <MACROPARAMETERS id="1093"/>
       <MODIFIERASSIGNMENTS/>
-      <AUTOMATIONCURVE paramID="63">
-        <POINT t="0.0" v="0.5" c="0.0"/>
-        <POINT t="0.2000000029802322" v="0.6274170279502869" c="0.0"/>
-      </AUTOMATIONCURVE>
-      <AUTOMATIONCURVE paramID="0">
-        <POINT t="0.0" v="0.02738624997437" c="0.0"/>
-        <POINT t="0.0" v="0.7071067690849304" c="0.0"/>
-        <POINT t="2.0" v="0.75" c="0.0"/>
+      <AUTOMATIONCURVE paramID="574">
+        <POINT t="0.0" v="1.0" c="0.0"/>
+        <POINT t="1.618887060128571" v="0.5" c="0.0"/>
+        <POINT t="32.37774072010549" v="1.0" c="0.0"/>
       </AUTOMATIONCURVE>
     </PLUGIN>
-    <PLUGIN type="volume" id="1045" enabled="1" remapOnTempoChange="1">
-      <MACROPARAMETERS id="1046"/>
+    <PLUGIN type="vst" uid="436f6d70" filename="/home/charles/.vst/DAW Essentials Collection/#TCompressor.so"
+            name="#TCompressor" manufacturer="Tracktion" windowLocked="1"
+            id="1219" enabled="1" programNum="0" state="1279.CMlaKA....fQBMDZ....ALzasAG.A..I....V..............................................................................................................................................................................AeAkTOcjTA0D.AP.brU2Yo4VRDAP.MT.UC8VavIWYyM2axA.bx81YxEVaDklbzkG.ADf.iUmbxUlazAkbuclbg0F.ADQAFE1Xz8lb4ABQkYVX0wFc..mbuclbg0VRDA..AfATAIUPMAP.BjFY.D.BEDFczE1XqAfcgwVckAP.IP........PR.A.TAIUPMAP.BjFY.D.DEDVcz8VSgsVYUA2Qgkla.XWXrUWY.DPBD.............UPRETS.Df.oQF.A3PAjkmag0VZiMWSuQVY.XWXrUWY.DPBD.............UPRETS.Df.oQF.AfPAk4VXhwVY.XWXrUWY.DPBD.........+O..UPRETS.Df.oQF.ADQAlkFazUlbFIWYwUWYtMVd.XWXrUWY.DPBD........tGP..UPRETS.Df.oQF.AvPAlkFazUlbGEVZtAfcgwVckAP.IP.............TAIUPMAP.BjFY.DPBEXVZrQWYxEE.1EFa0UF.Aj.A.....9++u+C.PEjTA0D.AHPZjAP.MTfYowFckI2TnEFbkAfcgwVckAP.IP.............TAIUPMAP.BjFY.DPCEXVZrQWYxMEcgQWY.XWXrUWY.DPBD.............UPRETS.Df.oQF.AXPAn8FajAfcgwVckAP.IP.............TAIUPMAP.BjFY.DvBEjlavUGcGEVZtAfcgwVckAP.IP.............TAIUPMAP.BjFY.DvAEvVZskFc.XWXrUWY.DPBD.............UPRETS.Df.oQF.ArPAr81aqEFZkEFY.XWXrUWY.DPBD.............UPRETS.Df.oQF.AvPAsE1ZkUEbGEVZtAfcgwVckAP.IP.............TAIUPMAP.BjFY.DfCEzVX3MUcsQTYzU1XzAfcgwVckAP.IP.............TAIUPMAP.BjFY.DfDEz1atkFcuI2ToQVYigVXo4F.1EFa0UF.Aj.A............PEjTA0D.AHPZjAP.GTfbgQWZuAfcgwVckAP.IP.....ve7E++..TAIUPMAP.BjFY.DPBEHWYrUVXyUF.1EFa0UF.Aj.A.....MyfvAD.PEjTA0D.AHPZjAP.ITfbsMGTkE1Z.XWXrUWY.DPBD.............UPRETS.Df.oQF.AnPAy8lYzMDaoAG.1EFa0UF.Aj.A........v+C.PEjTA0D.AHPZjAP.STvbuYFcCwVZvQEZxU1bn8FajAfcgwVckAP.IP.........F.C.TAIUPMAP.BjFY.DfBEL2alQ2RtUVY.XWXrUWY.DPBD.............UPRETS.Df.oQF.ArPAzglbkMGZuwFY.XWXrUWY.DPBD.....3QgSCv..UPRETS.Df.oQF.A3PA0MWYSkFYkMFZgkla.XWXrUWY.DPBD.........+O.."
+            base64:layout="131.LETVOUEU..P.BjjSPUEUSA..AHfPUME.AHPZtQVY3AP.ED......rEVduUGc.DPAEvDHRA..BU0T.Df.o4FYkgG.ATP.A....vVX48VczAP.CTvP..vSUQETUQ0T..P.AHTUSAP.BjlajUFd.DPAA......agk2a0QG.ATPALAhT..."
+            sidechainSourceID="1131">
+      <MACROPARAMETERS id="1220"/>
       <MODIFIERASSIGNMENTS/>
     </PLUGIN>
-    <PLUGIN type="level" id="1049" enabled="1">
-      <MACROPARAMETERS id="1050"/>
+    <PLUGIN type="volume" id="1084" enabled="1" remapOnTempoChange="1" volume="0.5488116145133972">
+      <MACROPARAMETERS id="1085"/>
+      <MODIFIERASSIGNMENTS/>
     </PLUGIN>
+    <PLUGIN type="level" id="1088" enabled="1">
+      <MACROPARAMETERS id="1089"/>
+    </PLUGIN>
+    <PLUGIN type="auxsend" windowLocked="1" id="1096" enabled="1" quickParamName="send level"
+            busNum="1" auxSendSliderPos="0.6603402495384216">
+      <MACROPARAMETERS id="1097"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <PLUGIN type="auxsend" windowLocked="1" id="1100" enabled="1" quickParamName="send level"
+            busNum="0" auxSendSliderPos="0.4065696597099304">
+      <MACROPARAMETERS id="1101"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <OUTPUTDEVICES>
+      <DEVICE name="(default audio output)"/>
+    </OUTPUTDEVICES>
+  </TRACK>
+  <TRACK id="1104" midiVProp="0.28125" midiVOffset="0.359375" name="organ2">
+    <MACROPARAMETERS id="1106"/>
+    <MODIFIERS/>
+    <MIDICLIP name="clip16" start="6.07082638501978" length="2.023608795006593"
+              offset="0.0" id="1474" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="44" b="0.125" l="0.125" v="90" c="0"/>
+        <NOTE p="44" b="0.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="0.625" l="0.125" v="80" c="0"/>
+        <NOTE p="44" b="0.875" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.125" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="3.125" l="0.125" v="70" c="0"/>
+        <NOTE p="44" b="3.375" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="3.625" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="3.875" l="0.125" v="60" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip17" start="8.094435180026373" length="2.023608795006593"
+              offset="0.0" id="1523" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="44" b="1.125" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="1.375" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.625" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.875" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="3.125" l="0.125" v="70" c="0"/>
+        <NOTE p="44" b="3.375" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="3.625" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="3.875" l="0.125" v="60" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip18" start="10.11804397503297" length="2.023608795006593"
+              offset="0.0" id="1576" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="44" b="1.375" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.625" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.875" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="3.125" l="0.125" v="70" c="0"/>
+        <NOTE p="44" b="3.375" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="3.625" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="3.875" l="0.125" v="60" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip19" start="12.14165277003956" length="2.023608795006593"
+              offset="0.0" id="1609" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="44" b="1.125" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="1.375" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.625" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.875" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="3.125" l="0.125" v="70" c="0"/>
+        <NOTE p="44" b="3.375" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="3.625" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="3.875" l="0.125" v="60" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip20" start="14.16526156504615" length="2.023608795006593"
+              offset="0.0" id="1648" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="44" b="1.125" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="1.375" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.625" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.875" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="3.125" l="0.125" v="70" c="0"/>
+        <NOTE p="44" b="3.375" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="3.625" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="3.875" l="0.125" v="60" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip21" start="16.18887036005275" length="2.023608795006595"
+              offset="0.0" id="1665" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="44" b="1.125" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="1.375" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.625" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="1.875" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="3.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="3.625" l="0.125" v="80" c="0"/>
+        <NOTE p="44" b="3.875" l="0.125" v="60" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip22" start="18.21247915505934" length="2.023608795006595"
+              offset="0.0" id="1696" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="44" b="1.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="1.625" l="0.125" v="70" c="0"/>
+        <NOTE p="44" b="1.875" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="3.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="3.625" l="0.125" v="80" c="0"/>
+        <NOTE p="44" b="3.875" l="0.125" v="60" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip23" start="20.23608795006593" length="2.023608795006592"
+              offset="0.0" id="1711" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="44" b="1.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="1.625" l="0.125" v="70" c="0"/>
+        <NOTE p="44" b="1.875" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="3.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="3.625" l="0.125" v="80" c="0"/>
+        <NOTE p="44" b="3.875" l="0.125" v="60" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip24" start="22.25969674507252" length="2.023608795006595"
+              offset="0.0" id="1726" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="46" b="0.875" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.125" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="2.625" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="2.875" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.125" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip25" start="24.28330554007912" length="2.023608795006595"
+              offset="0.0" id="1735" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="46" b="0.625" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.875" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.125" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="2.625" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="2.875" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.125" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip26" start="26.30691433508571" length="2.023608795006595"
+              offset="0.0" id="1750" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="44" b="0.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="0.625" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.875" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.125" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="2.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="2.625" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="2.875" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.125" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip27" start="28.33052313009231" length="2.023608795006592"
+              offset="0.0" id="1759" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="44" b="0.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="0.625" l="0.125" v="80" c="0"/>
+        <NOTE p="46" b="0.875" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="1.125" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="2.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="2.625" l="0.125" v="60" c="0"/>
+        <NOTE p="46" b="2.875" l="0.125" v="70" c="0"/>
+        <NOTE p="46" b="3.125" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip28" start="30.3541319250989" length="2.023608795006595"
+              offset="0.0" id="1774" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="48" b="0.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="0.875" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="1.125" l="0.125" v="60" c="0"/>
+        <NOTE p="48" b="2.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="2.875" l="0.125" v="70" c="0"/>
+        <NOTE p="44" b="3.125" l="0.125" v="70" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <MIDICLIP name="clip29" start="32.37774072010549" length="2.023608795006595"
+              offset="0.0" id="1783" sync="0" colour="ff00ff00" currentTake="0"
+              speed="1.0">
+      <QUANTISATION/>
+      <GROOVE/>
+      <SEQUENCE ver="1" channelNumber="1">
+        <NOTE p="48" b="0.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="0.875" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="1.125" l="0.125" v="60" c="0"/>
+        <NOTE p="48" b="1.375" l="0.125" v="60" c="0"/>
+        <NOTE p="48" b="2.375" l="0.125" v="60" c="0"/>
+        <NOTE p="44" b="2.875" l="0.125" v="70" c="0"/>
+        <NOTE p="44" b="3.125" l="0.125" v="70" c="0"/>
+        <NOTE p="48" b="3.375" l="0.125" v="60" c="0"/>
+      </SEQUENCE>
+    </MIDICLIP>
+    <PLUGIN type="vst" uid="534d4432" filename="/home/charles/.vst/u-he/Zebra2.64.so"
+            name="Zebra2" manufacturer="u-he" windowLocked="1" id="1117"
+            enabled="1" programNum="0" state="26570.CMlaKA....fQBMDZ....ALUSDIC...P.....A.............................................................................................................................................................................vYpLBbm0VOBElXgAxSxkFakkGHwnvKp.TSkQWXJnPP0QGZuImNJbxPnElbrU1bffzarIlbuc2IJnfJunfBiDTS8nUYhIWXxnvHVUlby0iLvTCLvnvHE4FYoEla8vVZzQGakovHt0VOyPiBiz1b831atUlBiz1b8zzajcEZrovHsMWOPkFcig1UJLRay0yPzIGaAovHsMWOCQmbrIjBiz1b8vjYucTLJLRay0CSl81QxnvHsMWOGEFckovHsMWOKUVdF8FaJLRay0yRkkmQuwlLJLRay0iUkw1aikFc4ovHsMWOAQ0a0MFZJLRay0SPxAWSuQlBiz1b8Djbv0DYxnvHsMWOE4lcwnvHsMWOE4lcxnvHsMWOE4lcynvHsMWOE4lcznvHsMWOMMUQGEiBiz1b8zzTEcjLJLRay0SSSUzQynvHsMWOMMUQGQiBiz1b8vjYuEiBiz1b8vjYuIiBiz1b8vjYuMiBiz1b8vjYuQiBiz1b8zTSgAWLJLRay0SSMEFbxnvHsMWOM0TXvMiBiz1b8zTSgAGMJLRay0SSMkFdwnvHsMWOM0TZ3IiBiz1b8zTSog2LJLRay0SSMkFdznvHtYWO0nvHsYWOGEFckovHsYWOE4lcwnvHsYWOE4lcxnvHsYWOE4lcynvHsYWOE4lcznvHi0VOsEVZtovPi8Db8DCLv3BLvnvHLYzSG0SLJLBSF8zQxzSLJLxXs0CTC8lbko.VeESOv3BLvnPVeESOv3BLvn.VeISOv3BLvnPVeISOv3BLvn.VeMSOv3BLvnPVeMSOv3BLvn.VeQSOv3BLvnPVeQSOv3BLvnPSTESL831atUlNgM2boclakQlBMwTLwzCLt.CLJzjTwDSOv3BLvnPSTEiL831atUlNgM2boclakQlBMwTLxzSMv3BLvnPSREiL8zRMv3BLvnPSTEyL831atUlNgM2boclakQlBMwTLyzSMv3BLvnPSREyL8zRMv3BLvnPSTECM831atUlNgM2boclakQlBMwTLzzSMv3BLvnPSRECM8zRMv3BLvnPSTESM831atUlNgM2boclakQlBMwTL0zSMv3BLvnPSRESM8zRMv3BLvnPSTEiM831atUlNgM2boclakQlBMwTL1zSMv3BLvnPSREiM8zRMv3BLvnPSTEyM831atUlNgM2boclakQlBMwTL2zSMv3BLvnPSREyM8zRMv3BLvnPSTECN831atUlNgM2boclakQlBMwTL3zSMv3BLvnPSRECN8zRMv3BLvnPSTISL831atUlNgM2boclakQlBMwjLwzCLt.CLJzjTxDSOv3BLvnPSTIiL831atUlNgM2boclakQlBMwjLxzSMv3BLvnPSRIiL8zRMv3BLvnPSTIyL831atUlNgM2boclakQlBMwjLyzSMv3BLvnPSRIyL8zRMv3BLvnPSTICM831atUlNgM2boclakQlBMwjLzzSMv3BLvnPSRICM8zRMv3BLvnPSTISM831atUlNgM2boclakQlBMwjL0zSMv3BLvnPSRISM8zRMv3BLvnPSTIiM831atUlNgM2boclakQlBMwjL1zSMv3BLvnPSRIiM8zRMv3BLvnPSTIyM831atUlNgM2boclakQlBMwjL2zSMv3BLvnPSRIyM8zRMv3BLvnPSTICN831atUlNgM2boclakQlBMwjL3zSMv3BLvnPSRICN8zRMv3BLvnPSTMSL831atUlNgM2boclakQlBMwzLwzCLt.CLJzjTyDSOv3BLvnPSTMiL831atUlNgM2boclakQlBMwzLxzSMv3BLvnPSRMiL8zRMv3BLvnPSTMyL831atUlNgM2boclakQlBMwzLyzSMv3BLvnPSRMyL8zRMv3BLvnPSTMCM831atUlNgM2boclakQlBMwzLzzSMv3BLvnPSRMCM8zRMv3BLvnPSTMSM831atUlNgM2boclakQlBMwzL0zSMv3BLvnPSRMSM8zRMv3BLvnPSTMiM831atUlNgM2boclakQlBMwzL1zSMv3BLvnPSRMiM8zRMv3BLvnPSTMyM831atUlNgM2boclakQlBMwzL2zSMv3BLvnPSRMyM8zRMv3BLvnPSTMCN831atUlNgM2boclakQlBMwzL3zSMv3BLvnPSRMCN8zRMv3BLvnPSTQSL831atUlNgM2boclakQlBMwDMwzCLt.CLJzjTzDSOv3BLvnPSTQiL831atUlNgM2boclakQlBMwDMxzSMv3BLvnPSRQiL8zRMv3BLvnPSTQyL831atUlNgM2boclakQlBMwDMyzSMv3BLvnPSRQyL8zRMv3BLvnPSTQCM831atUlNgM2boclakQlBMwDMzzSMv3BLvnPSRQCM8zRMv3BLvnPSTQSM831atUlNgM2boclakQlBMwDM0zSMv3BLvnPSRQSM8zRMv3BLvnPSTQiM831atUlNgM2boclakQlBMwDM1zSMv3BLvnPSRQiM8zRMv3BLvnPSTQyM831atUlNgM2boclakQlBMwDM2zSMv3BLvnPSRQyM8zRMv3BLvnPSTQCN831atUlNgM2boclakQlBMwDM3zSMv3BLvnPSRQCN8zRMv3BLvnPSTUSL831atUlNgM2boclakQlBMwTMwzCLt.CLJzjT0DSOv3BLvnPSTUiL831atUlNgM2boclakQlBMwTMxzCLt.CLJzjT0HSOv3BLvnPSTUyL831atUlNgM2boclakQlBMwTMyzSMv3BLvnPSRUyL8zRMv3BLvnPSTUCM831atUlNgM2boclakQlBMwTMzzSMv3BLvnPSRUCM8zRMv3BLvnPSTUSM831atUlNgM2boclakQlBMwTM0zSMv3BLvnPSRUSM8zRMv3BLvnPSTUiM831atUlNgM2boclakQlBMwTM1zSMv3BLvnPSRUiM8zRMv3BLvnPSTUyM831atUlNgM2boclakQlBMwTM2zSMv3BLvnPSRUyM8zRMv3BLvnPSTUCN831atUlNgM2boclakQlBMwTM3zSMv3BLvnPSRUCN8zRMv3BLvnPSTYSL831atUlNgM2boclakQlBMwjMwzCLt.CLJzjT1DSOv3BLvnPSTYiL831atUlNgM2boclakQlBMwjMxzCLt.CLJzjT1HSOv3BLvnPSTYyL831atUlNgM2boclakQlBMwjMyzSMv3BLvnPSRYyL8zRMv3BLvnPSTYCM831atUlNgM2boclakQlBMwjMzzSMv3BLvnPSRYCM8zRMv3BLvnPSTYSM831atUlNgM2boclakQlBMwjM0zSMv3BLvnPSRYSM8zRMv3BLvnPSTYiM831atUlNgM2boclakQlBMwjM1zSMv3BLvnPSRYiM8zRMv3BLvnPSTYyM831atUlNgM2boclakQlBMwjM2zSMv3BLvnPSRYyM8zRMv3BLvnPSTYCN831atUlNgM2boclakQlBMwjM3zSMv3BLvnPSRYCN8zRMv3BLvnPSTcSL831atUlNgM2boclakQlBMwzMwzCLt.CLJzjT2DSOv3BLvnPSTciL831atUlNgM2boclakQlBMwzMxzSMv3BLvnPSRciL8zRMv3BLvnPSTcyL831atUlNgM2boclakQlBMwzMyzSMv3BLvnPSRcyL8zRMv3BLvnPSTcCM831atUlNgM2boclakQlBMwzMzzSMv3BLvnPSRcCM8zRMv3BLvnPSTcSM831atUlNgM2boclakQlBMwzM0zSMv3BLvnPSRcSM8zRMv3BLvnPSTciM831atUlNgM2boclakQlBMwzM1zSMv3BLvnPSRciM8zRMv3BLvnPSTcyM831atUlNgM2boclakQlBMwzM2zSMv3BLvnPSRcyM8zRMv3BLvnPSTcCN831atUlNgM2boclakQlBMwzM3zSMv3BLvnPSRcCN8zRMv3BLvnPSTgSL831atUlNgM2boclakQlBMwDNwzCLt.CLJzjT3DSOv3BLvnPSTgiL831atUlNgM2boclakQlBMwDNxzSMv3BLvnPSRgiL8zRMv3BLvnPSTgyL831atUlNgM2boclakQlBMwDNyzSMv3BLvnPSRgyL8zRMv3BLvnPSTgCM831atUlNgM2boclakQlBMwDNzzSMv3BLvnPSRgCM8zRMv3BLvnPSTgSM831atUlNgM2boclakQlBMwDN0zSMv3BLvnPSRgSM8zRMv3BLvnPSTgiM831atUlNgM2boclakQlBMwDN1zSMv3BLvnPSRgiM8zRMv3BLvnPSTgyM831atUlNgM2boclakQlBMwDN2zSMv3BLvnPSRgyM8zRMv3BLvnPSTgCN831atUlNgM2boclakQlBMwDN3zSMv3BLvnPSRgCN8zRMv3BLvnPSMQUL831atUlNgM2boclakQlBM0zTwzCLJzTSDESOv3BLvnPSMY0TwzCLJzTSVQTL8.iKv.iBM0DUxziau4VY5D1byk1YtUFYJzTSSISOvnPSMQjL8.iKv.iBM0jUSISOvnPSMYEQxzCLt.CLJzTSTMSOt8lakoSXyMWZm4VYjoPSMM0L8.iBM0DQyzCLt.CLJzTSVM0L8.iBM0jUDMSOv3BLvnPSMQEM831atUlNgM2boclakQlBM0zTzzCLJzTSDQSOv3BLvnPSMY0TzzCLJzTSVQDM8.iKv.iBM0DU0ziau4VY5D1byk1YtUFYJzTSSUSOvnPSMQTM8.iKv.iBM0jUSUSOvnPSMYEQ0zCLt.CLJzTSTYSOt8lakoSXyMWZm4VYjoPSMMkM8.iBM0DQ1zCLt.CLJzTSVMkM8.iBM0jUDYSOv3BLvnPSMQ0M831atUlNgM2boclakQlBM0zT2zCLJzTSDcSOv3BLvnPSMY0T2zCLJzTSVQzM8.iKv.iBM0DU3ziau4VY5D1byk1YtUFYJzTSSgSOvnPSMQDN8.iKv.iBM0jUSgSOvnPSMYEQ3zCLt.CLJzTSTkSOt8lakoSXyMWZm4VYjoPSMMUN8.iBM0DQ4zCLt.CLJzTSVMUN8.iBM0jUDkSOv3BLvnPSMQULvziau4VY5D1byk1YtUFYJzTSSECL8.iBM0DQw.SOv3BLvnPSMY0Tw.SOvnPSMYEQw.SOv3BLvnPSMQULwziau4VY5D1byk1YtUFYJzTSSESL8.iBM0DQwDSOv3BLvnPSMY0TwDSOvnPSMYEQwDSOv3BLvnPSMQULxziau4VY5D1byk1YtUFYJzTSSEiL8.iBM0DQwHSOv3BLvnPSMY0TwHSOvnPSMYEQwHSOv3BLvnvTBE1bk0CMJL0co41Y8.iKv.iBSQkbocVOwn.TPI2ap0yLJ.kQuwFY8.iBPYTZrUVOwnvQFkFak0iLJbzTiEFak0CLJLDZLEVd8.iBSUmbx8TOwnfTkYWO3HSM1n.SEQTOv3BLvn.TAcTQ8.iBPE1YkM2St0CLJLzaxUlS8LiBSwVZiUVOznPUI80av0iMJzTZjkVP8TiBMkFYoAUO1n.QF8Faj0yMJLDcxwVP8HiBCQmbrITOwDiBiLVa8vjQOcjBSkmai0CMJPkbocVOvnvUgYWY8.iBPg1bk0CLt.CLJHUXzUVOw.CLt.CLJDTav0SLv.iKv.iBSwVY20SLJ3zbzAWOwXiBSQGby0CNJT0U10CLJLxXs0CSF8zQxnvT441X8PiBTIWZm0CLJbUX1UVOvn.TnMWY8.iKv.iBREFck0SLv.iKv.iBA0Fb8DCLv3BLvnvTrU1c8DiBNMGcv0SL1nvTzA2b8jiBUckc8.iBiLVa8X0PCovHLYzSwzSLJLBSF8jL8DiBivjQOMSOwnvHLYzSzzSLJX0aoMVYy0SLJX0aoMVZtcVOvnPSuQVY8.iBP8lbzEVOv3BLvn.TB0iLJ.kPD0iLJDjbSMVOznPPx8jbj0CLJDjbLAWOvnPPx8zXz0SLJDjbLwTOwXiBAIGUx0CLJPjblQWOwnPSTUmaS0CLJzDU04lS8DCLJzDU04FU8DSLJPkbyAWOsDiLJXDU04VOv3BLvn.TuIGcRcVOw.CLt.CLJ.0axQWXM0CLJ.0axQWXxzCLt.CLJDzYzUVL8HiBAQmbvESOvnPP181XwzSLJDTa0wVL8DiBA01ajESOvnPPMQDbzESOv3BLvnPPMQDbBESOv3BLvnPPmQWYxziLJDDcxAmL8.iBAY2aiISOwnPPsUGaxzSLJDTauQlL8.iBA0DQvQmL8.iKv.iBA0DQvIjL8.iKv.iBAcFckMSOxnPPzIGbyzCLJDjcuM1L8DiBA0VcrMSOwnPPs8FYyzCLJDTSDAGcyzCLt.CLJDTSDAmPyzCLt.CLJDzYzUFM8HiBAQmbvQSOvnPP181XzzSLJDTa0wFM8DiBA01ajQSOvnPPMQDbzQSOv3BLvnPPMQDbBQSOv3BLvnPPmQWY0ziLJDDcxAWM8.iBAY2aiUSOwnPPsUGa0zSLJDTauQVM8.iBA0DQvQWM8.iKv.iBA0DQvITM8.iKv.iBAcFckYSOxnPPzIGb1zCLJDjcuMlM8DiBA0VcrYSOwnPPs8FY1zCLJDTSDAGc1zCLt.CLJDTSDAmP1zCLt.CLJDzYzU1M8HiBAQmbvcSOvnPP181X2zSLJDTa0w1M8DiBA01ajcSOvnPPMQDbzcSOv3BLvnPPMQDbBcSOv3BLvnPPmQWY3ziLJDDcxAGN8.iBAY2aigSOwnPPsUGa3zSLJDTauQFN8.iBA0DQvQGN8.iKv.iBA0DQvIDN8.iKv.iBAcFckkSOxnPPzIGb4zCLJDjcuMVN8DiBA0VcrkSOwnPPs8FY4zCLJDTSDAGc4zCLt.CLJDTSDAmP4zCLt.CLJDzYzUVLvziLJDDcxAWLvzCLJDjcuMVLvzSLJDTa0wVLvzSLJDTauQVLvzCLJDTSDAGcw.SOv3BLvnPPMQDbBECL8.iKv.iBAcFckESL8HiBAQmbvESL8.iBAY2aiESL8DiBA0VcrESL8DiBA01ajESL8.iBA0DQvQWLwzCLt.CLJDTSDAmPwDSOv3BLvnPPmQWYwHSOxnPPzIGbwHSOvnPP181XwHSOwnPPsUGawHSOwnPPs8FYwHSOvnPPMQDbzEiL8.iKv.iBA0DQvITLxzCLt.CLJDzYzUVLyziLJDDcxAWLyzCLJDjcuMVLyzSLJDTa0wVLyzSLJDTauQVLyzCLJDTSDAGcwLSOv3BLvnPPMQDbBEyL8.iKv.iBAcFckECM8HiBAQmbvECM8.iBAY2aiECM8DiBA0VcrECM8DiBA01ajECM8.iBA0DQvQWLzzCLt.CLJDTSDAmPwPSOv3BLvnPPmQWYwTSOxnPPzIGbwTSOvnPP181XwTSOwnPPsUGawTSOwnPPs8FYwTSOvnPPMQDbzESM8.iKv.iBA0DQvITL0zCLt.CLJDzYzUVL1ziLJDDcxAWL1zCLJDjcuMVL1zSLJDTa0wVL1zSLJDTauQVL1zCLJDTSDAGcwXSOv3BLvnPPMQDbBEiM8.iKv.iBiLVa8TjSVEiBM8FYk0iLJjVSuQVY8.iBy0zajUVOvnPZtkFc8.iKv.iBAQ2Z8LiK0.iBDU1X8TCLt.CLJLUcy0CNv3BLvnvT0MGU8.iKv.iBSU2bxzCLt.CLJHUYr0SL03BLvnfUkwVOv3BLvnfUxjTOv3BLvnfUxDTOv3BLvnfUxPTOv3BLvnfUxLUOv3BLvnfUxXjT8.iKv.iBVIyTxzCLt.CLJXkLR0CLt.CLJrjLI0CLt.CLJrjLA0CLt.CLJrjLD0CLt.CLJrjLS0CLt.CLJrjLFIUOv3BLvnvRxLkL8.iKv.iBKIiT8.iKv.iBSw1avUVOsXCLt.CLJPkPgMWY8.iBiLVa8TjSVIiBM8FYk0iLJjVSuQVY8.iBy0zajUVOvnPZtkFc8.iKv.iBAQ2Z8.iKv.iBDU1X8TCLt.CLJLUcy0CNv3BLvnvT0MGU8.iKv.iBSU2bxzCLt.CLJHUYr0SL03BLvnfUkwVOv3BLvnfUxjTOv3BLvnfUxDTOv3BLvnfUxPTOv3BLvnfUxLUOv3BLvnfUxXjT8.iKv.iBVIyTxzCLt.CLJXkLR0CLt.CLJrjLI0CLt.CLJrjLA0CLt.CLJrjLD0CLt.CLJrjLS0CLt.CLJrjLFIUOv3BLvnvRxLkL8.iKv.iBKIiT8.iKv.iBSw1avUVOsXCLt.CLJPkPgMWY8.iBiLVa8TjSVMiBM8FYk0iLJjVSuQVY8.iBy0zajUVOvnPZtkFc8.iKv.iBAQ2Z8.iKv.iBDU1X8DiLtTCLJLUcy0CLt.CLJLUcyQUOv3BLvnvT0MmL8.iKv.iBRUFa8DSMt.CLJXUYr0CLt.CLJXkLI0CLt.CLJXkLA0CLt.CLJXkLD0CLt.CLJXkLS0CLt.CLJXkLFIUOv3BLvnfUxLkL8.iKv.iBVIiT8.iKv.iBKISR8.iKv.iBKISP8.iKv.iBKICQ8.iKv.iBKIyT8.iKv.iBKIiQR0CLt.CLJrjLSISOv3BLvnvRxHUOv3BLvnvTr8Fbk0SK1.iKv.iBTITXyUVOvnvHi0VOE4jUznPSuQVY8HiBo0zajUVOvnvbM8FYk0CLJjlaoQWOv3BLvnPPzsVOv3BLvn.QkMVO0.iKv.iBSU2b8fCLt.CLJLUcyQUOv3BLvnvT0MmL8.iKv.iBRUFa8DSMt.CLJXUYr0CLt.CLJXkLI0CLt.CLJXkLA0CLt.CLJXkLD0CLt.CLJXkLS0CLt.CLJXkLFIUOv3BLvnfUxLkL8.iKv.iBVIiT8.iKv.iBKISR8.iKv.iBKISP8.iKv.iBKICQ8.iKv.iBKIyT8.iKv.iBKIiQR0CLt.CLJrjLSISOv3BLvnvRxHUOv3BLvnvTr8Fbk0SK1.iKv.iBTITXyUVOvnvHi0VOMMUQGEiBT0VUt0SLJTja10SLxnfUkwVOv3BLvnPPzsVOv3BLvn.SvQWOv3BLvnfTkwVOv3BLvn.Uxk1Y8.iBiLVa8zzTEcjLJPUaU4VOwnPQtYWOwLiBVUFa8.iKv.iBAQ2Z8.iKv.iBLAGc8.iKv.iBRUFa8.iKv.iBTIWZm0CLJLxXs0SSSUzQyn.UsUka8DiBE4lc8DCMJXUYr0CLt.CLJDDcq0CLt.CLJvDbz0CLt.CLJHUYr0CLt.CLJPkbocVOvnvHi0VOMMUQGQiBT0VUt0SLJTja10SL0nfUkwVOv3BLvnPPzsVOv3BLvn.SvQWOv3BLvnfTkwVOv3BLvn.Uxk1Y8.iBiLVa8vjQOEiBSkmai0SL4n.Uxk1Y8.iBWElck0CLJ.EZyUVOv3BLvnfTgQWY8DCLv3BLvnPPsAWOw.CLt.CLJLEakcWOwnfSyQGb8DiMJLEcvMWOwXiBUckc8.iBDwVd8.iKv.iBD0zTwzCLJPTSDESOv3BLvnfQMMUL8.iBF0DQwzCLt.CLJLxXs0CSF8jLJLUdtMVOzn.Uxk1Y8.iBWElck0CLJ.EZyUVOv3BLvnfTgQWY8DCLv3BLvnPPsAWOw.CLt.CLJLEakcWOwnfSyQGb8DiMJLEcvMWOwbiBUckc8.iBDwVd8.iKv.iBD0zTwzCLJPTSDESOv3BLvnfQMMUL8.iBF0DQwzCLt.CLJLxXs0CSF8zLJLUdtMVOzn.Uxk1Y8.iBWElck0CLJ.EZyUVOv3BLvnfTgQWY8DCLv3BLvnPPsAWOw.CLt.CLJLEakcWOwnfSyQGb8DiMJLEcvMWOwfiBUckc8.iBDwVd8.iKv.iBD0zTwzCLJPTSDESOv3BLvnfQMMUL8.iBF0DQwzCLt.CLJLxXs0CSF8DMJLUdtMVOzn.Uxk1Y8.iBWElck0CLJ.EZyUVOv3BLvnfTgQWY8DCLv3BLvnPPsAWOw.CLt.CLJLEakcWOwnfSyQGb8DiMJLEcvMWOwjiBUckc8.iBDwVd8.iKv.iBD0zTwzCLJPTSDESOv3BLvnfQMMUL8.iBF0DQwzCLt.CLJLxXs0SSMEFbwnPSuQVY8LiBMMkbi0CLJLEcvMWOx.iBNUWa8DyMJLxXs0SSMEFbxnPSuQVY8LiBMMkbi0CLJLEcvMWOxDiBNUWa8DyMJLxXs0SSMEFbynPSuQVY8LiBMMkbi0CLJLEcvMWOxHiBNUWa8DyMJLxXs0SSMEFbznPSuQVY8LiBMMkbi0CLJLEcvMWOxLiBNUWa8DyMJLxXs0SSMkFdwn.U4AWY8.iBM8FYwzCLJzzajISOvnPSuQ1L8.iBCMGc8TCLt.CLJLxXs0SSMkFdxn.U4AWY8.iBM8FYwzCLJzzajISOvnPSuQ1L8.iBCMGc8TCLt.CLJLxXs0SSMkFdyn.U4AWY8.iBM8FYwzCLJzzajISOvnPSuQ1L8.iBCMGc8TCLt.CLJLxXs0SSMkFdzn.U4AWY8.iBM8FYwzCLJzzajISOvnPSuQ1L8.iBCMGc8TCLt.CLJLxXs0yQxkFYJbjboQVOxPiBGITdv0CLJLxXs0ySSMTLJbUX1UVOvn.U04VY8DiLt.CLJrTY4M0Xr0SLv.iKv.iBT0zTxMVOvn.UMQDbz0CLt.CLJ.EZyUVO0.iKv.iBPg1bMMkbi0CLJ.EZy0DQvQWOv3BLvnvUNUWa8LiKv.iBWA0TxMVOvnvUPQDbz0CLt.CLJXEcuQTOv3BLvnvP0Imck0iL0n.TxU1X8TiKv.iBFgULTAWOvnvTFgUL8.iKv.iBFgULSMVOvnfQXECQz0CLt.CLJXDVxPEb8.iBSYDVxzCLt.CLJXDVxL0X8.iBFgkLDQWOv3BLvn.TuwVd8DiBDQWct0CLt.CLJrjUyMVOxXiBV8Fa8DCLv3BLvnfUuw1Ti0CLJX0arQDc8.iKv.iBPEla8.iKv.iBPElaSMVOvn.Tg4FQz0CLt.CLJLUdtMVOv3BLvnvTtM1Ti0CLJLkaiQDc8.iKv.iBS41XO4VOvn.Tuw1U8TCLt.CLJ.0cs8ja8.iBWEFUh0iL2nfTkAEZy0CLJ3zax0VOv3BLvnfTk4FY8.iBF0Fc5UVOvnvUT4TXsUVOxfiBiLVa87zTCIiBWElck0CLJPUctUVOxPiKv.iBKUVdSMFa8DCLv3BLvn.UMMkbi0CLJPUSDAGc8.iKv.iBPg1bk0SM23BLvn.TnMWSSI2X8.iBPg1bMQDbz0CLt.CLJbkS00VO43RLvnvUPMkbi0CLJbETDAGc8.iKv.iBVQ2aD0CLt.CLJLTcxYWY8HSNJ.kbkMVO03BLvnfQXECUv0CLJLkQXESOv3BLvnfQXEyTi0CLJXDVwPDc8.iKv.iBFgkLTAWOvnvTFgkL8.iKv.iBFgkLSMVOvnfQXICQz0CLt.CLJ.0arkWOvn.QzUma8.iKv.iBKY0bi0yLvnfUuwVOw.CLt.CLJX0arM0X8.iBV8FaDQWOv3BLvn.Tg4VOwPiKv.iBPElaSMVO3n.Tg4FQz0CMv3BLvnvT441X8.iKv.iBS41XSMVOvnvTtMFQz0CLt.CLJLkai8ja8.iBP8FaW0SMv3BLvn.T201St0SLJbUXTIVOyDiBRUFTnMWOvnfSuIWa8.iKv.iBRUlaj0CLJXTazoWY8.iBWQkSg0VY8LiLJLxXs0ySSMzLJbUX1UVOvn.U04VY8DiLt.CLJrTY4M0Xr0SLv.iKv.iBT0zTxMVOvn.UMQDbz0CLt.CLJ.EZyUVO0.iKv.iBPg1bMMkbi0CLJ.EZy0DQvQWOv3BLvnvUNUWa8DiKv.iBWA0TxMVOvnvUPQDbz0CLt.CLJXEcuQTOv3BLvnvP0Imck0yLyn.TxU1X8TiKv.iBFgULTAWOvnvTFgUL8.iKv.iBFgULSMVOvnfQXECQz0CLt.CLJXDVxPEb8.iBSYDVxzCLt.CLJXDVxL0X8.iBFgkLDQWOv3BLvn.TuwVd8.iBDQWct0CLt.CLJrjUyMVOyPiBV8Fa8DCLv3BLvnfUuw1Ti0CLJX0arQDc8.iKv.iBPEla8.iKv.iBPElaSMVOvn.Tg4FQz0CLt.CLJLUdtMVOv3BLvnvTtM1Ti0CLJLkaiQDc8.iKv.iBS41XO4VOvn.Tuw1U8TCLt.CLJ.0cs8ja8.iBWEFUh0yL0nfTkAEZy0CLJ3zax0VOv3BLvnfTk4FY8.iBF0Fc5UVOvnvUT4TXsUVOyXiBiLVa87zTCQiBWElck0CLJPUctUVOv3BLvnvRkk2TiwVOw.CLt.CLJPUSSI2X8.iBT0DQvQWOv3BLvn.TnMWY8TCLt.CLJ.EZy0zTxMVOvn.TnMWSDAGc8.iKv.iBW4Tcs0SLt.CLJbETSI2X8.iBWAEQvQWOv3BLvnfUz8FQ8.iKv.iBCUmb1UVOybiBPIWYi0SMt.CLJXDVwPEb8.iBSYDVwzCLt.CLJXDVwL0X8.iBFgULDQWOv3BLvnfQXICUv0CLJLkQXISOv3BLvnfQXIyTi0CLJXDVxPDc8.iKv.iBP8Fa40CLJPDc04VOv3BLvnvRVM2X8LCNJX0ar0SLv.iKv.iBV8FaSMVOvnfUuwFQz0CLt.CLJ.UXt0CLt.CLJ.UXtM0X8.iBPElaDQWOv3BLvnvT441X8.iKv.iBS41XSMVOvnvTtMFQz0CLt.CLJLkai8ja8.iBP8FaW0SMv3BLvn.T201St0SLJbUXTIVOyjiBRUFTnMWOvnfSuIWa8.iKv.iBRUlaj0CLJXTazoWY8.iBWQkSg0VY8PCLJLxXs0iSuk1bkEiBTkGbk0CLJXTL8DCLv3BLvnfQwLkbi0CLJXTLDAGc8.iKv.iBFISOv3BLvnfQxLkbi0CLJXjLDAGc8.iKv.iBKY0bi0CMwnfUuwVOw.CLt.CLJX0arM0X8.iBV8FaDQWOv3BLvn.Tg4VOv3BLvn.Tg41Ti0CLJ.UXtQDc8.iKv.iBP8Fa40CLJ.0arcUO0.iKv.iBiLVa83zaoMWYxn.U4AWY8.iBFESOw.CLt.CLJXTLSI2X8.iBFECQvQWOv3BLvnfQxzCLt.CLJXjLSI2X8.iBFICQvQWOv3BLvnvRVM2X8PiLJX0ar0SLv.iKv.iBV8FaSMVOvnfUuwFQz0CLt.CLJ.UXt0CLt.CLJ.UXtM0X8.iBPElaDQWOv3BLvn.TuwVd8.iBP8FaW0SMv3BLvnvHi0VOVMjQwn.U4AWOynvP0QWOw.iMt.CLJHUYy0iM43RMvn.QxYWOv3BLvnvQgkla8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8.iKv.iBFMkL8.iBKUVdSMFa8DCLv3BLvnvHi0VOVMjQxn.U4AWOwDiBCUGc8PSLt.CLJHUYy0yM03BLvn.QxYWOzPiK0.iBGEVZt0CLt.CLJXTSwzCLt.CLJXzTwzCLJXTSxzCLt.CLJXzTxzCLJrTY4M0Xr0SLv.iKv.iBiLVa8X0PFMiBTkGb8.iBCUGc8biKv.iBRU1b8HiMtTCLJPjb10iM03BLvnvQgkla8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8biLt.CLJXzTxzSL1nvRkk2TiwVO3jiKv.iBiLVa8X0PFQiBTkGb8.iBCUGc8DSMv3BLvnfTkMWOv3BLvn.QxYWOv3BLvnvQgkla8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8.iKv.iBFMkL8.iBKUVdSMFa8.iKv.iBiLVa8XTSOEiBWElck0CLJPUctUVOv3BLvnvRkk2TiwVOw.CLt.CLJPUSSI2X8.iBT0DQvQWOv3BLvnfQM0CLt.CLJXTSSI2X8.iBF0DQvQWOv3BLvnfUz8FQ8.iKv.iBDQWct0CLt.CLJrjUyMVOzLiBV8Fa8DCLv3BLvnfUuw1Ti0CLJX0arQDc8.iKv.iBPEla8.iKv.iBPElaSMVOvn.Tg4FQz0CLt.CLJ.0arkWOvn.Tuw1U8TCLt.CLJbTYzIWOvnvHi0VOF0zSxnvUgYWY8.iBTUmak0CLt.CLJrTY4M0Xr0SLv.iKv.iBT0zTxMVOvn.UMQDbz0CLt.CLJXTS8.iKv.iBF0zTxMVOvnfQMQDbz0CLt.CLJXEcuQTOv3BLvn.QzUma8.iKv.iBKY0bi0CMznfUuwVOw.CLt.CLJX0arM0X8.iBV8FaDQWOv3BLvn.Tg4VOv3BLvn.Tg41Ti0CLJ.UXtQDc8.iKv.iBP8Fa40CLJ.0arcUO0.iKv.iBGUFcx0CLJLxXs0iQM8zLJbUX1UVOvn.U04VY8.iKv.iBKUVdSMFa8DCLv3BLvn.UMMkbi0CLJPUSDAGc8.iKv.iBF0TOv3BLvnfQMMkbi0CLJXTSDAGc8.iKv.iBVQ2aD0CLt.CLJPDc04VOv3BLvnvRVM2X8PSMJX0ar0SLv.iKv.iBV8FaSMVOvnfUuwFQz0CLt.CLJ.UXt0CLt.CLJ.UXtM0X8.iBPElaDQWOv3BLvn.TuwVd8.iBP8FaW0SMv3BLvnvQkQmb8.iBiLVa8XTSOQiBWElck0CLJPUctUVOv3BLvnvRkk2TiwVOw.CLt.CLJPUSSI2X8.iBT0DQvQWOv3BLvnfQM0CLt.CLJXTSSI2X8.iBF0DQvQWOv3BLvnfUz8FQ8.iKv.iBDQWct0CLt.CLJrjUyMVOzXiBV8Fa8DCLv3BLvnfUuw1Ti0CLJX0arQDc8.iKv.iBPEla8.iKv.iBPElaSMVOvn.Tg4FQz0CLt.CLJ.0arkWOvn.Tuw1U8TCLt.CLJbTYzIWOvnvHi0VOC8VahEiBM8FYk0CLJPUctUVOv3BLvnvRkk2TiwVOw.CLt.CLJPUSSI2X8.iBT0DQvQWOv3BLvn.QkQma8.iKv.iBVQ2aD0CLt.CLJXjP8.iKv.iBFIzTxMVOvnfQBQDbz0CLt.CLJPTXsAWOv3BLvn.QsA2TxMVOvn.QsAGQvQWOv3BLvnPQ3MVOv3BLvnPRtoVOv3BLvnPRto1TxMVOvnPRtoFQvQWOv3BLvn.UtUVO0.iKv.iBT4VYSI2X8.iBT4VYDAGc8.iKv.iBSU1X8.iKv.iBSU1XSI2X8.iBSU1XDAGc8.iKv.iBDk1bz0CLt.CLJPjb40CLt.CLJX0ar0SLv.iKv.iBV8FaSMVOvnfUuwFQz0CLt.CLJ.UXt0CLt.CLJ.UXtM0X8.iBPElaDQWOv3BLvn.TuwVd8.iBP8FaW0SMv3BLvnfQowFa8.iBiLVa8LzasIlLJzzajUVOvn.U04VY8.iKv.iBKUVdSMFa8DCLv3BLvn.UMMkbi0CLJPUSDAGc8.iKv.iBDUFct0CLt.CLJXEcuQTOv3BLvnfQB0CLt.CLJXjPSI2X8.iBFIDQvQWOv3BLvn.Qg0Fb8.iKv.iBD0FbSI2X8.iBD0FbDAGc8.iKv.iBEg2X8.iKv.iBI4lZ8.iKv.iBI4lZSI2X8.iBI4lZDAGc8.iKv.iBT4VY8TCLt.CLJPkakMkbi0CLJPkakQDbz0CLt.CLJLUYi0CLt.CLJLUYiMkbi0CLJLUYiQDbz0CLt.CLJPTZyQWOv3BLvn.QxkWOv3BLvnfUuwVOw.CLt.CLJX0arM0X8.iBV8FaDQWOv3BLvn.Tg4VOv3BLvn.Tg41Ti0CLJ.UXtQDc8.iKv.iBP8Fa40CLJ.0arcUO0.iKv.iBFkFar0CLJLxXs0yTnEFbkEiBTkGbk0CLJPTYvQGZ8.iKv.iBD0zTxMVOvn.QMQDbz0CLt.CLJTDYmUVO2TiKv.iBE0zTxMVOvnPQMQDbz0CLt.CLJjjavUGc8.iKv.iBOUGcvUGc8.iKv.iBHk1S0QWOv3BLvnvHi0VOSgVXvUlLJPUdvUVOvn.QkAGcn0CLt.CLJPTSSI2X8.iBD0DQvQWOv3BLvnPQjcVY8bSMt.CLJTTSSI2X8.iBE0DQvQWOv3BLvnPRtAWcz0CLt.CLJ7TczAWcz0CLt.CLJfTZOUGc8.iKv.iBiLVa8zTZ3EiBPEla8.iKv.iBMkFd8TCLt.CLJ.kaMQVOvn.Tt0DQ8.iKv.iBP4VSS0CLJLxXs0SSogmLJ.UXt0CLt.CLJzTZ30SMv3BLvn.Tt0DY8.iBP4VSD0CLt.CLJ.kaMMUOvnvHi0VOMkFdyn.Tg4VOv3BLvnPSogWO0.iKv.iBP4VSj0CLJ.kaMQTOv3BLvn.Tt0zT8.iBiLVa8zTZ3QiBPEla8.iKv.iBMkFd8TCLt.CLJ.kaMQVOvn.Tt0DQ8.iKv.iBP4VSS0CLJLxXs0CVMYTLJPUdv0CLJLTcz0SL0.iKv.iBRU1b8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8.iKv.iBFMkL8.iBKUVdSMFa8.iKv.iBF8jYl0CLt.CLJXzSM8FY8.iKv.iBF8zTxMVOvn.VF0TOv3BLvn.VF0DQ8.iKv.iBXYTSS0CLJHTZgMWOv3BLvnvSL8VXj0CLt.CLJLDaoM1Z8.iKv.iBDImc8DiBR8Vcz0CLJPUdvISOsDiBiLVa8fUSFIiBTkGb8.iBCUGc8DSMv3BLvnfTkMWOv3BLvnfQMESOv3BLvnfQSESOvnfQMISOv3BLvnfQSISOvnvRkk2TiwVOv3BLvnfQOYlY8.iKv.iBF8TSuQVOv3BLvnfQOMkbi0CLJfkQM0CLt.CLJfkQMQTOv3BLvn.VF0zT8.iBBkVXy0CLt.CLJ7DSuEFY8.iKv.iBCwVZisVOv3BLvn.QxYWOwnfTuUGc8.iBTkGbxzSKwnvHi0VOSITLJHUXtcVY8.iBFIWYw0CLt.CLJXTSSI2X8.iBF0DQvQWOv3BLvnvSlY1b8.iKv.iBO0zTxMVOvnvSMQDbz0CLt.CLJzTZ30SMv3BLvnPSMMkbi0CLJzTSDAGc8.iKv.iBiLVa8LkPxnfTg41Yk0CLJXjbkEWOv3BLvnfQMMkbi0CLJXTSDAGc8.iKv.iBOYlYy0CLt.CLJ7TSSI2X8.iBO0DQvQWOv3BLvnPSogWO0.iKv.iBM0zTxMVOvnPSMQDbz0CLt.CLJLxXs0CQoMGcwn.U4AWY8.iBI4Fb0QWOv3BLvnvS0QGb0QWOv3BLvn.TxUFUowFc8.iKv.iBPMGcTkFaz0CLt.CLJLjazYjbkEWOw.CLt.CLJvza20CLt.CLJfTZmgVOv3BLvn.TuMGcFwFc8.iBiLVa8PTZyQmLJPUdvUVOvnPRtAWcz0CLt.CLJ7TczAWcz0CLt.CLJ.kbkQUZrQWOv3BLvn.TyQGUowFc8.iKv.iBC4FcFIWYw0SLv.iKv.iBL81c8.iKv.iBHk1Yn0CLt.CLJ.0ayQmQrQWOvnvHi0VOF8FajEiBRkFbvwVYy0CMJXzarQ1b8DCLt.CLJXTSuQVOv3BLvnfQSI2X8.iBBkVXy0CLt.CLJHTSuQVOv3BLvnfPSI2X8.iBFIUXzk1a8TCLt.CLJXzTr8Fbk0SLv3BLvnvPA41Yr0SMv3BLvn.SoYWY8.iBiLVa8XzarQlLJHUZvAGakMWOznfQuwFYy0SLv3BLvnfQM8FY8.iKv.iBFMkbi0CLJHTZgMWOv3BLvnfPM8FY8.iKv.iBBMkbi0CLJXjTgQWZu0SMv3BLvnfQSw1avUVOw.iKv.iBCEjamwVO0.iKv.iBLklck0CLJLxXs0iUCETLJ.UXtESOv3BLvn.Tg4VSSESOvn.Tg4VSDESOv3BLvnfUuwVL8TCLt.CLJX0PAESOwnPSuQ1TxMVL8.iBM8FYDAGcwzCLt.CLJ.UXtISO33BLvn.Tg4VSSISOvn.Tg4VSDISOv3BLvnfUuwlL8HCNtTCLJX0PAISOwnPSuQ1TxMlL8.iBM8FYDAGcxzCLt.CLJ.UXtMSOv3BLvn.Tg4VSSMSOvn.Tg4VSDMSOv3BLvnfUuw1L8DiLt.CLJX0PAMSOxnPSuQ1TxM1L8.iBM8FYDAGcyzCLt.CLJ.UXtQSOv3BLvn.Tg4VSSQSOvn.Tg4VSDQSOv3BLvnfUuwFM8TCLt.CLJX0PAQSOwnPSuQ1TxMFM8.iBM8FYDAGczzCLt.CLJzDUwzCLJzDUxzCLJzDUyzCLJzDUzzCLJ.kPwzCLJ.kPxzCLJ.kPyzCLJ.kPzzCLJHTcyESOvnfP0MmL8.iBBU2byzCLJHTcyQSOvnvTk4FYwzCLt.CLJLkaSI2XwzCLJLkaDAGcwzCLt.CLJLUYtQlL8.iKv.iBS41TxMlL8.iBS4FQvQmL8.iKv.iBAQGcS0SLJLxXs0yQxkFYFgkBGIWZj0CM2nvQBkGb8.iBiLVa8zzajYDVwnPSuQVY8.iBCUlaz0iLv3BLvnvTvUFY8TCLt.CLJ.EZOYlY8TCLt.CLJPDbzgVO0.iKv.iBFUVYB0CLt.CLJzTZ30SMv3BLvn.SCUGc8.iKv.iBHMTcz0SLv.iKv.iBQUWXj0CLt.CLJDEbnMWOxTiKv.iBLUVb8.iKv.iBHUVb8.iKv.iBQESOv3BLvnPTxzCLt.CLJTTTu4VOwnvHi0VOM8FYFgkLJzzajUVOvnvPk4Fc8HCLt.CLJLEbkQVO0.iKv.iBPg1SlYVO0.iKv.iBDAGcn0SMv3BLvnfQkUlP8.iKv.iBMkFd8TCLt.CLJvzP0QWOv3BLvn.RCUGc8DCLv3BLvnPT0EFY8.iKv.iBQAGZy0iL03BLvn.SkEWOv3BLvn.RkEWOv3BLvnPTwzCLt.CLJDkL8.iKv.iBEE0at0SLJLxXs0CQkwVX4EiBM8FYk0CLJzTZ30CLt.CLJXjP8DCLt.CLJLjP8HSMt.CLJvDT8DCLv3BLvn.RP0CLt.CLJPjb10CLt.CLJLUdtMVL8PiBSkmaiISOznvT441XyzCMJLUdtMFM8PiBTASOw.CLt.CLJPUL8DCLv3BLvn.UxzSLv.iKv.iBTMSOw.CLt.CLJ.UXtESOsDCLv3BLvn.Tg4lL8DCLv3BLvn.Tg41L8zRLv.iKv.iBPElazzSLv.iKv.iBiLVa8PTYrEVdxnPSuQVY8.iBMkFd8.iKv.iBFITOw.iKv.iBCITOxTiKv.iBLAUOw.CLt.CLJfDT8.iKv.iBDImc8.iKv.iBSkmaiESOznvT441XxzCMJLUdtM1L8PiBSkmaiQSOzn.UvzSLv.iKv.iBTESOw.CLt.CLJPkL8DCLv3BLvn.UyzSLv.iKv.iBPElawzSKw.CLt.CLJ.UXtISOw.CLt.CLJ.UXtMSOsDCLv3BLvn.Tg4FM8DCLv3BLvnvHi0VOSgVXvU1LJPUdvUVOvn.QkAGcn0iLy3RMvn.QMMkbi0CLJPTSDAGc8.iKv.iBEQ1Yk0CM23RMvnPQMMkbi0CLJTTSDAGc8.iKv.iBI4Fb0QWOv3BLvnvS0QGb0QWOv3BLvn.Ro8Tcz0CLt.CLJLxXs0yTnEFbkQiBTkGbk0CLJPTYvQGZ8.iKv.iBD0zTxMVOvn.QMQDbz0CLt.CLJTDYmUVO2TiKv.iBE0zTxMVOvnPQMQDbz0CLt.CLJjjavUGc8.iKv.iBOUGcvUGc8.iKv.iBHk1S0QWOv3BLvnvHi0VOMkFd0n.Tg4VOv3BLvnPSogWO0.iKv.iBP4VSj0CLJ.kaMQTOv3BLvn.Tt0zT8.iBiLVa8zTZ3YiBPEla8.iKv.iBMkFd8TCLt.CLJ.kaMQVOvn.Tt0DQ8.iKv.iBP4VSS0CLJLxXs0iTkYWLJzzajUVOvn.QxkWO3HiKv.iBWUFc8TiLt.CLJXjP8PyLt.CLJPTXsAWOz3BLvnvTooWY8bSMt.CLJLEbj0SMv3BLvn.QvQWO0.iKv.iBDYjP8bCLt.CLJPzTooWY8TCLt.CLJTTSogWOw.CLt.CLJPTSuQVO0.iKv.iBDMEbj0SM03BLvn.TxUVOv3BLvnvHi0VOC8VavEiBTkGbk0SLJHUXz0SLt.CLJPEZxU1b8zhLv3BLvnPPzQWOy.iKv.iBRUFa8TCLt.CLJjjavUGc8.iKv.iBOUGcvUGc8.iKv.iBiLVa8LzasAmLJPUdvUVOwnfTgQWOw3BLvn.UnIWYy0SKx.iKv.iBAQGc8LCLt.CLJHUYr0SMv3BLvnPRtAWcz0CLt.CLJ7TczAWcz0CLt.CLJLxXs0SQQEiBlMVL8HCLt.CLJHWYyESOxTiKv.iBmEVZtESOv3BLvnfYiISOz.iKv.iBxU1bxziL03BLvnvYgklaxzCLt.CLJX1XyziMv3BLvnfbkM2L8HSMt.CLJbVXo41L8.iKv.iBlMFM8fCLt.CLJHWYyQSOxTiKv.iBmEVZtQSOv3BLvnvHi0VOEEkLJX1XwziLv3BLvnfbkMWL8HSMt.CLJbVXo4VL8.iKv.iBlMlL8PCLt.CLJHWYyISOxTiKv.iBmEVZtISOv3BLvnfYiMSO1.iKv.iBxU1byziL03BLvnvYgklayzCLt.CLJX1XzzCNv3BLvnfbkMGM8HSMt.CLJbVXo4FM8.iKv.iBiLVa8X0PFUiBTkGb8.iBCUGc8DSMv3BLvnfTkMWOv3BLvn.QxYWOv3BLvnvQgkla8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8.iKv.iBFMkL8.iBKUVdSMFa8.iKv.iBiLVa8X0PFYiBTkGb8.iBCUGc8DSMv3BLvnfTkMWOv3BLvn.QxYWOv3BLvnvQgkla8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8.iKv.iBFMkL8.iBKUVdSMFa8.iKv.iBiLVa8LkPynfTg41Yk0CLJXjbkEWOv3BLvnfQMMkbi0CLJXTSDAGc8.iKv.iBOYlYy0CLt.CLJ7TSSI2X8.iBO0DQvQWOv3BLvnPSogWO0.iKv.iBM0zTxMVOvnPSMQDbz0CLt.CLJLxXs0CVMYzLJPUdv0CLJLTcz0SL0.iKv.iBRU1b8.iKv.iBF0TL8.iKv.iBFMUL8.iBF0jL8.iKv.iBFMkL8.iBKUVdSMFa8.iKv.iBF8jYl0CLt.CLJXzSM8FY8.iKv.iBF8zTxMVOvn.VF0TOv3BLvn.VF0DQ8.iKv.iBXYTSS0CLJHTZgMWOv3BLvnvSL8VXj0CLt.CLJLDaoM1Z8.iKv.iBDImc8DiBR8Vcz0CLJPUdvISOsDiBiLVa8PTZyQ2LJPUdvUVOvnPRtAWcz0CLt.CLJ7TczAWcz0CLt.CLJ.kbkQUZrQWOv3BLvn.TyQGUowFc8.iKv.iBC4FcFIWYw0SLv.iKv.iBL81c8.iKv.iBHk1Yn0CLt.CLJ.0ayQmQrQWOvnvHi0VODk1bzQiBTkGbk0CLJjjavUGc8.iKv.iBOUGcvUGc8.iKv.iBPIWYTkFaz0CLt.CLJ.0bzQUZrQWOv3BLvnvPtQmQxUVb8DCLv3BLvn.SucWOv3BLvn.RocFZ8.iKv.iBP81bzYDaz0CLJLxXs0iS0IUY1EiBPIWY8.iKv.iBDEVav0CNv3BLvn.QkMVX40SMv3BLvnvTooWY8DCLv3BLvn.Uu4VY8.iKv.iBWkFYzgVO2TiKv.iBMkFd8HCLt.CLJLxXs0iVME1bJHUYzESOv3BLvnfTkQmL8.iKv.iBME1bz0SLv.iKv.iBXkULL0CM3n.VYICS8PSNJfUVyvTO0.iBXkEML0SMwn.VYECU8TiLJfUVxPUO0LiBXk0LT0SMzn.VYQCU8TSMJ7zTCESO0XiBOM0PxzSM2nvSSMzL8TCNJ7zTCQSO0jiBMMUQGESO1.iBMMUQGISO1DiBMMUQGMSO1HiBMMUQGQSO1LiBMMUQGUSO1PiBMMUQGYSO1TiBMMUQGcSO1XiBMMUQGgSO1biBRUlcwziM3n.TtMSOwLiBP4FM8.iBP4VM8.iBP4lM8.iBP41M8.iBP4FN8.iBP4VN8.iBP4VLvzCLJ.kawDSOvnfTgM1ZvziM4nfTgM1ZwzyMvnvHi0VOLEVdMUVaJvTX40TYsESOvn.SgkWSk0lL8.iBLEVdMUVayzCLJvTX40TYsQSOvn.SgkWSk0VM8.iBJnfBu7BHSU1Xzk1atAhYuIGH0cFa4AxXu0FbxU1byUFYfHVZtElb4ABQgQWXJ7xKfPzSNcBUfP0SUMDRfPERIMkBJPBIjPxM2LCMvnvOgEVXgkVXjAmNpslZpolZr8lNmQ1YiUlakIlNgEVXgkVXrAmNgEVXgEVXjAmNgEVXgEVXkElNiEVXgEVXgElNJDFYgEVXgEVX5DVYgEVXgEVX5DVXmY1YmclX5DVX5T1X5PFb5vFb5v1a5P1a5jVX5TVX5LVX5blY5PVa5TlX5DlBqoSagoyYsoiXgoCZgoCZooyZgoCYtoyYgoSXloCZkoCYgoyagoCatExbAElXAkyXvYlYnQlRnMVPxTCLygTPwn.LBclXmM1YhkTYvg1Xmo1SJglZIQlXi81YoQ1XQEDM1LGRAcCMygTPw.yZlQVYgwlYioVagMVaiUlYo0lass1aJPlZqcFVkAWZjMFYhYVVlQVZj0FZlcFZqEFZkU1ZtUVZmglamUVZvcFTiY1anszau8laYMFZpclRgcFYr0FZiQlBiUVZvsTXnc1XYoFbgkFahI1Yt0lZr8VajwVXjA2YtQFajMWdAciStUFZrElZyETXhETNkQ1YoclXnM1SJgFYIoPYocFbOc1XnM1YvgFZAICMvL2QAEyL3LWPgIVPxXSMycTP1DWPwHyMycTP1DWPwHyMygTPw.idnY1SWkDZjcFYJblXOoTPxHSb1ETLHESPwbDRAEyTHETLNgTPwjERyETXiETMwEzLwYWPwfTLAEyQHETLSgTPw3DRAESVHEjLLEjBw.ESAESRLETLXwTPwfDSAEiYgwTPwTESAESTLETLGwTPwjVZLETLpEFSAEiZowTPwLESAEyZowTPwvVXLETLroPZLETLNwTPwzVZLETLtEFSAEiaowTPwjESAEyaowTPw.WXLETLvkFSAIiPAESXkITPwDVZBETLg0lPAECTBETLJHVYBETLhklPAEiXsITPwjjPAEyXkITPwLVZBETLi0lPAECVBETLjUlPAECYoITPwrjPAECRBETLkUlPAESYoIjBAESYsITPwXVXBETLlUlPAEiYoITPwXVaBETLUITPwbVYBETLmklPAEySBETLQITPwbkPAEiTBETLn0lPAEyQBoPPwj1XBETLoUlPAESZmITPwjVZBETLoslPAESZsITPwj1aBETLpElPAEiZiITPwnVYBETLpclPAEiZoITPwn1ZJHTPwnVaBETLp8lPAEyTBETLqMlPAEyZkITPwr1YBETLqklPAEyZqITPwrVaBETLq8lPAECagITPwv1XBETLrUlBBETLrclPAECaoITPwv1ZBETLr0lPAESQBETLNITPwz1XBETLsUlPAESamITPwzVZBETLsslPAESasITPwz1aBoPPw3VXBETLtMlPAEiakITPw31YBETLtklPAEiaqITPw3VaBETLt8lPAESVBETLuMlPAEyakITPw71YBETLuklPJDTLuslPAEyasITPw71aBETLvElPAECbiITPw.WYBETLvclPAECboITPw.2ZBETLv0lPAECbuIzbXE1XAUSbAMiB3E1XAISXiEjLgIVdAIiLxYWbAMibAESVHETLHMTPyHWPwfDSAcibAEyQLEzMxETLSwTP2HWPw3DSAcibAESVLoPP2HWPxHTP2HWPw.kPAcibAESRBEzMxETLXITP2HWPwfjPAcibAEiYgITP2HWPwTkPAcibAESTBEzMxETLGITPJbibAESZoITP2HWPwnVXBEzMxETLpklPAcibAEyTBEzMxETLqklPAcibAECagITP2HWPwvVZBEzMxETLNITP2HmBAESaoITP2HWPw3VXBEzMxETLtklPAcibAESVBEzMxETLuklPAcibAECbgITP2HWPw.WZBEzMxETL0LGVgMVP0nPbAMCdgMVPxD1XAISXhkWPxHib1EWPyHWPwjERAECRCEzLxETLHwTP2HWPwbDSAcibAEyTLEzMxETLNwTP2HWPJDSVLEzMxEjLBEzMxETLPITP2HWPwjjPAcibAECVBEzMxETLHITP2HWPwXVXBEzMxETLUITP2HWPwDkPAcibAEiBGITP2HWPwjVZBEzMxETLpElPAcibAEiZoITP2HWPwLkPAcibAEyZoITP2HWPwvVXBEzMxETLrklPAcibAEiSBoPP2HWPwzVZBEzMxETLtElPAcibAEiaoITP2HWPwjkPAcibAEyaoITP2HWPw.WXBEzMxETLvklPAcibAESMygUXJLVP0DWPyfWXiEjLgMVPxDlX4EjLxHmcwEzLxETLYgTPwfzPAMibAECRLEzMxETLGwTP2HWPwLESAcibAEiSLEjB2HWPwjESAcibAIiPAcibAECTBEzMxETLIITP2HWPwfkPAcibAECRBEzMxETLlElPAcibAESUBEzMxETLQITP2nfbAEyQBEzMxETLoklPAcibAEiZgITP2HWPwnVZBEzMxETLSITP2HWPwrVZBEzMxETLrElPAcibAECaoITP2HWPJDiSBEzMxETLsklPAcibAEiagITP2HWPw3VZBEzMxETLYITP2HWPw7VZBEzMxETLvElPAcibAECboITP2HWPwTiBygUXiETMwEzL3E1XAISXiEjLgIVdAIiLxYWbAMibAESVHETLHMTPyHWPwfDSAcibAEyQLEzMxETLSwTP2HWPwnfSLEzMxETLYwTP2HWPxHTP2HWPw.kPAcibAESRBEzMxETLXITP2HWPwfjPAcibAEiYgITP2HWPwTkPAcibAESTJHTP2HWPwbjPAcibAESZoITP2HWPwnVXBEzMxETLpklPAcibAEyTBEzMxETLqklPAcibAECagITP2HWPwvVZBEjB2HWPw3jPAcibAESaoITP2HWPw3VXBEzMxETLtklPAcibAESVBEzMxETLuklPAcibAECbgITP2HWPw.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.QqUlXhsDQGgTYoYDVqcVZmUDag01ahglQo0VYqIVZDoVXvoFbvUTPg0FYpMTYkMUSCcEVgwFQtEVZoglaC8VZJL1XiIFQl0lZtYVZCYVagAWYvQzTngVXvYzQk81Zlo0UmMVXtMjTlQlZsYTPoQ1YnMDRocVarQkXoslXtQlQq0lBKMFaD8VZpY1XjQzQoAGZqYDaokjZhUjSmcVXsQkagU1aVQDTtMFbpUDasE1YiU1PgklYj0FaF0VZugFZvMzbAoPXiETMwkzYi8lXFYVYvcFSCEkXqMFbFczXjQlXF4VZpoFZiQjZkAWXRQDVtI1XiUDTr0FbrUTPrUlXoQEbsg1YJH1XDQVYuclXjQTRjoVZuYTUqolYqYjXsAWYBMTaoYlXtQlQqklXnMlaCgDYqYVYEEjZqwFYjwVXkI0YrQDRsYlBnwFQYYFakcVQrUVLPQjaog1aq8VQtkVanIzPIY1ZnQ1Pjk1XvkFZEYVYtclXpQzQhkVasoUao0VYFQTXo4lYoovaE0VYnsVYsMTZoA2Zns1PN01ZnAWQtk1YnwVZEk0aukEUNsjZmUjSv0Faso0XsgFYnc1PvUFboY1ZCkjVhgVQJDTZpoVZEA0anIFZFAWYjUVXpQTUlAGQEoVZkk1XoMjasA2XMMDao4FbvgVQpklQiUFQAYFagMFUhklao4lYEcjBlkFagwVaGg1XRMTYoE1XlY1PtE1anY1YEYVZtcVavUDVqwVZoYzQlslYjUjZg8VYhslQhUVYkclXDYVXqAWYuo.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.yLVEjLyAkBAYiclkVYsszXkgFbyTUYogkXogFbyLWP2EjL1EDNwjSLycWP2X1ZjMVRlg1Yhg1YJc0Yhc1XOoTRkYlTQcFbnovXWETLxLWXkcWPxXWP2TWbAESL4TWbAESL2vVZjMVcwETLwjScwETLwjScwETLwjScwETLwjScwETLwjScwETLJDSN0EWPwDSN0EWPwDSN0EWPwDSN0EWPwDSN0EWPwDSN0EWPwDSN0EWPwDSN0EWPwDSMzEzLwETLwTCcAMSbAEiBwTCcAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcAMSbAESL0PWPyDWPwnPL0PWPyDWPwDSMzEzLwETLwTCcAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcAMSbAQiLvbSdyAUP1X2YhYlXKMVYJjzXpgFbwTUYogkXogFbyLWP2EjL1EDNwjSLycWP2X1ZjMVRlg1Yhg1YJc0Yhc1XOoTRkYlTQcFbnM1UAEiLyElBkcWPxXWP2TWbAESL4TWbAESL4TWbAESL4TWbAESL4TWbAESL4TWbAESL4TWbAESL4TWbAESL4TWbAESL4TWbAoPLwjScwETLwjScwETLwjScwETLwjScwETLwjScwETLwjScwETLwTCcAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcJDzLwETLwTCcAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcAMSbAESL0PmBAMSbAESL0PWPyDWPwDSMzEzLwETLwTCcAMSbAESL0PWPyDWPzHCL2j2bPEjM1YVZk01RiUFZvMSUkkFVhkFZvovLyEzcAIicAgSL4Dyb2EzMlsFYikjYnclXnclRWclXmM1SJkTYlIUTmAGZicUPwHybPEjM1Y1XlIVYlEDZvQCZJ7FRCgFbyLGTAYiclMlYhUlYAgFbzf1aHMDZvMybPEjM1YVZk01RiUFZvMSUkkFVhkFZvMybPEjM1YVZk01RiUlBnA2LUUVZXIVZnA2LyAUP1XmYoUVaKMVYnA2LUUVZXIVZnA2LyAUP1XmYoUVaKMVYnA2LUUVZXIVZnA2LyEVa3oPPxDWYkUlZlMVYngWXmEjLk41YvcVYkclYoQlXAESXoIlXAESYtcFbmUVYmYVZjMVPwzjXiETLkUlROclXnoFYJHVPwzjXkETLyXFYmk1YhEkRjQVPwDVZhIVPwXFYmk1YhEkRjUVPwzjXiETLk41YpIEYlEzLMcUPwLiYmUFYkclBjYVPyDlXhIVPwX1Xmo1YucFZjQVPxzDZiETLkQ1YvclaQQlXAISShUVPwTFYmA2YtEEYiEjLMIVZAESYlYlXjofXAQSShIVPwTlYlIFYiEDMMI1XAEiYioDZmQlXAMSShIFTAY1YkQVYmQ1YAMSXiIVZAEiYjIDYjEDMMIlXAEiYJjVYtU1YjQVPyzDZiETLkU1YpgFYWQFYAISShUVPwTVYmoFZjcEYkEjLMIVZAESYuglYlMlRncFYhETLMIlXPEjBkUlROclXnoFYiETLMIVZAESYtclZRQ1YAMSSREDM4Lyb2EDNmo1SWoDZigFYAkDZi8VZgQ1YoIlZhUlXiETLYovRGoVZuo1RpklSuA2Rg4VPxL2cAgyYp8zUJg1Xk41YvcVYAY1ajU1YoIlZhUlXiEjLjkVUFYEYooVZNEFbjkVXJvVPxL2cAgyYug1YlQVTJEyYkEzXlUlajc1YoIlZhUlXiETLPQ1YtE1SPQ1YpklShAGYmI1XAIyb2EDNJ8zYhglBpEjL1LWPgIVPw.CZlc0Yvc1YwjzXmkjYioDZjcFbm81Yhc1amQlRAszQpk1apsjZo4zavsTXtEjLsMFZh4VZpoPYAMSRnM1aoEFYv01am8FbKAWZuc1avsTXnEjLVETXjYUXhEjLoYlZo8lZKEzZl4FZ3EDMQg1XukFdAQCdUMFYJ71ZKIkUnslZlwVXggVSVkVZuIFbvQjXjAmXlElZpwVZs4lYtM0Qpk1apsDdGoVZuo1RWMFYus1RAUSVKwVXgglBMYEaoA2Yl41TmU1YtcFYm4VXsEjLrgVavc1YpYlTVg1ZpYFagEFZMY0Xo81XvAGQgglaic1YpYVPsklanEFYroPXggVSVEVaAIyYkclamQ1YtEzL4EzLv01ahAGbDkVZUozTkYVSnslZlIkUnslZloVZUozTgUVYnc1YSgDTMY0XJTVXkETLtglZg4VZpUFbgIlYuo1R4EVaAIybAElXAECLmo1SWoDZikTYtcFbmUFZl8zYhc0YpcFbm8VPwPVZUYjBVQVZpklSgAGYoEFaAISaiglXtklZkEzLIMlZl8FYkoVYtYVXvQVZpElalEFbjkVdg4VPqwVXiElXAIiRFYEYooPPqYlangWPzD0XpY1ajUVP2fWTjolUjklTVg1ZpYVVlglUjkVZo8lXvAGQhQFbhYVXpoFao0lal41TUYjUjkFdJTkQVQVZoUFYpYEYoEjMjkVVlglUjkFaoA2Yl41TmU1YtcFYm4VXsEjLrgVavc1YpYlTVg1ZpYVVlglUjk1Xo8lBiAGbDEFZtM1YmolYAwlZtgVXjkkYnYEYoEVaAIyYkclamQ1YtEzL4EzLv01ahAGbDkVZUozTkYVSnslZlIkUnovZpYlZoUkRSEVYkg1YmMEbg01auc1XsMVYgUVPw3FZpElaooVYUQ1ZVQVZVEjLg0VPxLWPgIVPw.yYug1YJ8zYJ.WTJkTYkozYjclXnoVRicVRlMlROozYhgFYJkjYkclZm4lRnQVPwz1XnIlaooVYAMSTiYVYtQ1Yk0VaiIFbjclBkkVaiIFbjcVXmEjLVETZhEFYgIVPx3lYOAEYmEzZl4FZ3EDMNMlYk4FYmEzM3E0Xp4laKIkUnslZlcTXj4FZKoPZo8lXvAGQhQFbhYVXpoFao0lal41TtE1SPQ1Y34VXOAEYmkVYiolatsTP0.EYmcTXj4FZKwVZvclYtM0YkclaJbFYm4VXsEjLrgVavc1YpYlTVg1ZpY1QgQlanszXo81XvAGQgglaic1YpYVPsQlanEFYGEFYtg1Rg0VPxbVYm4lBmQ1YtEzL4EzLv01ahAGbDkVZUozTkYVSnslZlIkUnslZloVZUozTgUVYnc1YSYVXg4FTjc1XkEVYAEianoVXtoPZpUlZgMVaPQ1YgcVPxDVaAIybAElXAECLmolTIM1YIU1YJEyYkc1XmI1YjcFaAICMwL2cAgCbnk1agcVPyTFZJ7lZiYVXhETLwLUXmolagIVPyL2cAgyYpc1ai4lYjclXng1XtYVXOgFYi4lYjglXnYVP2vVXRMFahgVXhEjLp0lBycWP3.GZo8VXmEzLkg1apMlYgIVPwDyTgclZtElXAMyb2EDNJ8TLnQVRkc1SmoVTwnDZiETL2DlXycWP2nGZlovSWETL1TlYm8FZmQ1XAMyb2EzM5glYOcUPwXSYlc1ancFYjEzLycWP2nGZl8zUAEiMkY1Yug1YjUVPyL2cAcidJflYOcUPwXSYtYFYkYVYnQlXAIyb2EzM5glYOcUPxPyb2EzM5glYOcUPxPyb2EzM5glYOcUPxPyb2EzM5glYOckBAICMycWP2nGZl8zUAEiMk4lYjUlYkgFYiEjLyETXhEDNBEjL0TybAElXAgiPAISM0zCN1XCNzbiB..."
+            base64:layout="55.LETVOUEU..P.A7TUTAUUTME..DP.BU0T.Df.o4FYkgG.ATP......vVX48VczAP.ET.SfHE...">
+      <MACROPARAMETERS id="1118"/>
+      <MODIFIERASSIGNMENTS/>
+      <AUTOMATIONCURVE paramID="574">
+        <POINT t="0.0" v="1.0" c="0.0"/>
+        <POINT t="1.618887060128571" v="0.5" c="0.0"/>
+        <POINT t="32.37774072010549" v="1.0" c="0.0"/>
+      </AUTOMATIONCURVE>
+    </PLUGIN>
+    <PLUGIN type="volume" id="1109" enabled="1" remapOnTempoChange="1" volume="0.4723665416240692">
+      <MACROPARAMETERS id="1110"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <PLUGIN type="level" id="1113" enabled="1">
+      <MACROPARAMETERS id="1114"/>
+    </PLUGIN>
+    <PLUGIN type="auxsend" windowLocked="1" id="1121" enabled="1" quickParamName="send level"
+            busNum="1" auxSendSliderPos="0.5488116145133972">
+      <MACROPARAMETERS id="1122"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <PLUGIN type="auxsend" windowLocked="1" id="1125" enabled="1" quickParamName="send level"
+            busNum="0" auxSendSliderPos="0.4065696597099304">
+      <MACROPARAMETERS id="1126"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <OUTPUTDEVICES>
+      <DEVICE name="(default audio output)"/>
+    </OUTPUTDEVICES>
+  </TRACK>
+  <TRACK id="1131" midiVProp="0.28125" midiVOffset="0.359375" name="kick">
+    <MACROPARAMETERS id="1137"/>
+    <MODIFIERS/>
+    <AUDIOCLIP name="s30" start="2.023608795006593" length="0.2031065759637189"
+               offset="0.0" id="1799" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s31" start="2.529510993758242" length="0.2031065759637189"
+               offset="0.0" id="1815" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s32" start="3.03541319250989" length="0.2031065759637189"
+               offset="0.0" id="1831" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s33" start="3.541315391261538" length="0.2031065759637189"
+               offset="0.0" id="1847" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s34" start="4.047217590013187" length="0.2031065759637185"
+               offset="0.0" id="1863" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s35" start="4.553119788764835" length="0.2031065759637185"
+               offset="0.0" id="1873" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s36" start="5.059021987516483" length="0.2031065759637185"
+               offset="0.0" id="1881" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s37" start="5.564924186268131" length="0.2031065759637185"
+               offset="0.0" id="1889" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s38" start="6.07082638501978" length="0.2031065759637185"
+               offset="0.0" id="1897" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s39" start="6.576728583771429" length="0.2031065759637185"
+               offset="0.0" id="1905" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s40" start="7.082630782523077" length="0.2031065759637185"
+               offset="0.0" id="1913" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s41" start="7.588532981274724" length="0.2031065759637185"
+               offset="0.0" id="1921" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s42" start="8.094435180026373" length="0.2031065759637194"
+               offset="0.0" id="1929" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s43" start="8.600337378778022" length="0.2031065759637194"
+               offset="0.0" id="1937" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s44" start="9.106239577529671" length="0.2031065759637194"
+               offset="0.0" id="1945" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s45" start="9.612141776281318" length="0.2031065759637194"
+               offset="0.0" id="1953" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s46" start="10.11804397503297" length="0.2031065759637194"
+               offset="0.0" id="1961" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s47" start="10.62394617378462" length="0.2031065759637194"
+               offset="0.0" id="1969" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s48" start="11.12984837253626" length="0.2031065759637194"
+               offset="0.0" id="1977" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s49" start="11.63575057128791" length="0.2031065759637194"
+               offset="0.0" id="1985" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s50" start="12.14165277003956" length="0.2031065759637194"
+               offset="0.0" id="1993" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s51" start="12.64755496879121" length="0.2031065759637194"
+               offset="0.0" id="2001" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s52" start="13.15345716754286" length="0.2031065759637194"
+               offset="0.0" id="2009" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s53" start="13.6593593662945" length="0.2031065759637194"
+               offset="0.0" id="2017" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s54" start="14.16526156504615" length="0.2031065759637194"
+               offset="0.0" id="2025" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s55" start="14.6711637637978" length="0.2031065759637194"
+               offset="0.0" id="2029" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s56" start="15.17706596254945" length="0.2031065759637194"
+               offset="0.0" id="2033" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s57" start="15.6829681613011" length="0.2031065759637194"
+               offset="0.0" id="2037" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s58" start="16.18887036005275" length="0.2031065759637194"
+               offset="0.0" id="2041" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s59" start="16.6947725588044" length="0.2031065759637194"
+               offset="0.0" id="2045" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s60" start="17.20067475755604" length="0.2031065759637194"
+               offset="0.0" id="2049" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s61" start="17.70657695630769" length="0.2031065759637194"
+               offset="0.0" id="2053" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s62" start="18.21247915505934" length="0.2031065759637194"
+               offset="0.0" id="2057" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s63" start="18.71838135381099" length="0.2031065759637194"
+               offset="0.0" id="2061" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s64" start="19.22428355256264" length="0.2031065759637194"
+               offset="0.0" id="2065" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s65" start="19.73018575131428" length="0.2031065759637194"
+               offset="0.0" id="2069" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s66" start="20.23608795006593" length="0.2031065759637194"
+               offset="0.0" id="2073" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s67" start="20.74199014881758" length="0.2031065759637194"
+               offset="0.0" id="2077" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s68" start="21.24789234756923" length="0.2031065759637194"
+               offset="0.0" id="2081" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s69" start="21.75379454632088" length="0.2031065759637194"
+               offset="0.0" id="2085" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s70" start="22.25969674507252" length="0.2031065759637194"
+               offset="0.0" id="2089" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s71" start="22.76559894382417" length="0.2031065759637194"
+               offset="0.0" id="2093" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s72" start="23.27150114257582" length="0.2031065759637194"
+               offset="0.0" id="2097" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s73" start="23.77740334132747" length="0.2031065759637194"
+               offset="0.0" id="2101" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s74" start="24.28330554007912" length="0.2031065759637194"
+               offset="0.0" id="2105" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s75" start="24.78920773883077" length="0.2031065759637194"
+               offset="0.0" id="2109" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s76" start="25.29510993758242" length="0.2031065759637194"
+               offset="0.0" id="2113" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s77" start="25.80101213633407" length="0.2031065759637194"
+               offset="0.0" id="2117" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s78" start="26.30691433508571" length="0.2031065759637194"
+               offset="0.0" id="2121" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s79" start="26.81281653383736" length="0.2031065759637194"
+               offset="0.0" id="2125" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s80" start="27.31871873258901" length="0.2031065759637194"
+               offset="0.0" id="2129" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s81" start="27.82462093134066" length="0.2031065759637194"
+               offset="0.0" id="2133" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s82" start="28.33052313009231" length="0.2031065759637194"
+               offset="0.0" id="2137" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s83" start="28.83642532884395" length="0.2031065759637194"
+               offset="0.0" id="2141" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s84" start="29.3423275275956" length="0.2031065759637194"
+               offset="0.0" id="2145" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s85" start="29.84822972634725" length="0.2031065759637194"
+               offset="0.0" id="2149" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s86" start="30.3541319250989" length="0.2031065759637194"
+               offset="0.0" id="2153" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s87" start="30.86003412385055" length="0.2031065759637194"
+               offset="0.0" id="2157" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s88" start="31.3659363226022" length="0.2031065759637194"
+               offset="0.0" id="2161" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s89" start="31.87183852135384" length="0.2031065759637158"
+               offset="0.0" id="2165" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s90" start="32.37774072010549" length="0.2031065759637158"
+               offset="0.0" id="2169" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s91" start="32.88364291885714" length="0.2031065759637158"
+               offset="0.0" id="2173" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s92" start="33.38954511760879" length="0.2031065759637158"
+               offset="0.0" id="2177" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <AUDIOCLIP name="s93" start="33.89544731636044" length="0.2031065759637158"
+               offset="0.0" id="2181" source="/home/charles/cybr/sample/909k.wav"
+               sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa" gain="-0.5511810779571533">
+      <LOOPINFO rootNote="-1" numBeats="0.4014739933230169" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <PLUGIN type="volume" id="1146" enabled="1" remapOnTempoChange="1">
+      <MACROPARAMETERS id="1149"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <PLUGIN type="level" id="1158" enabled="1">
+      <MACROPARAMETERS id="1161"/>
+    </PLUGIN>
+    <OUTPUTDEVICES>
+      <DEVICE name="(default audio output)"/>
+    </OUTPUTDEVICES>
   </TRACK>
 </EDIT>

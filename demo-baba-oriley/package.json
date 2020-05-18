@@ -4,11 +4,13 @@
   "description": "synth part of Baba O'Riley written in fluid music",
   "main": "run.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon -w content.js content.js"
   },
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
   "dependencies": {
+    "nodemon": "^2.0.4",
     "ramda": "^0.27.0"
   }
 }

@@ -34,12 +34,13 @@ const message = [
   // Organ 1
   fluid.audiotrack.select('organ1'),
   fluid.plugin.loadTrkpreset(presetFile),
+  fluid.audiotrack.gain(-6),
   fluid.audiotrack.send('16th delay', -2.3),
   fluid.audiotrack.send('reverb', -12),
   // Organ 2
   fluid.audiotrack.select('organ2'),
   fluid.plugin.loadTrkpreset(presetFile),
-  fluid.audiotrack.gain(-3),
+  fluid.audiotrack.gain(-9),
   fluid.audiotrack.send('16th delay', -6),
   fluid.audiotrack.send('reverb', -12),
 ];
