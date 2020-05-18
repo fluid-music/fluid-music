@@ -9,6 +9,15 @@ const message = [
   fluid.global.activate(sessionFile, true),
   fluid.tempo.set(BPM),
 
+  // Create a delay send
+  fluid.audiotrack.selectReturnTrack('16th delay'),
+  fluid.pluginTStereoDelay.select(),
+  fluid.pluginTStereoDelay.zero(),                // unity gain, 100% wet
+  fluid.pluginTStereoDelay.setDelayMs(15000/BPM), // sixteenth note delay
+  fluid.pluginTStereoDelay.setFeedback(.2),       // ...with 20% feedback
+  fluid.pluginTStereoDelay.setLowPassFreq(2800),  // low pass filter 2.8khz
+  fluid.audiotrack.send('reverb', -20),           // reverb send @ -20 dBFS
+
   // Create a reverb send
   fluid.audiotrack.selectReturnTrack('reverb'),
   fluid.plugin.select('#TReverber8'),
@@ -18,15 +27,6 @@ const message = [
   fluid.plugin.setParamNormalized('Predelay', 0.5),
   fluid.plugin.setParamNormalized('Density', 0.5),
   fluid.plugin.setParamNormalized('Bandwidth', 1.0),
-
-  // Create a delay send
-  fluid.audiotrack.selectReturnTrack('16th delay'),
-  fluid.pluginTStereoDelay.select(),
-  fluid.pluginTStereoDelay.zero(),                // unity gain, 100% wet
-  fluid.pluginTStereoDelay.setDelayMs(15000/BPM), // sixteenth note delay
-  fluid.pluginTStereoDelay.setFeedback(.2),       // ...with 20% feedback
-  fluid.pluginTStereoDelay.setLowPassFreq(2800),  // low pass filter 2.8khz
-  fluid.audiotrack.send('reverb', -20),           // reverb send @ -20 dBFS
 
   // Organ 1
   fluid.audiotrack.select('organ1'),
