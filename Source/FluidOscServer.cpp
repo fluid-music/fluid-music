@@ -934,6 +934,8 @@ OSCMessage FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
         compressor->useSidechainTrigger = true;
     }
 
+    selectedPlugin->guessSidechainRouting();
+
     reply.addInt32(0);
     return reply;
 }
