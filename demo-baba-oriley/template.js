@@ -13,7 +13,7 @@ const message = [
   fluid.audiotrack.selectReturnTrack('16th delay'),
   fluid.pluginTStereoDelay.select(),
   fluid.pluginTStereoDelay.zero(),                // unity gain, 100% wet
-  fluid.pluginTStereoDelay.setDelayMs(15000/BPM), // sixteenth note delay
+  fluid.pluginTStereoDelay.setDelayMs(15000/BPM), // 16th note delay in ms
   fluid.pluginTStereoDelay.setFeedback(.2),       // ...with 20% feedback
   fluid.pluginTStereoDelay.setLowPassFreq(2800),  // low pass filter 2.8khz
   fluid.audiotrack.send('reverb', -20),           // reverb send @ -20 dBFS

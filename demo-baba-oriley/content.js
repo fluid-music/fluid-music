@@ -25,17 +25,27 @@ let v      =  '78655775856556658765657676656765'; // velocities
 const score = {
   organ1: R.repeat(organ1, 16),
   organ2: ['', '', organ2],
+  kick: { r: '1234', kick: R.repeat('k.k.', 16)}
 };
 
 // nLibrary = { F: [41, 53], c: [34, 46], f: [41, 29], d: [44], e: [46], H: [48], k }; 
 const session = fluid.score.parse(score, {nLibrary, r, vLibrary, v, startTime: 1});
 
-// helpers.humanize(session.tracks.organ1, 0.01);
+helpers.humanize(session.tracks.organ1, 0.01);
 const message = [
   cleanup(session),
   fluid.score.tracksToFluidMessage(session.tracks),
   fluid.audiotrack.select('organ1'),
+  fluid.pluginZebra2Vst2.select(),
+  fluid.pluginZebra2Vst2.setVCF5Cutoff(0.5, 1),
+  fluid.pluginZebra2Vst2.setVCF5Cutoff(1.0, 16),
+  fluid.pluginZebra2Vst2.setVCF5Resonance(0.3),
+  helpers.duckUnderKick,
   fluid.audiotrack.select('organ2'),
+  fluid.pluginZebra2Vst2.select(),
+  fluid.pluginZebra2Vst2.setVCF5Cutoff(0.5, 1),
+  fluid.pluginZebra2Vst2.setVCF5Cutoff(1.0, 16),
+  fluid.pluginZebra2Vst2.setVCF5Resonance(0.3),
   fluid.transport.loop(1, session.duration),
 ];
 
