@@ -10,7 +10,8 @@
     "test-tab": "mocha test/test-tab.js",
     "test-debug": "mocha --reporter spec --inspect-brk",
     "docs": "jsdoc2md  --files 'src/fluid/*.js' > docs/fluid.md",
-    "generate-zebra2-code": "node code-generators/zebra2/generate-code.js > src/fluid/plugin-zebra2-vst2.js"
+    "generate-zebra2-code": "node code-generators/gen-zebra2-vst2-file.js",
+    "generate-helm-code": "node code-generators/gen-helm-file.js"
   },
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
