@@ -45,9 +45,9 @@ const helpers = {
    */
   filterAutomation: [
     fluid.pluginZebra2Vst2.select(),
-    fluid.pluginZebra2Vst2.setVCF5Cutoff(0.5, 1),
-    fluid.pluginZebra2Vst2.setVCF5Cutoff(1.0, 16),
-    fluid.pluginZebra2Vst2.setVCF5Resonance(0.3),
+    fluid.pluginZebra2Vst2.setVcf5Cutoff(0.5, 1),
+    fluid.pluginZebra2Vst2.setVcf5Cutoff(1.0, 16),
+    fluid.pluginZebra2Vst2.setVcf5Resonance(0.3),
   ],
 
   /**

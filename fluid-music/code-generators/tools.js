@@ -14,28 +14,22 @@ const lowerFirstLetter = (string) => {
 
 const isUpperCase = (s) => R.toUpper(s) === s;
 
-const predicates = R.map(R.startsWith, ['VCF','VCC','VCA','OSC','LFO','EQ','ENV']);
-const startsWithUpperAcronym = R.anyPass(predicates);
-const toLowerUnlessAcronym = (string) => {
-  return startsWithUpperAcronym(string) ? string : R.toLower(string);
-};
-
 /**
  * Create a version of the word that with a lower case first letter.
- * If the word is all uppercase, make it all lower case.
  * @param {String} word
  * @returns {String}
  */
 const firstWord = (word) => {
-  if (!word || !word.length)
-    throw new Error(`Invalid parameter word (${word}): First word must be a string w/ length >= 1`);
-  if (word.length === 1 || isUpperCase(word)) return toLowerUnlessAcronym(word);
-  if (startsWithUpperAcronym(word)) return word;
-  return lowerFirstLetter(word);
+  if (word.length === 1 || isUpperCase(word)) return word.toLowerCase();
+  // We have a lower or mixed case word. Decide based on the second letter.
+  return isUpperCase(word[1]) ? word.toLowerCase() : lowerFirstLetter(word);
 };
 
 const restWord = (word) => {
-  word = isUpperCase(word) ? toLowerUnlessAcronym(word) : word;
+  if (word.length === 1) return word.toUpperCase();
+  word = isUpperCase(word) ? word.toLowerCase() : word;
+  // We have a lower or mixed case word. Decide based o nthe second letter.
+  word = isUpperCase(word[1]) ? word.toLowerCase() : word;
   return upperFirstLetter(word);
 }
 
@@ -89,7 +83,7 @@ module.exports = {
   select(pluginId) {
     return fluid.plugin.select('${pluginName}', 'vst', pluginId);
   },
-`   );
+` );
 
   R.mapObjIndexed((funcName, paramName) => {
     const funcBody = createFunctionString(funcName, paramName);
@@ -104,8 +98,6 @@ module.exports = {
 };
 
 module.exports = {
-  startsWithUpperAcronym,
-  toLowerUnlessAcronym,
   camelCaseFromParamName,
   writePluginHelperFile,
 };

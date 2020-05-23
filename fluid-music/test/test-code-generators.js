@@ -6,17 +6,17 @@ const tools = require('../code-generators/tools');
 describe('camelCaseFromParamName', () => {
   const correctExamples = {
     'Wet Level': 'wetLevel',
-  
+
     // don't mangle acronyms (LFO into lFO)
-    'LFO': 'LFO', 
-    'LFO1': 'LFO1', 
+    'LFO': 'lfo',
+    'LFO1': 'lfo1',
     'AnLFO': 'anLFO',
-    'An LFO': 'anLFO',
-    'OSC1Pan': 'OSC1Pan',
-    'A OSC1Pan': 'aOSC1Pan',
-    'a OSC1Pan': 'aOSC1Pan',
+    'An LFO': 'anLfo',
+    'OSC1Pan': 'osc1pan',
+    'A OSC1Pan': 'aOsc1pan',
+    'a OSC1Pan': 'aOsc1pan',
     'a Osc1Pan': 'aOsc1Pan',
-  
+
     // weird, but acceptable
     'a b c': 'aBC',
     'A': 'a',
@@ -25,57 +25,34 @@ describe('camelCaseFromParamName', () => {
     'AB CD': 'abCd',
     'ab cd': 'abCd',
     'ab': 'ab',
-    'E1n': 'e1n',   
+    'E1n': 'e1n',
     'E1N': 'e1n',
-  
+
     // examples from helm
     'amp_attack': 'ampAttack',
     'amp_decay': 'ampDecay',
     'mono_lfo_1_frequency': 'monoLfo1Frequency',
-  
+
     // examples from zebra2 vst2
-    'main: Active #LFOG2': 'mainActiveLFOG2',
-    'PCore: X1': 'pCoreX1',
-    'OSC2: Pan': 'OSC2Pan',
-    'LFOG: Phase': 'LFOGPhase',
-    'LFOG2: Sync': 'LFOG2Sync',
-  
+    'main: Active #LFOG2': 'mainActiveLfog2',
+    'PCore: X1': 'pcoreX1',
+    'pCore: X1': 'pcoreX1', // comparison
+    'OSC2: Pan': 'osc2Pan',
+    'LFOG: Phase': 'lfogPhase',
+    'LFOG2: Sync': 'lfog2Sync',
+
     // examples from Dexed
     'OP1 OUTPUT LEVEL': 'op1OutputLevel',
     'OP1 MODE': 'op1Mode',
-    'LFO DELAY': 'LFODelay',
+    'LFO DELAY': 'lfoDelay',
     'lfo DELAY': 'lfoDelay', // comparison
   };
 
   it('should convert names according to test examples', () => {
     for (let [paramName, camelCaseName] of Object.entries(correctExamples)) {
-      tools.camelCaseFromParamName(paramName).should.equal(camelCaseName);
+      let result = tools.camelCaseFromParamName(paramName);
+      result.should.equal(camelCaseName,
+        `For "${paramName}": got "${result}" wanted "${camelCaseName}`);
     }
-  });
-});
-
-describe('starsWithUpperAcronym', () => {
-  const answers = {
-    'VCA': true,
-    'OSC': true,
-    'LFO': true,
-    'EQ':  true,
-    'ENV': true,
-    'VCA_blabla': true,
-    'OSC_blabla': true,
-    'LFO_blabla': true,
-    'EQ_blabla':  true,
-    'ENV_blabla': true,
-    'NOVCA': false,
-    'NOOSC': false,
-    'NOLFO': false,
-    'NOEQ':  false,
-    'NOENV': false,
-  };
-
-  it('should idenfity if input starts with a common upper-case audio acronym', () => {
-    for (let [str, bool] of Object.entries(answers)) {
-      tools.startsWithUpperAcronym(str).should.equal(bool);
-    };
   });
 });
