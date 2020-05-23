@@ -208,6 +208,12 @@ const plugin = {
     }
   },
 
+  /**
+   * Save a preset file on the server. If this is a relative path, the preset
+   * will be saved to the first path in the preset search path, which can be
+   * found with `cybr --preset-path`
+   * @param {string} presetName Filename, optionally with `.trkpreset` suffix.
+   */
   save(presetName) {
     if (typeof presetName !== 'string')
       throw new Error('plugin.save requires preset name as argument');
@@ -218,6 +224,10 @@ const plugin = {
     };
   },
 
+  /**
+   * Load a preset file. Check the preset search path with `cybr --preset-path`
+   * @param {string} presetName - Filename, with optional `.trkpreset` suffix.
+   */
   load(presetName) {
     if (typeof presetName !== 'string')
       throw new Error('plugin.load requires preset name as argument');

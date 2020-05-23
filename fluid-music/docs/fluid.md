@@ -422,6 +422,8 @@ positioned within the session.
     * [.setParamExplicitAt(paramName, paramValue, [timeInWholeNotes], [curve])](#plugin.setParamExplicitAt)
     * [.setExternalParamHelper(paramName, paramValue, [timeInWholeNotes], [curve])](#plugin.setExternalParamHelper)
     * [.setSideChainInput(inputTrackName)](#plugin.setSideChainInput)
+    * [.save(presetName)](#plugin.save)
+    * [.load(presetName)](#plugin.load)
     * [.loadTrkpreset(file)](#plugin.loadTrkpreset)
 
 <a name="plugin.select"></a>
@@ -539,6 +541,30 @@ plugin preset.
 | Param | Type | Description |
 | --- | --- | --- |
 | inputTrackName | <code>string</code> | a track with this name will feed the    selected plugin's side chain input. The track will be created if it does    not exist. |
+
+<a name="plugin.save"></a>
+
+### plugin.save(presetName)
+Save a preset file on the server. If this is a relative path, the preset
+will be saved to the first path in the preset search path, which can be
+found with `cybr --preset-path`
+
+**Kind**: static method of [<code>plugin</code>](#plugin)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| presetName | <code>string</code> | Filename, optionally with `.trkpreset` suffix. |
+
+<a name="plugin.load"></a>
+
+### plugin.load(presetName)
+Load a preset file. Check the preset search path with `cybr --preset-path`
+
+**Kind**: static method of [<code>plugin</code>](#plugin)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| presetName | <code>string</code> | Filename, with optional `.trkpreset` suffix. |
 
 <a name="plugin.loadTrkpreset"></a>
 
