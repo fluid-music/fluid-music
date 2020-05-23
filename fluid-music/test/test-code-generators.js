@@ -52,7 +52,7 @@ describe('camelCaseFromParamName', () => {
     for (let [paramName, camelCaseName] of Object.entries(correctExamples)) {
       let result = tools.camelCaseFromParamName(paramName);
       result.should.equal(camelCaseName,
-        `For "${paramName}": got "${result}" wanted "${camelCaseName}`);
+        `For "${paramName}": got "${result}" wanted "${camelCaseName}"`);
     }
   });
 });

@@ -4,68 +4,68 @@
  * @typedef {Object.<string,ScoreObject>|Array<ScoreObject>} ScoreObject
  */
 
- /**
-  * Session encapsulates the structure of a DAW Session.
-  *
-  * ```
-  * const exampleSession = {
-  *   startTime: 0,
-  *   duration: 4,
-  *   tracks: {
-  *     drums: {
-  *       clips: [
-  *         {
-  *           notes: [ { s: 0, l: 0.25, n: 0 } ],
-  *           duration: 1,
-  *           startTime: 0
-  *         },
-  *         {
-  *           notes: [ { s: 0, l: 0.25, n: 1 } ],
-  *           duration: 1,
-  *           startTime: 1
-  *         },
-  *         {
-  *           notes: [ { s: 0, l: 0.25, n: 2 } ],
-  *           duration: 1,
-  *           startTime: 2
-  *         },
-  *         {
-  *           notes: [ { s: 0, l: 0.25, n: 3 } ],
-  *           duration: 1,
-  *           startTime: 3
-  *         }
-  *       ]
-  *     }
-  *   },
-  *   regions: [
-  *     {
-  *       startTime: 0,
-  *       duration: 2,
-  *       regions: [
-  *         {
-  *           notes: [ { s: 0, l: 0.25, n: 0 } ],
-  *           duration: 1,
-  *           startTime: 0
-  *         },
-  *         {
-  *           notes: [ { s: 0, l: 0.25, n: 1 } ],
-  *           duration: 1,
-  *           startTime: 1
-  *         }
-  *       ]
-  *     },
-  *     { notes: [ { s: 0, l: 0.25, n: 2 } ], duration: 1, startTime: 2 },
-  *     { notes: [ { s: 0, l: 0.25, n: 3 } ], duration: 1, startTime: 3 }
-  *   ]
-  * }
-  * ```
-  *
-  * @typedef {Object,<string, Session>} Session
-  * @property {number} startTime
-  * @property {number} duration
-  * @property {Session[]} [regions] (Only on sessions created from an array)
-  * @property {TrackObject} [tracks] (Only on top level/outermost sessions)
-  */
+/**
+ * Session encapsulates the structure of a DAW Session.
+ *
+ * ```
+ * const exampleSession = {
+ *   startTime: 0,
+ *   duration: 4,
+ *   tracks: {
+ *     drums: {
+ *       clips: [
+ *         {
+ *           notes: [ { s: 0, l: 0.25, n: 0 } ],
+ *           duration: 1,
+ *           startTime: 0
+ *         },
+ *         {
+ *           notes: [ { s: 0, l: 0.25, n: 1 } ],
+ *           duration: 1,
+ *           startTime: 1
+ *         },
+ *         {
+ *           notes: [ { s: 0, l: 0.25, n: 2 } ],
+ *           duration: 1,
+ *           startTime: 2
+ *         },
+ *         {
+ *           notes: [ { s: 0, l: 0.25, n: 3 } ],
+ *           duration: 1,
+ *           startTime: 3
+ *         }
+ *       ]
+ *     }
+ *   },
+ *   regions: [
+ *     {
+ *       startTime: 0,
+ *       duration: 2,
+ *       regions: [
+ *         {
+ *           notes: [ { s: 0, l: 0.25, n: 0 } ],
+ *           duration: 1,
+ *           startTime: 0
+ *         },
+ *         {
+ *           notes: [ { s: 0, l: 0.25, n: 1 } ],
+ *           duration: 1,
+ *           startTime: 1
+ *         }
+ *       ]
+ *     },
+ *     { notes: [ { s: 0, l: 0.25, n: 2 } ], duration: 1, startTime: 2 },
+ *     { notes: [ { s: 0, l: 0.25, n: 3 } ], duration: 1, startTime: 3 }
+ *   ]
+ * }
+ * ```
+ *
+ * @typedef {Object.<string, Session>} Session
+ * @property {number} startTime
+ * @property {number} duration
+ * @property {Session[]} [regions] (Only on sessions created from an array)
+ * @property {TrackObject} [tracks] (Only on top level/outermost sessions)
+ */
 
 /**
  * @typedef {Object} Clip

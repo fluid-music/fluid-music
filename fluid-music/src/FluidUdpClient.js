@@ -39,7 +39,7 @@ module.exports = class FluidOscSender {
    *            { type: 'float', value: 3.14159 },
    *          ]
    *        }
-   * @param {[number]} [timetag = 0] - timetag is only used if first argument is
+   * @param {number} [timetag = 0] - timetag is only used if first argument is
    *        array.
    */
   send(msgObject, timetag) {
