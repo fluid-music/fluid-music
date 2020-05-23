@@ -8,6 +8,7 @@
     "test": "mocha",
     "test-score": "mocha test/test-score.js",
     "test-tab": "mocha test/test-tab.js",
+    "test-gen": "mocha test/test-code-generators.js",
     "test-debug": "mocha --reporter spec --inspect-brk",
     "docs": "jsdoc2md  --files 'src/fluid/*.js' > docs/fluid.md",
     "generate-zebra2-code": "node code-generators/gen-zebra2-vst2-file.js",

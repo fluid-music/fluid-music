@@ -12,28 +12,42 @@ const lowerFirstLetter = (string) => {
   return R.join('', s);
 };
 
+const isUpperCase = (s) => R.toUpper(s) === s;
+
+const predicates = R.map(R.startsWith, ['VCF','VCC','VCA','OSC','LFO','EQ','ENV']);
+const startsWithUpperAcronym = R.anyPass(predicates);
+const toLowerUnlessAcronym = (string) => {
+  return startsWithUpperAcronym(string) ? string : R.toLower(string);
+};
+
 /**
- * Create a version of the word that with a lower case first letter, UNLESS the
- * input word is all uppercase for example DRY.
+ * Create a version of the word that with a lower case first letter.
+ * If the word is all uppercase, make it all lower case.
  * @param {String} word
  * @returns {String}
  */
 const firstWord = (word) => {
-  if (!word || !word.length) throw new Error('First word must be a string of length 1');
-  if (word.length === 1) return R.toLower(word);
-  if (R.toLower(word[2]) === word[2]) return lowerFirstLetter(word);
-  return word;
+  if (!word || !word.length)
+    throw new Error(`Invalid parameter word (${word}): First word must be a string w/ length >= 1`);
+  if (word.length === 1 || isUpperCase(word)) return toLowerUnlessAcronym(word);
+  if (startsWithUpperAcronym(word)) return word;
+  return lowerFirstLetter(word);
 };
+
+const restWord = (word) => {
+  word = isUpperCase(word) ? toLowerUnlessAcronym(word) : word;
+  return upperFirstLetter(word);
+}
 
 /**
  * Generate a camelCase name from a parameter name
  */
 const camelCaseFromParamName = R.pipe(
-  R.replace(/[:\# \_\-\\\/]+/g, '-'),
-  R.split('-'),
-  R.addIndex(R.map)((a, i) => {
-    if (i === 0) return firstWord(a);
-    return upperFirstLetter(a); }),
+  R.replace(/[:\# \_\-\\\/]+/g, '-'),    // Replace misc chars with '-'
+  R.split('-'),                          // create an array of words
+  R.addIndex(R.map)((word, i) => {
+    if (i === 0) return firstWord(word); // treat 1st word as special case
+    return restWord(word); }),           // remaining words treated the same
   R.join(''),
 );
 
@@ -90,5 +104,8 @@ module.exports = {
 };
 
 module.exports = {
+  startsWithUpperAcronym,
+  toLowerUnlessAcronym,
+  camelCaseFromParamName,
   writePluginHelperFile,
 };

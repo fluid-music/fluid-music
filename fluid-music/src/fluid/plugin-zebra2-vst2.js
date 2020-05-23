@@ -1351,7 +1351,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG1Velocity(value, timeInWholeNotes, curve) {
+  setMseg1Velocity(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG1: Velocity', value, timeInWholeNotes, curve);
   },
 
@@ -1365,7 +1365,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG1Attack(value, timeInWholeNotes, curve) {
+  setMseg1Attack(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG1: Attack', value, timeInWholeNotes, curve);
   },
 
@@ -1379,7 +1379,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG1Loop(value, timeInWholeNotes, curve) {
+  setMseg1Loop(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG1: Loop', value, timeInWholeNotes, curve);
   },
 
@@ -1393,7 +1393,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG1Release(value, timeInWholeNotes, curve) {
+  setMseg1Release(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG1: Release', value, timeInWholeNotes, curve);
   },
 
@@ -1407,7 +1407,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG2Velocity(value, timeInWholeNotes, curve) {
+  setMseg2Velocity(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG2: Velocity', value, timeInWholeNotes, curve);
   },
 
@@ -1421,7 +1421,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG2Attack(value, timeInWholeNotes, curve) {
+  setMseg2Attack(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG2: Attack', value, timeInWholeNotes, curve);
   },
 
@@ -1435,7 +1435,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG2Loop(value, timeInWholeNotes, curve) {
+  setMseg2Loop(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG2: Loop', value, timeInWholeNotes, curve);
   },
 
@@ -1449,7 +1449,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG2Release(value, timeInWholeNotes, curve) {
+  setMseg2Release(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG2: Release', value, timeInWholeNotes, curve);
   },
 
@@ -1463,7 +1463,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG3Velocity(value, timeInWholeNotes, curve) {
+  setMseg3Velocity(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG3: Velocity', value, timeInWholeNotes, curve);
   },
 
@@ -1477,7 +1477,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG3Attack(value, timeInWholeNotes, curve) {
+  setMseg3Attack(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG3: Attack', value, timeInWholeNotes, curve);
   },
 
@@ -1491,7 +1491,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG3Loop(value, timeInWholeNotes, curve) {
+  setMseg3Loop(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG3: Loop', value, timeInWholeNotes, curve);
   },
 
@@ -1505,7 +1505,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG3Release(value, timeInWholeNotes, curve) {
+  setMseg3Release(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG3: Release', value, timeInWholeNotes, curve);
   },
 
@@ -1519,7 +1519,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG4Velocity(value, timeInWholeNotes, curve) {
+  setMseg4Velocity(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG4: Velocity', value, timeInWholeNotes, curve);
   },
 
@@ -1533,7 +1533,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG4Attack(value, timeInWholeNotes, curve) {
+  setMseg4Attack(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG4: Attack', value, timeInWholeNotes, curve);
   },
 
@@ -1547,7 +1547,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG4Loop(value, timeInWholeNotes, curve) {
+  setMseg4Loop(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG4: Loop', value, timeInWholeNotes, curve);
   },
 
@@ -1561,7 +1561,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMSEG4Release(value, timeInWholeNotes, curve) {
+  setMseg4Release(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('MSEG4: Release', value, timeInWholeNotes, curve);
   },
 
@@ -4123,7 +4123,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1Tune(value, timeInWholeNotes, curve) {
+  setFmo1Tune(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: Tune', value, timeInWholeNotes, curve);
   },
 
@@ -4137,7 +4137,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1TuneModSrc(value, timeInWholeNotes, curve) {
+  setFmo1TuneModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: TuneModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4151,7 +4151,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1TuneModDepth(value, timeInWholeNotes, curve) {
+  setFmo1TuneModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: TuneModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4165,7 +4165,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1FMDepth(value, timeInWholeNotes, curve) {
+  setFmo1FmDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: FM Depth', value, timeInWholeNotes, curve);
   },
 
@@ -4179,7 +4179,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1FMModSrc(value, timeInWholeNotes, curve) {
+  setFmo1FmModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: FM ModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4193,7 +4193,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1FMModDepth(value, timeInWholeNotes, curve) {
+  setFmo1FmModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: FM ModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4207,7 +4207,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1Vibrato(value, timeInWholeNotes, curve) {
+  setFmo1Vibrato(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: Vibrato', value, timeInWholeNotes, curve);
   },
 
@@ -4221,7 +4221,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1Detune(value, timeInWholeNotes, curve) {
+  setFmo1Detune(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: Detune', value, timeInWholeNotes, curve);
   },
 
@@ -4235,7 +4235,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1Volume(value, timeInWholeNotes, curve) {
+  setFmo1Volume(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: Volume', value, timeInWholeNotes, curve);
   },
 
@@ -4249,7 +4249,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1VolumeModSrc(value, timeInWholeNotes, curve) {
+  setFmo1VolumeModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: VolumeModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4263,7 +4263,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1VolumeModDepth(value, timeInWholeNotes, curve) {
+  setFmo1VolumeModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: VolumeModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4277,7 +4277,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1Pan(value, timeInWholeNotes, curve) {
+  setFmo1Pan(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: Pan', value, timeInWholeNotes, curve);
   },
 
@@ -4291,7 +4291,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1PanModSrc(value, timeInWholeNotes, curve) {
+  setFmo1PanModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: PanModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4305,7 +4305,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1PanModDepth(value, timeInWholeNotes, curve) {
+  setFmo1PanModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: PanModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4319,7 +4319,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO1Width(value, timeInWholeNotes, curve) {
+  setFmo1Width(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO1: Width', value, timeInWholeNotes, curve);
   },
 
@@ -4333,7 +4333,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2Tune(value, timeInWholeNotes, curve) {
+  setFmo2Tune(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: Tune', value, timeInWholeNotes, curve);
   },
 
@@ -4347,7 +4347,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2TuneModSrc(value, timeInWholeNotes, curve) {
+  setFmo2TuneModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: TuneModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4361,7 +4361,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2TuneModDepth(value, timeInWholeNotes, curve) {
+  setFmo2TuneModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: TuneModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4375,7 +4375,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2FMDepth(value, timeInWholeNotes, curve) {
+  setFmo2FmDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: FM Depth', value, timeInWholeNotes, curve);
   },
 
@@ -4389,7 +4389,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2FMModSrc(value, timeInWholeNotes, curve) {
+  setFmo2FmModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: FM ModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4403,7 +4403,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2FMModDepth(value, timeInWholeNotes, curve) {
+  setFmo2FmModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: FM ModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4417,7 +4417,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2Vibrato(value, timeInWholeNotes, curve) {
+  setFmo2Vibrato(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: Vibrato', value, timeInWholeNotes, curve);
   },
 
@@ -4431,7 +4431,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2Detune(value, timeInWholeNotes, curve) {
+  setFmo2Detune(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: Detune', value, timeInWholeNotes, curve);
   },
 
@@ -4445,7 +4445,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2Volume(value, timeInWholeNotes, curve) {
+  setFmo2Volume(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: Volume', value, timeInWholeNotes, curve);
   },
 
@@ -4459,7 +4459,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2VolumeModSrc(value, timeInWholeNotes, curve) {
+  setFmo2VolumeModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: VolumeModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4473,7 +4473,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2VolumeModDepth(value, timeInWholeNotes, curve) {
+  setFmo2VolumeModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: VolumeModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4487,7 +4487,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2Pan(value, timeInWholeNotes, curve) {
+  setFmo2Pan(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: Pan', value, timeInWholeNotes, curve);
   },
 
@@ -4501,7 +4501,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2PanModSrc(value, timeInWholeNotes, curve) {
+  setFmo2PanModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: PanModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4515,7 +4515,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2PanModDepth(value, timeInWholeNotes, curve) {
+  setFmo2PanModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: PanModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4529,7 +4529,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO2Width(value, timeInWholeNotes, curve) {
+  setFmo2Width(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO2: Width', value, timeInWholeNotes, curve);
   },
 
@@ -4543,7 +4543,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3Tune(value, timeInWholeNotes, curve) {
+  setFmo3Tune(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: Tune', value, timeInWholeNotes, curve);
   },
 
@@ -4557,7 +4557,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3TuneModSrc(value, timeInWholeNotes, curve) {
+  setFmo3TuneModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: TuneModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4571,7 +4571,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3TuneModDepth(value, timeInWholeNotes, curve) {
+  setFmo3TuneModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: TuneModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4585,7 +4585,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3FMDepth(value, timeInWholeNotes, curve) {
+  setFmo3FmDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: FM Depth', value, timeInWholeNotes, curve);
   },
 
@@ -4599,7 +4599,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3FMModSrc(value, timeInWholeNotes, curve) {
+  setFmo3FmModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: FM ModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4613,7 +4613,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3FMModDepth(value, timeInWholeNotes, curve) {
+  setFmo3FmModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: FM ModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4627,7 +4627,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3Vibrato(value, timeInWholeNotes, curve) {
+  setFmo3Vibrato(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: Vibrato', value, timeInWholeNotes, curve);
   },
 
@@ -4641,7 +4641,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3Detune(value, timeInWholeNotes, curve) {
+  setFmo3Detune(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: Detune', value, timeInWholeNotes, curve);
   },
 
@@ -4655,7 +4655,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3Volume(value, timeInWholeNotes, curve) {
+  setFmo3Volume(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: Volume', value, timeInWholeNotes, curve);
   },
 
@@ -4669,7 +4669,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3VolumeModSrc(value, timeInWholeNotes, curve) {
+  setFmo3VolumeModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: VolumeModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4683,7 +4683,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3VolumeModDepth(value, timeInWholeNotes, curve) {
+  setFmo3VolumeModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: VolumeModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4697,7 +4697,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3Pan(value, timeInWholeNotes, curve) {
+  setFmo3Pan(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: Pan', value, timeInWholeNotes, curve);
   },
 
@@ -4711,7 +4711,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3PanModSrc(value, timeInWholeNotes, curve) {
+  setFmo3PanModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: PanModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4725,7 +4725,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3PanModDepth(value, timeInWholeNotes, curve) {
+  setFmo3PanModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: PanModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4739,7 +4739,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO3Width(value, timeInWholeNotes, curve) {
+  setFmo3Width(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO3: Width', value, timeInWholeNotes, curve);
   },
 
@@ -4753,7 +4753,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4Tune(value, timeInWholeNotes, curve) {
+  setFmo4Tune(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: Tune', value, timeInWholeNotes, curve);
   },
 
@@ -4767,7 +4767,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4TuneModSrc(value, timeInWholeNotes, curve) {
+  setFmo4TuneModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: TuneModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4781,7 +4781,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4TuneModDepth(value, timeInWholeNotes, curve) {
+  setFmo4TuneModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: TuneModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4795,7 +4795,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4FMDepth(value, timeInWholeNotes, curve) {
+  setFmo4FmDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: FM Depth', value, timeInWholeNotes, curve);
   },
 
@@ -4809,7 +4809,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4FMModSrc(value, timeInWholeNotes, curve) {
+  setFmo4FmModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: FM ModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4823,7 +4823,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4FMModDepth(value, timeInWholeNotes, curve) {
+  setFmo4FmModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: FM ModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4837,7 +4837,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4Vibrato(value, timeInWholeNotes, curve) {
+  setFmo4Vibrato(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: Vibrato', value, timeInWholeNotes, curve);
   },
 
@@ -4851,7 +4851,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4Detune(value, timeInWholeNotes, curve) {
+  setFmo4Detune(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: Detune', value, timeInWholeNotes, curve);
   },
 
@@ -4865,7 +4865,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4Volume(value, timeInWholeNotes, curve) {
+  setFmo4Volume(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: Volume', value, timeInWholeNotes, curve);
   },
 
@@ -4879,7 +4879,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4VolumeModSrc(value, timeInWholeNotes, curve) {
+  setFmo4VolumeModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: VolumeModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4893,7 +4893,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4VolumeModDepth(value, timeInWholeNotes, curve) {
+  setFmo4VolumeModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: VolumeModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4907,7 +4907,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4Pan(value, timeInWholeNotes, curve) {
+  setFmo4Pan(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: Pan', value, timeInWholeNotes, curve);
   },
 
@@ -4921,7 +4921,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4PanModSrc(value, timeInWholeNotes, curve) {
+  setFmo4PanModSrc(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: PanModSrc', value, timeInWholeNotes, curve);
   },
 
@@ -4935,7 +4935,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4PanModDepth(value, timeInWholeNotes, curve) {
+  setFmo4PanModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: PanModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -4949,7 +4949,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFMO4Width(value, timeInWholeNotes, curve) {
+  setFmo4Width(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('FMO4: Width', value, timeInWholeNotes, curve);
   },
 
@@ -6195,7 +6195,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF1Type(value, timeInWholeNotes, curve) {
+  setXmf1Type(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF1: Type', value, timeInWholeNotes, curve);
   },
 
@@ -6209,7 +6209,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF1Cutoff(value, timeInWholeNotes, curve) {
+  setXmf1Cutoff(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF1: Cutoff', value, timeInWholeNotes, curve);
   },
 
@@ -6223,7 +6223,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF1Resonance(value, timeInWholeNotes, curve) {
+  setXmf1Resonance(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF1: Resonance', value, timeInWholeNotes, curve);
   },
 
@@ -6237,7 +6237,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF1FreqMod1(value, timeInWholeNotes, curve) {
+  setXmf1FreqMod1(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF1: Freq mod 1', value, timeInWholeNotes, curve);
   },
 
@@ -6251,7 +6251,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF1FreqMod2(value, timeInWholeNotes, curve) {
+  setXmf1FreqMod2(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF1: Freq mod 2', value, timeInWholeNotes, curve);
   },
 
@@ -6265,7 +6265,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF1KeyFollow(value, timeInWholeNotes, curve) {
+  setXmf1KeyFollow(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF1: KeyFollow', value, timeInWholeNotes, curve);
   },
 
@@ -6279,7 +6279,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF1FreqOffset(value, timeInWholeNotes, curve) {
+  setXmf1FreqOffset(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF1: FreqOffset', value, timeInWholeNotes, curve);
   },
 
@@ -6293,7 +6293,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF1FreqOffMod(value, timeInWholeNotes, curve) {
+  setXmf1FreqOffMod(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF1: FreqOffMod', value, timeInWholeNotes, curve);
   },
 
@@ -6307,7 +6307,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF1FilterFM(value, timeInWholeNotes, curve) {
+  setXmf1FilterFM(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF1: FilterFM', value, timeInWholeNotes, curve);
   },
 
@@ -6321,7 +6321,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF1XFMmod(value, timeInWholeNotes, curve) {
+  setXmf1XFMmod(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF1: XFMmod', value, timeInWholeNotes, curve);
   },
 
@@ -6335,7 +6335,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF1Overload(value, timeInWholeNotes, curve) {
+  setXmf1Overload(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF1: Overload', value, timeInWholeNotes, curve);
   },
 
@@ -6349,7 +6349,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF1Click(value, timeInWholeNotes, curve) {
+  setXmf1Click(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF1: Click', value, timeInWholeNotes, curve);
   },
 
@@ -6363,7 +6363,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF2Type(value, timeInWholeNotes, curve) {
+  setXmf2Type(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF2: Type', value, timeInWholeNotes, curve);
   },
 
@@ -6377,7 +6377,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF2Cutoff(value, timeInWholeNotes, curve) {
+  setXmf2Cutoff(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF2: Cutoff', value, timeInWholeNotes, curve);
   },
 
@@ -6391,7 +6391,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF2Resonance(value, timeInWholeNotes, curve) {
+  setXmf2Resonance(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF2: Resonance', value, timeInWholeNotes, curve);
   },
 
@@ -6405,7 +6405,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF2FreqMod1(value, timeInWholeNotes, curve) {
+  setXmf2FreqMod1(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF2: Freq mod 1', value, timeInWholeNotes, curve);
   },
 
@@ -6419,7 +6419,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF2FreqMod2(value, timeInWholeNotes, curve) {
+  setXmf2FreqMod2(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF2: Freq mod 2', value, timeInWholeNotes, curve);
   },
 
@@ -6433,7 +6433,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF2KeyFollow(value, timeInWholeNotes, curve) {
+  setXmf2KeyFollow(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF2: KeyFollow', value, timeInWholeNotes, curve);
   },
 
@@ -6447,7 +6447,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF2FreqOffset(value, timeInWholeNotes, curve) {
+  setXmf2FreqOffset(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF2: FreqOffset', value, timeInWholeNotes, curve);
   },
 
@@ -6461,7 +6461,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF2FreqOffMod(value, timeInWholeNotes, curve) {
+  setXmf2FreqOffMod(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF2: FreqOffMod', value, timeInWholeNotes, curve);
   },
 
@@ -6475,7 +6475,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF2FilterFM(value, timeInWholeNotes, curve) {
+  setXmf2FilterFM(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF2: FilterFM', value, timeInWholeNotes, curve);
   },
 
@@ -6489,7 +6489,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF2XFMmod(value, timeInWholeNotes, curve) {
+  setXmf2XFMmod(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF2: XFMmod', value, timeInWholeNotes, curve);
   },
 
@@ -6503,7 +6503,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF2Overload(value, timeInWholeNotes, curve) {
+  setXmf2Overload(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF2: Overload', value, timeInWholeNotes, curve);
   },
 
@@ -6517,7 +6517,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF2Click(value, timeInWholeNotes, curve) {
+  setXmf2Click(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF2: Click', value, timeInWholeNotes, curve);
   },
 
@@ -8295,7 +8295,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB1Frequency(value, timeInWholeNotes, curve) {
+  setSb1Frequency(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB1: Frequency', value, timeInWholeNotes, curve);
   },
 
@@ -8309,7 +8309,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB1FModSource(value, timeInWholeNotes, curve) {
+  setSb1FModSource(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB1: FModSource', value, timeInWholeNotes, curve);
   },
 
@@ -8323,7 +8323,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB1FModDepth(value, timeInWholeNotes, curve) {
+  setSb1FModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB1: FModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -8337,7 +8337,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB1Offset(value, timeInWholeNotes, curve) {
+  setSb1Offset(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB1: Offset', value, timeInWholeNotes, curve);
   },
 
@@ -8351,7 +8351,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB1OModSource(value, timeInWholeNotes, curve) {
+  setSb1OModSource(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB1: OModSource', value, timeInWholeNotes, curve);
   },
 
@@ -8365,7 +8365,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB1OModDepth(value, timeInWholeNotes, curve) {
+  setSb1OModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB1: OModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -8379,7 +8379,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB1Mix(value, timeInWholeNotes, curve) {
+  setSb1Mix(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB1: Mix', value, timeInWholeNotes, curve);
   },
 
@@ -8393,7 +8393,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB1MModSource(value, timeInWholeNotes, curve) {
+  setSb1MModSource(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB1: MModSource', value, timeInWholeNotes, curve);
   },
 
@@ -8407,7 +8407,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB1MModDepth(value, timeInWholeNotes, curve) {
+  setSb1MModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB1: MModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -8421,7 +8421,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB2Frequency(value, timeInWholeNotes, curve) {
+  setSb2Frequency(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB2: Frequency', value, timeInWholeNotes, curve);
   },
 
@@ -8435,7 +8435,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB2FModSource(value, timeInWholeNotes, curve) {
+  setSb2FModSource(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB2: FModSource', value, timeInWholeNotes, curve);
   },
 
@@ -8449,7 +8449,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB2FModDepth(value, timeInWholeNotes, curve) {
+  setSb2FModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB2: FModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -8463,7 +8463,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB2Offset(value, timeInWholeNotes, curve) {
+  setSb2Offset(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB2: Offset', value, timeInWholeNotes, curve);
   },
 
@@ -8477,7 +8477,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB2OModSource(value, timeInWholeNotes, curve) {
+  setSb2OModSource(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB2: OModSource', value, timeInWholeNotes, curve);
   },
 
@@ -8491,7 +8491,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB2OModDepth(value, timeInWholeNotes, curve) {
+  setSb2OModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB2: OModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -8505,7 +8505,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB2Mix(value, timeInWholeNotes, curve) {
+  setSb2Mix(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB2: Mix', value, timeInWholeNotes, curve);
   },
 
@@ -8519,7 +8519,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB2MModSource(value, timeInWholeNotes, curve) {
+  setSb2MModSource(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB2: MModSource', value, timeInWholeNotes, curve);
   },
 
@@ -8533,7 +8533,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB2MModDepth(value, timeInWholeNotes, curve) {
+  setSb2MModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB2: MModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -8547,7 +8547,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB3Frequency(value, timeInWholeNotes, curve) {
+  setSb3Frequency(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB3: Frequency', value, timeInWholeNotes, curve);
   },
 
@@ -8561,7 +8561,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB3FModSource(value, timeInWholeNotes, curve) {
+  setSb3FModSource(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB3: FModSource', value, timeInWholeNotes, curve);
   },
 
@@ -8575,7 +8575,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB3FModDepth(value, timeInWholeNotes, curve) {
+  setSb3FModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB3: FModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -8589,7 +8589,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB3Offset(value, timeInWholeNotes, curve) {
+  setSb3Offset(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB3: Offset', value, timeInWholeNotes, curve);
   },
 
@@ -8603,7 +8603,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB3OModSource(value, timeInWholeNotes, curve) {
+  setSb3OModSource(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB3: OModSource', value, timeInWholeNotes, curve);
   },
 
@@ -8617,7 +8617,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB3OModDepth(value, timeInWholeNotes, curve) {
+  setSb3OModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB3: OModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -8631,7 +8631,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB3Mix(value, timeInWholeNotes, curve) {
+  setSb3Mix(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB3: Mix', value, timeInWholeNotes, curve);
   },
 
@@ -8645,7 +8645,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB3MModSource(value, timeInWholeNotes, curve) {
+  setSb3MModSource(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB3: MModSource', value, timeInWholeNotes, curve);
   },
 
@@ -8659,7 +8659,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSB3MModDepth(value, timeInWholeNotes, curve) {
+  setSb3MModDepth(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('SB3: MModDepth', value, timeInWholeNotes, curve);
   },
 
@@ -9121,7 +9121,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF3Type(value, timeInWholeNotes, curve) {
+  setXmf3Type(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF3: Type', value, timeInWholeNotes, curve);
   },
 
@@ -9135,7 +9135,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF3Cutoff(value, timeInWholeNotes, curve) {
+  setXmf3Cutoff(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF3: Cutoff', value, timeInWholeNotes, curve);
   },
 
@@ -9149,7 +9149,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF3Resonance(value, timeInWholeNotes, curve) {
+  setXmf3Resonance(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF3: Resonance', value, timeInWholeNotes, curve);
   },
 
@@ -9163,7 +9163,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF3FreqMod1(value, timeInWholeNotes, curve) {
+  setXmf3FreqMod1(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF3: Freq mod 1', value, timeInWholeNotes, curve);
   },
 
@@ -9177,7 +9177,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF3FreqMod2(value, timeInWholeNotes, curve) {
+  setXmf3FreqMod2(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF3: Freq mod 2', value, timeInWholeNotes, curve);
   },
 
@@ -9191,7 +9191,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF3KeyFollow(value, timeInWholeNotes, curve) {
+  setXmf3KeyFollow(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF3: KeyFollow', value, timeInWholeNotes, curve);
   },
 
@@ -9205,7 +9205,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF3FreqOffset(value, timeInWholeNotes, curve) {
+  setXmf3FreqOffset(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF3: FreqOffset', value, timeInWholeNotes, curve);
   },
 
@@ -9219,7 +9219,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF3FreqOffMod(value, timeInWholeNotes, curve) {
+  setXmf3FreqOffMod(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF3: FreqOffMod', value, timeInWholeNotes, curve);
   },
 
@@ -9233,7 +9233,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF3FilterFM(value, timeInWholeNotes, curve) {
+  setXmf3FilterFM(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF3: FilterFM', value, timeInWholeNotes, curve);
   },
 
@@ -9247,7 +9247,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF3XFMmod(value, timeInWholeNotes, curve) {
+  setXmf3XFMmod(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF3: XFMmod', value, timeInWholeNotes, curve);
   },
 
@@ -9261,7 +9261,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF3Overload(value, timeInWholeNotes, curve) {
+  setXmf3Overload(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF3: Overload', value, timeInWholeNotes, curve);
   },
 
@@ -9275,7 +9275,7 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setXMF3Click(value, timeInWholeNotes, curve) {
+  setXmf3Click(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('XMF3: Click', value, timeInWholeNotes, curve);
   },
 
@@ -10943,22 +10943,22 @@ module.exports = {
   "ENV4Release": "ENV4: Release",
   "ENV4Velocity": "ENV4: Velocity",
   "ENV4Slope": "ENV4: Slope",
-  "MSEG1Velocity": "MSEG1: Velocity",
-  "MSEG1Attack": "MSEG1: Attack",
-  "MSEG1Loop": "MSEG1: Loop",
-  "MSEG1Release": "MSEG1: Release",
-  "MSEG2Velocity": "MSEG2: Velocity",
-  "MSEG2Attack": "MSEG2: Attack",
-  "MSEG2Loop": "MSEG2: Loop",
-  "MSEG2Release": "MSEG2: Release",
-  "MSEG3Velocity": "MSEG3: Velocity",
-  "MSEG3Attack": "MSEG3: Attack",
-  "MSEG3Loop": "MSEG3: Loop",
-  "MSEG3Release": "MSEG3: Release",
-  "MSEG4Velocity": "MSEG4: Velocity",
-  "MSEG4Attack": "MSEG4: Attack",
-  "MSEG4Loop": "MSEG4: Loop",
-  "MSEG4Release": "MSEG4: Release",
+  "mseg1Velocity": "MSEG1: Velocity",
+  "mseg1Attack": "MSEG1: Attack",
+  "mseg1Loop": "MSEG1: Loop",
+  "mseg1Release": "MSEG1: Release",
+  "mseg2Velocity": "MSEG2: Velocity",
+  "mseg2Attack": "MSEG2: Attack",
+  "mseg2Loop": "MSEG2: Loop",
+  "mseg2Release": "MSEG2: Release",
+  "mseg3Velocity": "MSEG3: Velocity",
+  "mseg3Attack": "MSEG3: Attack",
+  "mseg3Loop": "MSEG3: Loop",
+  "mseg3Release": "MSEG3: Release",
+  "mseg4Velocity": "MSEG4: Velocity",
+  "mseg4Attack": "MSEG4: Attack",
+  "mseg4Loop": "MSEG4: Loop",
+  "mseg4Release": "MSEG4: Release",
   "LFO1Sync": "LFO1: Sync",
   "LFO1Delay": "LFO1: Delay",
   "LFO2Sync": "LFO2: Sync",
@@ -11141,66 +11141,66 @@ module.exports = {
   "VCF4ModDepth1": "VCF4: ModDepth1",
   "VCF4ModDepth2": "VCF4: ModDepth2",
   "VCF4KeyFollow": "VCF4: KeyFollow",
-  "FMO1Tune": "FMO1: Tune",
-  "FMO1TuneModSrc": "FMO1: TuneModSrc",
-  "FMO1TuneModDepth": "FMO1: TuneModDepth",
-  "FMO1FMDepth": "FMO1: FM Depth",
-  "FMO1FMModSrc": "FMO1: FM ModSrc",
-  "FMO1FMModDepth": "FMO1: FM ModDepth",
-  "FMO1Vibrato": "FMO1: Vibrato",
-  "FMO1Detune": "FMO1: Detune",
-  "FMO1Volume": "FMO1: Volume",
-  "FMO1VolumeModSrc": "FMO1: VolumeModSrc",
-  "FMO1VolumeModDepth": "FMO1: VolumeModDepth",
-  "FMO1Pan": "FMO1: Pan",
-  "FMO1PanModSrc": "FMO1: PanModSrc",
-  "FMO1PanModDepth": "FMO1: PanModDepth",
-  "FMO1Width": "FMO1: Width",
-  "FMO2Tune": "FMO2: Tune",
-  "FMO2TuneModSrc": "FMO2: TuneModSrc",
-  "FMO2TuneModDepth": "FMO2: TuneModDepth",
-  "FMO2FMDepth": "FMO2: FM Depth",
-  "FMO2FMModSrc": "FMO2: FM ModSrc",
-  "FMO2FMModDepth": "FMO2: FM ModDepth",
-  "FMO2Vibrato": "FMO2: Vibrato",
-  "FMO2Detune": "FMO2: Detune",
-  "FMO2Volume": "FMO2: Volume",
-  "FMO2VolumeModSrc": "FMO2: VolumeModSrc",
-  "FMO2VolumeModDepth": "FMO2: VolumeModDepth",
-  "FMO2Pan": "FMO2: Pan",
-  "FMO2PanModSrc": "FMO2: PanModSrc",
-  "FMO2PanModDepth": "FMO2: PanModDepth",
-  "FMO2Width": "FMO2: Width",
-  "FMO3Tune": "FMO3: Tune",
-  "FMO3TuneModSrc": "FMO3: TuneModSrc",
-  "FMO3TuneModDepth": "FMO3: TuneModDepth",
-  "FMO3FMDepth": "FMO3: FM Depth",
-  "FMO3FMModSrc": "FMO3: FM ModSrc",
-  "FMO3FMModDepth": "FMO3: FM ModDepth",
-  "FMO3Vibrato": "FMO3: Vibrato",
-  "FMO3Detune": "FMO3: Detune",
-  "FMO3Volume": "FMO3: Volume",
-  "FMO3VolumeModSrc": "FMO3: VolumeModSrc",
-  "FMO3VolumeModDepth": "FMO3: VolumeModDepth",
-  "FMO3Pan": "FMO3: Pan",
-  "FMO3PanModSrc": "FMO3: PanModSrc",
-  "FMO3PanModDepth": "FMO3: PanModDepth",
-  "FMO3Width": "FMO3: Width",
-  "FMO4Tune": "FMO4: Tune",
-  "FMO4TuneModSrc": "FMO4: TuneModSrc",
-  "FMO4TuneModDepth": "FMO4: TuneModDepth",
-  "FMO4FMDepth": "FMO4: FM Depth",
-  "FMO4FMModSrc": "FMO4: FM ModSrc",
-  "FMO4FMModDepth": "FMO4: FM ModDepth",
-  "FMO4Vibrato": "FMO4: Vibrato",
-  "FMO4Detune": "FMO4: Detune",
-  "FMO4Volume": "FMO4: Volume",
-  "FMO4VolumeModSrc": "FMO4: VolumeModSrc",
-  "FMO4VolumeModDepth": "FMO4: VolumeModDepth",
-  "FMO4Pan": "FMO4: Pan",
-  "FMO4PanModSrc": "FMO4: PanModSrc",
-  "FMO4PanModDepth": "FMO4: PanModDepth",
-  "FMO4Width": "FMO4: Width",
+  "fmo1Tune": "FMO1: Tune",
+  "fmo1TuneModSrc": "FMO1: TuneModSrc",
+  "fmo1TuneModDepth": "FMO1: TuneModDepth",
+  "fmo1FmDepth": "FMO1: FM Depth",
+  "fmo1FmModSrc": "FMO1: FM ModSrc",
+  "fmo1FmModDepth": "FMO1: FM ModDepth",
+  "fmo1Vibrato": "FMO1: Vibrato",
+  "fmo1Detune": "FMO1: Detune",
+  "fmo1Volume": "FMO1: Volume",
+  "fmo1VolumeModSrc": "FMO1: VolumeModSrc",
+  "fmo1VolumeModDepth": "FMO1: VolumeModDepth",
+  "fmo1Pan": "FMO1: Pan",
+  "fmo1PanModSrc": "FMO1: PanModSrc",
+  "fmo1PanModDepth": "FMO1: PanModDepth",
+  "fmo1Width": "FMO1: Width",
+  "fmo2Tune": "FMO2: Tune",
+  "fmo2TuneModSrc": "FMO2: TuneModSrc",
+  "fmo2TuneModDepth": "FMO2: TuneModDepth",
+  "fmo2FmDepth": "FMO2: FM Depth",
+  "fmo2FmModSrc": "FMO2: FM ModSrc",
+  "fmo2FmModDepth": "FMO2: FM ModDepth",
+  "fmo2Vibrato": "FMO2: Vibrato",
+  "fmo2Detune": "FMO2: Detune",
+  "fmo2Volume": "FMO2: Volume",
+  "fmo2VolumeModSrc": "FMO2: VolumeModSrc",
+  "fmo2VolumeModDepth": "FMO2: VolumeModDepth",
+  "fmo2Pan": "FMO2: Pan",
+  "fmo2PanModSrc": "FMO2: PanModSrc",
+  "fmo2PanModDepth": "FMO2: PanModDepth",
+  "fmo2Width": "FMO2: Width",
+  "fmo3Tune": "FMO3: Tune",
+  "fmo3TuneModSrc": "FMO3: TuneModSrc",
+  "fmo3TuneModDepth": "FMO3: TuneModDepth",
+  "fmo3FmDepth": "FMO3: FM Depth",
+  "fmo3FmModSrc": "FMO3: FM ModSrc",
+  "fmo3FmModDepth": "FMO3: FM ModDepth",
+  "fmo3Vibrato": "FMO3: Vibrato",
+  "fmo3Detune": "FMO3: Detune",
+  "fmo3Volume": "FMO3: Volume",
+  "fmo3VolumeModSrc": "FMO3: VolumeModSrc",
+  "fmo3VolumeModDepth": "FMO3: VolumeModDepth",
+  "fmo3Pan": "FMO3: Pan",
+  "fmo3PanModSrc": "FMO3: PanModSrc",
+  "fmo3PanModDepth": "FMO3: PanModDepth",
+  "fmo3Width": "FMO3: Width",
+  "fmo4Tune": "FMO4: Tune",
+  "fmo4TuneModSrc": "FMO4: TuneModSrc",
+  "fmo4TuneModDepth": "FMO4: TuneModDepth",
+  "fmo4FmDepth": "FMO4: FM Depth",
+  "fmo4FmModSrc": "FMO4: FM ModSrc",
+  "fmo4FmModDepth": "FMO4: FM ModDepth",
+  "fmo4Vibrato": "FMO4: Vibrato",
+  "fmo4Detune": "FMO4: Detune",
+  "fmo4Volume": "FMO4: Volume",
+  "fmo4VolumeModSrc": "FMO4: VolumeModSrc",
+  "fmo4VolumeModDepth": "FMO4: VolumeModDepth",
+  "fmo4Pan": "FMO4: Pan",
+  "fmo4PanModSrc": "FMO4: PanModSrc",
+  "fmo4PanModDepth": "FMO4: PanModDepth",
+  "fmo4Width": "FMO4: Width",
   "comb1Tune": "Comb1: Tune",
   "comb1KeyScale": "Comb1: key scale",
   "comb1TuneModDepth": "Comb1: TuneModDepth",
@@ -11289,30 +11289,30 @@ module.exports = {
   "mix4PanMode": "Mix4: Pan Mode",
   "mix4PanModDepth": "Mix4: PanMod Depth",
   "mix4PanModSource": "Mix4: PanMod Source",
-  "XMF1Type": "XMF1: Type",
-  "XMF1Cutoff": "XMF1: Cutoff",
-  "XMF1Resonance": "XMF1: Resonance",
-  "XMF1FreqMod1": "XMF1: Freq mod 1",
-  "XMF1FreqMod2": "XMF1: Freq mod 2",
-  "XMF1KeyFollow": "XMF1: KeyFollow",
-  "XMF1FreqOffset": "XMF1: FreqOffset",
-  "XMF1FreqOffMod": "XMF1: FreqOffMod",
-  "XMF1FilterFM": "XMF1: FilterFM",
-  "XMF1XFMmod": "XMF1: XFMmod",
-  "XMF1Overload": "XMF1: Overload",
-  "XMF1Click": "XMF1: Click",
-  "XMF2Type": "XMF2: Type",
-  "XMF2Cutoff": "XMF2: Cutoff",
-  "XMF2Resonance": "XMF2: Resonance",
-  "XMF2FreqMod1": "XMF2: Freq mod 1",
-  "XMF2FreqMod2": "XMF2: Freq mod 2",
-  "XMF2KeyFollow": "XMF2: KeyFollow",
-  "XMF2FreqOffset": "XMF2: FreqOffset",
-  "XMF2FreqOffMod": "XMF2: FreqOffMod",
-  "XMF2FilterFM": "XMF2: FilterFM",
-  "XMF2XFMmod": "XMF2: XFMmod",
-  "XMF2Overload": "XMF2: Overload",
-  "XMF2Click": "XMF2: Click",
+  "xmf1Type": "XMF1: Type",
+  "xmf1Cutoff": "XMF1: Cutoff",
+  "xmf1Resonance": "XMF1: Resonance",
+  "xmf1FreqMod1": "XMF1: Freq mod 1",
+  "xmf1FreqMod2": "XMF1: Freq mod 2",
+  "xmf1KeyFollow": "XMF1: KeyFollow",
+  "xmf1FreqOffset": "XMF1: FreqOffset",
+  "xmf1FreqOffMod": "XMF1: FreqOffMod",
+  "xmf1FilterFM": "XMF1: FilterFM",
+  "xmf1XFMmod": "XMF1: XFMmod",
+  "xmf1Overload": "XMF1: Overload",
+  "xmf1Click": "XMF1: Click",
+  "xmf2Type": "XMF2: Type",
+  "xmf2Cutoff": "XMF2: Cutoff",
+  "xmf2Resonance": "XMF2: Resonance",
+  "xmf2FreqMod1": "XMF2: Freq mod 1",
+  "xmf2FreqMod2": "XMF2: Freq mod 2",
+  "xmf2KeyFollow": "XMF2: KeyFollow",
+  "xmf2FreqOffset": "XMF2: FreqOffset",
+  "xmf2FreqOffMod": "XMF2: FreqOffMod",
+  "xmf2FilterFM": "XMF2: FilterFM",
+  "xmf2XFMmod": "XMF2: XFMmod",
+  "xmf2Overload": "XMF2: Overload",
+  "xmf2Click": "XMF2: Click",
   "modFX1Center": "ModFX1: Center",
   "modFX1Speed": "ModFX1: Speed",
   "modFX1Stereo": "ModFX1: Stereo",
@@ -11399,30 +11399,30 @@ module.exports = {
   "comp2Release": "Comp2: Release",
   "comp2Input": "Comp2: Input",
   "comp2Output": "Comp2: Output",
-  "eQ1FreqLowShelf": "EQ1: Freq LowShelf",
-  "eQ1QLowShelf": "EQ1: Q LowShelf",
-  "eQ1GainLowShelf": "EQ1: Gain LowShelf",
-  "eQ1FreqMid1": "EQ1: Freq Mid1",
-  "eQ1QMid1": "EQ1: Q Mid1",
-  "eQ1GainMid1": "EQ1: Gain Mid1",
-  "eQ1FreqMid2": "EQ1: Freq Mid2",
-  "eQ1QMid2": "EQ1: Q Mid2",
-  "eQ1GainMid2": "EQ1: Gain Mid2",
-  "eQ1FreqHiShelf": "EQ1: Freq HiShelf",
-  "eQ1QHiShelf": "EQ1: Q HiShelf",
-  "eQ1GainHiShelf": "EQ1: Gain HiShelf",
-  "eQ2FreqLowShelf": "EQ2: Freq LowShelf",
-  "eQ2QLowShelf": "EQ2: Q LowShelf",
-  "eQ2GainLowShelf": "EQ2: Gain LowShelf",
-  "eQ2FreqMid1": "EQ2: Freq Mid1",
-  "eQ2QMid1": "EQ2: Q Mid1",
-  "eQ2GainMid1": "EQ2: Gain Mid1",
-  "eQ2FreqMid2": "EQ2: Freq Mid2",
-  "eQ2QMid2": "EQ2: Q Mid2",
-  "eQ2GainMid2": "EQ2: Gain Mid2",
-  "eQ2FreqHiShelf": "EQ2: Freq HiShelf",
-  "eQ2QHiShelf": "EQ2: Q HiShelf",
-  "eQ2GainHiShelf": "EQ2: Gain HiShelf",
+  "EQ1FreqLowShelf": "EQ1: Freq LowShelf",
+  "EQ1QLowShelf": "EQ1: Q LowShelf",
+  "EQ1GainLowShelf": "EQ1: Gain LowShelf",
+  "EQ1FreqMid1": "EQ1: Freq Mid1",
+  "EQ1QMid1": "EQ1: Q Mid1",
+  "EQ1GainMid1": "EQ1: Gain Mid1",
+  "EQ1FreqMid2": "EQ1: Freq Mid2",
+  "EQ1QMid2": "EQ1: Q Mid2",
+  "EQ1GainMid2": "EQ1: Gain Mid2",
+  "EQ1FreqHiShelf": "EQ1: Freq HiShelf",
+  "EQ1QHiShelf": "EQ1: Q HiShelf",
+  "EQ1GainHiShelf": "EQ1: Gain HiShelf",
+  "EQ2FreqLowShelf": "EQ2: Freq LowShelf",
+  "EQ2QLowShelf": "EQ2: Q LowShelf",
+  "EQ2GainLowShelf": "EQ2: Gain LowShelf",
+  "EQ2FreqMid1": "EQ2: Freq Mid1",
+  "EQ2QMid1": "EQ2: Q Mid1",
+  "EQ2GainMid1": "EQ2: Gain Mid1",
+  "EQ2FreqMid2": "EQ2: Freq Mid2",
+  "EQ2QMid2": "EQ2: Q Mid2",
+  "EQ2GainMid2": "EQ2: Gain Mid2",
+  "EQ2FreqHiShelf": "EQ2: Freq HiShelf",
+  "EQ2QHiShelf": "EQ2: Q HiShelf",
+  "EQ2GainHiShelf": "EQ2: Gain HiShelf",
   "VCF5Type": "VCF5: Type",
   "VCF5Cutoff": "VCF5: Cutoff",
   "VCF5Resonance": "VCF5: Resonance",
@@ -11439,33 +11439,33 @@ module.exports = {
   "VCF6ModDepth1": "VCF6: ModDepth1",
   "VCF6ModDepth2": "VCF6: ModDepth2",
   "VCF6KeyFollow": "VCF6: KeyFollow",
-  "sB1Frequency": "SB1: Frequency",
-  "sB1FModSource": "SB1: FModSource",
-  "sB1FModDepth": "SB1: FModDepth",
-  "sB1Offset": "SB1: Offset",
-  "sB1OModSource": "SB1: OModSource",
-  "sB1OModDepth": "SB1: OModDepth",
-  "sB1Mix": "SB1: Mix",
-  "sB1MModSource": "SB1: MModSource",
-  "sB1MModDepth": "SB1: MModDepth",
-  "sB2Frequency": "SB2: Frequency",
-  "sB2FModSource": "SB2: FModSource",
-  "sB2FModDepth": "SB2: FModDepth",
-  "sB2Offset": "SB2: Offset",
-  "sB2OModSource": "SB2: OModSource",
-  "sB2OModDepth": "SB2: OModDepth",
-  "sB2Mix": "SB2: Mix",
-  "sB2MModSource": "SB2: MModSource",
-  "sB2MModDepth": "SB2: MModDepth",
-  "sB3Frequency": "SB3: Frequency",
-  "sB3FModSource": "SB3: FModSource",
-  "sB3FModDepth": "SB3: FModDepth",
-  "sB3Offset": "SB3: Offset",
-  "sB3OModSource": "SB3: OModSource",
-  "sB3OModDepth": "SB3: OModDepth",
-  "sB3Mix": "SB3: Mix",
-  "sB3MModSource": "SB3: MModSource",
-  "sB3MModDepth": "SB3: MModDepth",
+  "sb1Frequency": "SB1: Frequency",
+  "sb1FModSource": "SB1: FModSource",
+  "sb1FModDepth": "SB1: FModDepth",
+  "sb1Offset": "SB1: Offset",
+  "sb1OModSource": "SB1: OModSource",
+  "sb1OModDepth": "SB1: OModDepth",
+  "sb1Mix": "SB1: Mix",
+  "sb1MModSource": "SB1: MModSource",
+  "sb1MModDepth": "SB1: MModDepth",
+  "sb2Frequency": "SB2: Frequency",
+  "sb2FModSource": "SB2: FModSource",
+  "sb2FModDepth": "SB2: FModDepth",
+  "sb2Offset": "SB2: Offset",
+  "sb2OModSource": "SB2: OModSource",
+  "sb2OModDepth": "SB2: OModDepth",
+  "sb2Mix": "SB2: Mix",
+  "sb2MModSource": "SB2: MModSource",
+  "sb2MModDepth": "SB2: MModDepth",
+  "sb3Frequency": "SB3: Frequency",
+  "sb3FModSource": "SB3: FModSource",
+  "sb3FModDepth": "SB3: FModDepth",
+  "sb3Offset": "SB3: Offset",
+  "sb3OModSource": "SB3: OModSource",
+  "sb3OModDepth": "SB3: OModDepth",
+  "sb3Mix": "SB3: Mix",
+  "sb3MModSource": "SB3: MModSource",
+  "sb3MModDepth": "SB3: MModDepth",
   "pCoreMatrix5Source": "PCore: Matrix5 Source",
   "pCoreMatrix5Depth": "PCore: Matrix5 Depth",
   "pCoreMatrix5ViaSrc": "PCore: Matrix5 ViaSrc",
@@ -11498,18 +11498,18 @@ module.exports = {
   "pCoreMatrix12Depth": "PCore: Matrix12 Depth",
   "pCoreMatrix12ViaSrc": "PCore: Matrix12 ViaSrc",
   "pCoreMatrix12Via": "PCore: Matrix12 Via",
-  "XMF3Type": "XMF3: Type",
-  "XMF3Cutoff": "XMF3: Cutoff",
-  "XMF3Resonance": "XMF3: Resonance",
-  "XMF3FreqMod1": "XMF3: Freq mod 1",
-  "XMF3FreqMod2": "XMF3: Freq mod 2",
-  "XMF3KeyFollow": "XMF3: KeyFollow",
-  "XMF3FreqOffset": "XMF3: FreqOffset",
-  "XMF3FreqOffMod": "XMF3: FreqOffMod",
-  "XMF3FilterFM": "XMF3: FilterFM",
-  "XMF3XFMmod": "XMF3: XFMmod",
-  "XMF3Overload": "XMF3: Overload",
-  "XMF3Click": "XMF3: Click",
+  "xmf3Type": "XMF3: Type",
+  "xmf3Cutoff": "XMF3: Cutoff",
+  "xmf3Resonance": "XMF3: Resonance",
+  "xmf3FreqMod1": "XMF3: Freq mod 1",
+  "xmf3FreqMod2": "XMF3: Freq mod 2",
+  "xmf3KeyFollow": "XMF3: KeyFollow",
+  "xmf3FreqOffset": "XMF3: FreqOffset",
+  "xmf3FreqOffMod": "XMF3: FreqOffMod",
+  "xmf3FilterFM": "XMF3: FilterFM",
+  "xmf3XFMmod": "XMF3: XFMmod",
+  "xmf3Overload": "XMF3: Overload",
+  "xmf3Click": "XMF3: Click",
   "dist1Type": "Dist1: Type",
   "dist1Input": "Dist1: Input",
   "dist1Output": "Dist1: Output",
@@ -11612,13 +11612,13 @@ module.exports = {
   "VCA1Send2": "VCA1: Send2",
   "VCA1SendMod2": "VCA1: SendMod2",
   "VCA1SendDepth2": "VCA1: SendDepth2",
-  "NuRev1PreDelay": "NuRev1: Pre-Delay",
-  "NuRev1Damp": "NuRev1: Damp",
-  "NuRev1Decay": "NuRev1: Decay",
-  "NuRev1Size": "NuRev1: Size",
-  "NuRev1Tone": "NuRev1: Tone",
-  "NuRev1Width": "NuRev1: Width",
-  "NuRev1DryWetMix": "NuRev1: Dry/Wet Mix",
+  "nuRev1PreDelay": "NuRev1: Pre-Delay",
+  "nuRev1Damp": "NuRev1: Damp",
+  "nuRev1Decay": "NuRev1: Decay",
+  "nuRev1Size": "NuRev1: Size",
+  "nuRev1Tone": "NuRev1: Tone",
+  "nuRev1Width": "NuRev1: Width",
+  "nuRev1DryWetMix": "NuRev1: Dry/Wet Mix",
   "zMasReturn1": "ZMas: Return1",
   "zMasReturn2": "ZMas: Return2",
   "zMasMaster": "ZMas: Master"
