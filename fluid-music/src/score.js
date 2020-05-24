@@ -149,9 +149,10 @@ function tracksToFluidMessage(tracksObject) {
       }
       for (let sample of samples) {
         let startTime = (clip.startTime + sample.s);
+        let gain = (typeof sample.v === 'number') ? midiVelocityToDbfs(sample.v, -10, 10) : 0;
         messages.push(
           fluid.audiotrack.insertWav(`s${i++}`, startTime, sample.n.path),
-          fluid.audioclip.gain(midiVelocityToDbfs(sample.v, -10, 10)),
+          fluid.audioclip.gain(gain),
         )
       }
     }
