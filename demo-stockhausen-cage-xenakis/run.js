@@ -1,7 +1,7 @@
-const path = require('path');
-const fluid = require('fluid-music');
-const recipes = require('fluid-recipes');
-const _ = require('underscore');
+const path    = require('path');
+const fluid   = require('../fluid-music');
+const recipes = require('../fluid-recipes');
+const _       = require('underscore');
 
 const fsHelpers = recipes.fsHelpers;
 
@@ -9,7 +9,7 @@ const fsHelpers = recipes.fsHelpers;
 // Then run this, which assumes that a session was already activated.
 
 const sessionFilename = path.join(__dirname, 'sessions/scx.tracktionedit');
-const baseDir = '/Users/charles/projects/reaper/sounds/';
+const baseDir = '/home/charles/projects/reaper/sounds/';
 
 async function run() {
   const wavCollections = await fsHelpers.wavFilesInFolderGroups(baseDir);

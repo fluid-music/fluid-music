@@ -1,5 +1,5 @@
 const path = require('path');
-const fluid = require('fluid-music');
+const fluid = require('../fluid-music');
 
 const sessionFilename = path.join(__dirname, 'sessions/template.tracktionedit');
 const client = new fluid.Client(9999);
