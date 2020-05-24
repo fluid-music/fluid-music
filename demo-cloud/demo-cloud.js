@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const path = require('path');
-const fluid = require('fluid-music');
-const cloud = require('fluid-recipes').cloud;
+const fluid = require('../fluid-music');
+const cloud = require('../fluid-recipes').cloud;
 
 const availableNote = [
   ...cloud.allOctaves('b4'),
@@ -13,22 +13,24 @@ const availableNote = [
   // ...cloud.allOctaves('f4'),
 ];
 
+const duration = 6;
 const cloudConfig = {
-  durationInWholeNotes: 6,
+  durationInWholeNotes: duration,
   shortestDelta: 1/8,
   longestDelta: 1/1,
 };
 
 const notes = cloud.create(availableNote, cloudConfig);
 
+
 const client = new fluid.Client(9999);
-const durationInQuarterNotes = cloudConfig.durationInWholeNotes * 4;
+
 
 client.send([
   fluid.audiotrack.select('cloud'),
-  fluid.midiclip.create('cloud1', 0, durationInQuarterNotes, notes),
-  fluid.transport.loop(0, durationInQuarterNotes),
+  fluid.midiclip.create('cloud1', 0, duration, notes),
+  fluid.transport.loop(0, duration),
   fluid.audiotrack.gain(0),
   fluid.transport.play(),
-  fluid.global.save(path.join(__dirname, 'sessions', 'demo.tracktionedit')),
+  fluid.global.save(),
 ]);

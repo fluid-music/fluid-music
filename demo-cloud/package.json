@@ -5,8 +5,7 @@
   "main": "demo.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "nodemon -w demo-cloud.js -w ../fluid-recipes/src/cloud.js -- demo-cloud.js",
-    "postinstall": "npm run link"
+    "watch": "nodemon -w demo-cloud.js -w ../fluid-recipes/src/cloud.js -- demo-cloud.js"
   },
   "author": "Charles Holbrow",
   "license": "UNLICENSED",

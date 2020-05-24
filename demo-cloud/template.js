@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-const path = require('path');
-const fluid = require('fluid-music');
-const recipes = require('fluid-recipes');
+const path    = require('path');
+const fluid   = require('../fluid-music');
+const recipes = require('../fluid-recipes');
 
-const sessionFilename = path.join(__dirname, 'sessions/demo.tracktionedit');
+const sessionFilename = path.join(__dirname, 'demo-cloud.tracktionedit');
 
 const client = new fluid.Client(9999);
 client.send([
   // Drums Track
   fluid.global.activate(sessionFilename, true),
   fluid.audiotrack.select('drums'),
-  recipes.drumTrack909('drums'),
+  recipes.samplerFromMars909,
 
   // Chord track
   fluid.audiotrack.select('chords'),
@@ -22,7 +22,7 @@ client.send([
 
   // Cloud Track
   fluid.audiotrack.select('cloud'),
-  fluid.plugin.load('Zebra2 cloud-two'),
+  fluid.plugin.select('Zebra2'),
 
   // Bass
   fluid.audiotrack.select('bass'),
