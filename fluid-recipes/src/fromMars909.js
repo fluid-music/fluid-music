@@ -1,4 +1,3 @@
-
 const kit = {
   'k1':      { n: '35', type: 'file', name: 'k1',      path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/BD C SP 909 09.wav' },
   'k2':      { n: '36', type: 'file', name: 'k2',      path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/BD D SP 909 09.wav' },
@@ -24,3 +23,17 @@ module.exports.s1 = { name: 's1', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 S
 module.exports.s2 = { name: 's2', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD B SP 909 09.wav' };
 module.exports.s3 = { name: 's3', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD B SP 909 09.wav' };
 module.exports.s4 = { name: 's4', path: 'SP 909 From Mars/WAV/02. Kits/01. 909 Standard Kit/SD B SP 909 09.wav' };
+module.exports.nLibrary = {
+  k: kit.kick,
+  h: kit.hat1,
+  H: kit.hat2,
+  o: kit.openHat,
+  s: kit.snare,
+  S: kit.s3,
+  c: kit.crash,
+  i: kit.tomHi,
+  t: kit.tomMid,
+  T: kit.tomLow,
+  r: kit.ride,
+  R: kit.rimshot,
+};

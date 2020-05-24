@@ -15,8 +15,8 @@ const beat = {
 };
 
 beatNotes = [
-  ...fluid.tab.parseTab(beat.r, beat.ks, beat.noteLibrary),
-  ...fluid.tab.parseTab(beat.r, beat.hh, beat.noteLibrary),
+  ...fluid.tab.parseTab(beat.r, beat.ks, beat.noteLibrary).notes,
+  ...fluid.tab.parseTab(beat.r, beat.hh, beat.noteLibrary).notes,
 ];
 
 const client = new fluid.Client(9999);
@@ -26,6 +26,6 @@ client.send([
   fluid.midiclip.create('beat1', 0, 4, beatNotes),
   ...recipes.drumTrack909(),
   fluid.global.save(),
-  fluid.transport.loop(0, 4),
+  fluid.transport.loop(0, 1),
   fluid.transport.play(),
 ]);

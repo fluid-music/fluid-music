@@ -20,7 +20,7 @@ const transport = {
     }
 
     if (typeof startTimeInWholeNotes !== 'number' || typeof durationInWholeNotes !== 'number')
-      throw new Error('transport.loop requires start and length times (in quarter notes)');
+      throw new Error('transport.loop requires start and length times (in whole notes)');
 
     return {
       address: '/transport/loop',
