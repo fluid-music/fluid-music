@@ -31,17 +31,10 @@ const samplerAddMessages = Object.entries(kit).map(v => {
 
 /**
  * Add a 909 drum track to the session.
- * @param {String} [trackName='drums'] - The name of the track to update
+ * Makes sure a track is selected before using.
  */
-const drumTrack909 = function(trackName) {
-  if (typeof trackName !== 'string') trackName = 'drums';
-
-  return [
-    fluid.audiotrack.select(trackName),
-    fluid.plugin.select('sampler'),
-    fluid.sampler.clearAll(),
-    ...samplerAddMessages,
-  ];
-}
-
-module.exports = drumTrack909;
+module.exports = [
+  fluid.plugin.select('sampler'),
+  fluid.sampler.clearAll(),
+  ...samplerAddMessages,
+];
