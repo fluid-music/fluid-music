@@ -14,10 +14,10 @@ const baseDir = '/home/charles/projects/reaper/sounds/';
 async function run() {
   const wavCollections = await fsHelpers.wavFilesInFolderGroups(baseDir);
 
-  const number = 160; // number of samples to insert
-  const delta  = 1/3; // duration between each sample    (quarter notes)
-  const length = 1.0; // length of each sample to insert (quarter notes)
-  const fadeIn = 0.1; // fade in time (seconds)
+  const number = 160;   // number of samples to insert
+  const delta  = 1/12;  // duration between each sample    (whole notes)
+  const length = 1.0/4; // length of each sample to insert (whole notes)
+  const fadeIn = 0.1;   // fade in time (seconds)
   const fadeOut = fadeIn;
 
   const files = _.range(number).map(i => {
