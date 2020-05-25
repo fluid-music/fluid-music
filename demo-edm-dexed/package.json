@@ -1,0 +1,22 @@
+{
+  "name": "demo-edm",
+  "version": "0.0.1",
+  "description": "Fluid Music EDM Demo Composition",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "link": "npm link ../fluid-music; npm link ../fluid-recipes",
+    "postinstall": "npm run link",
+    "watch": "nodemon -w index.js -w content.yaml -- index.js"
+  },
+  "author": "Charles Holbrow",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "ramda": "^0.27.0",
+    "sharp11": "^2.0.2",
+    "yaml": "^1.8.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
