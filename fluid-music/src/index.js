@@ -3,6 +3,7 @@ const plugin = require('./fluid/plugin');
 const pluginTStereoDelay = require('./fluid/plugin-tstereodelay');
 const pluginZebra2Vst2 = require('./fluid/plugin-zebra2-vst2');
 const pluginHelm = require('./fluid/plugin-helm');
+const pluginDexedVst = require('./fluid/plugin-dexed-vst');
 const sampler = require('./fluid/sampler');
 const audiotrack = require('./fluid/audiotrack');
 const midiclip = require('./fluid/midiclip');
@@ -39,6 +40,7 @@ module.exports = {
   pluginHelm,
   pluginTStereoDelay,
   pluginZebra2Vst2,
+  pluginDexedVst,
   random,
   sampler,
   score,

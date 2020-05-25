@@ -21,7 +21,7 @@ const pluginTStereoDelay = require('./plugin-tstereodelay');
 const pluginZebra2Vst2 = require('./plugin-zebra2-vst2');
 const pluginHelm = require('./plugin-helm');
 const content = require('./content');
-
+const pluginDexedVst = require('./plugin-dexed-vst');
 
 /**
  * @module fluid
@@ -37,6 +37,7 @@ module.exports = {
   pluginHelm,
   pluginTStereoDelay,
   pluginZebra2Vst2,
+  pluginDexedVst,
   sampler,
   tempo,
   transport,

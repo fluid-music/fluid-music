@@ -1,141 +1,157 @@
 Dry Level
 Wet Level
-amp_attack
-amp_decay
-amp_release
-amp_sustain
-arp_frequency
-arp_gate
-arp_octaves
-arp_on
-arp_pattern
-arp_sync
-arp_tempo
-beats_per_minute
-cross_modulation
-cutoff
-delay_dry_wet
-delay_feedback
-delay_frequency
-delay_on
-delay_sync
-delay_tempo
-distortion_drive
-distortion_mix
-distortion_on
-distortion_type
-fil_attack
-fil_decay
-fil_env_depth
-fil_release
-fil_sustain
-filter_blend
-filter_drive
-filter_on
-filter_shelf
-filter_style
-formant_on
-formant_x
-formant_y
-keytrack
-legato
-mod_attack
-mod_decay
-mod_release
-mod_sustain
-mono_lfo_1_amplitude
-mono_lfo_1_frequency
-mono_lfo_1_retrigger
-mono_lfo_1_sync
-mono_lfo_1_tempo
-mono_lfo_1_waveform
-mono_lfo_2_amplitude
-mono_lfo_2_frequency
-mono_lfo_2_retrigger
-mono_lfo_2_sync
-mono_lfo_2_tempo
-mono_lfo_2_waveform
-noise_volume
-num_steps
-osc_1_transpose
-osc_1_tune
-osc_1_unison_detune
-osc_1_unison_voices
-osc_1_volume
-osc_1_waveform
-osc_2_transpose
-osc_2_tune
-osc_2_unison_detune
-osc_2_unison_voices
-osc_2_volume
-osc_2_waveform
-osc_feedback_amount
-osc_feedback_transpose
-osc_feedback_tune
-pitch_bend_range
-poly_lfo_amplitude
-poly_lfo_frequency
-poly_lfo_sync
-poly_lfo_tempo
-poly_lfo_waveform
-polyphony
-portamento
-portamento_type
-resonance
-reverb_damping
-reverb_dry_wet
-reverb_feedback
-reverb_on
-step_frequency
-step_seq_00
-step_seq_01
-step_seq_02
-step_seq_03
-step_seq_04
-step_seq_05
-step_seq_06
-step_seq_07
-step_seq_08
-step_seq_09
-step_seq_10
-step_seq_11
-step_seq_12
-step_seq_13
-step_seq_14
-step_seq_15
-step_seq_16
-step_seq_17
-step_seq_18
-step_seq_19
-step_seq_20
-step_seq_21
-step_seq_22
-step_seq_23
-step_seq_24
-step_seq_25
-step_seq_26
-step_seq_27
-step_seq_28
-step_seq_29
-step_seq_30
-step_seq_31
-step_sequencer_retrigger
-step_sequencer_sync
-step_sequencer_tempo
-step_smoothing
-stutter_frequency
-stutter_on
-stutter_resample_frequency
-stutter_resample_sync
-stutter_resample_tempo
-stutter_softness
-stutter_sync
-stutter_tempo
-sub_octave
-sub_shuffle
-sub_volume
-sub_waveform
-unison_1_harmonize
-unison_2_harmonize
-velocity_track
-volume
+Cutoff
+Resonance
+Output
+MASTER TUNE ADJ
+ALGORITHM
+FEEDBACK
+OSC KEY SYNC
+LFO SPEED
+LFO DELAY
+LFO PM DEPTH
+LFO AM DEPTH
+LFO KEY SYNC
+LFO WAVE
+MIDDLE C
+P MODE SENS.
+PITCH EG RATE 1
+PITCH EG RATE 2
+PITCH EG RATE 3
+PITCH EG RATE 4
+PITCH EG LEVEL 1
+PITCH EG LEVEL 2
+PITCH EG LEVEL 3
+PITCH EG LEVEL 4
+OP1 EG RATE 1
+OP1 EG RATE 2
+OP1 EG RATE 3
+OP1 EG RATE 4
+OP1 EG LEVEL 1
+OP1 EG LEVEL 2
+OP1 EG LEVEL 3
+OP1 EG LEVEL 4
+OP1 OUTPUT LEVEL
+OP1 MODE
+OP1 F COARSE
+OP1 F FINE
+OP1 OSC DETUNE
+OP1 BREAK POINT
+OP1 L SCALE DEPTH
+OP1 R SCALE DEPTH
+OP1 L KEY SCALE
+OP1 R KEY SCALE
+OP1 RATE SCALING
+OP1 A MOD SENS.
+OP1 KEY VELOCITY
+OP1 SWITCH
+OP2 EG RATE 1
+OP2 EG RATE 2
+OP2 EG RATE 3
+OP2 EG RATE 4
+OP2 EG LEVEL 1
+OP2 EG LEVEL 2
+OP2 EG LEVEL 3
+OP2 EG LEVEL 4
+OP2 OUTPUT LEVEL
+OP2 MODE
+OP2 F COARSE
+OP2 F FINE
+OP2 OSC DETUNE
+OP2 BREAK POINT
+OP2 L SCALE DEPTH
+OP2 R SCALE DEPTH
+OP2 L KEY SCALE
+OP2 R KEY SCALE
+OP2 RATE SCALING
+OP2 A MOD SENS.
+OP2 KEY VELOCITY
+OP2 SWITCH
+OP3 EG RATE 1
+OP3 EG RATE 2
+OP3 EG RATE 3
+OP3 EG RATE 4
+OP3 EG LEVEL 1
+OP3 EG LEVEL 2
+OP3 EG LEVEL 3
+OP3 EG LEVEL 4
+OP3 OUTPUT LEVEL
+OP3 MODE
+OP3 F COARSE
+OP3 F FINE
+OP3 OSC DETUNE
+OP3 BREAK POINT
+OP3 L SCALE DEPTH
+OP3 R SCALE DEPTH
+OP3 L KEY SCALE
+OP3 R KEY SCALE
+OP3 RATE SCALING
+OP3 A MOD SENS.
+OP3 KEY VELOCITY
+OP3 SWITCH
+OP4 EG RATE 1
+OP4 EG RATE 2
+OP4 EG RATE 3
+OP4 EG RATE 4
+OP4 EG LEVEL 1
+OP4 EG LEVEL 2
+OP4 EG LEVEL 3
+OP4 EG LEVEL 4
+OP4 OUTPUT LEVEL
+OP4 MODE
+OP4 F COARSE
+OP4 F FINE
+OP4 OSC DETUNE
+OP4 BREAK POINT
+OP4 L SCALE DEPTH
+OP4 R SCALE DEPTH
+OP4 L KEY SCALE
+OP4 R KEY SCALE
+OP4 RATE SCALING
+OP4 A MOD SENS.
+OP4 KEY VELOCITY
+OP4 SWITCH
+OP5 EG RATE 1
+OP5 EG RATE 2
+OP5 EG RATE 3
+OP5 EG RATE 4
+OP5 EG LEVEL 1
+OP5 EG LEVEL 2
+OP5 EG LEVEL 3
+OP5 EG LEVEL 4
+OP5 OUTPUT LEVEL
+OP5 MODE
+OP5 F COARSE
+OP5 F FINE
+OP5 OSC DETUNE
+OP5 BREAK POINT
+OP5 L SCALE DEPTH
+OP5 R SCALE DEPTH
+OP5 L KEY SCALE
+OP5 R KEY SCALE
+OP5 RATE SCALING
+OP5 A MOD SENS.
+OP5 KEY VELOCITY
+OP5 SWITCH
+OP6 EG RATE 1
+OP6 EG RATE 2
+OP6 EG RATE 3
+OP6 EG RATE 4
+OP6 EG LEVEL 1
+OP6 EG LEVEL 2
+OP6 EG LEVEL 3
+OP6 EG LEVEL 4
+OP6 OUTPUT LEVEL
+OP6 MODE
+OP6 F COARSE
+OP6 F FINE
+OP6 OSC DETUNE
+OP6 BREAK POINT
+OP6 L SCALE DEPTH
+OP6 R SCALE DEPTH
+OP6 L KEY SCALE
+OP6 R KEY SCALE
+OP6 RATE SCALING
+OP6 A MOD SENS.
+OP6 KEY VELOCITY
+OP6 SWITCH
