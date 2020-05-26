@@ -20,6 +20,7 @@ const tempo = require('./tempo');
 const pluginTStereoDelay = require('./plugin-tstereodelay');
 const pluginZebra2Vst2 = require('./plugin-zebra2-vst2');
 const pluginHelm = require('./plugin-helm');
+const content = require('./content');
 
 
 /**
@@ -29,6 +30,7 @@ module.exports = {
   audioclip,
   audiotrack,
   clip,
+  content,
   global,
   midiclip,
   plugin,

@@ -753,3 +753,25 @@ void renderTrackRegion(File outputFile, te::Track& track, te::EditTimeRange rang
         return;
     }
 }
+
+
+void removeAllClipsFromTrack(te::ClipTrack& track) {
+    te::Clip::Array clipsToRemove;
+    for (te::Clip* clip : track.getClips()) {
+        clipsToRemove.add(clip);
+    }
+
+    for (te::Clip* clip : clipsToRemove) {
+        clip->removeFromParentTrack();
+    }
+}
+
+void removeAllPluginAutomationFromTrack(te::ClipTrack& track) {
+    for (auto plugin : track.getAllPlugins()) {
+        for (te::AutomatableParameter* param : plugin->getAutomatableParameters()) {
+            if (param->hasAutomationPoints()) {
+                param->getCurve().clear();
+            }
+        }
+    }
+}

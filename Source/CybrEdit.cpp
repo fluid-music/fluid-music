@@ -111,12 +111,14 @@ void CybrEdit::listTracks() {
     for (auto track : te::getAllTracks(*edit))
     {
         // are these mutually exclusive?
-        if (track->isAudioTrack()) std::cout << "Audio Track - ";
-        if (track->isAutomationTrack()) std::cout << "Automation Track - ";
-        if (track->isChordTrack()) std::cout << "Chord Track - ";
-        if (track->isFolderTrack()) std::cout << "Folder Track - ";
-        if (track->isMarkerTrack()) std::cout << "Marker Track - ";
-        if (track->isTempoTrack()) std::cout << "Tempo Track - ";
+        if (track->isAudioTrack())      std::cout << "Audio Track - ";      // Clip Track
+        if (track->isAutomationTrack()) std::cout << "Automation Track - "; // Clip Track
+        if (track->isChordTrack())      std::cout << "Chord Track - ";      // Clip Track
+        if (track->isFolderTrack())     std::cout << "Folder Track - ";     // Not a te::ClipTrack
+        if (track->isMarkerTrack())     std::cout << "Marker Track - ";     // Clip Track
+        if (track->isTempoTrack())      std::cout << "Tempo Track - ";      // Not a te::ClipTrack
+        if (track->isArrangerTrack())   std::cout << "Arranger Track - ";   // Clip Track (Unused by Cybr)
+        if (auto clipTrack = dynamic_cast<te::ClipTrack*>(track)) std::cout << "(Clip Track) - ";
         std::cout << track->getName() << std::endl;
     }
     std::cout << std::endl;

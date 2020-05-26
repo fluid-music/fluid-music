@@ -68,6 +68,7 @@ public:
     OSCMessage audioClipFadeInOutSeconds(const OSCMessage& message);
     OSCMessage setClipDb(const OSCMessage& message);
     OSCMessage setTempo(const OSCMessage& message);
+    OSCMessage clearContent(const OSCMessage& message);
 
     // everything else
     OSCMessage muteTrack(bool mute);

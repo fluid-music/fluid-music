@@ -10,6 +10,7 @@ const transport = require('./fluid/transport');
 const global = require('./fluid/global');
 const audioclip = require('./fluid/audioclip');
 const clip = require('./fluid/clip');
+const content = require('./fluid/content');
 const tempo = require('./fluid/tempo');
 
 // Other Stuff
@@ -31,6 +32,7 @@ module.exports = {
   Client,
   clip,
   converters,
+  content,
   global,
   midiclip,
   plugin,

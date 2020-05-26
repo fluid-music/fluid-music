@@ -245,6 +245,56 @@ const pluginTStereoDelay = {
   },
 
   /**
+   * Pan the right delay channel.
+   * @param {number} amt Right channel pan amount. 0=Center 1=Right -1=Left
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    whole  notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setPanRight(amt, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('R Pan', amt * 0.5 + 0.5, timeInWholeNotes, curve);
+  },
+
+  /**
+   * Pan the left delay channel.
+   * @param {number} amt Left channel pan amount. 0=Center 1=Right -1=Left
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    whole  notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setPanLeft(amt, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('L Pan', amt * 0.5 + 0.5, timeInWholeNotes, curve);
+  },
+
+  /**
+   * Pan to the center, specifying the width
+   * @param {number} width Stereo width. 0=mono 1=Stereo -1=InvertStereo
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    whole  notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setPanWidth(amt, timeInWholeNotes, curve) {
+    const panR = amt;
+    const panL = panR * -1;
+    return [
+      pluginTStereoDelay.setPanLeft(panL, timeInWholeNotes, curve),
+      pluginTStereoDelay.setPanRight(panR, timeInWholeNotes, curve),
+    ];
+  },
+
+  /**
    * Set low pass cutoff frequency on the left channel of the delay
    * @param {number} freq frequency between 20 and 20000
    * @param {number} [timeInWholeNotes] time to insert automation point in

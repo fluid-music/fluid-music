@@ -115,11 +115,28 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/audioclip/unreverse"})) return reverseAudioClip(false);
     if (msgAddressPattern.matches({"/audioclip/fade/seconds"})) return audioClipFadeInOutSeconds(message);
     if (msgAddressPattern.matches({"/tempo/set/"})) return setTempo(message);
+    if (msgAddressPattern.matches({"/content/clear"})) return clearContent(message);
 
     printOscMessage(message);
     OSCMessage error("/error");
     constructReply(error, 1, "Unhandled Message");
     return error;
+}
+
+OSCMessage FluidOscServer::clearContent(const OSCMessage& message) {
+    OSCMessage reply("/content/clear/reply");
+    if (!activeCybrEdit) {
+        constructReply(reply, 1, "Cannot clear content: No active edit");
+        return reply;
+    }
+
+    for (auto track : te::getClipTracks(activeCybrEdit->getEdit())) {
+        removeAllClipsFromTrack(*track);
+        removeAllPluginAutomationFromTrack(*track);
+    }
+
+    reply.addInt32(0);
+    return reply;
 }
 
 OSCMessage FluidOscServer::removeAudioTrackClips(const OSCMessage& message) {
@@ -129,15 +146,7 @@ OSCMessage FluidOscServer::removeAudioTrackClips(const OSCMessage& message) {
         constructReply(reply, 1, errorString);
         return reply;
     }
-
-    te::Clip::Array clipsToRemove;
-    for (te::Clip* clip : selectedAudioTrack->getClips()) {
-        clipsToRemove.add(clip);
-    }
-
-    for (te::Clip* clip : clipsToRemove) {
-        clip->removeFromParentTrack();
-    }
+    removeAllClipsFromTrack(*selectedAudioTrack);
     reply.addInt32(0);
     return reply;
 }
@@ -150,14 +159,7 @@ OSCMessage FluidOscServer::removeAudioTrackAutomation(const OSCMessage& message)
         constructReply(reply, 1, errorString);
         return reply;
     }
-
-    for (auto plugin : selectedAudioTrack->getAllPlugins()) {
-        for (te::AutomatableParameter* param : plugin->getAutomatableParameters()) {
-            if (param->hasAutomationPoints()) {
-                param->getCurve().clear();
-            }
-        }
-    }
+    removeAllPluginAutomationFromTrack(*selectedAudioTrack);
 
     reply.addInt32(0);
     return reply;

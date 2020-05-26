@@ -44,6 +44,9 @@ void saveTracktionPreset(te::Plugin* plugin, String name);
 void loadTracktionPreset(te::AudioTrack& track, ValueTree preset);
 ValueTree loadXmlFile(File file);
 
+void removeAllClipsFromTrack(te::ClipTrack& track);
+void removeAllPluginAutomationFromTrack(te::ClipTrack& track);
+
 /** Get the index of the bus with a given name. If that bus does not exist,
  create it. If all buses already have a name, return -1 */
 int ensureBus(te::Edit& edit, String busName);
