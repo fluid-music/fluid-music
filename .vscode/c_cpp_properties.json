@@ -3,7 +3,8 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${HOME}/projects/VST_SDK/VST2_SDK/"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

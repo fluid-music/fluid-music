@@ -13,6 +13,10 @@
     "iomanip": "cpp",
     "istream": "cpp",
     "ostream": "cpp",
-    "sstream": "cpp"
+    "sstream": "cpp",
+    "bitset": "cpp",
+    "memory": "cpp",
+    "future": "cpp",
+    "optional": "cpp"
   },
 }
