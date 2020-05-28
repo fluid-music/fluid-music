@@ -2,7 +2,10 @@ const plugin = require('./plugin');
 const fluid = { plugin };
 
 const db2Level = v => (v + 50) / 68; // For "Wet" and "Dry" params
-const thresholdDb2Level = v => (v+60) / 60; // For "Threshold" param
+const thresholdDb2Level = v => (v + 60) / 60; // For "Threshold" param
+const ratioConv = v => Math.pow((v-1)/99, 1/5); // For "Ratio" param. I used excel curve fitting.
+const QConv = v => Math.pow((v-0.025)/39.975, 1/5); 
+const freq2V = v => Math.pow((v-10)/19990, 1/5); 
 
 /**
  * This is a helper class for Tracktion's #TCompressor VST2 plugin, which is
@@ -38,25 +41,25 @@ const pluginTCompressor = {
    */
   zero() {
     return [
-      pluginTCompressor.setEnable(1),
-      pluginTCompressor.setDryLevel(0), // Set dry signal to minumum (0%)
-      pluginTCompressor.setWetLevel(0), // Set dry signal to minumum (0%)
-      pluginTCompressor.setInput(0),
-      pluginTCompressor.setAuto(0),
-      pluginTCompressor.setMakeUp(0),
-      pluginTCompressor.setLookahead(0),
+      pluginTCompressor.setEnable(true),
+      pluginTCompressor.setDryLevelDbfs(0), // Set dry signal to minumum (0%)
+      pluginTCompressor.setWetLevelDbfs(0), // Set dry signal to minumum (0%)
+      pluginTCompressor.setInputDbfs(0),
+      pluginTCompressor.setAuto(false),
+      pluginTCompressor.setMakeUpDbfs(0),
+      pluginTCompressor.setLookaheadMs(0),
       pluginTCompressor.setRatio(2),
-      pluginTCompressor.setThreshold(-30),
-      pluginTCompressor.setAttack(50),
-      pluginTCompressor.setHold(0),
-      pluginTCompressor.setRelease(500),
-      pluginTCompressor.setSoftKnee(0),
-      pluginTCompressor.setUseSidechainTrigger(0),
-      pluginTCompressor.setMonitorSidechain(0),
-      pluginTCompressor.setPeakDetection(0),
-      pluginTCompressor.setUseSumDetection(0),
-      pluginTCompressor.setSoftClip(0),
-      pluginTCompressor.setFilter(0),
+      pluginTCompressor.setThresholdDbfs(-30),
+      pluginTCompressor.setAttackMs(50),
+      pluginTCompressor.setHoldMs(0),
+      pluginTCompressor.setReleaseMs(500),
+      pluginTCompressor.setSoftKneeDbfs(0),
+      pluginTCompressor.setUseSidechainTrigger(false),
+      pluginTCompressor.setMonitorSidechain(false),
+      pluginTCompressor.setPeakDetection(false),
+      pluginTCompressor.setUseSumDetection(false),
+      pluginTCompressor.setSoftClip(false),
+      pluginTCompressor.setFilter(false),
     ];
   },
 
@@ -70,7 +73,7 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setDryLevel(db, timeInWholeNotes, curve) {
+  setDryLevelDbfs(db, timeInWholeNotes, curve) {
       return fluid.plugin.setExternalParamHelper('Dry Level', db2Level(db), timeInWholeNotes, curve);
   },
   
@@ -84,7 +87,7 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setWetLevel(db, timeInWholeNotes, curve) {
+  setWetLevelDbfs(db, timeInWholeNotes, curve) {
       return fluid.plugin.setExternalParamHelper('Wet Level', db2Level(db), timeInWholeNotes, curve);
   },
   
@@ -99,12 +102,12 @@ const pluginTCompressor = {
    *    quickly, and decelerates.
    */
   setEnable(value, timeInWholeNotes, curve) {
-      if (typeof(value) !== Boolean) return Error("value required to be of type Boolean")
-      return fluid.plugin.setExternalParamHelper('Enable', value, timeInWholeNotes, curve);
+      if (typeof(value) !== "boolean"){throw new Error("value required to be of type Boolean")}
+      return fluid.plugin.setExternalParamHelper('Enable', value | 0, timeInWholeNotes, curve);
   },
   
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {boolean} value a boolean to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -114,7 +117,7 @@ const pluginTCompressor = {
    *    quickly, and decelerates.
    */
   setMode(value, timeInWholeNotes, curve) {
-    if (typeof(value) !== Boolean) return Error("value required to be of type Boolean")
+    if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
     return fluid.plugin.setExternalParamHelper('Mode', value | 0, timeInWholeNotes, curve);
   },
   
@@ -128,7 +131,7 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setThreshold(db, timeInWholeNotes, curve) {
+  setThresholdDbfs(db, timeInWholeNotes, curve) {
       return fluid.plugin.setExternalParamHelper('Threshold', thresholdDb2Level(db), timeInWholeNotes, curve);
   },
   
@@ -143,7 +146,7 @@ const pluginTCompressor = {
    *    quickly, and decelerates.
    */
   setRatio(value, timeInWholeNotes, curve) {
-      return fluid.plugin.setExternalParamHelper('Ratio', (value-1)/99, timeInWholeNotes, curve);
+      return fluid.plugin.setExternalParamHelper('Ratio', ratioConv(value), timeInWholeNotes, curve);
   },
   
   /**
@@ -156,7 +159,7 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setAttack(value, timeInWholeNotes, curve) {
+  setAttackMs(value, timeInWholeNotes, curve) {
       return fluid.plugin.setExternalParamHelper('Attack', (value-0.1)/99.9, timeInWholeNotes, curve);
   },
   
@@ -170,7 +173,7 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setHold(value, timeInWholeNotes, curve) {
+  setHoldMs(value, timeInWholeNotes, curve) {
       return fluid.plugin.setExternalParamHelper('Hold', value/1000, timeInWholeNotes, curve);
   },
   
@@ -184,7 +187,7 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setRelease(value, timeInWholeNotes, curve) {
+  setReleaseMs(value, timeInWholeNotes, curve) {
       return fluid.plugin.setExternalParamHelper('Release', (value-1)/999, timeInWholeNotes, curve);
   },
   
@@ -198,7 +201,7 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setInput(value, timeInWholeNotes, curve) {
+  setInputDbfs(value, timeInWholeNotes, curve) {
       return fluid.plugin.setExternalParamHelper('Input', (value+20)/40, timeInWholeNotes, curve);
   },
   
@@ -212,7 +215,7 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMakeUp(value, timeInWholeNotes, curve) {
+  setMakeUpDbfs(value, timeInWholeNotes, curve) {
       return fluid.plugin.setExternalParamHelper('Make-up', (value+20)/40, timeInWholeNotes, curve);
   },
   
@@ -226,7 +229,7 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSoftKnee(value, timeInWholeNotes, curve) {
+  setSoftKneeDbfs(value, timeInWholeNotes, curve) {
       return fluid.plugin.setExternalParamHelper('Soft Knee', value/60, timeInWholeNotes, curve);
   },
   
@@ -240,12 +243,12 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setLookahead(value, timeInWholeNotes, curve) {
+  setLookaheadMs(value, timeInWholeNotes, curve) {
       return fluid.plugin.setExternalParamHelper('Lookahead', value/10, timeInWholeNotes, curve);
   },
   
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {boolean} value a boolean to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -255,12 +258,12 @@ const pluginTCompressor = {
    *    quickly, and decelerates.
    */
   setLimit(value, timeInWholeNotes, curve) {
-      if (typeof(value) !== Boolean) return Error("value required to be of type Boolean")
+      if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
       return fluid.plugin.setExternalParamHelper('Limit', value | 0, timeInWholeNotes, curve);
   },
   
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {boolean} value a boolean to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -270,12 +273,12 @@ const pluginTCompressor = {
    *    quickly, and decelerates.
    */
   setUseSidechainTrigger(value, timeInWholeNotes, curve) {
-    if (typeof(value) !== Boolean) return Error("value required to be of type Boolean")
+    if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
     return fluid.plugin.setExternalParamHelper('Use Sidechain Trigger', value | 0, timeInWholeNotes, curve);
   },
   
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {boolean} value a boolean to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -285,12 +288,12 @@ const pluginTCompressor = {
    *    quickly, and decelerates.
    */
   setMonitorSidechain(value, timeInWholeNotes, curve) {
-      if (typeof(value) !== Boolean) return Error("value required to be of type Boolean")
+      if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
       return fluid.plugin.setExternalParamHelper('Monitor Sidechain', value | 0, timeInWholeNotes, curve);
   },
   
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {boolean} value a boolean to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -300,7 +303,7 @@ const pluginTCompressor = {
    *    quickly, and decelerates.
    */
   setSoftClip(value, timeInWholeNotes, curve) {
-      if (typeof(value) !== Boolean) return Error("value required to be of type Boolean")
+      if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
       return fluid.plugin.setExternalParamHelper('Soft Clip', value | 0, timeInWholeNotes, curve);
   },
   
@@ -314,12 +317,12 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setThreshold2(db, timeInWholeNotes, curve) {
+  setThreshold2Dbfs(db, timeInWholeNotes, curve) {
       return fluid.plugin.setExternalParamHelper('Threshold (2)', thresholdDb2Level(db), timeInWholeNotes, curve);
   },
   
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {boolean} value a boolean to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -329,12 +332,12 @@ const pluginTCompressor = {
    *    quickly, and decelerates.
    */
   setPeakDetection(value, timeInWholeNotes, curve) {
-      if (typeof(value) !== Boolean) return Error("value required to be of type Boolean")
+      if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
       return fluid.plugin.setExternalParamHelper('Peak Detection', value | 0, timeInWholeNotes, curve);
   },
   
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {boolean} value a boolean to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -344,12 +347,12 @@ const pluginTCompressor = {
    *    quickly, and decelerates.
    */
   setUseSumDetection(value, timeInWholeNotes, curve) {
-      if (typeof(value) !== Boolean) return Error("value required to be of type Boolean")
+      if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
       return fluid.plugin.setExternalParamHelper('Use Sum Detection', value | 0, timeInWholeNotes, curve);
   },
   
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {boolean} value a boolean to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -359,12 +362,12 @@ const pluginTCompressor = {
    *    quickly, and decelerates.
    */
   setAuto(value, timeInWholeNotes, curve) {
-      if (typeof(value) !== Boolean) return Error("value required to be of type Boolean")
+      if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
       return fluid.plugin.setExternalParamHelper('Auto', value | 0, timeInWholeNotes, curve);
   },
   
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {boolean} value a boolean to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -374,7 +377,7 @@ const pluginTCompressor = {
    *    quickly, and decelerates.
    */
   setFilter(value, timeInWholeNotes, curve) {
-      if (typeof(value) !== Boolean) return Error("value required to be of type Boolean")
+      if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
       return fluid.plugin.setExternalParamHelper('Filter', value | 0, timeInWholeNotes, curve);
   },
   
@@ -402,8 +405,8 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setFreq(hz, timeInWholeNotes, curve) {
-      return fluid.plugin.setExternalParamHelper('Freq', (hz-10)/19990, timeInWholeNotes, curve);
+  setFreqHz(hz, timeInWholeNotes, curve) {
+      return fluid.plugin.setExternalParamHelper('Freq', freq2V(hz), timeInWholeNotes, curve);
   },
   
   /**
@@ -417,7 +420,7 @@ const pluginTCompressor = {
    *    quickly, and decelerates.
    */
   setQ(value, timeInWholeNotes, curve) {
-      return fluid.plugin.setExternalParamHelper('Q', (value-0.025)/37.975, timeInWholeNotes, curve);
+      return fluid.plugin.setExternalParamHelper('Q', QConv(value), timeInWholeNotes, curve);
   },
   
   /**
@@ -430,7 +433,7 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setGain(value, timeInWholeNotes, curve) {
+  setGainDbfs(value, timeInWholeNotes, curve) {
       return fluid.plugin.setExternalParamHelper('Gain', (value+30)/60, timeInWholeNotes, curve);
   },
   
