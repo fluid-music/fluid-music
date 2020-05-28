@@ -19,6 +19,7 @@ const clip = require('./clip');
 const tempo = require('./tempo');
 const pluginTCompressor = require('./plugin-tcompressor-vst');
 const pluginTStereoDelay = require('./plugin-tstereodelay');
+const pluginTEqualiser = require('./plugin-tequaliser');
 const pluginZebra2Vst2 = require('./plugin-zebra2-vst2');
 const pluginHelm = require('./plugin-helm');
 const content = require('./content');
@@ -38,6 +39,7 @@ module.exports = {
   pluginHelm,
   pluginTCompressor,
   pluginTStereoDelay,
+  pluginTEqualiser,
   pluginZebra2Vst2,
   pluginDexedVst,
   sampler,
