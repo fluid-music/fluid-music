@@ -2,6 +2,7 @@
 const plugin = require('./fluid/plugin');
 const pluginTCompressor = require('./fluid/plugin-tcompressor-vst');
 const pluginTEqualiser = require('./fluid/plugin-tequaliser');
+const pluginTReverber8 = require('./fluid/plugin-treverber8');
 const pluginTStereoDelay = require('./fluid/plugin-tstereodelay');
 const pluginZebra2Vst2 = require('./fluid/plugin-zebra2-vst2');
 const pluginHelm = require('./fluid/plugin-helm');
@@ -42,6 +43,7 @@ module.exports = {
   pluginHelm,
   pluginTCompressor,
   pluginTEqualiser,
+  pluginTReverber8,
   pluginTStereoDelay,
   pluginZebra2Vst2,
   pluginDexedVst,

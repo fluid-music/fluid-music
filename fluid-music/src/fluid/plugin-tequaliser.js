@@ -1,6 +1,7 @@
 const plugin = require('./plugin');
 const fluid = { plugin };
 
+const db2Level = v => Math.exp(v/8.6864); // For "Wet" and "Dry" params
 const QConv = v => Math.pow((v-0.025)/39.975, 1/5); 
 const freq2V = v => Math.pow((v-10)/29990, 1/5); 
 
@@ -31,6 +32,34 @@ const pluginTEqualiser = {
       pluginTEqualiser.setSoloGainDbfs(0),
       pluginTEqualiser.setSoloBand(-1),
     ]
+  },
+
+  /**
+   * @param {number} db Wet signal level in DBFS (0 = unity gain)
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setDryLevelDbfs(db, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Dry Level', db2Level(db), timeInWholeNotes, curve);
+  },
+
+  /**
+   * @param {number} db Wet signal level in DBFS (0 = unity gain)
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setWetLevelDbfs(db, timeInWholeNotes, curve) {
+      return fluid.plugin.setExternalParamHelper('Wet Level', db2Level(db), timeInWholeNotes, curve);
   },
 
   /**

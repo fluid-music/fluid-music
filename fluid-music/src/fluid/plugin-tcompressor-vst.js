@@ -1,7 +1,7 @@
 const plugin = require('./plugin');
 const fluid = { plugin };
 
-const db2Level = v => (v + 50) / 68; // For "Wet" and "Dry" params
+const db2Level = v => Math.exp(v/8.6864); // For "Wet" and "Dry" params
 const thresholdDb2Level = v => (v + 60) / 60; // For "Threshold" param
 const ratioConv = v => Math.pow((v-1)/99, 1/5); // For "Ratio" param. I used excel curve fitting.
 const QConv = v => Math.pow((v-0.025)/39.975, 1/5); 
