@@ -73,7 +73,23 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand1State(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 1 State', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 1 State', value/2, timeInWholeNotes, curve);
+  },
+
+  /**
+   * @param {number} value a boolean to set the parameter to
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setBand1Active(value, timeInWholeNotes, curve) {
+    if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
+    if (value) return fluid.plugin.setExternalParamHelper('Band 1 State', 0.5, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 1 State', 1, timeInWholeNotes, curve);
   },
 
   /**
@@ -143,7 +159,23 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand2State(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 2 State', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 2 State', value/2, timeInWholeNotes, curve);
+  },
+
+  /**
+   * @param {number} value a boolean to set the parameter to
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setBand2Active(value, timeInWholeNotes, curve) {
+    if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
+    if (value) return fluid.plugin.setExternalParamHelper('Band 2 State', 0.5, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 2 State', 1, timeInWholeNotes, curve);
   },
 
   /**
@@ -213,7 +245,23 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand3State(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 3 State', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 3 State', value/2, timeInWholeNotes, curve);
+  },
+
+  /**
+   * @param {number} value a boolean to set the parameter to
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setBand3Active(value, timeInWholeNotes, curve) {
+    if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
+    if (value) return fluid.plugin.setExternalParamHelper('Band 3 State', 0.5, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 3 State', 1, timeInWholeNotes, curve);
   },
 
   /**
@@ -283,7 +331,23 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand4State(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 4 State', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 4 State', value/2, timeInWholeNotes, curve);
+  },
+
+  /**
+   * @param {number} value a boolean to set the parameter to
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setBand4Active(value, timeInWholeNotes, curve) {
+    if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
+    if (value) return fluid.plugin.setExternalParamHelper('Band 4 State', 0.5, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 4 State', 1, timeInWholeNotes, curve);
   },
 
   /**
@@ -353,7 +417,23 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand5State(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 5 State', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 5 State', value/2, timeInWholeNotes, curve);
+  },
+
+  /**
+   * @param {number} value a boolean to set the parameter to
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setBand5Active(value, timeInWholeNotes, curve) {
+    if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
+    if (value) return fluid.plugin.setExternalParamHelper('Band 5 State', 0.5, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 5 State', 1, timeInWholeNotes, curve);
   },
 
   /**
@@ -423,7 +503,23 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand6State(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 6 State', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 6 State', value/2, timeInWholeNotes, curve);
+  },
+
+  /**
+   * @param {number} value a boolean to set the parameter to
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setBand6Active(value, timeInWholeNotes, curve) {
+    if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
+    if (value) return fluid.plugin.setExternalParamHelper('Band 6 State', 0.5, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 6 State', 1, timeInWholeNotes, curve);
   },
 
   /**
@@ -493,7 +589,23 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand7State(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 7 State', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 7 State', value/2, timeInWholeNotes, curve);
+  },
+
+  /**
+   * @param {number} value a boolean to set the parameter to
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setBand7Active(value, timeInWholeNotes, curve) {
+    if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
+    if (value) return fluid.plugin.setExternalParamHelper('Band 7 State', 0.5, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 7 State', 1, timeInWholeNotes, curve);
   },
 
   /**
@@ -563,7 +675,23 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand8State(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 8 State', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 8 State', value/2, timeInWholeNotes, curve);
+  },
+
+  /**
+   * @param {number} value a boolean to set the parameter to
+   * @param {number} [timeInWholeNotes] time to insert automation point in
+   *    quarter notes. If no time is supplied, set the initial value
+   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+   *    represents the curvature of the line formed by this point and the next
+   *    point. Zero implies a linear change. Higher values create a curve that
+   *    begins slowly and accelerates. Lower values create a curve that begins
+   *    quickly, and decelerates.
+   */
+  setBand8Active(value, timeInWholeNotes, curve) {
+    if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
+    if (value) return fluid.plugin.setExternalParamHelper('Band 8 State', 0.5, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 8 State', 1, timeInWholeNotes, curve);
   },
 
   /**
