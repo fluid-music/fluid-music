@@ -121,32 +121,17 @@ function linearAutomationSegments(region, paramName, values) {
 
 
 const malletAutomation = [
-  // fluid.audiotrack.select('mallet'),
+  fluid.audiotrack.select('mallet'),
   fluid.pluginZebra2Vst2.select(),
-  fluid.pluginZebra2Vst2.setVCF1Cutoff   (0.01, 0),
-  fluid.pluginZebra2Vst2.setVCF1Resonance(0.01, 0),
+  fluid.pluginZebra2Vst2.setVcf1Cutoff   (0.01, 0),
+  fluid.pluginZebra2Vst2.setVcf1Resonance(0.01, 0),
   linearAutomationSegments(session, 'VCF1: Cutoff',    [0.1,  0.2]),
   linearAutomationSegments(session, 'VCF1: Resonance', [0.01, 0.2]),
 ];
 
 const msg = [
   // cleanup
-  fluid.audiotrack.select('kick'),
-  fluid.audiotrack.removeClips(),
-  fluid.audiotrack.select('bass'),
-  fluid.audiotrack.removeClips(),
-  fluid.audiotrack.select('melody'),
-  fluid.audiotrack.removeClips(),
-  fluid.audiotrack.select('hat'),
-  fluid.audiotrack.removeClips(),
-  fluid.audiotrack.select('snare'),
-  fluid.audiotrack.removeClips(),
-  fluid.audiotrack.select('crash'),
-  fluid.audiotrack.removeClips(),
-  fluid.audiotrack.select('mallet'),
-  fluid.audiotrack.removeClips(),
-  // automation
-  fluid.audiotrack.removeAutomation(),
+  fluid.content.clear(),
   malletAutomation,
   fluid.score.tracksToFluidMessage(session.tracks),
   fluid.transport.loop(0, session.duration),

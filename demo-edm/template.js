@@ -26,7 +26,7 @@ const msg = [
   fluid.audiotrack.select('mallet'),
   fluid.pluginZebra2Vst2.select(),
   fluid.pluginZebra2Vst2.setDelay1Mix(0),
-  fluid.pluginZebra2Vst2.setVCF1Cutoff(0.1),
+  fluid.pluginZebra2Vst2.setVcf1Cutoff(0.1),
   fluid.audiotrack.send('delayQuarterNote', -6),
   // create delays
   fluid.audiotrack.selectReturnTrack('delayQuarterNote'),
