@@ -12,4 +12,8 @@ module.exports = {
   fromMars909,
   library,
   mutators,
+  scores: {
+    grandeNoTears: require('./scores/no-tears'),
+    mars24kMagic: require('./scores/24k-magic'),
+  },
 };

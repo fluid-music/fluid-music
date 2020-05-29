@@ -2,12 +2,8 @@
 
 const path    = require('path');
 const fluid   = require('fluid-music');
-const recipes = require('../');
+const recipes = require('..');
 const kit     = recipes.fromMars909.kit;
-const k       = { type: 'file', path: '909k.wav' };
-
-
-const sessionPath = path.join(__dirname, 'sessions', '24kmagic.tracktionedit');
 
 const Bbm = ['Bb4', 'Db5', 'F5', 'Bb5'].map(fluid.converters.valueToMidiNoteNumber);
 const Cm  = ['Ab4', 'C5', 'Eb5', 'G5'].map(fluid.converters.valueToMidiNoteNumber);
@@ -26,7 +22,7 @@ const build = {
   hat:   'hhhhhhhhhhhh....',
   kick:  'k---k---k---....',
   snare: '............s---',
-  tom:   '............t---',
+  tom:   '............T---',
 };
 
 const rep = {
@@ -48,19 +44,8 @@ const mid2 = {
 };
 
 const end = {
-  hat:  'o---....o---o---',
-  kick: 'k-p-....k-p-k-p-',
-};
-
-const drumLibrary = {
-  k: kit.kick,
-  h: kit.hat1,
-  s: kit.snare,
-  S: kit.s3,
-  c: kit.crash,
-  t: kit.tomLow,
-  o: kit.openHat,
-  p: kit.hat2,
+  hat:  'o-H-....o-H-o-H-',
+  kick: 'k---....k-..k---',
 };
 
 const chordLibrary = [ Bbm, Cm, Db, Fm, Gb, Ebm ];
@@ -76,7 +61,7 @@ const chorus = {
     ],
   },
   drums: {
-    nLibrary: drumLibrary,
+    nLibrary: recipes.fromMars909.nLibrary,
     drums: [
       build, rep,
       mid2, rep,
@@ -86,7 +71,6 @@ const chorus = {
     ],
   }
 };
-
 const session = fluid.score.parse(chorus, {r:rhythm});
 
 const client = new fluid.Client();
