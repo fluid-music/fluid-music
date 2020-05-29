@@ -17,11 +17,14 @@ const transport = require('./transport');
 const global = require('./global');
 const clip = require('./clip');
 const tempo = require('./tempo');
+const pluginTCompressor = require('./plugin-tcompressor-vst');
 const pluginTStereoDelay = require('./plugin-tstereodelay');
+const pluginTReverber8 = require('./plugin-treverber8');
+const pluginTEqualiser = require('./plugin-tequaliser');
 const pluginZebra2Vst2 = require('./plugin-zebra2-vst2');
 const pluginHelm = require('./plugin-helm');
 const content = require('./content');
-
+const pluginDexedVst = require('./plugin-dexed-vst');
 
 /**
  * @module fluid
@@ -35,8 +38,12 @@ module.exports = {
   midiclip,
   plugin,
   pluginHelm,
+  pluginTCompressor,
+  pluginTReverber8,
   pluginTStereoDelay,
+  pluginTEqualiser,
   pluginZebra2Vst2,
+  pluginDexedVst,
   sampler,
   tempo,
   transport,

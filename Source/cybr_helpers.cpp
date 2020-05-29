@@ -454,6 +454,29 @@ void listPluginPresets(te::Engine& engine, const String pluginName) {
     }
 }
 
+void queryPluginParamPoints(te::Engine& engine, const String pluginName, const String paramName) {
+    std::unique_ptr<te::Edit> edit(createEmptyEdit(File(), engine));
+    edit->ensureNumberOfAudioTracks(1);
+    te::AudioTrack* track = te::getFirstAudioTrack(*edit);
+    te::Plugin* plugin = getOrCreatePluginByName(*track, pluginName);
+    if (!plugin) {
+        std::cout << "Plugin not found: " << pluginName << std::endl;
+        return;
+    }
+    // internal plugin parameters may not appear in this list. (chorus)
+    for (te::AutomatableParameter* param : plugin->getAutomatableParameters()) {
+        if (param->paramName.equalsIgnoreCase(paramName)) {
+            for(double paramValue = 0; paramValue <= 1.01; paramValue += 0.01){
+                param->parameterChangeGestureBegin();
+                param->setParameter(paramValue, NotificationType::sendNotification);
+                param->parameterChangeGestureEnd();
+
+                std::cout << paramValue << ", " <<param->getCurrentValueAsString()<< std::endl;
+            }
+        }
+    }
+}
+
 void printPreset(te::Plugin* plugin) {
     if (!plugin) return;
     if (auto extPlugin = dynamic_cast<te::ExternalPlugin*>(plugin)) {

@@ -38,6 +38,7 @@ void listPlugins(te::Engine& engine);
 void listProjects(te::Engine& engine);
 void listPluginParameters(te::Engine& engine, const String pluginName);
 void listPluginPresets(te::Engine& engine, const String pluginName);
+void queryPluginParamPoints(te::Engine& engine, const String pluginName, const String paramName);
 void printOscMessage(const OSCMessage& message);
 void printPreset(te::Plugin* plugin);
 void saveTracktionPreset(te::Plugin* plugin, String name);

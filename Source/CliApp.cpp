@@ -516,6 +516,27 @@ void CLIApp::onRunning(ArgumentList argumentList)
         [this](const ArgumentList& args) {
             std::cout << "Block Size: " << engine.getDeviceManager().getBlockSize() << std::endl;
         } });
+    
+    cApp.addCommand({
+    "--internal-plugin-param-points",
+    "--internal-plugin-param-points=plugin-name,param-name",
+    "Queries and prints data points for an internal plugin parameter for curve fitting",
+    "Queries and prints data points for an internal plugin parameter for curve fitting\n\
+    IMPORTANT: For internal plugins, the plugin name is case sensitive.\n\
+    for external plugins (VST/VST3/AudioUnit) the name is case insensitive.",
+    [this](const ArgumentList& args) {
+        String pluginAndParam = args.getValueForOption("--internal-plugin-param-points");
+        
+        int delimiter = pluginAndParam.indexOf(",");
+        String pluginName = pluginAndParam.substring(0, delimiter);
+        String paramName = pluginAndParam.substring(delimiter+1);
+        
+        if (pluginAndParam.isEmpty()) {
+            std::cout << "--internal-plugin-param-points requires a plugin name";
+            return;
+        }
+        queryPluginParamPoints(engine, pluginName, paramName);
+    }});
 
     // App search paths
     File prefsDir = engine.getPropertyStorage().getAppPrefsFolder();
