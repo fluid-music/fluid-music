@@ -85,9 +85,23 @@ void CLIApp::initialise(const String& commandLine)
             auto setup = dm.deviceManager.getAudioDeviceSetup();
             setup.inputDeviceName = deviceName;
             setup.outputDeviceName = deviceName;
-            dm.deviceManager.setAudioDeviceSetup(setup, false);
+
+            // Charles: I don't know know why, but sometimes ALSA devices give a
+            // "no channels" error originating from the following code:
+            // https://github.com/juce-framework/JUCE/blob/a54da0b832681c8567a9b5046e423fce3195b19a/modules/juce_audio_devices/native/juce_linux_ALSA.cpp#L610
+            //
+            // This seems to have to do with pulseaudio. I was able to avoid the
+            // error by suspending pulseaudio like this:
+            // $ pasuspender -- ./cybr --device="my usb device" -f
+            String error = dm.deviceManager.setAudioDeviceSetup(setup, false);
+            if (error.isNotEmpty()) {
+                std::cout << "Fatal Error when setting audio device: " << error << std::endl;
+                quit();
+                return;
+            }
+            std::cout << "Using Device: " << deviceName << std::endl;
         } else {
-            std::cout << "Invalid " << DEVICE_CLI_OPTION << " value. Device not avilable: " << deviceName << std::endl;
+            std::cout << "Fatal Error: Invalid " << DEVICE_CLI_OPTION << " value. Device not avilable: " << deviceArgument << std::endl;
             quit();
             return;
         }
