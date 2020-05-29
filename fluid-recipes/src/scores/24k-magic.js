@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 
-const path    = require('path');
-const fluid   = require('fluid-music');
-const recipes = require('..');
-const kit     = recipes.fromMars909.kit;
+const fluid    = require('fluid-music');
+const fromMars = require('../fromMars909');
 
 const Bbm = ['Bb4', 'Db5', 'F5', 'Bb5'].map(fluid.converters.valueToMidiNoteNumber);
 const Cm  = ['Ab4', 'C5', 'Eb5', 'G5'].map(fluid.converters.valueToMidiNoteNumber);
@@ -28,7 +26,7 @@ const build = {
 const rep = {
   hat:   'o---h-h-h-hhh-h-',
   snare: '....s-......s-..',
-  kick:  'k---p-k-kk--....',
+  kick:  'k---  k-kk--....',
 };
 
 const mid1 = {
@@ -51,6 +49,7 @@ const end = {
 const chordLibrary = [ Bbm, Cm, Db, Fm, Gb, Ebm ];
 
 const chorus = {
+  r: rhythm,
   synth: {
     nLibrary: chordLibrary,
     synth: [
@@ -61,7 +60,7 @@ const chorus = {
     ],
   },
   drums: {
-    nLibrary: recipes.fromMars909.nLibrary,
+    nLibrary: fromMars.nLibrary,
     drums: [
       build, rep,
       mid2, rep,
@@ -71,13 +70,8 @@ const chorus = {
     ],
   }
 };
-const session = fluid.score.parse(chorus, {r:rhythm});
 
-const client = new fluid.Client();
-client.send([
-  fluid.global.activate(sessionPath, true),
-  fluid.audiotrack.select('synth'),
-  fluid.plugin.select('zebra2'),
-  fluid.score.tracksToFluidMessage(session.tracks),
-  fluid.global.save(),
-]);
+module.exports = {
+  chorus,
+  chords: chordLibrary,
+};
