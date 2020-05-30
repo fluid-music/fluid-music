@@ -18,12 +18,12 @@ const pluginTReverber8 = {
     return [
       pluginTReverber8.setDecay(0.4),
       pluginTReverber8.setPredelayMs(0),
-      pluginTReverber8.setSize(50),
+      pluginTReverber8.setSizePercent(50),
       pluginTReverber8.setDampingHz(18500),
       pluginTReverber8.setBandwidthHz(18500),
       pluginTReverber8.setDensity(0.4),
-      pluginTReverber8.setMix(15),
-      pluginTReverber8.setEarlyLateMix(75),
+      pluginTReverber8.setMixPercent(100),
+      pluginTReverber8.setEarlyLateMixPercent(75),
       pluginTReverber8.setGainDbfs(0),
     ]
   },
@@ -71,6 +71,9 @@ const pluginTReverber8 = {
   },
 
   /**
+   * Removes frequencies set with Bandwidth in the feedback stage of the
+   * reverb meaning that these frequencies are dampened over time.
+   *
    * @param {number} value a number between 100-18500 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
@@ -85,6 +88,9 @@ const pluginTReverber8 = {
   },
 
   /**
+   * Controls the initial density of the reverb. Lower values result in audible
+   * early reflections while higher values produce a dense reverb start.
+   *
    * @param {number} value a number between 0.1-0.8 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
@@ -99,6 +105,8 @@ const pluginTReverber8 = {
   },
 
   /**
+   * Sets the frequency range for the Damping parameter.
+   *
    * @param {number} value a number between 100-18500 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
@@ -113,6 +121,7 @@ const pluginTReverber8 = {
   },
 
   /**
+   * Sets the time the reverb needs to decay.
    * @param {number} value a number between 0-0.8 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
@@ -127,6 +136,11 @@ const pluginTReverber8 = {
   },
 
   /**
+   * Sets the delay before the signal enters the reverb stage. Typically you
+   * set it to around a hundredth to a tenth of the reverb Decay. Predelay
+   * strongly affects the perceived size of the reverb effect since it controls
+   * the time until the first reflection is generated.
+   *
    * @param {number} value a number between 0-200 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
@@ -141,6 +155,9 @@ const pluginTReverber8 = {
   },
 
   /**
+   * Sets the length of the room size. Lower settings simulate a small room
+   * while higher settings simulate a big hall or church.
+   *
    * @param {number} value a number between 0-100 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
@@ -150,12 +167,12 @@ const pluginTReverber8 = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSize(value, timeInWholeNotes, curve) {
+  setSizePercent(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('Size', value/100, timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} value a number between -45 and 0 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -169,6 +186,10 @@ const pluginTReverber8 = {
   },
 
   /**
+   * Adjusts the relation between the dry signal at the full left to the wet
+   * effect signal at the full right. When using #TReverber8 as send effect,
+   * we recommend to set Mix to fully wet (100%).
+   *
    * @param {number} value a number between 0-100 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
@@ -178,7 +199,7 @@ const pluginTReverber8 = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setMix(value, timeInWholeNotes, curve) {
+  setMixPercent(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('Mix', value/100, timeInWholeNotes, curve);
   },
 
@@ -192,7 +213,7 @@ const pluginTReverber8 = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setEarlyLateMix(value, timeInWholeNotes, curve) {
+  setEarlyLateMixPercent(value, timeInWholeNotes, curve) {
     return fluid.plugin.setExternalParamHelper('Early/Late Mix', value/100, timeInWholeNotes, curve);
   },
 

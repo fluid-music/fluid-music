@@ -16,4 +16,7 @@ module.exports = {
     grandeNoTears: require('./scores/no-tears'),
     mars24kMagic: require('./scores/24k-magic'),
   },
+  presets: {
+    tReverber8: require('./presets/treverber8'),
+  },
 };
