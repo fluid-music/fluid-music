@@ -7,7 +7,6 @@ const bassFilename = path.join(__dirname, 'Helm Bass One.trkpreset');
 
 console.log('session:', editFilename);
 const bpm = 128;
-const oneBeatInMs = 60000 / 128;
 
 const msg = [
   fluid.global.activate(editFilename, true),

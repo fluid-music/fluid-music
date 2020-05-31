@@ -57,40 +57,6 @@ score.push(sectionA);
 const session = fluid.score.parse(score, config);
 
 /**
- * Insert two automation points that span of a given region. One point will be
- * inserted at the beginning, and one point at the end.
- *
- * Make sure that the desired track and plugin are both selected before pusing
- * this message onto the call stack.
- *
- * @param {Object} region Any object with a startTime and duration.
- *    {@link Session}, {@link Clip}, are appropriate. Also the `.regions[]`
- *    array that comes with `Session`s created from an array can use be used.
- * @param {number} region.startTime
- * @param {number} region.duration
- * @param {string} paramName The plugin parameter name to
- * @param {number} startValue Automation value to insert at `.startTime`
- * @param {number} endValue Automation vlaue to insert at `.startTime+.duration`
- * @param {number} [curve1] Automation curve for the span [-1,1]. Negative
- *    values begin fast, Positive values begin slow. defaults to 0 (linear)
- * @param {number} [curve2] Automation curve following the  region.
- */
-function rampOverRegion(region, paramName, startValue, endValue, curve1, curve2) {
-  if (typeof region.startTime !== 'number' || typeof region.duration !== 'number')
-    throw new Error('rampOverRegion needs an object with a .startTime and .duration  number, got: '+ JSON.serialize(region));
-
-  if (typeof paramName !== 'string')
-    throw new Error('rampOverRegion requires a paramName string, got: ' + JSON.serialize(paramName));
-
-  const startTime = region.startTime;
-  const endTime = region.startTime + region.duration;
-  return [
-    fluid.plugin.setParamExplicitAt(paramName, startValue, startTime, curve1),
-    fluid.plugin.setParamExplicitAt(paramName, endValue, endTime, curve2),
-  ];
-};
-
-/**
  * Get the end time of clips, sessions, and regions
  * @param {Object} region Any object with a startTime and duration.
  *    {@link Session}, {@link Clip}, are appropriate. Also the `.regions[]`
@@ -99,8 +65,6 @@ function rampOverRegion(region, paramName, startValue, endValue, curve1, curve2)
  * @param {number} region.duration
  * @returns {number} The time that the region ends.
  */
-function endTime(region) { return region.startTime + region.duration; }
-function startTime(region) { return region.startTime; }
 
 function linearAutomationSegments(region, paramName, values) {
   if (typeof region.startTime !== 'number' || typeof region.duration !== 'number')
@@ -130,10 +94,6 @@ const malletAutomation = [
   fluid.pluginDexedVst.setLfoWave(0.8),
 ];
 
-const path = require('path');
-const wd           = process.cwd();
-const editFilename = path.join(wd, 'edm.tracktionedit');
-
 const msg = [
   // cleanup
   fluid.transport.stop(),
@@ -158,7 +118,6 @@ const msg = [
   fluid.score.tracksToFluidMessage(session.tracks),
   fluid.transport.loop(0, session.duration),
   fluid.transport.play(),
-  // fluid.global.save(editFilename),
 ];
 
 const client = new fluid.Client(9999);

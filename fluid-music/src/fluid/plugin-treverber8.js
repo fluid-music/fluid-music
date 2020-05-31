@@ -57,7 +57,7 @@ const pluginTReverber8 = {
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {boolean} value a boolean to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -67,6 +67,7 @@ const pluginTReverber8 = {
    *    quickly, and decelerates.
    */
   setEnable(value, timeInWholeNotes, curve) {
+    if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
     return fluid.plugin.setExternalParamHelper('Enable', value, timeInWholeNotes, curve);
   },
 
