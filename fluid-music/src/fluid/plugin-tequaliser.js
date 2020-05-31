@@ -4,6 +4,7 @@ const fluid = { plugin };
 const db2Level = v => Math.exp(v/8.6864); // For "Wet" and "Dry" params
 const QConv = v => Math.pow((v-0.025)/39.975, 1/5);
 const freq2V = v => Math.pow((v-10)/29990, 1/5);
+const scaleShape = v => v/6;
 
 const pluginTEqualiser = {
   /**
@@ -32,6 +33,22 @@ const pluginTEqualiser = {
       pluginTEqualiser.setSoloGainDbfs(0),
       pluginTEqualiser.setSoloBand(-1),
     ]
+  },
+
+  /**
+   * Shapes are used by setBand1Shape(value) to specify band type
+   */
+  shape: {
+    lowPass: 0,
+    lowShelf: 1,
+    /**
+     * peakNotch is the default parametric EQ type
+     */
+    peakNotch: 2,
+    bandPass: 3,
+    bandStop: 4,
+    highShelf: 5,
+    highPass: 6,
   },
 
   /**
@@ -205,7 +222,7 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {number} value true to activate band, false to deactivate
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -263,7 +280,8 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value an integer between 0-6 to set the parameter to
+   * Set the euqalizer band type
+   * @param {number} value an integer between 0-6 (see pluginTEqualizer.shape)
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -273,7 +291,7 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand1Shape(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 1 Shape', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 1 Shape', scaleShape(value), timeInWholeNotes, curve);
   },
 
   /**
@@ -291,7 +309,7 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {number} value true to activate band, false to deactivate
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -349,7 +367,8 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value an integer between 0-6 to set the parameter to
+   * Set the euqalizer band type
+   * @param {number} value an integer between 0-6 (see pluginTEqualizer.shape)
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -359,7 +378,7 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand2Shape(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 2 Shape', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 2 Shape', scaleShape(value), timeInWholeNotes, curve);
   },
 
   /**
@@ -377,7 +396,7 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {number} value true to activate band, false to deactivate
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -435,7 +454,8 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value an integer between 0-6 to set the parameter to
+   * Set the euqalizer band type
+   * @param {number} value an integer between 0-6 (see pluginTEqualizer.shape)
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -445,7 +465,7 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand3Shape(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 3 Shape', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 3 Shape', scaleShape(value), timeInWholeNotes, curve);
   },
 
   /**
@@ -463,7 +483,7 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {number} value true to activate band, false to deactivate
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -521,7 +541,8 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value an integer between 0-6 to set the parameter to
+   * Set the euqalizer band type
+   * @param {number} value an integer between 0-6 (see pluginTEqualizer.shape)
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -531,7 +552,7 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand4Shape(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 4 Shape', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 4 Shape', scaleShape(value), timeInWholeNotes, curve);
   },
 
   /**
@@ -549,7 +570,7 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {number} value true to activate band, false to deactivate
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -607,7 +628,8 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value an integer between 0-6 to set the parameter to
+   * Set the euqalizer band type
+   * @param {number} value an integer between 0-6 (see pluginTEqualizer.shape)
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -617,7 +639,7 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand5Shape(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 5 Shape', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 5 Shape', scaleShape(value), timeInWholeNotes, curve);
   },
 
   /**
@@ -635,7 +657,7 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {number} value true to activate band, false to deactivate
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -693,7 +715,8 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value an integer between 0-6 to set the parameter to
+   * Set the euqalizer band type
+   * @param {number} value an integer between 0-6 (see pluginTEqualizer.shape)
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -703,7 +726,7 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand6Shape(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 6 Shape', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 6 Shape', scaleShape(value), timeInWholeNotes, curve);
   },
 
   /**
@@ -721,7 +744,7 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {number} value true to activate band, false to deactivate
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -779,7 +802,8 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value an integer between 0-6 to set the parameter to
+   * Set the euqalizer band type
+   * @param {number} value an integer between 0-6 (see pluginTEqualizer.shape)
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -789,7 +813,7 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand7Shape(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 7 Shape', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 7 Shape', scaleShape(value), timeInWholeNotes, curve);
   },
 
   /**
@@ -807,7 +831,7 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value a boolean to set the parameter to
+   * @param {number} value true to activate band, false to deactivate
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -865,7 +889,8 @@ const pluginTEqualiser = {
   },
 
   /**
-   * @param {number} value an integer between 0-6 to set the parameter to
+   * Set the euqalizer band type
+   * @param {number} value an integer between 0-6 (see pluginTEqualizer.shape)
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -875,7 +900,7 @@ const pluginTEqualiser = {
    *    quickly, and decelerates.
    */
   setBand8Shape(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Band 8 Shape', value, timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Band 8 Shape', scaleShape(value), timeInWholeNotes, curve);
   },
 
 
