@@ -2,8 +2,8 @@ const plugin = require('./plugin');
 const fluid = { plugin };
 
 const db2Level = v => Math.exp(v/8.6864); // For "Wet" and "Dry" params
-const QConv = v => Math.pow((v-0.025)/39.975, 1/5); 
-const freq2V = v => Math.pow((v-10)/29990, 1/5); 
+const QConv = v => Math.pow((v-0.025)/39.975, 1/5);
+const freq2V = v => Math.pow((v-10)/29990, 1/5);
 
 const pluginTEqualiser = {
   /**
@@ -32,6 +32,134 @@ const pluginTEqualiser = {
       pluginTEqualiser.setSoloGainDbfs(0),
       pluginTEqualiser.setSoloBand(-1),
     ]
+  },
+
+  /**
+   * Configure band frequency, gain, and Q
+   * @param {number} [hz] frequency in hertz
+   * @param {number} [gain] band gain in dB (0 is unity gain)
+   * @param {number} [q] band width (higher is narrower)
+   * @param {bool} [active=true]
+   */
+  setBand1(hz, gain, q, active = true) {
+    const msg = [];
+    if (typeof hz === 'number')      msg.push(pluginTEqualiser.setBand1FrequencyHz(hz));
+    if (typeof gain === 'number')    msg.push(pluginTEqualiser.setBand1GainDbfs(gain));
+    if (typeof q === 'number')       msg.push(pluginTEqualiser.setBand1Q(q));
+    if (typeof active === 'boolean') msg.push(pluginTEqualiser.setBand1Active(active));
+    return msg;
+  },
+
+  /**
+   * Configure band frequency, gain, and Q
+   * @param {number} [hz] frequency in hertz
+   * @param {number} [gain] band gain in dB (0 is unity gain)
+   * @param {number} [q] band width (higher is narrower)
+   * @param {bool} [active=true]
+   */
+  setBand2(hz, gain, q, active = true) {
+    const msg = [];
+    if (typeof hz === 'number')      msg.push(pluginTEqualiser.setBand2FrequencyHz(hz));
+    if (typeof gain === 'number')    msg.push(pluginTEqualiser.setBand2GainDbfs(gain));
+    if (typeof q === 'number')       msg.push(pluginTEqualiser.setBand2Q(q));
+    if (typeof active === 'boolean') msg.push(pluginTEqualiser.setBand2Active(active));
+    return msg;
+  },
+
+  /**
+   * Configure band frequency, gain, and Q
+   * @param {number} [hz] frequency in hertz
+   * @param {number} [gain] band gain in dB (0 is unity gain)
+   * @param {number} [q] band width (higher is narrower)
+   * @param {bool} [active=true]
+   */
+  setBand3(hz, gain, q, active = true) {
+    const msg = [];
+    if (typeof hz === 'number')      msg.push(pluginTEqualiser.setBand3FrequencyHz(hz));
+    if (typeof gain === 'number')    msg.push(pluginTEqualiser.setBand3GainDbfs(gain));
+    if (typeof q === 'number')       msg.push(pluginTEqualiser.setBand3Q(q));
+    if (typeof active === 'boolean') msg.push(pluginTEqualiser.setBand3Active(active));
+    return msg;
+  },
+
+  /**
+   * Configure band frequency, gain, and Q
+   * @param {number} [hz] frequency in hertz
+   * @param {number} [gain] band gain in dB (0 is unity gain)
+   * @param {number} [q] band width (higher is narrower)
+   * @param {bool} [active=true]
+   */
+  setBand4(hz, gain, q, active = true) {
+    const msg = [];
+    if (typeof hz === 'number')      msg.push(pluginTEqualiser.setBand4FrequencyHz(hz));
+    if (typeof gain === 'number')    msg.push(pluginTEqualiser.setBand4GainDbfs(gain));
+    if (typeof q === 'number')       msg.push(pluginTEqualiser.setBand4Q(q));
+    if (typeof active === 'boolean') msg.push(pluginTEqualiser.setBand4Active(active));
+    return msg;
+  },
+
+  /**
+   * Configure band frequency, gain, and Q
+   * @param {number} [hz] frequency in hertz
+   * @param {number} [gain] band gain in dB (0 is unity gain)
+   * @param {number} [q] band width (higher is narrower)
+   * @param {bool} [active=true]
+   */
+  setBand5(hz, gain, q, active = true) {
+    const msg = [];
+    if (typeof hz === 'number')      msg.push(pluginTEqualiser.setBand5FrequencyHz(hz));
+    if (typeof gain === 'number')    msg.push(pluginTEqualiser.setBand5GainDbfs(gain));
+    if (typeof q === 'number')       msg.push(pluginTEqualiser.setBand5Q(q));
+    if (typeof active === 'boolean') msg.push(pluginTEqualiser.setBand5Active(active));
+    return msg;
+  },
+
+  /**
+   * Configure band frequency, gain, and Q
+   * @param {number} [hz] frequency in hertz
+   * @param {number} [gain] band gain in dB (0 is unity gain)
+   * @param {number} [q] band width (higher is narrower)
+   * @param {bool} [active=true]
+   */
+  setBand6(hz, gain, q, active = true) {
+    const msg = [];
+    if (typeof hz === 'number')      msg.push(pluginTEqualiser.setBand6FrequencyHz(hz));
+    if (typeof gain === 'number')    msg.push(pluginTEqualiser.setBand6GainDbfs(gain));
+    if (typeof q === 'number')       msg.push(pluginTEqualiser.setBand6Q(q));
+    if (typeof active === 'boolean') msg.push(pluginTEqualiser.setBand6Active(active));
+    return msg;
+  },
+
+  /**
+   * Configure band frequency, gain, and Q
+   * @param {number} [hz] frequency in hertz
+   * @param {number} [gain] band gain in dB (0 is unity gain)
+   * @param {number} [q] band width (higher is narrower)
+   * @param {bool} [active=true]
+   */
+  setBand7(hz, gain, q, active = true) {
+    const msg = [];
+    if (typeof hz === 'number')      msg.push(pluginTEqualiser.setBand7FrequencyHz(hz));
+    if (typeof gain === 'number')    msg.push(pluginTEqualiser.setBand7GainDbfs(gain));
+    if (typeof q === 'number')       msg.push(pluginTEqualiser.setBand7Q(q));
+    if (typeof active === 'boolean') msg.push(pluginTEqualiser.setBand7Active(active));
+    return msg;
+  },
+
+  /**
+   * Configure band frequency, gain, and Q
+   * @param {number} [hz] frequency in hertz
+   * @param {number} [gain] band gain in dB (0 is unity gain)
+   * @param {number} [q] band width (higher is narrower)
+   * @param {bool} [active=true]
+   */
+  setBand8(hz, gain, q, active = true) {
+    const msg = [];
+    if (typeof hz === 'number')      msg.push(pluginTEqualiser.setBand8FrequencyHz(hz));
+    if (typeof gain === 'number')    msg.push(pluginTEqualiser.setBand8GainDbfs(gain));
+    if (typeof q === 'number')       msg.push(pluginTEqualiser.setBand8Q(q));
+    if (typeof active === 'boolean') msg.push(pluginTEqualiser.setBand8Active(active));
+    return msg;
   },
 
   /**
