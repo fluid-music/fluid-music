@@ -86,7 +86,7 @@ const pluginTEqualiser = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setBand1Active(value, timeInWholeNotes, curve) {
+  setBand1Active(value=true, timeInWholeNotes, curve) {
     if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
     if (value) return fluid.plugin.setExternalParamHelper('Band 1 State', 0.5, timeInWholeNotes, curve);
     return fluid.plugin.setExternalParamHelper('Band 1 State', 1, timeInWholeNotes, curve);
@@ -172,7 +172,7 @@ const pluginTEqualiser = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setBand2Active(value, timeInWholeNotes, curve) {
+  setBand2Active(value=true, timeInWholeNotes, curve) {
     if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
     if (value) return fluid.plugin.setExternalParamHelper('Band 2 State', 0.5, timeInWholeNotes, curve);
     return fluid.plugin.setExternalParamHelper('Band 2 State', 1, timeInWholeNotes, curve);
@@ -258,7 +258,7 @@ const pluginTEqualiser = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setBand3Active(value, timeInWholeNotes, curve) {
+  setBand3Active(value=true, timeInWholeNotes, curve) {
     if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
     if (value) return fluid.plugin.setExternalParamHelper('Band 3 State', 0.5, timeInWholeNotes, curve);
     return fluid.plugin.setExternalParamHelper('Band 3 State', 1, timeInWholeNotes, curve);
@@ -344,7 +344,7 @@ const pluginTEqualiser = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setBand4Active(value, timeInWholeNotes, curve) {
+  setBand4Active(value=true, timeInWholeNotes, curve) {
     if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
     if (value) return fluid.plugin.setExternalParamHelper('Band 4 State', 0.5, timeInWholeNotes, curve);
     return fluid.plugin.setExternalParamHelper('Band 4 State', 1, timeInWholeNotes, curve);
@@ -430,7 +430,7 @@ const pluginTEqualiser = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setBand5Active(value, timeInWholeNotes, curve) {
+  setBand5Active(value=true, timeInWholeNotes, curve) {
     if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
     if (value) return fluid.plugin.setExternalParamHelper('Band 5 State', 0.5, timeInWholeNotes, curve);
     return fluid.plugin.setExternalParamHelper('Band 5 State', 1, timeInWholeNotes, curve);
@@ -516,7 +516,7 @@ const pluginTEqualiser = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setBand6Active(value, timeInWholeNotes, curve) {
+  setBand6Active(value=true, timeInWholeNotes, curve) {
     if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
     if (value) return fluid.plugin.setExternalParamHelper('Band 6 State', 0.5, timeInWholeNotes, curve);
     return fluid.plugin.setExternalParamHelper('Band 6 State', 1, timeInWholeNotes, curve);
@@ -602,7 +602,7 @@ const pluginTEqualiser = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setBand7Active(value, timeInWholeNotes, curve) {
+  setBand7Active(value=true, timeInWholeNotes, curve) {
     if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
     if (value) return fluid.plugin.setExternalParamHelper('Band 7 State', 0.5, timeInWholeNotes, curve);
     return fluid.plugin.setExternalParamHelper('Band 7 State', 1, timeInWholeNotes, curve);
@@ -688,7 +688,7 @@ const pluginTEqualiser = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setBand8Active(value, timeInWholeNotes, curve) {
+  setBand8Active(value=true, timeInWholeNotes, curve) {
     if (typeof(value) !== "boolean") throw new Error("value required to be of type Boolean")
     if (value) return fluid.plugin.setExternalParamHelper('Band 8 State', 0.5, timeInWholeNotes, curve);
     return fluid.plugin.setExternalParamHelper('Band 8 State', 1, timeInWholeNotes, curve);
