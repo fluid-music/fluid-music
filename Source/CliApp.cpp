@@ -12,6 +12,7 @@
 
 #define DRIVER_CLI_OPTION "--driver"
 #define DEVICE_CLI_OPTION "--device"
+#define OUT_DEVICE_CLI_OPTION "--device-out"
 
 bool CLIApp::moreThanOneInstanceAllowed() { return true; }
 void CLIApp::anotherInstanceStarted(const String&) {}
@@ -67,7 +68,8 @@ void CLIApp::initialise(const String& commandLine)
     // after initialization, dm.devideManager.getCurrentDeviceTypeObject()
     // will return a null pointer.
     String deviceArgument = argumentList.getValueForOption(DEVICE_CLI_OPTION);
-    if (deviceArgument.isNotEmpty()) {
+    String outDeviceArgument = argumentList.getValueForOption(OUT_DEVICE_CLI_OPTION);
+    if (deviceArgument.isNotEmpty() || outDeviceArgument.isNotEmpty()) {
         AudioIODeviceType* driver = dm.deviceManager.getCurrentDeviceTypeObject();
         if (!driver) {
             std::cout << "Failed to set device. No audio driver active" << std::endl;
@@ -75,16 +77,37 @@ void CLIApp::initialise(const String& commandLine)
             return;
         }
 
-        String deviceName;
+        String outDeviceName;
+        String inDeviceName;
         for (auto checkDeviceName : driver->getDeviceNames()) {
-            if (checkDeviceName.equalsIgnoreCase(deviceArgument)) {
-                deviceName = checkDeviceName;
+            if (deviceArgument.isNotEmpty()) {
+                if (checkDeviceName.equalsIgnoreCase(deviceArgument)) {
+                    outDeviceName = checkDeviceName;
+                    inDeviceName = checkDeviceName;
+                }
+            }
+            if (outDeviceArgument.isNotEmpty()) {
+                if (checkDeviceName.equalsIgnoreCase(outDeviceArgument)) {
+                    outDeviceName = checkDeviceName;
+                }
             }
         }
-        if (deviceName.isNotEmpty()) {
+
+        if (outDeviceName.isEmpty()) {
+            std::cout << "Fatal Error: Invalid "
+                << (outDeviceArgument.isEmpty() ? DEVICE_CLI_OPTION : OUT_DEVICE_CLI_OPTION)
+                << " value. Device not avilable for output: "
+                << (outDeviceArgument.isEmpty() ? deviceArgument : outDeviceArgument) << std::endl;
+            quit();
+            return;
+        } else if (inDeviceName.isEmpty() && deviceArgument.isNotEmpty()) {
+            std::cout << "Fatal Error: Invalid " << DEVICE_CLI_OPTION
+                << "value. Device not available for input: " << deviceArgument
+                << std::endl;
+        } else {
             auto setup = dm.deviceManager.getAudioDeviceSetup();
-            setup.inputDeviceName = deviceName;
-            setup.outputDeviceName = deviceName;
+            setup.inputDeviceName = inDeviceName;
+            setup.outputDeviceName = outDeviceName;
 
             // Charles: I don't know know why, but sometimes ALSA devices give a
             // "no channels" error originating from the following code:
@@ -99,11 +122,8 @@ void CLIApp::initialise(const String& commandLine)
                 quit();
                 return;
             }
-            std::cout << "Using Device: " << deviceName << std::endl;
-        } else {
-            std::cout << "Fatal Error: Invalid " << DEVICE_CLI_OPTION << " value. Device not avilable: " << deviceArgument << std::endl;
-            quit();
-            return;
+            std::cout << "Using Input Device:  \"" << (inDeviceName .isEmpty() ? "<none>" : inDeviceName) << "\"" << std::endl;
+            std::cout << "Using Output Device: \"" << (outDeviceName.isEmpty() ? "<none>" : outDeviceName)  << "\"" << std::endl;
         }
     }
 
@@ -155,9 +175,22 @@ void CLIApp::onRunning(ArgumentList argumentList)
     cApp.addCommand({
         DEVICE_CLI_OPTION,
         DEVICE_CLI_OPTION + String("=system"),
-        "Select Active input+output device (ex. USB Audio Interface)",
-        "Use --list-io to see avaiable device names (nested under drivers)",
+        "Choose input+output device (ex. USB Audio Interface)",
+        "Use --list-io to see avaiable device names (nested under drivers). Conbine\n\
+        with the --device-out flag to choose different input/output devices. Note that\n\
+        all devices must support their selected IO mode. For example, you cannot choose\n\
+        a headphone device as an input device (unless that device has a microphone, or\n\
+        otherwise supports audio input channels.",
         [](auto&){ return; } // --device is handled in initialise. Use noop
+    });
+    
+    cApp.addCommand({
+        OUT_DEVICE_CLI_OPTION,
+        OUT_DEVICE_CLI_OPTION + String("=system"),
+        "Choose output device (ex. USB Audio Interface)",
+        "Use --list-io to see avaiable device names (nested under drivers). The chosen\n\
+        deivce must support audio output (i.e. not a USB microphone).",
+        [](auto&){ return; } // --device-out is handled in initialise. Use noop
     });
 
     cApp.addCommand({
@@ -525,7 +558,7 @@ void CLIApp::onRunning(ArgumentList argumentList)
     cApp.addCommand({
         "--print-block-size",
         "--print-block-size",
-        "print audio block size",
+        "Print audio block size",
         "undocumented",
         [this](const ArgumentList& args) {
             std::cout << "Block Size: " << engine.getDeviceManager().getBlockSize() << std::endl;
@@ -534,7 +567,7 @@ void CLIApp::onRunning(ArgumentList argumentList)
     cApp.addCommand({
         "--query-param",
         "--query-param=plugin,param",
-        "Queries and prints data points for a plugin parameter for curve fitting",
+        "Query and print data points for a plugin parameter",
         "This is helpful for when reverse engineering plugin paramteter curves\n\
         while writing plugin adapters. Example:\n\
         ./cybr --query-param=helm,cutoff # list helm (plugin) cutoff (parameter)\n\
@@ -589,12 +622,14 @@ void CLIApp::onRunning(ArgumentList argumentList)
             options.helpModeFlag = true;
             if (args.size() == 1) {
                 std::cout << std::endl
-                    << "Usage information..." << std::endl
+                    << "Usage information:" << std::endl
                     << "Some arguments accept a value. Long form arguments are specified with a '='" << std::endl
                     << "    cybr --empty=./somefile.tracktionedit" << std::endl
                     << "Short form argument values are specified by a space like this:" <<std::endl
                     << "    cybr -e ./somefile.tracktionedit" << std::endl
-                    << "Below is a list of possible arguments. Argument order is significant." << std::endl;
+                    << std::endl
+                    << "Below is a list of possible arguments. Argument order is significant." << std::endl
+                    << "Use -h  --some-arg to get more info about an argument." << std::endl;
                 // I believe args are only used to get the exe name (cybr), which
                 // is used in the output.
                 cApp.printCommandList(args);
