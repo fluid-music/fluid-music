@@ -33,5 +33,9 @@
   },
   "bin": {
     "fluid": "./cli.js"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/charlesholbrow/cybr.git"
   }
 }
