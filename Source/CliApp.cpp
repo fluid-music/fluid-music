@@ -122,8 +122,8 @@ void CLIApp::initialise(const String& commandLine)
                 quit();
                 return;
             }
-            std::cout << "Using Input Device:  \"" << (inDeviceName .isEmpty() ? "<none>" : inDeviceName) << "\"" << std::endl;
-            std::cout << "Using Output Device: \"" << (outDeviceName.isEmpty() ? "<none>" : outDeviceName)  << "\"" << std::endl;
+            std::cout << "Using Input Device:  " << (inDeviceName .isEmpty() ? "<none>" : inDeviceName.quoted()) << std::endl;
+            std::cout << "Using Output Device: " << (outDeviceName.isEmpty() ? "<none>" : outDeviceName.quoted()) << std::endl;
         }
     }
 
@@ -201,13 +201,13 @@ void CLIApp::onRunning(ArgumentList argumentList)
         [this](auto&) {
             appJobs.fluidIpcServer = std::make_unique<FluidIpcServer>(appJobs.fluidOscServer);
             if (!appJobs.fluidIpcServer->beginWaitingForSocket(options.listenPort)) {
-                std::cout << "FluidIpcServer: Falied to connect" << std::endl;
+                std::cout << "FluidIpcServer: failed to listen on socket" << std::endl;
                 return false;
             }
             std::cout << "Listening for IPC Connections" << std::endl;
 
             if (!appJobs.fluidOscServer.connect(options.listenPort)) {
-                std::cout << "FluidOscServer falied to connect" << std::endl;
+                std::cout << "FluidOscServer failed to listen on socket" << std::endl;
                 return false;
             }
 
