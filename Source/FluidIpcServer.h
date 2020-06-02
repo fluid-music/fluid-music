@@ -15,6 +15,8 @@
 #include "temp_OSCOutputStream.h"
 #include "FluidOscServer.h"
 
+using namespace juce;
+
 class FluidIpc;
 class FluidIpcServer;
 

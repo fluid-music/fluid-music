@@ -10,6 +10,7 @@
 
 #include "FluidOscServer.h"
 
+using namespace juce;
 
 //==============================================================================
 FluidOscServer::FluidOscServer() {

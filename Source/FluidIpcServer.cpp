@@ -10,6 +10,7 @@
 
 #include "FluidIpcServer.h"
 
+using namespace juce;
 
 //==============================================================================
 InterprocessConnection* FluidIpcServer::createConnectionObject(){

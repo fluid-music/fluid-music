@@ -19,9 +19,9 @@ struct TimestampedTest {
     double editTime = 0;
 
     int value;
-    String toString() {
-        String t(streamTime, 4);
-        String s{ "test: " };
+    juce::String toString() {
+        juce::String t(streamTime, 4);
+        juce::String s{ "test: " };
         s << t << " - " << value;
         return s;
     }
@@ -31,7 +31,7 @@ struct TimestampedTest {
  */
 class LockFreeOscMessageQueue {
 public:
-    void writeMessage(const OSCMessage& message, double timeMs) {
+    void writeMessage(const juce::OSCMessage& message, double timeMs) {
         // Create the object
         if (message.size() < 1) return;
         if (!message[0].isInt32()) return;
@@ -92,6 +92,6 @@ public:
 private:
     std::atomic<bool> lostMessages{false};
     static const int SIZE = 4096;
-    AbstractFifo abstractFifo{SIZE};
+    juce::AbstractFifo abstractFifo{SIZE};
     TimestampedTest storage[SIZE];
 };

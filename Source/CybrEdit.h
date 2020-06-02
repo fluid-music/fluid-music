@@ -27,8 +27,8 @@ const juce::Identifier CYBR("CYBR");
  that the cybr app adds to existing tracktion_engine functionality.
  */
 class CybrEdit :
-    public ValueTree::Listener,
-    private Timer
+public juce::ValueTree::Listener,
+private juce::Timer
 {
 private:
     std::unique_ptr<te::Edit> edit;
@@ -41,7 +41,7 @@ public:
     /** Print a list of all the tracks in the edit*/
     void listTracks();
     /** Save the active edit to a .tracktionedig or .wav file */
-    void saveActiveEdit(File outputFile, SamplePathMode mode = decide);
+    void saveActiveEdit(juce::File outputFile, SamplePathMode mode = decide);
     /** List all the top level XML tags of the state */
     void listState();
     /** List all the edit's inputs. Does not create EditPlaybackContext. */
@@ -51,7 +51,7 @@ public:
     /** Ensure that all the most recent changes are applied to the state */
     void flushPendingChanges();
     /** Remove All Tracks with the name (case insensitive) */
-    void removeTracksNamed(const String name);
+    void removeTracksNamed(const juce::String name);
 
     /** WIP - testing custom plugin */
     void junk();
@@ -61,9 +61,9 @@ public:
     te::AudioTrack* getOrCreateCybrHostAudioTrack();
 
     /** */
-    te::MidiClip::Ptr getOrCreateMidiClipWithName(String name);
+    te::MidiClip::Ptr getOrCreateMidiClipWithName(juce::String name);
 
-    void valueTreePropertyChanged(ValueTree &treeWhosePropertyHasChanged, const Identifier &property) override;
+    void valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &property) override;
     void valueTreeChildAdded(juce::ValueTree &parentTree, juce::ValueTree &childWhichHasBeenAdded) override;
     
     /** Check if the CybrEdit needs to be updated. This is where we retrieve incoming
@@ -71,10 +71,10 @@ public:
     void timerCallback() override;
 
     // te::EditItem overrides
-    String getName() { return {"Cybr Edit Sidecar"}; }
+    juce::String getName() { return {"Cybr Edit Sidecar"}; }
    
     // CyberEdit Member variables
-    ValueTree state; // type is CYBR. Immediate child of the main edit state
+    juce::ValueTree state; // type is CYBR. Immediate child of the main edit state
     std::unique_ptr<CybrTrackList> cybrTrackList;
     bool saveOnClose = false;
 };

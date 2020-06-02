@@ -10,6 +10,8 @@
 
 #include "CybrSearchPath.h"
 
+using namespace juce;
+
 File getWaveformAppDir() {
     PropertiesFile::Options jucePropOpts;
 

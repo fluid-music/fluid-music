@@ -17,10 +17,10 @@
 namespace te = tracktion_engine;
 
 /** Create and activate an empty edit */
-te::Edit* createEmptyEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role = te::Edit::forRendering);
+te::Edit* createEmptyEdit(juce::File inputFile, te::Engine& engine, te::Edit::EditRole role = te::Edit::forRendering);
 
 /** Load and activate  an edit from a .tracktionedit file */
-te::Edit* createEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role = te::Edit::forRendering);
+te::Edit* createEdit(juce::File inputFile, te::Engine& engine, te::Edit::EditRole role = te::Edit::forRendering);
 
 /** For each audio clip, update that source's filepath. This will use remove and project IDs */
 void setClipAndSamplerSourcesToDirectFileReferences(
@@ -36,35 +36,35 @@ void scanVst2(te::Engine& engine);
 void scanVst3(te::Engine& engine);
 void listPlugins(te::Engine& engine);
 void listProjects(te::Engine& engine);
-void listPluginParameters(te::Engine& engine, const String pluginName);
-void listPluginPresets(te::Engine& engine, const String pluginName);
-void queryPluginParamPoints(te::Engine& engine, const String pluginName, const String paramName);
-void printOscMessage(const OSCMessage& message);
+void listPluginParameters(te::Engine& engine, const juce::String pluginName);
+void listPluginPresets(te::Engine& engine, const juce::String pluginName);
+void queryPluginParamPoints(te::Engine& engine, const juce::String pluginName, const juce::String paramName);
+void printOscMessage(const juce::OSCMessage& message);
 void printPreset(te::Plugin* plugin);
-void saveTracktionPreset(te::Plugin* plugin, String name);
-void loadTracktionPreset(te::AudioTrack& track, ValueTree preset);
-ValueTree loadXmlFile(File file);
+void saveTracktionPreset(te::Plugin* plugin, juce::String name);
+void loadTracktionPreset(te::AudioTrack& track, juce::ValueTree preset);
+juce::ValueTree loadXmlFile(juce::File file);
 
 void removeAllClipsFromTrack(te::ClipTrack& track);
 void removeAllPluginAutomationFromTrack(te::ClipTrack& track);
 
 /** Get the index of the bus with a given name. If that bus does not exist,
  create it. If all buses already have a name, return -1 */
-int ensureBus(te::Edit& edit, String busName);
+int ensureBus(te::Edit& edit, juce::String busName);
 
 /** Render a range of the audio file, overwriting the file if it already exists.
 Includes some simple checks like non-zero duration, file write access. */
-void renderTrackRegion(File outputFile, te::Track& track, te::EditTimeRange range);
+void renderTrackRegion(juce::File outputFile, te::Track& track, te::EditTimeRange range);
 
-te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name);
-te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name);
+te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const juce::String name);
+te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const juce::String name);
 
 /** Add a plugin just before the VolumeAndPan plugin.
  `type` can be 'vst|vst3|tracktion' or an empty string.
  If `type` is an empty string, search all types. */
 te::Plugin* getOrCreatePluginByName(te::AudioTrack& track,
-                                    const String name,
-                                    const String type = {},
+                                    const juce::String name,
+                                    const juce::String type = {},
                                     const int index = 0);
 
 class CybrEdit;

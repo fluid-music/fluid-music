@@ -15,21 +15,21 @@
 
 namespace te = tracktion_engine;
 
-const String CYBR_PRESET("preset");
-const String CYBR_SAMPLE("sample");
+const juce::String CYBR_PRESET("preset");
+const juce::String CYBR_SAMPLE("sample");
 
 /** Guess the application directory for Tracktion Waveform */
-File getWaveformAppDir();
+juce::File getWaveformAppDir();
 
 /** Helper class for dealing with search paths */
 class CybrSearchPath {
 public:
-    CybrSearchPath(StringRef name);
-    void add(File directory);
-    void init(ConsoleApplication& cApp, String defaults = "");
-    String key() const;
-    Array<File> paths() const;
-    File find(const StringRef filePath) const;
+    CybrSearchPath(juce::StringRef name);
+    void add(juce::File directory);
+    void init(juce::ConsoleApplication& cApp, juce::String defaults = "");
+    juce::String key() const;
+    juce::Array<juce::File> paths() const;
+    juce::File find(const juce::StringRef filePath) const;
 private:
-    const String name;
+    const juce::String name;
 };

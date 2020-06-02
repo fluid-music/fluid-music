@@ -24,11 +24,11 @@ namespace te = tracktion_engine;
 // a Time::getMillisecondCounterHiRes() time to a streamTime relative value.
 class OscInputDeviceInstance;
 class OscInputDevice :
-    public te::VirtualMidiInputDevice,
-    private OSCReceiver::Listener<OSCReceiver::RealtimeCallback>
+public te::VirtualMidiInputDevice,
+private juce::OSCReceiver::Listener<juce::OSCReceiver::RealtimeCallback>
 {
 public:
-    OscInputDevice(te::Engine& e, const String& name, int listenPort);
+    OscInputDevice(te::Engine& e, const juce::String& name, int listenPort);
     
     void masterTimeUpdate (double streamTime) override;
     te::InputDeviceInstance* createInstance (te::EditPlaybackContext& c) override;
@@ -36,7 +36,7 @@ public:
     void saveProps() override {} // no-op prevents saving, but
     void loadProps() override {} // doesn't work. Why?
     
-    static const String name;
+    static const juce::String name;
     std::atomic<double> atomicAdjustSecs { 0 };
     
     void addInstance(OscInputDeviceInstance* i);
@@ -47,10 +47,10 @@ protected:
     juce::Array<OscInputDeviceInstance*> instances;
 
 private:
-    void oscMessageReceived(const OSCMessage& message) override;
-    void oscBundleReceived(const OSCBundle& bundle) override;
+    void oscMessageReceived(const juce::OSCMessage& message) override;
+    void oscBundleReceived(const juce::OSCBundle& bundle) override;
     
-    OSCReceiver oscReceiver;
+    juce::OSCReceiver oscReceiver;
     
     /** Get incoming messages from the network thread
      - write to this from the network thread in the OSCReceiver callback
@@ -59,5 +59,5 @@ private:
     LockFreeOscMessageQueue incomingMessages;
 };
 
-Result createOscInputDevice(te::Engine& engine, const String& name, int listenPort);
+juce::Result createOscInputDevice(te::Engine& engine, const juce::String& name, int listenPort);
 

@@ -10,6 +10,8 @@
 
 #include "cybr_helpers.h"
 
+using namespace juce;
+
 // Creates a new edit, and leaves deletion up to you
 te::Edit* createEmptyEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role)
 {

@@ -10,6 +10,8 @@
 
 #include "AppJobs.h"
 
+using namespace juce;
+
 void AppJobs::play(CybrEdit& cybrEdit) {
     CybrEdit* newCybrEdit = copyCybrEditForPlayback(cybrEdit);
     te::Edit& newEdit = newCybrEdit->getEdit();

@@ -10,6 +10,8 @@
 
 #include "OpenFrameworksPlugin.h"
 
+using namespace juce;
+
 OpenFrameworksPlugin::OpenFrameworksPlugin(te::PluginCreationInfo info) : te::Plugin(info)
 {
     semitones = addParam("semitones up", TRANS("Semitones"),

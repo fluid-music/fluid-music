@@ -10,7 +10,7 @@
 
 #include "OscInputDevice.h"
 
-
+using namespace juce;
 
 const String OscInputDevice::name{"OSC-Input-Device"};
 

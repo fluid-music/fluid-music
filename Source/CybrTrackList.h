@@ -19,10 +19,10 @@ const juce::Identifier CE ("CE"); // CYBR EVENT
 
 class CybrTrack {
 public:
-    CybrTrack(const ValueTree& v) : state(v) {
+    CybrTrack(const juce::ValueTree& v) : state(v) {
         int numChildren = state.getNumChildren();
         if (numChildren > 0) {
-            ValueTree lastChild = state.getChild(numChildren-1);
+            juce::ValueTree lastChild = state.getChild(numChildren-1);
             auto& var = lastChild[te::IDs::t];
             lastEventTime = var;
         }
@@ -42,7 +42,7 @@ public:
         }
     }
 
-    ValueTree state;
+    juce::ValueTree state;
 private:
     double lastEventTime = 0;
 };
@@ -50,18 +50,18 @@ private:
 class CybrTrackList : te::ValueTreeObjectList<CybrTrack>
 {
 public:
-    CybrTrackList (CybrEdit& c, const ValueTree& parent) : ValueTreeObjectList<CybrTrack>(parent), cybr(c){ rebuildObjects(); }
+    CybrTrackList (CybrEdit& c, const juce::ValueTree& parent) : ValueTreeObjectList<CybrTrack>(parent), cybr(c){ rebuildObjects(); }
     virtual ~CybrTrackList() { freeObjects(); }
     
-    virtual bool isSuitableType (const ValueTree& v) const override { return v.hasType(CYBRTRACK); }
-    virtual CybrTrack* createNewObject (const ValueTree& v) override { return new CybrTrack(v); }
+    virtual bool isSuitableType (const juce::ValueTree& v) const override { return v.hasType(CYBRTRACK); }
+    virtual CybrTrack* createNewObject (const juce::ValueTree& v) override { return new CybrTrack(v); }
     virtual void deleteObject (CybrTrack* t) override { delete t; }
     virtual void newObjectAdded (CybrTrack*) override {}
     virtual void objectRemoved (CybrTrack*) override {}
     virtual void objectOrderChanged() override {}
     
     void appendEmptyTrack() {
-        ValueTree v(CYBRTRACK);
+        juce::ValueTree v(CYBRTRACK);
         parent.addChild(v, -1, nullptr);
     }
 

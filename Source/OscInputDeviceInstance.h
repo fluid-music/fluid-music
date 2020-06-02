@@ -69,7 +69,7 @@ public:
                                               te::SelectionManager*) override;
 
     // see MidiInputDeviceInstance for what this is really supposed to do.
-    Array<te::Clip*> applyRetrospectiveRecord (te::SelectionManager*) override;
+    juce::Array<te::Clip*> applyRetrospectiveRecord (te::SelectionManager*) override;
 
     te::AudioNode* createLiveInputNode() override;
     

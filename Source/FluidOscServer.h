@@ -15,7 +15,7 @@
 #include "CybrEdit.h"
 #include "CybrSearchPath.h"
 
-typedef void (*OscHandlerFunc)(const OSCMessage&);
+typedef void (*OscHandlerFunc)(const juce::OSCMessage&);
 
 struct SelectedObjects {
     te::AudioTrack* audioTrack = nullptr;
@@ -24,56 +24,56 @@ struct SelectedObjects {
 };
 
 class FluidOscServer :
-    public OSCReceiver,
-    private OSCReceiver::Listener<OSCReceiver::MessageLoopCallback>
+public juce::OSCReceiver,
+private juce::OSCReceiver::Listener<juce::OSCReceiver::MessageLoopCallback>
 {
 public:
     FluidOscServer();
     
-    virtual void oscMessageReceived (const OSCMessage& message) override;
-    virtual void oscBundleReceived (const OSCBundle& bundle) override;
+    virtual void oscMessageReceived (const juce::OSCMessage& message) override;
+    virtual void oscBundleReceived (const juce::OSCBundle& bundle) override;
     
-    OSCBundle handleOscBundle(const OSCBundle& bundle, SelectedObjects parentSelection);
-    OSCMessage handleOscMessage(const OSCMessage& message);
+    juce::OSCBundle handleOscBundle(const juce::OSCBundle& bundle, SelectedObjects parentSelection);
+    juce::OSCMessage handleOscMessage(const juce::OSCMessage& message);
 
     // message handlers
-    OSCMessage selectAudioTrack(const OSCMessage& message);
-    OSCMessage removeAudioTrackClips(const OSCMessage& message);
-    OSCMessage removeAudioTrackAutomation(const OSCMessage& message);
-    OSCMessage selectReturnTrack(const OSCMessage& message);
-    OSCMessage selectMidiClip(const OSCMessage& message);
-    OSCMessage selectPlugin(const OSCMessage& message);
-    OSCMessage setPluginParam(const OSCMessage& message);
-    OSCMessage setPluginParamAt(const OSCMessage& message);
-    OSCMessage setPluginSideChainInput(const OSCMessage& message);
-    OSCMessage savePluginPreset(const OSCMessage& message);
-    OSCMessage loadPluginPreset(const OSCMessage& message);
-    OSCMessage loadPluginTrkpreset(const OSCMessage& message);
-    OSCMessage ensureSend(const OSCMessage& message);
-    OSCMessage clearMidiClip(const OSCMessage& message);
-    OSCMessage insertMidiNote(const OSCMessage& message);
-    OSCMessage insertWaveSample(const OSCMessage& message);
-    OSCMessage saveActiveEdit(const OSCMessage& message);
-    OSCMessage activateEditFile(const OSCMessage& message);
-    OSCMessage changeWorkingDirectory(const OSCMessage& message);
-    OSCMessage handleSamplerMessage(const OSCMessage& message);
-    OSCMessage handleTransportMessage(const OSCMessage& message);
-    OSCMessage setTrackGain(const OSCMessage& message);
-    OSCMessage renderRegion(const OSCMessage& message);
-    OSCMessage renderClip(const OSCMessage& message);
-    OSCMessage setClipLength(const OSCMessage& message);
-    OSCMessage trimClipBySeconds(const OSCMessage& message);
-    OSCMessage selectClip(const OSCMessage& message);
-    OSCMessage offsetClipSourceInSeconds(const OSCMessage& message);
-    OSCMessage audioClipFadeInOutSeconds(const OSCMessage& message);
-    OSCMessage setClipDb(const OSCMessage& message);
-    OSCMessage setTempo(const OSCMessage& message);
-    OSCMessage clearContent(const OSCMessage& message);
+    juce::OSCMessage selectAudioTrack(const juce::OSCMessage& message);
+    juce::OSCMessage removeAudioTrackClips(const juce::OSCMessage& message);
+    juce::OSCMessage removeAudioTrackAutomation(const juce::OSCMessage& message);
+    juce::OSCMessage selectReturnTrack(const juce::OSCMessage& message);
+    juce::OSCMessage selectMidiClip(const juce::OSCMessage& message);
+    juce::OSCMessage selectPlugin(const juce::OSCMessage& message);
+    juce::OSCMessage setPluginParam(const juce::OSCMessage& message);
+    juce::OSCMessage setPluginParamAt(const juce::OSCMessage& message);
+    juce::OSCMessage setPluginSideChainInput(const juce::OSCMessage& message);
+    juce::OSCMessage savePluginPreset(const juce::OSCMessage& message);
+    juce::OSCMessage loadPluginPreset(const juce::OSCMessage& message);
+    juce::OSCMessage loadPluginTrkpreset(const juce::OSCMessage& message);
+    juce::OSCMessage ensureSend(const juce::OSCMessage& message);
+    juce::OSCMessage clearMidiClip(const juce::OSCMessage& message);
+    juce::OSCMessage insertMidiNote(const juce::OSCMessage& message);
+    juce::OSCMessage insertWaveSample(const juce::OSCMessage& message);
+    juce::OSCMessage saveActiveEdit(const juce::OSCMessage& message);
+    juce::OSCMessage activateEditFile(const juce::OSCMessage& message);
+    juce::OSCMessage changeWorkingDirectory(const juce::OSCMessage& message);
+    juce::OSCMessage handleSamplerMessage(const juce::OSCMessage& message);
+    juce::OSCMessage handleTransportMessage(const juce::OSCMessage& message);
+    juce::OSCMessage setTrackGain(const juce::OSCMessage& message);
+    juce::OSCMessage renderRegion(const juce::OSCMessage& message);
+    juce::OSCMessage renderClip(const juce::OSCMessage& message);
+    juce::OSCMessage setClipLength(const juce::OSCMessage& message);
+    juce::OSCMessage trimClipBySeconds(const juce::OSCMessage& message);
+    juce::OSCMessage selectClip(const juce::OSCMessage& message);
+    juce::OSCMessage offsetClipSourceInSeconds(const juce::OSCMessage& message);
+    juce::OSCMessage audioClipFadeInOutSeconds(const juce::OSCMessage& message);
+    juce::OSCMessage setClipDb(const juce::OSCMessage& message);
+    juce::OSCMessage setTempo(const juce::OSCMessage& message);
+    juce::OSCMessage clearContent(const juce::OSCMessage& message);
 
     // everything else
-    OSCMessage muteTrack(bool mute);
-    OSCMessage reverseAudioClip(bool reverse);
-    OSCMessage activateEditFile(File file, bool forceEmptyEdit = false);
+    juce::OSCMessage muteTrack(bool mute);
+    juce::OSCMessage reverseAudioClip(bool reverse);
+    juce::OSCMessage activateEditFile(juce::File file, bool forceEmptyEdit = false);
     std::unique_ptr<CybrEdit> activeCybrEdit = nullptr;
 
     SelectedObjects getSelectedObjects();
@@ -85,8 +85,8 @@ private:
      that nested bundles do not leave behind a selection after they have been
      handled. */
 
-    void constructReply(OSCMessage &reply, int success, String message);
-    void constructReply(OSCMessage &reply, String message);
+    void constructReply(juce::OSCMessage &reply, int success, juce::String message);
+    void constructReply(juce::OSCMessage &reply, juce::String message);
     
     te::AudioTrack* selectedAudioTrack = nullptr;
     te::Clip* selectedClip = nullptr;

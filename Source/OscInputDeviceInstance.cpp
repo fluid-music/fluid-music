@@ -62,7 +62,7 @@ bool OscInputDeviceInstance::isRecording() { return recording; }
 void OscInputDeviceInstance::stop() { recording = false; } // called on the message thread
 void OscInputDeviceInstance::recordWasCancelled() { recording = false; }
 double OscInputDeviceInstance::getPunchInTime() { return recordingStartTime; }
-Array<te::Clip*> OscInputDeviceInstance::applyRetrospectiveRecord (te::SelectionManager*) { return {}; }
+juce::Array<te::Clip*> OscInputDeviceInstance::applyRetrospectiveRecord (te::SelectionManager*) { return {}; }
 te::Clip::Array OscInputDeviceInstance::stopRecording() { recording = false; return {}; }
 te::AudioNode* OscInputDeviceInstance::createLiveInputNode() { return new te::MixerAudioNode(false, false); }
 

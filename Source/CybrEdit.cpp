@@ -10,6 +10,8 @@
 
 #include "CybrEdit.h"
 
+using namespace juce;
+
 CybrEdit::CybrEdit(te::Edit* e) :
     edit(std::move(e)),
     state(edit->state.getOrCreateChildWithName(CYBR, nullptr))
