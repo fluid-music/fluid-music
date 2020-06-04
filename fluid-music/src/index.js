@@ -23,7 +23,7 @@ const score = require('./score');
 const tab = require('./tab');
 const groove = require('./groove')
 const UdpClient = require('./FluidUdpClient');
-const Client = require('./FluidClient');
+const IpcClient = require('./FluidIpcClient');
 const converters = require('./converters');
 const random = require('./random');
 
@@ -34,7 +34,8 @@ module.exports = {
   audioclip,
   audiotrack,
   UdpClient,
-  Client,
+  IpcClient,
+  Client: IpcClient,
   clip,
   converters,
   content,

@@ -11,6 +11,7 @@
     "test-gen": "mocha test/test-code-generators.js",
     "test-debug": "mocha --reporter spec --inspect-brk",
     "test-elib": "mocha test/test-event-library.js",
+    "test-ipc-client": "mocha test/test-ipc-client.js",
     "docs": "jsdoc2md  --files $(find src -iname '*.js' | grep -v \"plugin-\" | xargs) > docs/fluid.md",
     "generate-zebra2-code": "node code-generators/gen-zebra2-vst2-file.js",
     "generate-helm-code": "node code-generators/gen-helm-file.js"
@@ -35,7 +36,7 @@
     "fluid": "./cli.js"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/charlesholbrow/cybr.git"
+    "type": "git",
+    "url": "https://github.com/charlesholbrow/cybr.git"
   }
 }
