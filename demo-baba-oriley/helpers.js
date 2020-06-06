@@ -59,9 +59,9 @@ const helpers = {
     fluid.plugin.select('#TCompressor'),
     fluid.plugin.setSideChainInput('kick'),
     fluid.plugin.setParamNormalized('Use Sidechain Trigger', 1),
-    fluid.plugin.setParamNormalized('Threshold', 0.53),
-    fluid.plugin.setParamNormalized('Release', 0.24),
-    fluid.plugin.setParamNormalized('Ratio', 0.46),
+    fluid.plugin.setParamNormalized('Threshold', 0.40),
+    fluid.plugin.setParamNormalized('Release', 0.18),
+    fluid.plugin.setParamNormalized('Ratio', 0.50),
   ],
 };
 
