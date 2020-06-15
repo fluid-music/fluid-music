@@ -27,7 +27,7 @@ module.exports = {
       // Tune the oscillator so note 69 (the A above middle C) is 440hz
       fluid.pluginPodolski.setOsc1Tune(oscTune(12)),
 
-      // Filter out harmonics above the fundamental. Set via trail and error.
+      // Filter out harmonics above the fundamental. Set via trial and error.
       // The result is not a pure sine tone, but it is close.
       fluid.pluginPodolski.setVcf0Cutoff(16 / 150),
 
