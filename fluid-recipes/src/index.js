@@ -18,5 +18,6 @@ module.exports = {
   },
   presets: {
     tReverber8: require('./presets/treverber8'),
+    podolski: require('./presets/podolski'),
   },
 };
