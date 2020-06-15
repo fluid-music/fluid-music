@@ -1,5 +1,6 @@
 // OSC Message Helpers
 const plugin = require('./fluid/plugin');
+const pluginPodolski = require('./fluid/plugin-podolski');
 const pluginTCompressor = require('./fluid/plugin-tcompressor-vst');
 const pluginTEqualiser = require('./fluid/plugin-tequaliser');
 const pluginTReverber8 = require('./fluid/plugin-treverber8');
@@ -44,6 +45,7 @@ module.exports = {
   midiclip,
   plugin,
   pluginHelm,
+  pluginPodolski,
   pluginTCompressor,
   pluginTEqualiser,
   pluginTReverber8,

@@ -17,6 +17,7 @@ const transport = require('./transport');
 const global = require('./global');
 const clip = require('./clip');
 const tempo = require('./tempo');
+const pluginPodolski = require('./plugin-podolski');
 const pluginTCompressor = require('./plugin-tcompressor-vst');
 const pluginTStereoDelay = require('./plugin-tstereodelay');
 const pluginTReverber8 = require('./plugin-treverber8');
@@ -38,6 +39,7 @@ module.exports = {
   midiclip,
   plugin,
   pluginHelm,
+  pluginPodolski,
   pluginTCompressor,
   pluginTReverber8,
   pluginTStereoDelay,
