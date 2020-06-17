@@ -43,7 +43,7 @@ module.exports = {
   },
 
   /**
-   * Slowly decaying sine bass .
+   * Slowly decaying sine bass.
    */
   sineSlowDecay() {
     return module.exports.sine().concat([

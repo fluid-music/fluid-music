@@ -25,7 +25,7 @@ const reservedKeys = tab.reservedKeys;
  * @param {NoteLibrary} [config.vLibrary]
  * @param {NoteLibrary} [config.nLibrary] (see tab.parseTab for details about
  *   `NoteLibrary`). If not specified, `scoreObject` must have a `.nLibrary` property.
- * @param {Session} [session] Only used in recursion. Consuming cose should not
+ * @param {Session} [session] Only used in recursion. Consuming code should not
  *    supply this argument.
  * @returns {Session} representation of the score.
  */
@@ -130,18 +130,35 @@ function midiVelocityToDbfs(v, min = -60, max = 6) {
 function tracksToFluidMessage(tracksObject) {
   const messages = [];
   let i = 0;
+
+  /* // example tracks object
+  const tracks = {
+    bass: { clips: [ clip1, clip2... ] },
+    kick: { clips: [ clip1, clip2... ] },
+  };*/
   for (let [trackName, track] of Object.entries(tracksObject)) {
     if (tab.reservedKeys.hasOwnProperty(trackName)) {
       continue;
     }
 
-    if (!track.clips) {
+    if (!track.clips || !tracks.clips.length) {
       console.log(`skipping ${trackName}, because it has no .clips`);
       continue;
     }
 
     messages.push(fluid.audiotrack.select(trackName));
     for (let clip of track.clips) {
+      /* // example clip object
+      const clip = {
+        notes: [ note1, note2 ],
+        duration: 4,
+        startTime: 4,
+      };
+
+      // example event objects
+      const midiNote = { s: 0.0, l: 0.25, n: 60 };
+      const wavClip  = { s: 0.5, l: 0.25, n: { type: 'file', path: 'media/kick.wav' } }
+      */
       let midiNotes = clip.notes.filter(event => typeof event.n === 'number');
       let samples   = clip.notes.filter(event => event.n && event.n.type === 'file');
       if (midiNotes.length) {

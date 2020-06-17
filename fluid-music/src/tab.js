@@ -255,8 +255,10 @@ const getSegmentStartTotals = function(advances) {
  * This helper method converts a pattern into an intermediary format that is
  * helpful for parsing a tab. Its easiest to understand with an example:
  *
+ * ```
  * const input = 'a-1-bb...';
  * const output = [['a',2], ['1',2], ['b',1], ['b', 1], ['.', 3]];
+ * ```
  *
  * For every new symbol, the out output lists that symbol, and the number of
  * positions that that symbols is active for.

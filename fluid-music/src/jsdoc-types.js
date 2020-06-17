@@ -83,22 +83,28 @@
  * {
  *   bass: {
  *     clips: [
- *       [
- *         { s: 0,     l: 0.0833, n: 33, v: 100 },
- *         { s: 0.25,  l: 0.0833, n: 35, v: 90 },
- *         { s: 0.33,  l: 0.0833, n: 38, v: 60 },
+ *       {
+ *         notes: [
+ *           { s: 0,     l: 0.0833, n: 33, v: 100 },
+ *           { s: 0.25,  l: 0.0833, n: 35, v: 90 },
+ *           { s: 0.33,  l: 0.0833, n: 38, v: 60 },
+ *         ],
  *         startTime: 2,
  *         duration:  1,
- *       ]
+ *       },
  *     ]
  *   }
  * }
  * ```
- * @typedef {Object} TracksObject
- * @param {TracksObject} <trackName> TracksObjects can be deeply nested
- * @param {Array} <trackName>
- * @param {string} <trackName>
+ * @typedef {Object.<string, TrackObject>} TracksObject
  */
+
+ /**
+  * @typedef {Object} TrackObject
+  * @param {Clip[]} clips
+  * @param {number} [duration]  // Charles: do all TrackObjects have a duration?
+  * @param {number} [startTime] // Charles: do all TrackObjects have a startTime?
+  */
 
 /**
  * Represents an event in a score, often a MIDI note within midi clip
