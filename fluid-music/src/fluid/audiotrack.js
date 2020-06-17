@@ -16,8 +16,8 @@ const audiotrack = {
   },
 
   /**
-   * Insert a audio file clip into the selected audio track. No effect if there
-   * is no selected track.
+   * Insert and select an audio file clip into the selected audio track. Noop
+   * when there is no selected track.
    * @param {string} clipName name the new clip
    * @param {number} startTimeInWholeNotes clip start time in quarter notes
    * @param {string} fileName

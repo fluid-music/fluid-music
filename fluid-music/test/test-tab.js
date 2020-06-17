@@ -220,11 +220,11 @@ describe('tab.parseTab', () => {
     };
 
     const clip = tab.parseTab(rhythm, pattern, nLibrary);
-    it('should pass objects directly to .n when nLibrary contains JS Objects', () => {
+    it('should set the .e property for objects in the nLibrary', () => {
       clip.notes.should.deepEqual([
-        { n: noteObject0, s: 0.00, l: 0.125 },
-        { n: noteObject1, s: 0.25, l: 0.125 },
-        { n: noteObject2, s: 0.50, l: 0.125 },
+        { e: noteObject0, s: 0.00, l: 0.125 },
+        { e: noteObject1, s: 0.25, l: 0.125 },
+        { e: noteObject2, s: 0.50, l: 0.125 },
       ]);
     });
 

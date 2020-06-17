@@ -108,11 +108,15 @@ const parseTab = function(rhythm, pattern, noteLibrary, vPattern, vLibrary) {
       notes.forEach((note) => {
         const start = (p === 0) ? 0 : rhythmObject.totals[p-1];
         const end = rhythmObject.totals[p+count-1];
+
         let noteObject = {
           s: start,
           l: end - start,
-          n: note,
         };
+
+        if (typeof note === 'number') noteObject.n = note;
+        else noteObject.e = note;
+
         if (vLibrary !== undefined) {
           noteObject.v = velocityArray[index];
         }

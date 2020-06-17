@@ -68,17 +68,12 @@
  */
 
 /**
- * @typedef {Object} Clip
- * @property {NoteObject[]} notes
- * @property {number} duration duration in whole notes
- * @property {number} [startTime] start time in whole notes
- */
-
-/**
  * Represents a collection of audio tracks, and clips on those tracks.
  *
- * Example of a `TracksObject` containing a single `bass` track which has a
- * single MIDI clip and three MIDI notes.
+ * Example of a `TracksObject` containing a single `bass` track, which
+ * containins two clips:
+ * 1) a MIDI clip and three MIDI notes.
+ * 2) a clip that contains an audio file
  * ```javascript
  * {
  *   bass: {
@@ -92,6 +87,13 @@
  *         startTime: 2,
  *         duration:  1,
  *       },
+ *       {
+ *         notes: [
+ *           { s: 0.5, l: 0.25, e: { type: 'file', path: 'media/kick.wav' } },
+ *         ],
+ *         startTime: 3,
+ *         duration:  1,
+ *       },
  *     ]
  *   }
  * }
@@ -99,21 +101,30 @@
  * @typedef {Object.<string, TrackObject>} TracksObject
  */
 
- /**
-  * @typedef {Object} TrackObject
-  * @param {Clip[]} clips
-  * @param {number} [duration]  // Charles: do all TrackObjects have a duration?
-  * @param {number} [startTime] // Charles: do all TrackObjects have a startTime?
-  */
+/**
+ * @typedef {Object} TrackObject
+ * @param {Clip[]} clips
+ * @param {number} [duration]  // Charles: do all TrackObjects have a duration?
+ * @param {number} [startTime] // Charles: do all TrackObjects have a startTime?
+ */
 
 /**
- * Represents an event in a score, often a MIDI note within midi clip
+ * @typedef {Object} Clip
+ * @property {NoteObject[]} notes
+ * @property {number} duration duration in whole notes
+ * @property {number} [startTime] start time in whole notes
+ */
+
+/**
+ * Represents an event in a score, such as a MIDI note within midi clip or an
+ * audio sample on a track.
  * @typedef {Object} NoteObject
- * @property {number|Object} n probably a MIDI note number - however, nested
- *  `NoteLibrary` objects might also put arbitrary JavaScipt Objects in this
- *   field
  * @property {number} l length in whole notes
  * @property {number} s start time in whole notes
+ * @property {number} [n] MIDI note number
+ * @property {Object} [e] JavaScript object signifying a non-note event
+ * @property {string} [e.type] 'file' indicates an audio sample
+ * @property {string} [e.path] file objects must include a path string
  * @property {number} [v=64] optional midi velocity
  */
 

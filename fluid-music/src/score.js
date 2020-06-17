@@ -115,7 +115,7 @@ function midiVelocityToDbfs(v, min = -60, max = 6) {
 }
 
 /**
- * Create a `FluidMessage` from a TracksObject
+ * Create a `FluidMessage` from a `TracksObject`
  *
  * ```javascript
  * const session = fluid.score.parse(myScore, myConfig);
@@ -141,7 +141,7 @@ function tracksToFluidMessage(tracksObject) {
       continue;
     }
 
-    if (!track.clips || !tracks.clips.length) {
+    if (!track.clips || !track.clips.length) {
       console.log(`skipping ${trackName}, because it has no .clips`);
       continue;
     }
@@ -155,12 +155,12 @@ function tracksToFluidMessage(tracksObject) {
         startTime: 4,
       };
 
-      // example event objects
+      // example note objects
       const midiNote = { s: 0.0, l: 0.25, n: 60 };
-      const wavClip  = { s: 0.5, l: 0.25, n: { type: 'file', path: 'media/kick.wav' } }
+      const wavClip  = { s: 0.5, l: 0.25, e: { type: 'file', path: 'media/kick.wav' } }
       */
-      let midiNotes = clip.notes.filter(event => typeof event.n === 'number');
-      let samples   = clip.notes.filter(event => event.n && event.n.type === 'file');
+      let midiNotes = clip.notes.filter(note => typeof note.n === 'number');
+      let samples   = clip.notes.filter(note => note.e && note.e.type === 'file');
       if (midiNotes.length) {
         messages.push(fluid.midiclip.create(`clip${i++}`, clip.startTime, clip.duration, midiNotes));
       }
@@ -168,7 +168,8 @@ function tracksToFluidMessage(tracksObject) {
         let startTime = (clip.startTime + sample.s);
         let gain = (typeof sample.v === 'number') ? midiVelocityToDbfs(sample.v, -10, 10) : 0;
         messages.push(
-          fluid.audiotrack.insertWav(`s${i++}`, startTime, sample.n.path),
+          fluid.audiotrack.insertWav(`s${i++}`, startTime, sample.e.path),
+          fluid.clip.length(sample.l),
           fluid.audioclip.gain(gain),
         )
       }
