@@ -72,8 +72,8 @@ const parseVelocity = function(vPattern, symbolsAndCounts, vLibrary){
  * @param {string} pattern
  * @param {NoteLibrary} noteLibrary - an indexable object
  *        containing notes or arrays of notes. Can be an object or an array.
- *        If it is an array, the pattern is limited symbols single digit
- *        numbers 0-9.
+ *        If it is an array, the pattern may only contain single digit numbers
+ *        (i.e. 0-9).
  *
  *        All symbols in the pattern should reference values in the noteLibrary.
  *
@@ -103,6 +103,9 @@ const parseTab = function(rhythm, pattern, noteLibrary, vPattern, vLibrary) {
     if (symbol !== '.') {
       if (!noteLibrary.hasOwnProperty(symbol))
         throw new Error(`noteLibrary has no note or chord for "${symbol}"`);
+
+      // We have the contents of the noteLibrary, which may be a single item, or
+      // an array of items.
       let notes = noteLibrary[symbol];
       if (!Array.isArray(notes)) notes = [notes];
       notes.forEach((note) => {
@@ -114,11 +117,22 @@ const parseTab = function(rhythm, pattern, noteLibrary, vPattern, vLibrary) {
           l: end - start,
         };
 
+        // note may be a number (MIDI note) or object (arbitrary event)
         if (typeof note === 'number') noteObject.n = note;
         else noteObject.e = note;
 
         if (vLibrary !== undefined) {
-          noteObject.v = velocityArray[index];
+          let v = velocityArray[index];
+          // v may be a number (MIDI velocity) or object (dynamics object)
+          if (typeof v === 'number')
+            noteObject.v = v;
+          else {
+            noteObject.d = v;
+            // As a convenience, if the dynamics object has a .v (velocity) copy
+            // the .v directly to the noteObject. This allows dynamics objects
+            // to specify a midi velocity like this: `{ dbfs: -10, v: 32 }`
+            if (v && typeof(v.v) === 'number') noteObject.v = v.v;
+          }
         }
         clip.notes.push(noteObject);
       });
@@ -393,11 +407,13 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
  * These keys cannot be used for patterns in tabs and scores.
  */
 const reservedKeys = {
-  r: null,
-  v: null,
-  noteLibrary : null,
+  r: null,            // rhythm string
+  v: null,            // velocity string
+  noteLibrary : null, // deprecated in favor of nLibrary
   nLibrary: null,
   vLibrary: null,
+  eLibrary: null,     // Possible use: events library
+  dLibrary: null,     // Possible use: dynamics library
   duration: null,
   startTime: null,
   meta: null,

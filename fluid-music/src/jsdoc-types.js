@@ -126,6 +126,17 @@
  * @property {string} [e.type] 'file' indicates an audio sample
  * @property {string} [e.path] file objects must include a path string
  * @property {number} [v=64] optional midi velocity
+ * @property {DynamicsObject} [d] JavaScript object signifying dynamics
+ */
+
+/**
+ * Represents a performance marking such as "forte" or "piano". In practice,
+ * this specifies a MIDI velocity, or a dBFS gain value.
+ *
+ * These can be found in a `vLibrary`, or in the `.d` field of a `NoteObject`.
+ * @typedef {Object} DynamicsObject
+ * @property {number} [v=64] optional midi velocity
+ * @property {number} [dbfs] sample gain
  */
 
 /**
@@ -140,7 +151,7 @@
  *     { type: 'integer', value: 60 },
  *     { type: 'float', value: 0 },
  *     { type: 'float', value: 4 },
- *     { type: 'integer', value: 127 }
+ *     { type: 'integer', value: 127 },
  *  ]
  * }
  * ```

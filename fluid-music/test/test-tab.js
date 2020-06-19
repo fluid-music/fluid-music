@@ -205,6 +205,21 @@ describe('tab.parseTab', () => {
       ]);
     });
 
+    const dynamicsObject = { v: 70, dbfs: 1 };
+    const clipWithDynamics = tab.parseTab(rhythm, pattern, nLibrary, vPattern,
+      [60, dynamicsObject, 80]);
+
+    it('should put dynamicsObjects into the .d field of the note object', () => {
+      clipWithDynamics.notes[1].d.should.deepEqual(dynamicsObject);
+    });
+
+    it('should add .v to the noteObject when the dynamics obj has a .v number', () => {
+      clipWithDynamics.notes[1].v.should.equal(70);
+      clipWithDynamics.notes[1].should.deepEqual(
+        { n: 1, s: 0.25, l: 0.125, v: 70, d: dynamicsObject }
+      );
+    });
+
   }); // describe velocities (vPattern/vLibrary)
 
   describe('note objects', () => {

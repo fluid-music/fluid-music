@@ -154,24 +154,46 @@ function tracksToFluidMessage(tracksObject) {
         duration: 4,
         startTime: 4,
       };
-
-      // example note objects
-      const midiNote = { s: 0.0, l: 0.25, n: 60 };
-      const wavClip  = { s: 0.5, l: 0.25, e: { type: 'file', path: 'media/kick.wav' } }
       */
       let midiNotes = clip.notes.filter(note => typeof note.n === 'number');
       let samples   = clip.notes.filter(note => note.e && note.e.type === 'file');
+
+      // example midi notes
+      // NOTE: velocities are optional
+      // NOTE: velocity objects can specify .v (midi velocity) or dbfs gain
+      // { s: 0.0, l: 0.25, n: 60 v: 70 };
+      // { s: 0.5, l: 0.25, n: 60 v: { v: 70, dbfs: -12 } };
       if (midiNotes.length) {
         messages.push(fluid.midiclip.create(`clip${i++}`, clip.startTime, clip.duration, midiNotes));
       }
+
+      // // example sample note
+      // {
+      //   s: 0.50, // start
+      //   l: 0.25, // length
+      //   e: { type: 'file', path: 'media/kick.wav' },
+      //   d: { v: 70, dbfs: -10 }, // If .v is present here...
+      //   v: 70,                   // ...it will also be here...
+      //                            // (but vice versa is not guaranteed)
+      // };
       for (let sample of samples) {
         let startTime = (clip.startTime + sample.s);
-        let gain = (typeof sample.v === 'number') ? midiVelocityToDbfs(sample.v, -10, 10) : 0;
-        messages.push(
+
+        let msg = [
           fluid.audiotrack.insertWav(`s${i++}`, startTime, sample.e.path),
-          fluid.clip.length(sample.l),
-          fluid.audioclip.gain(gain),
-        )
+          fluid.clip.length(sample.l)];
+
+        // Try to get sample gain
+        let gain = null;
+        // If there is a dynamics object, look for a dbfs property
+        if (sample.d && typeof(sample.d.dbfs) === 'number') gain = sample.d.dbfs;
+        // Otherwise, look for a .v property, and use a hard-coded default
+        // conversion from midi velocity to dbfs
+        else if (typeof sample.v === 'number') gain = midiVelocityToDbfs(sample.v, -10, 10);
+        // Iff gain was found add it to the result
+        if (gain !== null) msg.push(fluid.audioclip.gain(gain));
+
+        messages.push(msg);
       }
     }
   }
