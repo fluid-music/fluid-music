@@ -122,11 +122,9 @@
  * @property {number} l length in whole notes
  * @property {number} s start time in whole notes
  * @property {number} [n] MIDI note number
- * @property {Object} [e] JavaScript object signifying a non-note event
- * @property {string} [e.type] 'file' indicates an audio sample
- * @property {string} [e.path] file objects must include a path string
+ * @property {EventObject} [e] Signifies a non-note event
  * @property {number} [v=64] optional midi velocity
- * @property {DynamicsObject} [d] JavaScript object signifying dynamics
+ * @property {DynamicsObject} [d] Signifies a dynamic marking
  */
 
 /**
@@ -138,6 +136,19 @@
  * @property {number} [v=64] optional midi velocity
  * @property {number} [dbfs] sample gain
  */
+
+ /**
+  * Represents a timeline event such as an audio sample.
+  *
+  * These can be found in an `nLibrary`, or in the `.e` field of a `NoteObject`.
+  * @typedef {Object} EventObject
+  * @property {string} type String indicating the type of event:
+  *   'file' indicates an audio sample, which should have a `.path`.
+  *   'vLayers' indicates the presence of a `.vLayers` field, which contains an
+  *    array of EventObjects with `.type === 'file'`. Files in the `.vLayers`
+  *    array should be arranged in order of increasing velocity.
+  * @property {string} [path] file objects must include a path string
+  */
 
 /**
  * Represents any type of message that can be sent from a client such as

@@ -2,6 +2,7 @@ const R = require('ramda');
 const should = require('should');
 const mocha = require('mocha');
 const score = require('../src/score');
+const audiotrack = require('../src/fluid/audiotrack');
 
 describe('score', () => {
   const nLibrary = [0, 1, 2, 3, 4, 5, 6];
@@ -235,3 +236,52 @@ describe('score', () => {
     });
   });
 }); // describe score
+
+
+describe('score.tracksToFluidMessage', () => {
+  const nLibrary = [
+    60,
+    {
+      type: 'vLayers',
+      vLayers: [
+        { path: 'f1.wav', type: 'file' },
+        { path: 'f2.wav', type: 'file' },
+        { path: 'f3.wav', type: 'file' },
+      ],
+    },
+  ];
+
+  const vLibrary = {
+    p: { v: 42 },
+    m: { v: 43 },
+    f: { v: 85 },
+  };
+
+  const v = 'pmf ';
+  const r = '1234';
+
+  const session = score.parse({f: '111', r, v}, {vLibrary, nLibrary});
+
+  const flatten = v => {
+    if (Array.isArray(v)) {
+      let r = [];
+      for (let i of v) {
+        if (Array.isArray(i)) r.push(...flatten(i));
+        else r.push(i);
+      }
+      return r;
+    }
+    return v;
+  }
+
+  describe('velocity layers (.vLayers)', () => {
+    let msg = score.tracksToFluidMessage(session.tracks);
+    msg = flatten(msg);
+    msg = msg.filter( v => v.address === '/audiotrack/insert/wav');
+    msg.should.containDeep([
+      audiotrack.insertWav('s0', 0,    'f1.wav'),
+      audiotrack.insertWav('s1', 0.25, 'f2.wav'),
+      audiotrack.insertWav('s2', 0.5,  'f3.wav'),
+    ])
+  });
+});

@@ -157,6 +157,23 @@ function tracksToFluidMessage(tracksObject) {
       */
       let midiNotes = clip.notes.filter(note => typeof note.n === 'number');
       let samples   = clip.notes.filter(note => note.e && note.e.type === 'file');
+      let vLayers   = clip.notes.filter(note => note.e && note.e.type === 'vLayers');
+
+      // example vLayer Object
+      // NOTE: .v is optional
+      // NOTE: file1 example { type: 'file', path: 'media/kick.wav' }
+      // { s: 0, l: 0.25, e: { type: 'vLayers', vLayers: [file1, file2]}, v: 64 }
+      for (let vLayer of vLayers) {
+        if (typeof vLayer.v !== 'number') {
+          vLayer.e = R.last(vLayer.e.vLayers);
+          samples.push(vLayer)
+        } else {
+          let index = Math.floor(vLayer.v / (127 / vLayer.e.vLayers.length));
+          let max = vLayer.e.vLayers.length - 1;
+          vLayer.e = vLayer.e.vLayers[R.clamp(0, max, index)]
+          samples.push(vLayer);
+        }
+      }
 
       // example midi notes
       // NOTE: velocities are optional
