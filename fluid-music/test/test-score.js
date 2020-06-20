@@ -235,53 +235,64 @@ describe('score', () => {
       score.midiVelocityToDbfs(127, -60, 0).should.equal(0);
     });
   });
-}); // describe score
 
 
-describe('score.tracksToFluidMessage', () => {
-  const nLibrary = [
-    60,
-    {
-      type: 'vLayers',
-      vLayers: [
-        { path: 'f1.wav', type: 'file' },
-        { path: 'f2.wav', type: 'file' },
-        { path: 'f3.wav', type: 'file' },
-      ],
-    },
-  ];
-
-  const vLibrary = {
-    p: { v: 42 },
-    m: { v: 43 },
-    f: { v: 85 },
-  };
-
-  const v = 'pmf ';
-  const r = '1234';
-
-  const session = score.parse({f: '111', r, v}, {vLibrary, nLibrary});
-
-  const flatten = v => {
-    if (Array.isArray(v)) {
-      let r = [];
-      for (let i of v) {
-        if (Array.isArray(i)) r.push(...flatten(i));
-        else r.push(i);
+  describe('score.tracksToFluidMessage', () => {
+    const flatten = v => {
+      if (Array.isArray(v)) {
+        let r = [];
+        for (let i of v) {
+          if (Array.isArray(i)) r.push(...flatten(i));
+          else r.push(i);
+        }
+        return r;
       }
-      return r;
-    }
-    return v;
-  }
+      return v;
+    };
 
-  describe('velocity layers (.vLayers)', () => {
-    let msg = score.tracksToFluidMessage(session.tracks);
-    msg = flatten(msg);
-    msg = msg.filter( v => v.address === '/audiotrack/insert/wav');
-    msg.should.containDeep([
+    const nLibrary = [
+      60,
+      {
+        type: 'iLayers',
+        iLayers: [
+          { path: 'f1.wav', type: 'file' },
+          { path: 'f2.wav', type: 'file' },
+          { path: 'f3.wav', type: 'file' },
+        ],
+      },
+    ];
+
+    const vLibrary = {
+      p: { v: 42 },
+      m: { v: 43 },
+      f: { v: 85 },
+      P: { v: 100, intensity: 0 },
+      M: { v: 100, intensity: 1/3 },
+      F: { v: 100, intensity: 2/3 },
+    };
+
+    const r = '1234';
+
+    const session1 = score.parse({f: '111', r, v: 'pmf'}, {vLibrary, nLibrary});
+    const session2 = score.parse({f: '111', r, v: 'PMF'}, {vLibrary, nLibrary});
+
+    const expectedResult = [
       audiotrack.insertWav('s0', 0,    'f1.wav'),
       audiotrack.insertWav('s1', 0.25, 'f2.wav'),
       audiotrack.insertWav('s2', 0.5,  'f3.wav'),
-    ])
+    ]
+
+    it('performance intensity layers (.iLayers) with velocity', () => {
+      let msg = score.tracksToFluidMessage(session1.tracks);
+      msg = flatten(msg).filter( v => v.address === '/audiotrack/insert/wav');
+      msg.should.containDeep(expectedResult)
+    });
+
+    it('performance intensity layers (.iLayers) with intensity', () => {
+      let msg = score.tracksToFluidMessage(session2.tracks);
+      msg = flatten(msg).filter( v => v.address === '/audiotrack/insert/wav');
+      msg.should.containDeep(expectedResult)
+    });
   });
-});
+
+}); // describe score

@@ -157,27 +157,36 @@ function tracksToFluidMessage(tracksObject) {
       */
       let midiNotes = clip.notes.filter(note => typeof note.n === 'number');
       let samples   = clip.notes.filter(note => note.e && note.e.type === 'file');
-      let vLayers   = clip.notes.filter(note => note.e && note.e.type === 'vLayers');
+      let iLayers   = clip.notes.filter(note => note.e && note.e.type === 'iLayers');
 
-      // example vLayer Object
+      // example iLayer note Object
       // NOTE: .v is optional
       // NOTE: file1 example { type: 'file', path: 'media/kick.wav' }
-      // { s: 0, l: 0.25, e: { type: 'vLayers', vLayers: [file1, file2]}, v: 64 }
-      for (let vLayer of vLayers) {
-        if (typeof vLayer.v !== 'number') {
-          vLayer.e = R.last(vLayer.e.vLayers);
-          samples.push(vLayer)
-        } else {
-          let index = Math.floor(vLayer.v / (127 / vLayer.e.vLayers.length));
-          let max = vLayer.e.vLayers.length - 1;
-          vLayer.e = vLayer.e.vLayers[R.clamp(0, max, index)]
-          samples.push(vLayer);
+      // {
+      //   s: 0, l: 0.25, v: 64,
+      //   e: { type: 'iLayers', iLayers: [file1, file2] },
+      //   d: { dbfs: -2, intensity: 0.7, v: 64 }
+      // }
+      for (let note of iLayers) {
+        let length = note.e.iLayers.length;
+        let index = length - 1; // default to the last
+
+        // Look for an intensity
+        if (note.d && typeof(note.d.intensity) === 'number') {
+          index = Math.floor(note.d.intensity * length);
         }
+        // If no intensity was found, look for a velocity
+        else if (typeof note.v === 'number') {
+          index = Math.floor(note.v / (127 / note.e.iLayers.length));
+        }
+
+        note.e = note.e.iLayers[R.clamp(0, length-1, index)]
+        samples.push(note);
       }
 
       // example midi notes
       // NOTE: velocities are optional
-      // NOTE: velocity objects can specify .v (midi velocity) or dbfs gain
+      // NOTE: velocity objects can specify .v (midi velocity) and/or dbfs gain
       // { s: 0.0, l: 0.25, n: 60 v: 70 };
       // { s: 0.5, l: 0.25, n: 60 v: { v: 70, dbfs: -12 } };
       if (midiNotes.length) {

@@ -135,6 +135,9 @@
  * @typedef {Object} DynamicsObject
  * @property {number} [v=64] optional midi velocity
  * @property {number} [dbfs] sample gain
+ * @property {number} [intensity] performance intensity value between 0 and 1.
+ *  intensity may be interperated several different ways by different note/event
+ *  handlers.
  */
 
  /**
@@ -144,9 +147,9 @@
   * @typedef {Object} EventObject
   * @property {string} type String indicating the type of event:
   *   'file' indicates an audio sample, which should have a `.path`.
-  *   'vLayers' indicates the presence of a `.vLayers` field, which contains an
-  *    array of EventObjects with `.type === 'file'`. Files in the `.vLayers`
-  *    array should be arranged in order of increasing velocity.
+  *   'iLayers' indicates the presence of a `.iLayers` field, which contains an
+  *    array of EventObjects with `.type === 'file'`. Files in the `.iLayers`
+  *    array should be arranged in order of increasing performance intensity.
   * @property {string} [path] file objects must include a path string
   */
 
