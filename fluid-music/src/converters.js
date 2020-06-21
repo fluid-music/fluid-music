@@ -42,8 +42,25 @@ const valueToMidiNoteNumber = function(value) {
   return noteNumber;
 };
 
+/**
+ * Convert a midi note number to fundamental frequency in hz. Equal temperment.
+ * @param {number} midiNoteNumber
+ * @returns {number} fundamental frequency in hz
+ */
+const m2f = (midiNote) => 440 * Math.pow(2, (midiNote-69)/12);
+
+/**
+ * Convert a frequency to a midi note number, assuming 69=A5=440hz.
+ * The output is not rounded to an integer, so use Math.round on the output if
+ * you need an integer note number.
+ * @param {number} hz frequency in hz
+ * @returns {number} midi note number
+ */
+const f2m = (hz) => 69 + 12 * Math.log2(hz/440);
 
 module.exports = {
+  m2f,
+  f2m,
   valueToWholeNotes,
   valueToMidiNoteNumber,
-}
+};

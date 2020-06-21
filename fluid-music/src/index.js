@@ -26,6 +26,7 @@ const groove = require('./groove')
 const UdpClient = require('./FluidUdpClient');
 const IpcClient = require('./FluidIpcClient');
 const converters = require('./converters');
+const m = require('./m');
 const random = require('./random');
 
 // JSDoc
@@ -42,6 +43,7 @@ module.exports = {
   content,
   eventLibrary,
   global,
+  m,
   midiclip,
   plugin,
   pluginHelm,
