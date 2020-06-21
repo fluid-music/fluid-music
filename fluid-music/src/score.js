@@ -205,6 +205,11 @@ function tracksToFluidMessage(tracksObject) {
       for (let sample of samples) {
         let startTime = (clip.startTime + sample.s);
 
+        if (typeof sample.e.path !== 'string') {
+          console.error(sample.e);
+          throw new Error('tracksToFluidMessage: A file object found in note library does not have a .path string');
+        };
+
         let msg = [
           fluid.audiotrack.insertWav(`s${i++}`, startTime, sample.e.path),
           fluid.clip.length(sample.l)];
