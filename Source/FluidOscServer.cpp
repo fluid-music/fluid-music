@@ -802,7 +802,13 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
         }
     }
 
-    for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
+    // Iterate over the parameter list in reverse. This is a slightly hacky way
+    // to dodge the "Dry Level" and "Wet Level" parameters that tracktion adds
+    // to all plugins. Some external plugins may have their own Dry/Wet level
+    // params. Because the tracktion versions always come first, we only find
+    // them if the plugin does not provide its own version.
+    for (int i = selectedPlugin->getNumAutomatableParameters() - 1; i >= 0; i--) {
+        te::AutomatableParameter::Ptr param = selectedPlugin->getAutomatableParameter(i);
         if (param->paramName.equalsIgnoreCase(paramName)) {
 
             param->parameterChangeGestureBegin();
@@ -882,7 +888,13 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
          return reply;
     }
 
-    for (te::AutomatableParameter* param : selectedPlugin->getAutomatableParameters()) {
+    // Iterate over the parameter list in reverse. This is a slightly hacky way
+    // to dodge the "Dry Level" and "Wet Level" parameters that tracktion adds
+    // to all plugins. Some external plugins may have their own Dry/Wet level
+    // params. Because the tracktion versions always come first, we only find
+    // them if the plugin does not provide its own version.
+    for (int i = selectedPlugin->getNumAutomatableParameters() - 1; i >= 0; i--) {
+        te::AutomatableParameter::Ptr param = selectedPlugin->getAutomatableParameter(i);
         if (param->paramName.equalsIgnoreCase(paramName)) {
             if (isNormalized) paramValue = param->valueRange.convertFrom0to1(paramValue);
             te::AutomationCurve curve = param->getCurve();
