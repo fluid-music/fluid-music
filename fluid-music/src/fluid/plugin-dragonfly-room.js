@@ -1,7 +1,12 @@
 
 const plugin = require('./plugin');
 const fluid = { plugin };
-module.exports = {
+
+const linear = (min, max) => (v) => (v - min) / (max - min);
+const map = (v, min, max) => linear(min, max)(v);
+const percent = linear(0, 100);
+
+const dragonflyRoom = module.exports = {
   /**
    * Select a `DragonflyRoomReverb-vst` vst plugin on the selected track, creating a new
    * plugin instance if needed
@@ -12,7 +17,7 @@ module.exports = {
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} p a number from 0-100 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -21,12 +26,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setDryLevel(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Dry Level', value, timeInWholeNotes, curve);
+  setDryLevelPercent(p, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Dry Level', percent(p), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} p a number between 0-1 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -35,12 +40,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setWetLevel(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Wet Level', value, timeInWholeNotes, curve);
+  setEarlyLevelPercent(p, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Early Level', percent(p), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} p a number from 0-100 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -49,12 +54,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setEarlyLevel(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Early Level', value, timeInWholeNotes, curve);
+  setEarlySendPercent(p, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Early Send', percent(p), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} p a number from 0-100 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -63,12 +68,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setEarlySend(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Early Send', value, timeInWholeNotes, curve);
+  setLateLevelPercent(p, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Late Level', percent(p), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} m a number between 8 and 32 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -77,12 +82,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setLateLevel(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Late Level', value, timeInWholeNotes, curve);
+  setSizeMeters(m, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Size', map(m, 8, 32), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} p Between 50% and 150% NOTE: NOT STANDARD 0-100 PERCENT
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -91,12 +96,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSize(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Size', value, timeInWholeNotes, curve);
+  setWidthPercent(p, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Width', map(p, 50, 150), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} ms predelay in milliseconds, between from 0 to 100
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -105,12 +110,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setWidth(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Width', value, timeInWholeNotes, curve);
+  setPredelayMs(ms, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Predelay', map(ms, 0, 100), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} seconds decay in seconds, from  0.1 to 10
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -119,12 +124,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setPredelay(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Predelay', value, timeInWholeNotes, curve);
+  setDecaySeconds(seconds, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Decay', map(seconds, 0.1, 10), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} p a number from 0-100 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -133,12 +138,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setDecay(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Decay', value, timeInWholeNotes, curve);
+  setDiffusePercent(p, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Diffuse', percent(p), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} hz speed in hz from 0 to 5.0
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -147,12 +152,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setDiffuse(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Diffuse', value, timeInWholeNotes, curve);
+  setSpinHz(hz, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Spin', map(hz, 0, 5), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} p a number from 0-100 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -161,12 +166,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setSpin(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Spin', value, timeInWholeNotes, curve);
+  setWanderPercent(p, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Wander', percent(p), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} hz frequency between 1000 and 16000
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -175,12 +180,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setWander(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Wander', value, timeInWholeNotes, curve);
+  setHighCutHz(hz, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('High Cut', map(hz, 1000, 16000), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} hz frequency between 1000 and 16000
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -189,12 +194,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setHighCut(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('High Cut', value, timeInWholeNotes, curve);
+  setEarlyDampHz(hz, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Early Damp', map(hz, 1000, 16000), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} hz frequency between 1000 and 16000
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -203,12 +208,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setEarlyDamp(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Early Damp', value, timeInWholeNotes, curve);
+  setLateDampHz(hz, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Late Damp', map(hz, 1000, 16000), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} p a number from 0-100 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -217,12 +222,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setLateDamp(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Late Damp', value, timeInWholeNotes, curve);
+  setLowBoostPercent(p, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Low Boost', percent(p), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} hz frequency between 50 and 1050
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -231,12 +236,12 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setLowBoost(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Low Boost', value, timeInWholeNotes, curve);
+  setLowBoostHz(hz, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Boost Freq', map(hz, 50, 1050), timeInWholeNotes, curve);
   },
 
   /**
-   * @param {number} value a number between 0-1 to set the parameter to
+   * @param {number} hz frequency between 0 and 200
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -245,43 +250,53 @@ module.exports = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setBoostFreq(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Boost Freq', value, timeInWholeNotes, curve);
+  setLowCutHz(hz, timeInWholeNotes, curve) {
+    return fluid.plugin.setExternalParamHelper('Low Cut', map(hz, 0, 200), timeInWholeNotes, curve);
   },
 
-  /**
-   * @param {number} value a number between 0-1 to set the parameter to
-   * @param {number} [timeInWholeNotes] time to insert automation point in
-   *    quarter notes. If no time is supplied, set the initial value
-   * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
-   *    represents the curvature of the line formed by this point and the next
-   *    point. Zero implies a linear change. Higher values create a curve that
-   *    begins slowly and accelerates. Lower values create a curve that begins
-   *    quickly, and decelerates.
-   */
-  setLowCut(value, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Low Cut', value, timeInWholeNotes, curve);
+  presets: {
+    smallVocalRoom() {
+      return [
+        dragonflyRoom.setDryLevelPercent(0),
+        dragonflyRoom.setEarlyLevelPercent(100),
+        dragonflyRoom.setEarlySendPercent(20),
+        dragonflyRoom.setLateLevelPercent(100),
+        dragonflyRoom.setSizeMeters(8),
+        dragonflyRoom.setWidthPercent(90),
+        dragonflyRoom.setPredelayMs(0),
+        dragonflyRoom.setDecaySeconds(0.3),
+        dragonflyRoom.setDiffusePercent(86),
+        dragonflyRoom.setSpinHz(2.4),
+        dragonflyRoom.setWanderPercent(12),
+        dragonflyRoom.setHighCutHz(16000),
+        dragonflyRoom.setEarlyDampHz(7600),
+        dragonflyRoom.setLateDampHz(6400),
+        dragonflyRoom.setLowCutHz(4),
+        dragonflyRoom.setLowBoostPercent(20),
+        dragonflyRoom.setLowBoostHz(400),
+      ];
+    },
   },
 
   params: {
-  "dryLevel": "Dry Level",
-  "wetLevel": "Wet Level",
-  "earlyLevel": "Early Level",
-  "earlySend": "Early Send",
-  "lateLevel": "Late Level",
-  "size": "Size",
-  "width": "Width",
-  "predelay": "Predelay",
-  "decay": "Decay",
-  "diffuse": "Diffuse",
-  "spin": "Spin",
-  "wander": "Wander",
-  "highCut": "High Cut",
-  "earlyDamp": "Early Damp",
-  "lateDamp": "Late Damp",
-  "lowBoost": "Low Boost",
-  "boostFreq": "Boost Freq",
-  "lowCut": "Low Cut"
-},
+    "dryLevel": "Dry Level",
+    "wetLevel": "Wet Level",
+    "earlyLevel": "Early Level",
+    "earlySend": "Early Send",
+    "lateLevel": "Late Level",
+    "size": "Size",
+    "width": "Width",
+    "predelay": "Predelay",
+    "decay": "Decay",
+    "diffuse": "Diffuse",
+    "spin": "Spin",
+    "wander": "Wander",
+    "highCut": "High Cut",
+    "earlyDamp": "Early Damp",
+    "lateDamp": "Late Damp",
+    "lowBoost": "Low Boost",
+    "boostFreq": "Boost Freq", // changed to setLowBoostHz
+    "lowCut": "Low Cut"
+  },
 
 };

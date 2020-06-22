@@ -26,6 +26,7 @@ const pluginZebra2Vst2 = require('./plugin-zebra2-vst2');
 const pluginHelm = require('./plugin-helm');
 const content = require('./content');
 const pluginDexedVst = require('./plugin-dexed-vst');
+const pluginDragonflyRoomReverb = require('./plugin-dragonfly-room');
 
 /**
  * @module fluid
@@ -38,6 +39,7 @@ module.exports = {
   global,
   midiclip,
   plugin,
+  pluginDragonflyRoomReverb,
   pluginHelm,
   pluginPodolski,
   pluginTCompressor,

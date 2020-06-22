@@ -308,7 +308,7 @@ const pluginTCompressor = {
   },
   
   /**
-   * @param {number} value a number between -60 to 0 to set the parameter to
+   * @param {number} db a number between -60 to 0 to set the parameter to
    * @param {number} [timeInWholeNotes] time to insert automation point in
    *    quarter notes. If no time is supplied, set the initial value
    * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
@@ -317,7 +317,7 @@ const pluginTCompressor = {
    *    begins slowly and accelerates. Lower values create a curve that begins
    *    quickly, and decelerates.
    */
-  setThreshold2Dbfs(db, timeInWholeNotes, curve) {
+  setSoftClipThresholdDbfs(db, timeInWholeNotes, curve) {
       return fluid.plugin.setExternalParamHelper('Threshold (2)', thresholdDb2Level(db), timeInWholeNotes, curve);
   },
   
