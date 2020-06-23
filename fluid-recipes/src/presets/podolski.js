@@ -50,6 +50,7 @@ module.exports = {
       fluid.pluginPodolski.setEnv1Decay(0.70),
       fluid.pluginPodolski.setEnv1Sustain(0.27),
       fluid.pluginPodolski.setEnv1FallRise(0.48),
+      fluid.pluginPodolski.setEnv1Release(0.125),
     ]);
   }
 };
