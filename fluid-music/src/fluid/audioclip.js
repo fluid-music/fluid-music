@@ -26,8 +26,8 @@ const audioclip = {
       { type: 'string', value: '' },
     ];
 
-    if (typeof fadeInSeconds) args[0] = { type: 'float', value: fadeInSeconds };
-    if (typeof fadeOutSeconds) args[1] = { type: 'float', value: fadeOutSeconds };
+    if (typeof fadeInSeconds === 'number') args[0] = { type: 'float', value: fadeInSeconds };
+    if (typeof fadeOutSeconds === 'number') args[1] = { type: 'float', value: fadeOutSeconds };
 
     return { address: '/audioclip/fade/seconds', args };
   },
