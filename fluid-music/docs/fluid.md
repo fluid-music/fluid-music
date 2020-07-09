@@ -37,6 +37,15 @@
 ## Functions
 
 <dl>
+<dt><a href="#merge">merge(...libraries)</a></dt>
+<dd><p>Merge multiple event libraries into one, throw an error if any of the input
+libraries have overlapping keys.</p>
+</dd>
+<dt><a href="#stringsToNoteNumbers">stringsToNoteNumbers(arrayOrNum)</a> ⇒ <code>Array.&lt;number&gt;</code> | <code>number</code></dt>
+<dd><p>Accept a deeply nested array of strings, and return a new deep array of midi
+note numbers. String arrays can be easier to read than number arrays:</p>
+<pre><code>const chord = [&#39;e4&#39;, &#39;a4&#39;, &#39;b4&#39;, &#39;c#5&#39;];</code></pre><p>Only works with Arrays of strings, not Objects. Objects are output unchanged.</p>
+</dd>
 <dt><a href="#choice">choice(input)</a></dt>
 <dd><p>Randomly get an element from an object or array.</p>
 </dd>
@@ -90,9 +99,8 @@ there is a reason to export getSegmentStartTotals for public use.</p>
 <dt><a href="#patternToSymbolsAndCounts">patternToSymbolsAndCounts(pattern)</a></dt>
 <dd><p>This helper method converts a pattern into an intermediary format that is
 helpful for parsing a tab. Its easiest to understand with an example:</p>
-<p>const input = &#39;a-1-bb...&#39;;
-const output = [[&#39;a&#39;,2], [&#39;1&#39;,2], [&#39;b&#39;,1], [&#39;b&#39;, 1], [&#39;.&#39;, 3]];</p>
-<p>For every new symbol, the out output lists that symbol, and the number of
+<pre><code>const input = &#39;a-1-bb...&#39;;
+const output = [[&#39;a&#39;,2], [&#39;1&#39;,2], [&#39;b&#39;,1], [&#39;b&#39;, 1], [&#39;.&#39;, 3]];</code></pre><p>For every new symbol, the out output lists that symbol, and the number of
 positions that that symbols is active for.</p>
 </dd>
 <dt><a href="#parse">parse(object, [rhythm], [noteLibrary], [startTime])</a> ⇒ <code><a href="#Clip">Clip</a></code></dt>
@@ -136,6 +144,14 @@ example above, the two layers in the pattern object occur simultaneously.</p>
 <dt><a href="#valueToWholeNotes">valueToWholeNotes(value)</a> ⇒ <code>Number</code></dt>
 <dd><p>Convert a string or number to a number of whole notes.</p>
 </dd>
+<dt><a href="#m2f">m2f(midiNoteNumber)</a> ⇒ <code>number</code></dt>
+<dd><p>Convert a midi note number to fundamental frequency in hz. Equal temperment.</p>
+</dd>
+<dt><a href="#f2m">f2m(hz)</a> ⇒ <code>number</code></dt>
+<dd><p>Convert a frequency to a midi note number, assuming 69=A5=440hz.
+The output is not rounded to an integer, so use Math.round on the output if
+you need an integer note number.</p>
+</dd>
 <dt><a href="#parse">parse(scoreObject, [config], [session])</a> ⇒ <code><a href="#Session">Session</a></code></dt>
 <dd><p>score.parse is somewhat similar to tab.parse, except that it expects a
 different input format, and outputs a <code>Session</code> instead of an array of notes.</p>
@@ -145,8 +161,19 @@ different input format, and outputs a <code>Session</code> instead of an array o
 <li>A config object with (at minimum) a <code>.nLibrary</code> and <code>.r</code>hythm</li>
 </ul>
 </dd>
+<dt><a href="#mapIntensityLayers">mapIntensityLayers([note], i, context)</a></dt>
+<dd><p>Parse a NoteObject with <code>type=iLayer</code>. Its job is to select an event from
+<code>note.e.iLayers</code> based on the current dynamic marking, and replace <code>note.e</code>
+with that event.</p>
+<p>In general, event mapper functions have 3 main actions:</p>
+<p>1) Return null or a falsy value - the event will be ignored
+2) Return a different note object, which replaces the input note object
+3) Add fluid messages to <code>context.messages</code></p>
+<p>This is a simple example of an event mapper function which only replaces the
+NoteObject&#39;s event (No. 2 on the list above).</p>
+</dd>
 <dt><a href="#tracksToFluidMessage">tracksToFluidMessage(tracksObject)</a> ⇒ <code><a href="#FluidMessage">FluidMessage</a></code></dt>
-<dd><p>Create a <code>FluidMessage</code> from a TracksObject</p>
+<dd><p>Create a <code>FluidMessage</code> from a <code>TracksObject</code></p>
 <pre><code class="language-javascript">const session = fluid.score.parse(myScore, myConfig);
 const message = fluid.score.tracksToFluidMessage(session.tracks);
 const client = new fluid.Client();
@@ -157,6 +184,11 @@ client.send(message);</code></pre>
 ## Typedefs
 
 <dl>
+<dt><a href="#ClipContext">ClipContext</a> : <code>Object</code></dt>
+<dd><p>Score.parse pases ClipContext objects as the third argument to event mapper
+functions. Its fields specify the context of the NoteObject currently being
+processed, including the track and clip that contain the note.</p>
+</dd>
 <dt><a href="#ScoreObject">ScoreObject</a> : <code>Object.&lt;string, ScoreObject&gt;</code> | <code><a href="#ScoreObject">Array.&lt;ScoreObject&gt;</a></code></dt>
 <dd><p>A structured musical score encoded with <code>fluid.tab</code> notation</p>
 </dd>
@@ -212,28 +244,51 @@ client.send(message);</code></pre>
     { notes: [ { s: 0, l: 0.25, n: 3 } ], duration: 1, startTime: 3 }
   ]
 }</code></pre></dd>
-<dt><a href="#Clip">Clip</a> : <code>Object</code></dt>
-<dd></dd>
-<dt><a href="#TracksObject">TracksObject</a> : <code>Object</code></dt>
+<dt><a href="#TracksObject">TracksObject</a> : <code>Object.&lt;string, Track&gt;</code></dt>
 <dd><p>Represents a collection of audio tracks, and clips on those tracks.</p>
-<p>Example of a <code>TracksObject</code> containing a single <code>bass</code> track which has a
-single MIDI clip and three MIDI notes.</p>
+<p>Example of a <code>TracksObject</code> containing a single <code>bass</code> track, which
+containins two clips:</p>
+<p>1) a MIDI clip and three MIDI notes.
+2) a clip that contains an audio file</p>
 <pre><code class="language-javascript">{
   bass: {
     clips: [
-      [
-        { s: 0,     l: 0.0833, n: 33, v: 100 },
-        { s: 0.25,  l: 0.0833, n: 35, v: 90 },
-        { s: 0.33,  l: 0.0833, n: 38, v: 60 },
+      {
+        notes: [
+          { s: 0,     l: 0.0833, n: 33, v: 100 },
+          { s: 0.25,  l: 0.0833, n: 35, v: 90 },
+          { s: 0.33,  l: 0.0833, n: 38, v: 60 },
+        ],
         startTime: 2,
         duration:  1,
-      ]
+      },
+      {
+        notes: [
+          { s: 0.5, l: 0.25, e: { type: &#39;file&#39;, path: &#39;media/kick.wav&#39; } },
+        ],
+        startTime: 3,
+        duration:  1,
+      },
     ]
   }
 }</code></pre>
 </dd>
+<dt><a href="#Track">Track</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Clip">Clip</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="#NoteObject">NoteObject</a> : <code>Object</code></dt>
-<dd><p>Represents an event in a score, often a MIDI note within midi clip</p>
+<dd><p>Represents an event in a score, such as a MIDI note within midi clip or an
+audio sample on a track.</p>
+</dd>
+<dt><a href="#DynamicsObject">DynamicsObject</a> : <code>Object</code></dt>
+<dd><p>Represents a performance marking such as &quot;forte&quot; or &quot;piano&quot;. In practice,
+this specifies a MIDI velocity, or a dBFS gain value.</p>
+<p>These can be found in a <code>vLibrary</code>, or in the <code>.d</code> field of a <code>NoteObject</code>.</p>
+</dd>
+<dt><a href="#EventObject">EventObject</a> : <code>Object</code></dt>
+<dd><p>Represents a timeline event such as an audio sample.</p>
+<p>These can be found in an <code>nLibrary</code>, or in the <code>.e</code> field of a <code>NoteObject</code>.</p>
 </dd>
 <dt><a href="#FluidMessage">FluidMessage</a> : <code>Object</code> | <code>Array</code></dt>
 <dd><p>Represents any type of message that can be sent from a client such as
@@ -245,7 +300,7 @@ address: &#39;/midiclip/insert/note&#39;,
     { type: &#39;integer&#39;, value: 60 },
     { type: &#39;float&#39;, value: 0 },
     { type: &#39;float&#39;, value: 4 },
-    { type: &#39;integer&#39;, value: 127 }
+    { type: &#39;integer&#39;, value: 127 },
  ]
 }</code></pre>
 <p>Internally, the <code>osc-min</code> npm package is used to convert JS Objects (like the
@@ -612,8 +667,8 @@ Select an audio track by name
 <a name="audiotrack.insertWav"></a>
 
 ### audiotrack.insertWav(clipName, startTimeInWholeNotes, fileName)
-Insert a audio file clip into the selected audio track. No effect if there
-is no selected track.
+Insert and select an audio file clip into the selected audio track. Noop
+when there is no selected track.
 
 **Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
 
@@ -794,6 +849,35 @@ Build an OSC message that creates a clip with a bunch of midi notes
 These keys cannot be used for patterns in tabs and scores.
 
 **Kind**: global constant  
+<a name="merge"></a>
+
+## merge(...libraries)
+Merge multiple event libraries into one, throw an error if any of the input
+libraries have overlapping keys.
+
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| ...libraries | [<code>NoteLibrary</code>](#NoteLibrary) | 
+
+<a name="stringsToNoteNumbers"></a>
+
+## stringsToNoteNumbers(arrayOrNum) ⇒ <code>Array.&lt;number&gt;</code> \| <code>number</code>
+Accept a deeply nested array of strings, and return a new deep array of midi
+note numbers. String arrays can be easier to read than number arrays:
+```
+const chord = ['e4', 'a4', 'b4', 'c#5'];
+```
+
+Only works with Arrays of strings, not Objects. Objects are output unchanged.
+
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| arrayOrNum | <code>Array.&lt;number&gt;</code> \| <code>number</code> | 
+
 <a name="choice"></a>
 
 ## choice(input)
@@ -846,7 +930,7 @@ Convert a rhythm, pattern, and note library to a collection of note objects.
 | --- | --- | --- |
 | rhythm | <code>string</code> |  |
 | pattern | <code>string</code> |  |
-| noteLibrary | [<code>NoteLibrary</code>](#NoteLibrary) | an indexable object        containing notes or arrays of notes. Can be an object or an array.        If it is an array, the pattern is limited symbols single digit        numbers 0-9.        All symbols in the pattern should reference values in the noteLibrary.        To create 'c' and 'd' quarter notes on beats 1 and 3 respectively:        rhythm  = '1234'        pattern = '0.1.'        noteLibrary = [60, 62]        noteLibrary = {'0': 60, '1': 62 } |
+| noteLibrary | [<code>NoteLibrary</code>](#NoteLibrary) | an indexable object        containing notes or arrays of notes. Can be an object or an array.        If it is an array, the pattern may only contain single digit numbers        (i.e. 0-9).        All symbols in the pattern should reference values in the noteLibrary.        To create 'c' and 'd' quarter notes on beats 1 and 3 respectively:        rhythm  = '1234'        pattern = '0.1.'        noteLibrary = [60, 62]        noteLibrary = {'0': 60, '1': 62 } |
 
 <a name="division"></a>
 
@@ -928,8 +1012,10 @@ there is a reason to export getSegmentStartTotals for public use.
 This helper method converts a pattern into an intermediary format that is
 helpful for parsing a tab. Its easiest to understand with an example:
 
+```
 const input = 'a-1-bb...';
 const output = [['a',2], ['1',2], ['b',1], ['b', 1], ['.', 3]];
+```
 
 For every new symbol, the out output lists that symbol, and the number of
 positions that that symbols is active for.
@@ -1018,6 +1104,32 @@ Convert a string or number to a number of whole notes.
 | --- | --- | --- |
 | value | <code>String</code> \| <code>Number</code> | input value can be 'quarter' or '1/4' or 0.25 |
 
+<a name="m2f"></a>
+
+## m2f(midiNoteNumber) ⇒ <code>number</code>
+Convert a midi note number to fundamental frequency in hz. Equal temperment.
+
+**Kind**: global function  
+**Returns**: <code>number</code> - fundamental frequency in hz  
+
+| Param | Type |
+| --- | --- |
+| midiNoteNumber | <code>number</code> | 
+
+<a name="f2m"></a>
+
+## f2m(hz) ⇒ <code>number</code>
+Convert a frequency to a midi note number, assuming 69=A5=440hz.
+The output is not rounded to an integer, so use Math.round on the output if
+you need an integer note number.
+
+**Kind**: global function  
+**Returns**: <code>number</code> - midi note number  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| hz | <code>number</code> | frequency in hz |
+
 <a name="parse"></a>
 
 ## parse(scoreObject, [config], [session]) ⇒ [<code>Session</code>](#Session)
@@ -1041,12 +1153,35 @@ Typically called with two arguments (other args are for internal use only)
 | [config.vPattern] | <code>string</code> |  | optional velocity library |
 | [config.vLibrary] | [<code>NoteLibrary</code>](#NoteLibrary) |  |  |
 | [config.nLibrary] | [<code>NoteLibrary</code>](#NoteLibrary) |  | (see tab.parseTab for details about   `NoteLibrary`). If not specified, `scoreObject` must have a `.nLibrary` property. |
-| [session] | [<code>Session</code>](#Session) |  | Only used in recursion. Consuming cose should not    supply this argument. |
+| [session] | [<code>Session</code>](#Session) |  | Only used in recursion. Consuming code should not    supply this argument. |
+
+<a name="mapIntensityLayers"></a>
+
+## mapIntensityLayers([note], i, context)
+Parse a NoteObject with `type=iLayer`. Its job is to select an event from
+`note.e.iLayers` based on the current dynamic marking, and replace `note.e`
+with that event.
+
+In general, event mapper functions have 3 main actions:
+1) Return null or a falsy value - the event will be ignored
+2) Return a different note object, which replaces the input note object
+3) Add fluid messages to `context.messages`
+
+This is a simple example of an event mapper function which only replaces the
+NoteObject's event (No. 2 on the list above).
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [note] | [<code>NoteObject</code>](#NoteObject) |  |
+| i | <code>number</code> | Index of the note within the clip |
+| context | [<code>ClipContext</code>](#ClipContext) | Info on the track, clip that contain the note |
 
 <a name="tracksToFluidMessage"></a>
 
 ## tracksToFluidMessage(tracksObject) ⇒ [<code>FluidMessage</code>](#FluidMessage)
-Create a `FluidMessage` from a TracksObject
+Create a `FluidMessage` from a `TracksObject`
 
 ```javascript
 const session = fluid.score.parse(myScore, myConfig);
@@ -1060,6 +1195,23 @@ client.send(message);
 | Param | Type | Description |
 | --- | --- | --- |
 | tracksObject | [<code>TracksObject</code>](#TracksObject) | A tracks object generated by score.parse |
+
+<a name="ClipContext"></a>
+
+## ClipContext : <code>Object</code>
+Score.parse pases ClipContext objects as the third argument to event mapper
+functions. Its fields specify the context of the NoteObject currently being
+processed, including the track and clip that contain the note.
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| clip | [<code>Clip</code>](#Clip) | 
+| track | [<code>Track</code>](#Track) | 
+| tracks | [<code>TracksObject</code>](#TracksObject) | 
+| messages | [<code>Array.&lt;FluidMessage&gt;</code>](#FluidMessage) | 
 
 <a name="ScoreObject"></a>
 
@@ -1133,7 +1285,54 @@ const exampleSession = {
 | startTime | <code>number</code> |  |
 | duration | <code>number</code> |  |
 | [regions] | [<code>Array.&lt;Session&gt;</code>](#Session) | (Only on sessions created from an array) |
-| [tracks] | <code>TrackObject</code> | (Only on top level/outermost sessions) |
+| [tracks] | [<code>TracksObject</code>](#TracksObject) | (Only on top level/outermost sessions) |
+
+<a name="TracksObject"></a>
+
+## TracksObject : <code>Object.&lt;string, Track&gt;</code>
+Represents a collection of audio tracks, and clips on those tracks.
+
+Example of a `TracksObject` containing a single `bass` track, which
+containins two clips:
+1) a MIDI clip and three MIDI notes.
+2) a clip that contains an audio file
+```javascript
+{
+  bass: {
+    clips: [
+      {
+        notes: [
+          { s: 0,     l: 0.0833, n: 33, v: 100 },
+          { s: 0.25,  l: 0.0833, n: 35, v: 90 },
+          { s: 0.33,  l: 0.0833, n: 38, v: 60 },
+        ],
+        startTime: 2,
+        duration:  1,
+      },
+      {
+        notes: [
+          { s: 0.5, l: 0.25, e: { type: 'file', path: 'media/kick.wav' } },
+        ],
+        startTime: 3,
+        duration:  1,
+      },
+    ]
+  }
+}
+```
+
+**Kind**: global typedef  
+<a name="Track"></a>
+
+## Track : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| clips | [<code>Array.&lt;Clip&gt;</code>](#Clip) |  |
+| name | <code>string</code> | The Track name |
+| [duration] | <code>number</code> | // Charles: do all Track objects have a duration? |
+| [startTime] | <code>number</code> | // Charles: do all Track objects have a startTime? |
 
 <a name="Clip"></a>
 
@@ -1147,51 +1346,58 @@ const exampleSession = {
 | duration | <code>number</code> | duration in whole notes |
 | [startTime] | <code>number</code> | start time in whole notes |
 
-<a name="TracksObject"></a>
-
-## TracksObject : <code>Object</code>
-Represents a collection of audio tracks, and clips on those tracks.
-
-Example of a `TracksObject` containing a single `bass` track which has a
-single MIDI clip and three MIDI notes.
-```javascript
-{
-  bass: {
-    clips: [
-      [
-        { s: 0,     l: 0.0833, n: 33, v: 100 },
-        { s: 0.25,  l: 0.0833, n: 35, v: 90 },
-        { s: 0.33,  l: 0.0833, n: 38, v: 60 },
-        startTime: 2,
-        duration:  1,
-      ]
-    ]
-  }
-}
-```
-
-**Kind**: global typedef  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| <trackName> | [<code>TracksObject</code>](#TracksObject) | TracksObjects can be deeply nested |
-| <trackName> | <code>Array</code> |  |
-| <trackName> | <code>string</code> |  |
-
 <a name="NoteObject"></a>
 
 ## NoteObject : <code>Object</code>
-Represents an event in a score, often a MIDI note within midi clip
+Represents an event in a score, such as a MIDI note within midi clip or an
+audio sample on a track.
 
 **Kind**: global typedef  
 **Properties**
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| n | <code>number</code> \| <code>Object</code> |  | probably a MIDI note number - however, nested  `NoteLibrary` objects might also put arbitrary JavaScipt Objects in this   field |
 | l | <code>number</code> |  | length in whole notes |
 | s | <code>number</code> |  | start time in whole notes |
+| [n] | <code>number</code> |  | MIDI note number |
+| [e] | [<code>EventObject</code>](#EventObject) |  | Signifies a non-note event |
 | [v] | <code>number</code> | <code>64</code> | optional midi velocity |
+| [d] | [<code>DynamicsObject</code>](#DynamicsObject) |  | Signifies a dynamic marking |
+
+<a name="DynamicsObject"></a>
+
+## DynamicsObject : <code>Object</code>
+Represents a performance marking such as "forte" or "piano". In practice,
+this specifies a MIDI velocity, or a dBFS gain value.
+
+These can be found in a `vLibrary`, or in the `.d` field of a `NoteObject`.
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| [v] | <code>number</code> | <code>64</code> | optional midi velocity |
+| [dbfs] | <code>number</code> |  | sample gain |
+| [intensity] | <code>number</code> |  | performance intensity value between 0 and 1.  intensity may be interperated several different ways by different note/event  handlers. |
+
+<a name="EventObject"></a>
+
+## EventObject : <code>Object</code>
+Represents a timeline event such as an audio sample.
+
+These can be found in an `nLibrary`, or in the `.e` field of a `NoteObject`.
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| type | <code>string</code> | String indicating the type of event:   'file' indicates an audio sample, which should have a `.path`.   'iLayers' indicates the presence of a `.iLayers` field, which contains an    array of EventObjects with `.type === 'file'`. Files in the `.iLayers`    array should be arranged in order of increasing performance intensity. |
+| [path] | <code>string</code> | file objects must include a path string |
+| [fadeOut] | <code>number</code> | file objects may specify a fade out in seconds |
+| [fadeIn] | <code>number</code> | file objects may specify a fade in in seconds |
+| [oneShot] | <code>boolean</code> | if true, file objects will play until the end,   ignoring the note's length |
 
 <a name="FluidMessage"></a>
 
@@ -1207,7 +1413,7 @@ address: '/midiclip/insert/note',
     { type: 'integer', value: 60 },
     { type: 'float', value: 0 },
     { type: 'float', value: 4 },
-    { type: 'integer', value: 127 }
+    { type: 'integer', value: 127 },
  ]
 }
 ```

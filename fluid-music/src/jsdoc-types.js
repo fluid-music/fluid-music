@@ -64,7 +64,7 @@
  * @property {number} startTime
  * @property {number} duration
  * @property {Session[]} [regions] (Only on sessions created from an array)
- * @property {TrackObject} [tracks] (Only on top level/outermost sessions)
+ * @property {TracksObject} [tracks] (Only on top level/outermost sessions)
  */
 
 /**
@@ -98,15 +98,15 @@
  *   }
  * }
  * ```
- * @typedef {Object.<string, TrackObject>} TracksObject
+ * @typedef {Object.<string, Track>} TracksObject
  */
 
 /**
- * @typedef {Object} TrackObject
+ * @typedef {Object} Track
  * @param {Clip[]} clips
  * @param {string} name - The Track name
- * @param {number} [duration]  // Charles: do all TrackObjects have a duration?
- * @param {number} [startTime] // Charles: do all TrackObjects have a startTime?
+ * @param {number} [duration]  // Charles: do all Track objects have a duration?
+ * @param {number} [startTime] // Charles: do all Track objects have a startTime?
  */
 
 /**
