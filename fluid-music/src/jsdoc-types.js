@@ -104,6 +104,7 @@
 /**
  * @typedef {Object} TrackObject
  * @param {Clip[]} clips
+ * @param {string} name - The Track name
  * @param {number} [duration]  // Charles: do all TrackObjects have a duration?
  * @param {number} [startTime] // Charles: do all TrackObjects have a startTime?
  */
@@ -153,7 +154,7 @@
   * @property {string} [path] file objects must include a path string
   * @property {number} [fadeOut] file objects may specify a fade out in seconds
   * @property {number} [fadeIn] file objects may specify a fade in in seconds
-  * @property {bool} [oneShot] if true, file objects will play until the end,
+  * @property {boolean} [oneShot] if true, file objects will play until the end,
   *   ignoring the note's length
   */
 

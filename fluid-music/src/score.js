@@ -92,7 +92,7 @@ function parse(scoreObject, config, session, tracks={}) {
     result.duration = duration;
 
     const trackKey = config.trackKey;
-    if (!tracks[trackKey]) tracks[trackKey] = {clips:[]};
+    if (!tracks[trackKey]) tracks[trackKey] = {clips: [], name: trackKey};
     tracks[trackKey].clips.push(result);
 
     return result;
@@ -112,6 +112,44 @@ function parse(scoreObject, config, session, tracks={}) {
 function midiVelocityToDbfs(v, min = -60, max = 6) {
   const range = max - min;
   return R.clamp(min, max, v / 127 * range + min);
+};
+
+
+/**
+ * @typedef {Object} NoteContext
+ * @property {Clip} clip
+ * @property {TrackObject} track
+ * @property {FluidMessage[]} messages
+ */
+
+/**
+ * @param {NoteObject} [note]
+ */
+function mapIntensityLayers(note) {
+  if (!note.e || note.e.type !== 'iLayers') return note;
+
+  // example iLayer note Object
+  // NOTE: .v is optional
+  // NOTE: file1 example { type: 'file', path: 'media/kick.wav' }
+  // {
+  //   s: 0, l: 0.25, v: 64,
+  //   e: { type: 'iLayers', iLayers: [file1, file2] },
+  //   d: { dbfs: -2, intensity: 0.7, v: 64 }
+  // }
+  let length = note.e.iLayers.length; // number of layers
+  let index = length - 1;             // default to last layer
+
+  // Look for an intensity
+  if (note.d && typeof(note.d.intensity) === 'number') {
+    index = Math.floor(note.d.intensity * length);
+  }
+  // If no intensity was found, look for a velocity
+  else if (typeof note.v === 'number') {
+    index = Math.floor(note.v / (127 / note.e.iLayers.length));
+  }
+
+  note.e = note.e.iLayers[R.clamp(0, length-1, index)]
+  return note;
 }
 
 /**
@@ -156,33 +194,9 @@ function tracksToFluidMessage(tracksObject) {
       };
       */
       let midiNotes = clip.notes.filter(note => typeof note.n === 'number');
-      let samples   = clip.notes.filter(note => note.e && note.e.type === 'file');
-      let iLayers   = clip.notes.filter(note => note.e && note.e.type === 'iLayers');
-
-      // example iLayer note Object
-      // NOTE: .v is optional
-      // NOTE: file1 example { type: 'file', path: 'media/kick.wav' }
-      // {
-      //   s: 0, l: 0.25, v: 64,
-      //   e: { type: 'iLayers', iLayers: [file1, file2] },
-      //   d: { dbfs: -2, intensity: 0.7, v: 64 }
-      // }
-      for (let note of iLayers) {
-        let length = note.e.iLayers.length;
-        let index = length - 1; // default to the last
-
-        // Look for an intensity
-        if (note.d && typeof(note.d.intensity) === 'number') {
-          index = Math.floor(note.d.intensity * length);
-        }
-        // If no intensity was found, look for a velocity
-        else if (typeof note.v === 'number') {
-          index = Math.floor(note.v / (127 / note.e.iLayers.length));
-        }
-
-        note.e = note.e.iLayers[R.clamp(0, length-1, index)]
-        samples.push(note);
-      }
+      let samples   = clip.notes
+        .map(mapIntensityLayers)
+        .filter(note => note.e && note.e.type === 'file');
 
       // example midi notes
       // NOTE: velocities are optional
