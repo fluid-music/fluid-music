@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<EDIT appVersion="Unknown" projectID="0/21553c5" creationTime="1594266675603"
-      lastSignificantChange="17331b38224" modifiedBy="charles">
-  <TRANSPORT loopPoint1="0.0" loopPoint2="2.5" looping="1" position="1.745578247864614"/>
+<EDIT appVersion="Unknown" projectID="0/e348b6" creationTime="1594339121262"
+      lastSignificantChange="1733604b52d" modifiedBy="charles">
+  <TRANSPORT loopPoint1="0.0" loopPoint2="2.5" looping="1" position="2.399455772363581"/>
   <MACROPARAMETERS id="1001"/>
   <TEMPOSEQUENCE>
     <TEMPO startBeat="0.0" bpm="96.0" curve="1.0"/>
@@ -86,7 +86,7 @@
     </MIDICLIP>
     <PLUGIN type="vst" uid="506f646f" filename="/home/charles/.vst/u-he/Podolski.64.so"
             name="Podolski.64" manufacturer="u-he" windowLocked="1" id="1067"
-            enabled="1" programNum="0" state="3624.CMlaKA....fQBMDZ....A.0aj8F...P.....A.............................................................................................................................................................................PCHNBbm0VOo4VZzkVXrkldkovKp.TSkQWXJnPP0QGZuImNJbRcsfVYmnfBp7hBJLRPM0CTuQ1arM2ZoovHVUlby0SLvHCLwnvHE4FYoEla8vVZzQGakovHt0VOwbiBiz1b831atUlBiz1b8zzajcEZkUFaJLRay0CToQ2XncEZkUFaJLRay0yPu4Fcx8FafDjBiz1b8LzatQmbuwFHBovHsMWOLYzSmw1ahEFaJLRay0yQgQWYJLRay0iUkw1aikFc4ovHsMWOPIWYyMWcxUlBiz1b8rTY4Yzarw1a2ovHsMWOKUVdF8Far81cxnvHsMWOAwFckImagQWYJLRay0iTg4FYu0lBiz1b8LzatMGcg4FcJLRay0SPxAWSuQVcrEFcuImBiz1b8Tja1UFauAWYwnvHsMWOLYzSwnvHtYWOxnvHsYWOGEFckovHsYWOE4lckw1avUVLJLxXs0SagklaJLzXOAWOx.CLt.CLJLBSF8zQ8DiBiLDZxMWOwnvHDwVdwzSLJLxXs0CTC8lbkovTBE1bk0CMJL0co41Y8.iKv.iBSQkbocVOwn.TPI2ap0CLJ.kQuwFY8.iBPYTZrUVOwnvQFkFak0iLJbzTiEFak0CLJLDZLEVd8.iBSUmbx8TOwnfTkYWO3HSM1n.SEQTOv3BLvn.TAcTQ8.iBPE1YkM2St0CLJLzaxUlS8LiBSwVZiUVOznPUI80av0SLJzTZjkVP8TiBMkFYoAUO1n.QF8Faj0yMJLDcxwVP8HiBCQmbrITOwDiBiLVa8vjQOcjBSkmai0CMJPkbocVOvnvUgYWY8.iBPg1bk0CLt.CLJ.0arElb8.iBiLVa8X0PCovHLYzSwzSLJX0aoMVYy0SLJX0aoMVZtcVOwnPSuQVY8HiBP8lbzEVOv3BLvn.TB0iLJ.kPD0iLJPjblQWOwnPSTUmaS0CLJzDU04lS8fiBMQUctQUO4n.UxMGb8zhLznfQTUma8.iKv.iBVMVL8.iKv.iBVMlL8.iKv.iBVM1L8.iKv.iBVMFM8.iKv.iBVMVM8.iKv.iBVMlM8.iKv.iBVM1M8.iKv.iBVMFN8.iKv.iBPIWZuIWOvnPS0MzaxUVOvnvPu4FcE4VOvnfTN8Fck0CLJHkUkwVOvnPPxM0X8PiBAI2SxQVOvnPPxwDb8.iBAI2SiQWOwnPPxwDS8DiMJDjbTIWOvnPPmQWYwziLJDDcxAWL8.iBAY2aiESOwnPPsUGawzSLJDTauQVL8.iBA0DQvQWL8.iKv.iBAcFckISOxnPPzIGbxzCLJDjcuMlL8DiBA0VcrISOwnPPs8FYxzCLJDTSDAGcxzCLt.CLJDzYzU1L8HiBAQmbvMSOvnPP181XyzSLJDTa0w1L8DiBA01ajMSOvnPPMQDbzMSOv3BLvnPPmQWYzziLJDDcxAGM8.iBAY2aiQSOwnPPsUGazzSLJDTauQFM8.iBA0DQvQGM8.iKv.iBAcFckUSOxnPPzIGb0zCLJDjcuMVM8DiBA0VcrUSOwnPPs8FY0zCLJDTSDAGc0zCLt.CLJDzYzUlM8HiBAQmbvYSOvnPP181X1zSLJDTa0wlM8DiBA01ajYSOvnPPMQDbzYSOv3BLvnPPmQWY2ziLJDDcxA2M8.iBAY2aicSOwnPPsUGa2zSLJDTauQ1M8.iBA0DQvQ2M8.iKv.iBAcFckgSOxnPPzIGb3zCLJDjcuMFN8DiBA0VcrgSOwnPPs8FY3zCLJDTSDAGc3zCLt.CLJDzYzUVN8HiBAQmbvkSOvnPP181X4zSLJDTa0wVN8DiBA01ajkSOvnPPMQDbzkSOv3BLvnPPmQWYw.SOxnPPzIGbw.SOvnPP181Xw.SOwnPPsUGaw.SOwnPPs8FYw.SOvnPPMQDbzECL8.iKv.iBAcFckESL8HiBAQmbvESL8.iBAY2aiESL8DiBA0VcrESL8DiBA01ajESL8.iBA0DQvQWLwzCLt.CLJDzYzUVLxziLJDDcxAWLxzCLJDjcuMVLxzSLJDTa0wVLxzSLJDTauQVLxzCLJDTSDAGcwHSOv3BLvnPPmQWYwLSOxnPPzIGbwLSOvnPP181XwLSOwnPPsUGawLSOwnPPs8FYwLSOvnPPMQDbzEyL8.iKv.iBAcFckECM8HiBAQmbvECM8.iBAY2aiECM8DiBA0VcrECM8DiBA01ajECM8.iBA0DQvQWLzzCLt.CLJDzYzUVL0ziLJDDcxAWL0zCLJDjcuMVL0zSLJDTa0wVL0zSLJDTauQVL0zCLJDTSDAGcwTSOv3BLvnPPmQWYwXSOxnPPzIGbwXSOvnPP181XwXSOwnPPsUGawXSOwnPPs8FYwXSOvnPPMQDbzEiM8.iKv.iBiLVa8TjSVEiBM8FYk0CLJDDcq0SLt.CLJPTYi0yMv3BLvnvT0MWOxbiKv.iBSU2bT0SKz3BLvnfTkwVOwHiK0.iBVUFa8HSMt.CLJLxXs0CSF8TLJLUdtMVOzn.Uxk1Y8.iBWElck0CLJ.EZyUVOv3BLvn.TuwVXx0CLJPDa40CLt.CLJPTSSESOvn.QMQTL8.iKv.iBREFck0CLt.CLJXTSSESOvnfQMQTL8.iKv.iBiLVa87zTCEiBWElck0CLJPUctUVOwHiKv.iBKUVdSMFa8DCLv3BLvn.UMMkbi0CLJPUSDAGc8.iKv.iBPg1bk0SMv3BLvn.TnMWSSI2X8.iBPg1bMQDbz0CLt.CLJjja1Y0ar0SKw.CLt.CLJLUdsESOw.CLt.CLJbETSI2X8.iBWAEQvQWOv3BLvnfUz8FQ8.iKv.iBiLVa8X0PFAiBTkGb8.iBCUGc8DiMt.CLJHUYy0CLt.CLJPjb10CLt.CLJXTSwzCLt.CLJXzTwzCLJXTSxzCLt.CLJXzTxzCLJrTY4M0Xr0SLv.iKv.iBAYTS8.iKv.iBCw1Z8.iKv.iBiLVa8X0PAEiBPEla8.iKv.iBV8Fa8TCLt.CLJX0PA0SLJzzajMkbi0CLJzzajQDbz0CLt.CLJ.UXtMkbi0CLJDDczMUOwnvHi0VOCglbyovPk4Fc8HCLt.CLJLEbkQVO0.iKv.iBDAGcn0SMv3BLvnfQkUlP8.iKv.iBMkFd8.iKv.iBiLVa8PDa4EiBS41XL0CMJLkaiIUOznfQkUlP8.iKv.iBCI2bB0CLt.CLJzTZ30CLt.CLJnfBu7BHSU1Xzk1atAhYuIGH0cFa4AxXu0FbxU1byUFYfHVZtElb4ABQgQWXJ7xKfPzSNcBUfP0SUMDRfPERIMkBJPBIjPRL3HCNJ7yYjc1Xk4VYhoSYgEVXgEVXgoSXgElXgEVXgoSXgEVXoEFYvoSXgEVXgEVYgoSXgEVXkEVYgoSXgEVXoEVYgoiBgEVXgsVXkElNgEVXg0VXkElNgEVXg8VXkElNgElNkMlNkIlNmolNgUlNhElNiElNi8lNjElNmklNm0lNnElNooPX5DlX5D1X5DVZ5DVa5HVY5HVZ5HVa5LVY5LVZ5LVa5Lla5LFb5P1XgD2bAcSVk01YvcFYmI1RAICM4DmbAcCQJb1aDgVYDclXKQDZqclYHojVLEDM4DmbAcSLwIWP2.mZvsFbrAWav4FbuAGbA4zSgQVQgYVXmEFZPElZgsVXrEkBg4VXuEFbFIlXhMlXjIkXlI1Yhg1TholXqIFaTIlah8lXvczXhM1XiQVUiY1XmMFZVMlZis1XrcEVHkURjIlVjo.YjUFYlQ1YjgFYoEWQAECLNQFYjYVPwMWP2flYXozYlEjL0DSbMETLyfSbyEjL1LSbxEzMHISPyHCc0Y2c3kmdJDWPOETMzEzLzUmc2gWd5EjLCETLFMTPwbzPAESRCETLkE1PAEiYgMTPwbVXCETLLMTPwzzPAESZoMTPwnVXCEjBwnVZCETLqE1PAEyZoMTPwvVXCETLrk1PAESagMTPwzVZCETLtE1PAEiaoMTPw7VXCETLuk1PAECbgMTPw.WZCoPPxHTPwTjPAECTBETLQITPwXjPAEiTBETLSITPwPkPAEyQBETLUITPwXkPAEyUBETLIITPwPVYBETLjklPAECYJzlPAESYgITPwTVYBETLkklPAESYsITPwXVXBETLlUlPAEiYoITPwXVaBETLmElPAEyYkITPwnjPAEyRBETLLIjBAECZkITPwfVZBETLn0lPAESSBETLoMlPAESZkITPwj1YBETLoklPAESZqITPwjVaBETLo8lPAEiZgITPwn1XBoPPwnVYBETLpclPAEiZoITPwn1ZBETLp0lPAEiZuITPwrVXBETLqMlPAEyZkITPwr1YBETLqklPAEyZqITPwrVaJHTPwr1aBETLrElPAECaiITPwvVYBETLrclPAECaoITPwv1ZBETLr0lPAECauITPwzVXBETLsMlPAESakITPwzlBmITPwzVZBETLsslPAESasITPwz1aBETLtElPAEiaiITPw3VYBETLtclPAEiaoITPw31ZBETLt0lPAEiauITPwnvagITPw71XBETLuUlPAEyamITPw7VZBETLuslPAEyasITPw71aBETLvElPAECbiITPw.WYBETLvclPAECboITPJDCbqITPw.WaBETLv8lP8fCLvLCNJ..."
+            enabled="1" programNum="0" state="3623.CMlaKA....fQBMDZ....A.0aj8F...P.....A.............................................................................................................................................................................PCGNBbm0VOo4VZzkVXrkldkovKp.TSkQWXJnPP0QGZuImNJbRcsfVYmnfBp7hBJLRPM0CTuQ1arM2ZoovHVUlby0SLvHCLwnvHE4FYoEla8vVZzQGakovHt0VOwbiBiz1b831atUlBiz1b8zzajcEZkUFaJLRay0CToQ2XncEZkUFaJLRay0yPu4Fcx8FafDjBiz1b8LzatQmbuwFHBovHsMWOLYzSmw1ahEFaJLRay0yQgQWYJLRay0iUkw1aikFc4ovHsMWOPIWYyMWcxUlBiz1b8rTY4Yzarw1a2ovHsMWOKUVdF8Far81cxnvHsMWOAwFckImagQWYJLRay0iTg4FYu0lBiz1b8LzatMGcg4FcJLRay0SPxAWSuQVcrEFcuImBiz1b8Tja1UFauAWYwnvHsMWOLYzSwnvHtYWOxnvHsYWOGEFckovHsYWOE4lckw1avUVLJLxXs0SagklaJLzXOAWOx.CLt.CLJLBSF8zQ8DiBiLDZxMWOwnvHDwVdwzSLJLxXs0CTC8lbkovTBE1bk0CMJL0co41Y8.iKv.iBSQkbocVOwn.TPI2ap0CLJ.kQuwFY8.iBPYTZrUVOwnvQFkFak0iLJbzTiEFak0CLJLDZLEVd8.iBSUmbx8TOwnfTkYWO3HSM1n.SEQTOv3BLvn.TAcTQ8.iBPE1YkM2St0CLJLzaxUlS8LiBSwVZiUVOznPUI80av0SLJzTZjkVP8TiBMkFYoAUO1n.QF8Faj0yMJLDcxwVP8HiBCQmbrITOwDiBiLVa8vjQOcjBSkmai0CMJPkbocVOvnvUgYWY8.iBPg1bk0CLt.CLJ.0arElb8.iBiLVa8X0PCovHLYzSwzSLJX0aoMVYy0SLJX0aoMVZtcVOwnPSuQVY8HiBP8lbzEVOv3BLvn.TB0iLJ.kPD0iLJPjblQWOwnPSTUmaS0CLJzDU04lS8fiBMQUctQUO4n.UxMGb8zhLznfQTUma8.iKv.iBVMVL8.iKv.iBVMlL8.iKv.iBVM1L8.iKv.iBVMFM8.iKv.iBVMVM8.iKv.iBVMlM8.iKv.iBVM1M8.iKv.iBVMFN8.iKv.iBPIWZuIWOvnPS0MzaxUVOvnvPu4FcE4VOvnfTN8Fck0CLJHkUkwVOvnPPxM0X8PiBAI2SxQVOvnPPxwDb8.iBAI2SiQWOwnPPxwDS8DiMJDjbTIWOvnPPmQWYwziLJDDcxAWL8.iBAY2aiESOwnPPsUGawzSLJDTauQVL8.iBA0DQvQWL8.iKv.iBAcFckISOxnPPzIGbxzCLJDjcuMlL8DiBA0VcrISOwnPPs8FYxzCLJDTSDAGcxzCLt.CLJDzYzU1L8HiBAQmbvMSOvnPP181XyzSLJDTa0w1L8DiBA01ajMSOvnPPMQDbzMSOv3BLvnPPmQWYzziLJDDcxAGM8.iBAY2aiQSOwnPPsUGazzSLJDTauQFM8.iBA0DQvQGM8.iKv.iBAcFckUSOxnPPzIGb0zCLJDjcuMVM8DiBA0VcrUSOwnPPs8FY0zCLJDTSDAGc0zCLt.CLJDzYzUlM8HiBAQmbvYSOvnPP181X1zSLJDTa0wlM8DiBA01ajYSOvnPPMQDbzYSOv3BLvnPPmQWY2ziLJDDcxA2M8.iBAY2aicSOwnPPsUGa2zSLJDTauQ1M8.iBA0DQvQ2M8.iKv.iBAcFckgSOxnPPzIGb3zCLJDjcuMFN8DiBA0VcrgSOwnPPs8FY3zCLJDTSDAGc3zCLt.CLJDzYzUVN8HiBAQmbvkSOvnPP181X4zSLJDTa0wVN8DiBA01ajkSOvnPPMQDbzkSOv3BLvnPPmQWYw.SOxnPPzIGbw.SOvnPP181Xw.SOwnPPsUGaw.SOwnPPs8FYw.SOvnPPMQDbzECL8.iKv.iBAcFckESL8HiBAQmbvESL8.iBAY2aiESL8DiBA0VcrESL8DiBA01ajESL8.iBA0DQvQWLwzCLt.CLJDzYzUVLxziLJDDcxAWLxzCLJDjcuMVLxzSLJDTa0wVLxzSLJDTauQVLxzCLJDTSDAGcwHSOv3BLvnPPmQWYwLSOxnPPzIGbwLSOvnPP181XwLSOwnPPsUGawLSOwnPPs8FYwLSOvnPPMQDbzEyL8.iKv.iBAcFckECM8HiBAQmbvECM8.iBAY2aiECM8DiBA0VcrECM8DiBA01ajECM8.iBA0DQvQWLzzCLt.CLJDzYzUVL0ziLJDDcxAWL0zCLJDjcuMVL0zSLJDTa0wVL0zSLJDTauQVL0zCLJDTSDAGcwTSOv3BLvnPPmQWYwXSOxnPPzIGbwXSOvnPP181XwXSOwnPPsUGawXSOwnPPs8FYwXSOvnPPMQDbzEiM8.iKv.iBiLVa8TjSVEiBM8FYk0CLJDDcq0SLt.CLJPTYi0yMv3BLvnvT0MWOxbiKv.iBSU2bT0SKz3BLvnfTkwVOwHiK0.iBVUFa8HSMt.CLJLxXs0CSF8TLJLUdtMVOzn.Uxk1Y8.iBWElck0CLJ.EZyUVOv3BLvn.TuwVXx0CLJPDa40CLt.CLJPTSSESOvn.QMQTL8.iKv.iBREFck0CLt.CLJXTSSESOvnfQMQTL8.iKv.iBiLVa87zTCEiBWElck0CLJPUctUVOwHiKv.iBKUVdSMFa8DCLv3BLvn.UMMkbi0CLJPUSDAGc8.iKv.iBPg1bk0SMv3BLvn.TnMWSSI2X8.iBPg1bMQDbz0CLt.CLJjja1Y0ar0SKw.CLt.CLJLUdsESOw.CLt.CLJbETSI2X8.iBWAEQvQWOv3BLvnfUz8FQ8.iKv.iBiLVa8X0PFAiBTkGb8.iBCUGc8DiMt.CLJHUYy0CLt.CLJPjb10CLt.CLJXTSwzCLt.CLJXzTwzCLJXTSxzCLt.CLJXzTxzCLJrTY4M0Xr0SLv.iKv.iBAYTS8.iKv.iBCw1Z8.iKv.iBiLVa8X0PAEiBPEla8.iKv.iBV8Fa8TCLt.CLJX0PA0SLJzzajMkbi0CLJzzajQDbz0CLt.CLJ.UXtMkbi0CLJDDczMUOwnvHi0VOCglbyovPk4Fc8HCLt.CLJLEbkQVO0.iKv.iBDAGcn0SMv3BLvnfQkUlP8.iKv.iBMkFd8.iKv.iBiLVa8PDa4EiBS41XL0CMJLkaiIUOznfQkUlP8.iKv.iBCI2bB0CLt.CLJzTZ30CLt.CLJnfBu7BHSU1Xzk1atAhYuIGH0cFa4AxXu0FbxU1byUFYfHVZtElb4ABQgQWXJ7xKfPzSNcBUfP0SUMDRfPERIMkBJPBIjPRL3HCNJ7yYjc1Xk4VYhoSYgEVXgEVXgoSXgElXgEVXgoSXgEVXoEFYvoSXgEVXgEVYgoSXgEVXkEVYgoSXgEVXoEVYgoiBgEVXgsVXkElNgEVXg0VXkElNgEVXg8VXkElNgElNkMlNkIlNmolNgUlNhElNiElNi8lNjElNjUlNmklNm0lNnoPX5jVX5D1X5DVZ5DVa5HVY5HVZ5HVa5LVY5LVZ5LVa5Lla5LFb5P1XgD2bAcSVk01YvcFYmIFSAICM4DmbAcCQJb1aDgVYDclXLQDZqclYHsjVMEDM4DmbAcSLwIWP2.mZvsFbrAWav4FbuAGbAElXOEFYEElYgcVXnAUXpE1ZgwlBQElag8VXvYjXhI1XhQlThYlXmIFZSIlZhslXrQkXtI1ahA2QiI1XiMFYUMlYic1XnY0XpM1Ziw1UXgTVIQlXZo.YjoDYlQ1YjgFYoEWQAECLoIVZuoTPwMWP2flYXszYlEjL0DSbNETLyfSbyEjL1LSbxEzMHISPyHCc0Y2c3kmdJDWPOETMzEzLzUmc2gWd5EjLCETLFMTPwbzPAESRCETLkE1PAEiYgMTPwbVXCETLMMTPw3zPAESZoMTPwnVXCEjBwnVZCETLqE1PAEyZoMTPwvVXCETLrk1PAESagMTPwzVZCETLtE1PAEiaoMTPw7VXCETLuk1PAECbgMTPw.WZCoPPxHTPwTjPAECTBETLQITPwXjPAEiTBETLSITPwPkPAEyQBETLUITPwXkPAEyUBETLIITPwnjPAECYoITPwPVaJHTPwTVXBETLkUlPAESYoITPwTVaBETLlElPAEiYkITPwXVZBETLl0lPAEyYgITPwbVYBETLKITPwvjPAESSBEjBwfVYBETLnklPAECZsITPw3jPAESZiITPwjVYBETLoclPAESZoITPwj1ZBETLo0lPAESZuITPwnVXBETLpMlPAoPLpUlPAEiZmITPwnVZBETLpslPAEiZsITPwn1aBETLqElPAEyZiITPwrVYBETLqclPAEyZoITPwr1ZBETLq0lPJDTLq8lPAECagITPwv1XBETLrUlPAECamITPwvVZBETLrslPAECasITPwv1aBETLsElPAESaiITPwzVYBETLsclBBETLsklPAESaqITPwzVaBETLs8lPAEiagITPw31XBETLtUlPAEiamITPw3VZBETLtslPAEiasITPw31aBETLuoPXBETLuMlPAEyakITPw71YBETLuklPAEyaqITPw7VaBETLu8lPAECbgITPw.2XBETLvUlPAECbmITPw.WZBETLJ.2ZBETLv0lPAECbuITO2jSNyHiB..."
             base64:layout="55.LETVOUEU..P.A7TUTAUUTME..DP.BU0T.Df.o4FYkgG.ATP......vVX48VczAP.ET.SfHE...">
       <MACROPARAMETERS id="1068"/>
       <MODIFIERASSIGNMENTS/>
@@ -203,33 +203,33 @@
     <MACROPARAMETERS id="1115"/>
     <MODIFIERS/>
     <AUDIOCLIP name="s7" start="0.0" length="0.15625" offset="0.0" id="1159"
-               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 07.wav"
+               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 02.wav"
                sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa">
-      <LOOPINFO rootNote="-1" numBeats="1.30031746031746" oneShot="0" denominator="4"
+      <LOOPINFO rootNote="-1" numBeats="1.23762358276644" oneShot="0" denominator="4"
                 numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
     </AUDIOCLIP>
     <AUDIOCLIP name="s8" start="0.3125" length="0.15625" offset="0.0" id="1163"
-               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 07.wav"
+               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 04.wav"
                sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa">
-      <LOOPINFO rootNote="-1" numBeats="1.30031746031746" oneShot="0" denominator="4"
+      <LOOPINFO rootNote="-1" numBeats="0.802249433106576" oneShot="0" denominator="4"
                 numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
     </AUDIOCLIP>
     <AUDIOCLIP name="s9" start="0.625" length="0.15625" offset="0.0" id="1167"
-               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 07.wav"
+               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 05.wav"
                sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa">
-      <LOOPINFO rootNote="-1" numBeats="1.30031746031746" oneShot="0" denominator="4"
+      <LOOPINFO rootNote="-1" numBeats="1.414095238095238" oneShot="0" denominator="4"
                 numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
     </AUDIOCLIP>
     <AUDIOCLIP name="s10" start="0.9375" length="0.15625" offset="0.0" id="1171"
-               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 07.wav"
+               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 02.wav"
                sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa">
-      <LOOPINFO rootNote="-1" numBeats="1.30031746031746" oneShot="0" denominator="4"
+      <LOOPINFO rootNote="-1" numBeats="1.23762358276644" oneShot="0" denominator="4"
                 numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
     </AUDIOCLIP>
     <AUDIOCLIP name="s11" start="1.25" length="0.15625" offset="0.0" id="1175"
-               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 07.wav"
+               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 06.wav"
                sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa">
-      <LOOPINFO rootNote="-1" numBeats="1.30031746031746" oneShot="0" denominator="4"
+      <LOOPINFO rootNote="-1" numBeats="1.307283446712018" oneShot="0" denominator="4"
                 numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
     </AUDIOCLIP>
     <AUDIOCLIP name="s12" start="1.5625" length="0.15625" offset="0.0" id="1179"
@@ -239,15 +239,15 @@
                 numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
     </AUDIOCLIP>
     <AUDIOCLIP name="s13" start="1.875" length="0.15625" offset="0.0" id="1183"
-               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 07.wav"
+               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 04.wav"
                sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa">
-      <LOOPINFO rootNote="-1" numBeats="1.30031746031746" oneShot="0" denominator="4"
+      <LOOPINFO rootNote="-1" numBeats="0.802249433106576" oneShot="0" denominator="4"
                 numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
     </AUDIOCLIP>
     <AUDIOCLIP name="s14" start="2.1875" length="0.15625" offset="0.0" id="1187"
-               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 07.wav"
+               source="/home/charles/cybr/sample/Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 04.wav"
                sync="0" elastiqueMode="0" pan="0.0" colour="ff00ffaa">
-      <LOOPINFO rootNote="-1" numBeats="1.30031746031746" oneShot="0" denominator="4"
+      <LOOPINFO rootNote="-1" numBeats="0.802249433106576" oneShot="0" denominator="4"
                 numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
     </AUDIOCLIP>
     <PLUGIN type="volume" id="1118" enabled="1" remapOnTempoChange="1">

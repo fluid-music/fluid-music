@@ -43,8 +43,8 @@ const tambourineIntensityLayers = [
 const nLibrary = {
   d: { type: 'iLayers', iLayers: acousticKickIntensityLayers },
   D: { type: 'file', path: electronicKickPath, oneShot: true },
-  k: { type: 'file', path: snarePaths[0]  },
-  c: { type: 'iLayers', iLayers: tambourineIntensityLayers },
+  k: { type: 'file', path: snarePaths[0] },
+  c: { type: 'random', choices: tambourineIntensityLayers },
 };
 
 module.exports = {

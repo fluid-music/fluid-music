@@ -63,7 +63,11 @@ const msg = [
   fluid.audiotrack.send('verb room', -28),
 
   // content
-  fluid.score.tracksToFluidMessage(session.tracks),
+  fluid.score.tracksToFluidMessage(session.tracks, (note, i, context) => {
+    if (!note || !note.e || note.e.type !== 'random') return note;
+    note.e = fluid.random.choice(note.e.choices);
+    return note
+  }),
 ];
 
 const client = new fluid.Client();
