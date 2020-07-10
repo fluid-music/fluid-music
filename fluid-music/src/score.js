@@ -120,16 +120,23 @@ function midiVelocityToDbfs(v, min = -60, max = 6) {
  * functions. Its fields specify the context of the NoteObject currently being
  * processed, including the track and clip that contain the note.
  * @typedef {Object} EventContext
- * @property {Clip} clip
- * @property {Track} track
+ * @property {Clip} clip the Clip that contains the current event
+ * @property {Track} track the Track that contains the current event
  * @property {TracksObject} tracks
  * @property {FluidMessage[]} messages
+ * @property {number} clipIndex index of the clip within the track
+ * @property {number} eventIndex index of the event within the clip.
+ *    tracksToFluidMessage updates this automatically before each eventMapper
+ *    callback.
+ * @property {Object} data this is a convenient place for `eventMapper`
+ *    callbacks to store data it, for example, the event mapper needs to
+ *    preserve information between callbacks. Like the EventContext, it is
+ *    replaced for each Clip.
  */
 
 /**
  * @callback eventMapper
  * @param {NoteObject} note
- * @param {number} i
  * @param {EventContext} context
  */
 
@@ -147,10 +154,9 @@ function midiVelocityToDbfs(v, min = -60, max = 6) {
  * NoteObject's event (No. 2 on the list above).
  *
  * @param {NoteObject} [note]
- * @param {number} i Index of the note within the clip
  * @param {EventContext} context Info on the track, clip that contain the note
  */
-function mapIntensityLayers(note, i, context) {
+function mapIntensityLayers(note, context) {
   if (!note || !note.e || note.e.type !== 'iLayers') return note;
 
   // example iLayer note Object
@@ -178,6 +184,31 @@ function mapIntensityLayers(note, i, context) {
 }
 
 /**
+* @param {NoteObject} note
+* @param {EventContext} context Info on the track, clip that contain the note
+*/
+function mapMidiNotes(note, context) {
+  if (typeof note.n !== 'number') return note;
+  if (!context.data.createdMidiClip) {
+    const clipName  = `${context.track.name} ${context.clipIndex}`
+    const startTime = context.clip.startTime;
+    const duration  = context.clip.duration;
+    const clipMsg   = fluid.midiclip.select(clipName, startTime, duration)
+    context.messages.push(clipMsg);
+    context.data.createdMidiClip = true;
+  }
+
+  // example midi notes
+  // NOTE: velocities are optional
+  // NOTE: velocity objects can specify .v (midi velocity) and/or dbfs gain
+  // { s: 0.0, l: 0.25, n: 60 v: 70 };
+  // { s: 0.5, l: 0.25, n: 60 v: { v: 70, dbfs: -12 } };
+  const noteMsg = fluid.midiclip.note(note.n, note.s, note.l, note.v);
+  context.messages.push(noteMsg);
+  return null;
+}
+
+/**
  * Create a `FluidMessage` from a `TracksObject`
  *
  * ```javascript
@@ -198,12 +229,14 @@ function tracksToFluidMessage(tracksObject, eventMappers=[]) {
   const sessionMessages = [];
   let i = 0;
 
-  // Setup the eventMappers array by ensuring that it is an array, and adding
-  // the default set of handlers.
+  // Ensuring that eventMappers it is an array
   if (typeof eventMappers === 'function') eventMappers = [eventMappers];
   if (!Array.isArray(eventMappers))
     throw new Error('tracksToFluidMessage: received invalid eventMappers arg');
+
+  // Add the the default eventMappers
   eventMappers.push(mapIntensityLayers);
+  eventMappers.push(mapMidiNotes);
 
   // // example tracks object
   // const tracks = {
@@ -225,28 +258,31 @@ function tracksToFluidMessage(tracksObject, eventMappers=[]) {
     trackMessages.push(fluid.audiotrack.select(trackName));
     sessionMessages.push(trackMessages);
 
-    for (let clip of track.clips) {
+    track.clips.forEach((clip, clipIndex) => {
 
       // Create a sub-message for each clip. Note that the naming convention
       // gets a little confusing, because we do not yet know if "clip" contains
       // a single "Midi Clip", a collection of audio clips/events, or both.
-      let clipMessages = [];
+      const clipMessages = [];
+      trackMessages.push(clipMessages);
 
       // Create one EventContext object for each clip.
-      trackMessages.push(clipMessages);
-      let context = {
+      const context = {
         track,
         clip,
+        clipIndex,
         messages: clipMessages,
         tracks: tracksObject,
+        data: {},
       };
 
       let noteEvents = clip.notes;
-      for (let eventMapper of eventMappers) {
-        noteEvents = noteEvents
-          .filter((noteEvent) => noteEvent)
-          .map((noteEvent, i) => eventMapper(noteEvent, i, context));
-      }
+      for (const eventMapper of eventMappers) {
+        noteEvents = noteEvents.map((noteEvent, i) =>{
+          context.eventIndex = i;
+          return eventMapper(noteEvent, context);
+        }).filter((noteEvent) => !!noteEvent);
+      };
 
       // // example clip object
       // const clip = {
@@ -254,19 +290,9 @@ function tracksToFluidMessage(tracksObject, eventMappers=[]) {
       //   duration: 4,
       //   startTime: 4,
       // };
-      let midiNotes = noteEvents.filter(note => typeof note.n === 'number');
-      let samples   = noteEvents.filter(note => note.e && note.e.type === 'file');
+      let samples = noteEvents.filter(note => note.e && note.e.type === 'file');
 
-      // example midi notes
-      // NOTE: velocities are optional
-      // NOTE: velocity objects can specify .v (midi velocity) and/or dbfs gain
-      // { s: 0.0, l: 0.25, n: 60 v: 70 };
-      // { s: 0.5, l: 0.25, n: 60 v: { v: 70, dbfs: -12 } };
-      if (midiNotes.length) {
-        clipMessages.push(fluid.midiclip.create(`clip${i++}`, clip.startTime, clip.duration, midiNotes));
-      }
-
-      // // example sample note
+      // // example type=file note
       // {
       //   s: 0.50, // start
       //   l: 0.25, // length
@@ -309,7 +335,7 @@ function tracksToFluidMessage(tracksObject, eventMappers=[]) {
 
         clipMessages.push(msg);
       }
-    }
+    });
   }
 
   return sessionMessages;
