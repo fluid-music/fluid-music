@@ -144,29 +144,29 @@ describe('tab.parseTab', () => {
   it('should create the correct note objects', () => {
     const result = tab.parseTab(rhythm, pattern, notes);
     result.notes.should.deepEqual([
-      { n: 60, s: 0.0,   l: 0.125, e: { type: 'midiNote', n: 60 } },
-      { n: 64, s: 0.5,   l: 0.125, e: { type: 'midiNote', n: 64 } },
-      { n: 67, s: 0.875, l: 0.0625, e: { type: 'midiNote', n: 67 } },
+      { n: 60, s: 0.0,   l: 0.125 },
+      { n: 64, s: 0.5,   l: 0.125 },
+      { n: 67, s: 0.875, l: 0.0625 },
     ]);
   });
 
   it('should parse arrays in the NoteLibrary as chords', ()=>{
     const result = tab.parseTab(rhythm, pattern, chords);
     result.notes.should.deepEqual([
-      { n: 64, s: 0.0, l: 0.125, e: { type: 'midiNote', n: 64 } },
-      { n: 69, s: 0.0, l: 0.125, e: { type: 'midiNote', n: 69 } },
-      { n: 71, s: 0.0, l: 0.125, e: { type: 'midiNote', n: 71 } },
-      { n: 73, s: 0.0, l: 0.125, e: { type: 'midiNote', n: 73 } },
+      { n: 64, s: 0.0, l: 0.125 },
+      { n: 69, s: 0.0, l: 0.125 },
+      { n: 71, s: 0.0, l: 0.125 },
+      { n: 73, s: 0.0, l: 0.125 },
 
-      { n: 65, s: 0.5, l: 0.125, e: { type: 'midiNote', n: 65 } },
-      { n: 67, s: 0.5, l: 0.125, e: { type: 'midiNote', n: 67 } },
-      { n: 69, s: 0.5, l: 0.125, e: { type: 'midiNote', n: 69 } },
-      { n: 72, s: 0.5, l: 0.125, e: { type: 'midiNote', n: 72 } },
+      { n: 65, s: 0.5, l: 0.125 },
+      { n: 67, s: 0.5, l: 0.125 },
+      { n: 69, s: 0.5, l: 0.125 },
+      { n: 72, s: 0.5, l: 0.125 },
 
-      { n: 67, s: 0.875, l: 0.0625, e: { type: 'midiNote', n: 67 } },
-      { n: 69, s: 0.875, l: 0.0625, e: { type: 'midiNote', n: 69 } },
-      { n: 71, s: 0.875, l: 0.0625, e: { type: 'midiNote', n: 71 } },
-      { n: 74, s: 0.875, l: 0.0625, e: { type: 'midiNote', n: 74 } },
+      { n: 67, s: 0.875, l: 0.0625 },
+      { n: 69, s: 0.875, l: 0.0625 },
+      { n: 71, s: 0.875, l: 0.0625 },
+      { n: 74, s: 0.875, l: 0.0625 },
     ]);
   });
 
@@ -200,9 +200,9 @@ describe('tab.parseTab', () => {
 
     it('should add correct .v values when passed a dPattern and a dLibrary', ()=> {
       clip.notes.should.deepEqual([
-        { n: 0, s: 0.00, l: 0.125, v: 60, e: { type: eventTypes.midiNote, n: 0 }, d: { v: 60 } },
-        { n: 1, s: 0.25, l: 0.125, v: 70, e: { type: eventTypes.midiNote, n: 1 }, d: { v: 70 } },
-        { n: 2, s: 0.50, l: 0.125, v: 80, e: { type: eventTypes.midiNote, n: 2 }, d: { v: 80 } },
+        { n: 0, s: 0.00, l: 0.125, v: 60, d: { v: 60 } },
+        { n: 1, s: 0.25, l: 0.125, v: 70, d: { v: 70 } },
+        { n: 2, s: 0.50, l: 0.125, v: 80, d: { v: 80 } },
       ]);
     });
 
@@ -216,7 +216,7 @@ describe('tab.parseTab', () => {
 
     it('should add .v to the noteObject when the dynamics obj has a .v number', () => {
       clipWithDynamics.notes[1].should.deepEqual(
-        { n: 1, s: 0.25, l: 0.125, v: 70, d: dynamicsObject, e: { type: eventTypes.midiNote, n: 1 } }
+        { n: 1, s: 0.25, l: 0.125, v: 70, d: dynamicsObject }
       );
       clipWithDynamics.notes[1].v.should.equal(70);
     });
@@ -238,9 +238,9 @@ describe('tab.parseTab', () => {
     const clip = tab.parseTab(rhythm, pattern, nLibrary);
     it('should set the .e property for objects in the nLibrary', () => {
       clip.notes.should.deepEqual([
-        { e: noteObject0, s: 0.00, l: 0.125 },
-        { e: noteObject1, s: 0.25, l: 0.125 },
-        { e: noteObject2, s: 0.50, l: 0.125 },
+        { n: noteObject0, s: 0.00, l: 0.125 },
+        { n: noteObject1, s: 0.25, l: 0.125 },
+        { n: noteObject2, s: 0.50, l: 0.125 },
       ]);
     });
 

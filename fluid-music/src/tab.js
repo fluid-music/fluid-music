@@ -116,15 +116,8 @@ const parseTab = function(rhythm, pattern, noteLibrary, dPattern, dLibrary) {
         let noteObject = {
           s: start,
           l: end - start,
+          n: note,
         };
-
-        // note may be a number (MIDI note) or object (arbitrary event)
-        if (typeof note === 'number') {
-          noteObject.n = note;
-          noteObject.e = { type: eventTypes.midiNote, n: note };
-        } else {
-          noteObject.e = note;
-        }
 
         if (dLibrary !== undefined) {
           let d = dynamicArray[index];

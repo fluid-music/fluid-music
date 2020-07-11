@@ -153,11 +153,11 @@ function midiVelocityToDbfs(v, min = -60, max = 6) {
  * This is a simple example of an event mapper function which only replaces the
  * NoteObject's event (No. 2 on the list above).
  *
- * @param {NoteObject} [note]
+ * @param {NoteObject} event
  * @param {EventContext} context Info on the track, clip that contain the note
  */
-function mapIntensityLayers(note, context) {
-  if (!note || !note.e || note.e.type !== 'iLayers') return note;
+function mapIntensityLayers(event, context) {
+  if (!event.n || event.n.type !== 'iLayers') return event;
 
   // example iLayer note Object
   // NOTE: .v is optional
@@ -167,28 +167,37 @@ function mapIntensityLayers(note, context) {
   //   e: { type: 'iLayers', iLayers: [file1, file2] },
   //   d: { dbfs: -2, intensity: 0.7, v: 64 }
   // }
-  let length = note.e.iLayers.length; // number of layers
+  let length = event.n.iLayers.length; // number of layers
   let index = length - 1;             // default to last layer
 
   // Look for an intensity
-  if (note.d && typeof(note.d.intensity) === 'number') {
-    index = Math.floor(note.d.intensity * length);
+  if (event.d && typeof(event.d.intensity) === 'number') {
+    index = Math.floor(event.d.intensity * length);
   }
   // If no intensity was found, look for a velocity
-  else if (typeof note.v === 'number') {
-    index = Math.floor(note.v / (127 / note.e.iLayers.length));
+  else if (typeof event.v === 'number') {
+    index = Math.floor(event.v / (127 / event.n.iLayers.length));
   }
 
-  note.e = note.e.iLayers[R.clamp(0, length-1, index)]
-  return note;
+  event.n = event.n.iLayers[R.clamp(0, length-1, index)]
+  return event;
 }
 
 /**
-* @param {NoteObject} note
+* @param {NoteObject} event
 * @param {EventContext} context Info on the track, clip that contain the note
 */
-function mapMidiNotes(note, context) {
-  if (typeof note.n !== 'number') return note;
+function mapMidiNotes(event, context) {
+  if (Array.isArray(event.n)) {
+    event.n.forEach(chordNote => {
+      const innerEvent = Object.assign({}, event);
+      innerEvent.n = chordNote;
+      mapMidiNotes(innerEvent, context)
+    });
+  }
+
+  if (typeof event.n !== 'number') return event; // Arrays will still get returned
+
   if (!context.data.createdMidiClip) {
     const clipName  = `${context.track.name} ${context.clipIndex}`
     const startTime = context.clip.startTime;
@@ -203,7 +212,7 @@ function mapMidiNotes(note, context) {
   // NOTE: velocity objects can specify .v (midi velocity) and/or dbfs gain
   // { s: 0.0, l: 0.25, n: 60 v: 70 };
   // { s: 0.5, l: 0.25, n: 60 d: { v: 70, dbfs: -12 } };
-  const noteMsg = fluid.midiclip.note(note.n, note.s, note.l, note.v);
+  const noteMsg = fluid.midiclip.note(event.n, event.s, event.l, event.v);
   context.messages.push(noteMsg);
   return null;
 }
@@ -276,12 +285,12 @@ function tracksToFluidMessage(tracksObject, eventMappers=[]) {
         data: {},
       };
 
-      let noteEvents = clip.notes;
+      let events = clip.notes;
       for (const eventMapper of eventMappers) {
-        noteEvents = noteEvents.map((noteEvent, i) =>{
+        events = events.map((noteEvent, i) => {
           context.eventIndex = i;
           return eventMapper(noteEvent, context);
-        }).filter((noteEvent) => !!noteEvent);
+        }).filter(noteEvent => !!noteEvent);
       };
 
       // // example clip object
@@ -290,46 +299,46 @@ function tracksToFluidMessage(tracksObject, eventMappers=[]) {
       //   duration: 4,
       //   startTime: 4,
       // };
-      let samples = noteEvents.filter(note => note.e && note.e.type === 'file');
+      let samples = events.filter(note => note.n && note.n.type === 'file');
 
       // // example type=file note
       // {
       //   s: 0.50, // start
       //   l: 0.25, // length
-      //   e: { type: 'file', path: 'media/kick.wav' },
+      //   n: { type: 'file', path: 'media/kick.wav' },
       //   d: { v: 70, dbfs: -10 }, // If .v is present here...
       //   v: 70,                   // ...it will also be here...
       //                            // (but vice versa is not guaranteed)
       // };
-      for (let note of samples) {
-        let startTime = clip.startTime + note.s;
+      for (let event of samples) {
+        let startTime = clip.startTime + event.s;
 
-        if (typeof note.e !== 'object') {
-          console.error(note);
+        if (typeof event.n !== 'object') {
+          console.error(event);
           throw new Error('tracksToFluidMessage: a note object selected as a sample is missing its .e event');
         };
 
-        if (typeof note.e.path !== 'string') {
-          console.error(note.e);
+        if (typeof event.n.path !== 'string') {
+          console.error(event.n);
           throw new Error('tracksToFluidMessage: A file object found in note library does not have a .path string');
         };
 
-        let msg = [fluid.audiotrack.insertWav(`s${i++}`, startTime, note.e.path)];
+        let msg = [fluid.audiotrack.insertWav(`s${i++}`, startTime, event.n.path)];
 
         // adjust the clip length, unless the event is a .oneShot
-        if (!note.e.oneShot) msg.push(fluid.clip.length(note.l));
+        if (!event.n.oneShot) msg.push(fluid.clip.length(event.l));
 
         // apply fade in/out times (if specified)
-        if (typeof note.e.fadeOut === 'number' || typeof note.e.fadeIn === 'number')
-          msg.push(fluid.audioclip.fadeInOutSeconds(note.e.fadeIn, note.e.fadeOut));
+        if (typeof event.n.fadeOut === 'number' || typeof event.n.fadeIn === 'number')
+          msg.push(fluid.audioclip.fadeInOutSeconds(event.n.fadeIn, event.n.fadeOut));
 
         // Try to get sample gain
         let gain = null;
         // If there is a dynamics object, look for a dbfs property
-        if (note.d && typeof(note.d.dbfs) === 'number') gain = note.d.dbfs;
+        if (event.d && typeof(event.d.dbfs) === 'number') gain = event.d.dbfs;
         // Otherwise, look for a .v property, and use a hard-coded default
         // conversion from midi velocity to dbfs
-        else if (typeof note.v === 'number') gain = midiVelocityToDbfs(note.v, -10, 10);
+        else if (typeof event.v === 'number') gain = midiVelocityToDbfs(event.v, -10, 10);
         // Iff gain was found add it to the result
         if (gain !== null) msg.push(fluid.audioclip.gain(gain));
 
