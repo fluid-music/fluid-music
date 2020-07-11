@@ -6,7 +6,7 @@ const recipes = require('../src');
 // General MIDI Percussion map defines note 36=bass-drum, 38=snare
 // See: http://www.onicos.com/staff/iz/formats/midi-drummap.html
 const nLibrary    = { k: 36, h: 42, s: 38, S: 40, c: 49, '🔥': [36, 49] };
-const vLibrary    = [10,40,80,120];
+const dLibrary    = [10,40,80,120];
 const sessionPath = path.join(__dirname, 'sessions/simple-beat.tracktionedit')
 
 const r     = '1 + 2 + 3 + 4 + '; // main rhythm
@@ -32,7 +32,7 @@ const score = [
 
 const session = fluid.score.parse(score, {
   nLibrary: recipes.fromMars909.nLibrary,
-  vLibrary, r});
+  dLibrary, r});
 
 const client  = new fluid.Client(9999);
 client.send([

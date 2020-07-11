@@ -17,12 +17,12 @@ const reservedKeys = tab.reservedKeys;
  * @param {ScoreObject|String} scoreObject The Score Object to parse
  * @param {Object} [config]
  * @param {number} [config.startTime=0]
- * @param {string} [config.rhythm] default rhythm string, which may be
+ * @param {string} [config.r] default rhythm string, which may be
  *    overridden by values in `scoreObject`. If not specified, `scoreObject` must have a
  *   `.r` property.
  * @param {string} [config.trackKey] name of the track being parsed
- * @param {string} [config.vPattern] optional velocity library
- * @param {NoteLibrary} [config.vLibrary]
+ * @param {string} [config.d] optional dynamicLibrary
+ * @param {NoteLibrary} [config.dLibrary]
  * @param {NoteLibrary} [config.nLibrary] (see tab.parseTab for details about
  *   `NoteLibrary`). If not specified, `scoreObject` must have a `.nLibrary` property.
  * @param {Session} [session] Only used in recursion. Consuming code should not
@@ -37,9 +37,9 @@ function parse(scoreObject, config, session, tracks={}) {
   else config = Object.assign({}, config); // Shallow copy should be ok
 
   if (scoreObject.hasOwnProperty('nLibrary')) config.nLibrary = scoreObject.nLibrary;
-  if (scoreObject.hasOwnProperty('vLibrary')) config.vLibrary = scoreObject.vLibrary;
+  if (scoreObject.hasOwnProperty('dLibrary')) config.dLibrary = scoreObject.dLibrary;
   if (scoreObject.hasOwnProperty('r'))        config.r = scoreObject.r;
-  if (scoreObject.hasOwnProperty('v'))        config.v = scoreObject.v;
+  if (scoreObject.hasOwnProperty('d'))        config.d = scoreObject.d;
   // Note that we cannot specify a .startTime in a score like we can for rhythms
   if (typeof config.startTime !== 'number') config.startTime = 0;
 
@@ -87,7 +87,7 @@ function parse(scoreObject, config, session, tracks={}) {
       throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a nLibrary`);
 
     const duration = R.last(parseRhythm(config.r).totals);
-    const result = parseTab(config.r, scoreObject, config.nLibrary, config.v, config.vLibrary);
+    const result = parseTab(config.r, scoreObject, config.nLibrary, config.d, config.dLibrary);
     result.startTime = config.startTime;
     result.duration = duration;
 
@@ -202,7 +202,7 @@ function mapMidiNotes(note, context) {
   // NOTE: velocities are optional
   // NOTE: velocity objects can specify .v (midi velocity) and/or dbfs gain
   // { s: 0.0, l: 0.25, n: 60 v: 70 };
-  // { s: 0.5, l: 0.25, n: 60 v: { v: 70, dbfs: -12 } };
+  // { s: 0.5, l: 0.25, n: 60 d: { v: 70, dbfs: -12 } };
   const noteMsg = fluid.midiclip.note(note.n, note.s, note.l, note.v);
   context.messages.push(noteMsg);
   return null;

@@ -262,7 +262,7 @@ describe('score', () => {
       },
     ];
 
-    const vLibrary = {
+    const dLibrary = {
       p: { v: 42 },
       m: { v: 43 },
       f: { v: 85 },
@@ -273,8 +273,8 @@ describe('score', () => {
 
     const r = '1234';
 
-    const session1 = score.parse({f: '111', r, v: 'pmf'}, {vLibrary, nLibrary});
-    const session2 = score.parse({f: '111', r, v: 'PMF'}, {vLibrary, nLibrary});
+    const session1 = score.parse({f: '111', r, d: 'pmf'}, {dLibrary, nLibrary});
+    const session2 = score.parse({f: '111', r, d: 'PMF'}, {dLibrary, nLibrary});
 
     const expectedResult = [
       audiotrack.insertWav('s0', 0,    'f1.wav'),

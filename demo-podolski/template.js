@@ -10,7 +10,7 @@ const score = {
   r:     '1 + 2 + 3 + 4 + ',
   kick:  {
   kick:  '.   . dd dD .D  ',
-  v:     '.   . mf ff .f  '},
+  d:     '.   . mf ff .f  '},
   snare: '.   k-  .   k-  ',
   tamb:  'c c c c c c c c ',
   bass:{
@@ -19,12 +19,12 @@ const score = {
   },
 };
 
-const vLibrary = {
+const dLibrary = {
   f: { dbfs: 0, intensity: 1.0 },
   m: { dbfs: -2.6, intensity: 3/4 },
 };
 
-const session = fluid.score.parse(score, {nLibrary: drums.nLibrary, vLibrary});
+const session = fluid.score.parse(score, {nLibrary: drums.nLibrary, dLibrary});
 const msg = [
   fluid.global.activate(file, true),
   fluid.tempo.set(96),

@@ -1,4 +1,5 @@
 const R = require('ramda');
+const eventTypes = require('./event-types');
 
 /**
  * Convert rhythm string to a cumulative array of durations.
@@ -35,16 +36,16 @@ const parseRhythm = function(rhythm) {
  * Helper method to convert velocity string to an array corresponding to
  * velocties of each symbol in symbolsAndCounts.
  *
- * @param {string} vPattern - String representation of note velocities.
+ * @param {string} dPattern - String representation of note velocities.
  * @param symbolsAndCounts from patternToSymbolsAndCounts
- * @param {number[]} vLibrary - an indexable array containing velocity values.
+ * @param {number[]} dLibrary - an indexable array containing velocity values.
  *
  * @returns {number[]} - an array representing the velocity of each symbol.
  */
-const parseVelocity = function(vPattern, symbolsAndCounts, vLibrary){
+const parseVelocity = function(dPattern, symbolsAndCounts, dLibrary){
   let p = 0;
   const velArray = []
-  if(typeof(vPattern) !== 'string') return false;
+  if(typeof(dPattern) !== 'string') return false;
   for (let sc of symbolsAndCounts){
     let symbol = sc[0];
     let count = sc[1];
@@ -55,9 +56,9 @@ const parseVelocity = function(vPattern, symbolsAndCounts, vLibrary){
       continue;
     }
 
-    if (!vLibrary.hasOwnProperty(vPattern[p]))
-        throw new Error(`velLibrary has no velocity value for "${vPattern[p]}"`);
-    let vel = vLibrary[vPattern[p]];
+    if (!dLibrary.hasOwnProperty(dPattern[p]))
+        throw new Error(`velLibrary has no velocity value for "${dPattern[p]}"`);
+    let vel = dLibrary[dPattern[p]];
 
     velArray.push(vel)
     p += count;
@@ -83,13 +84,13 @@ const parseVelocity = function(vPattern, symbolsAndCounts, vLibrary){
  *        noteLibrary = [60, 62]
  *        noteLibrary = {'0': 60, '1': 62 }
  */
-const parseTab = function(rhythm, pattern, noteLibrary, vPattern, vLibrary) {
+const parseTab = function(rhythm, pattern, noteLibrary, dPattern, dLibrary) {
   if (pattern.length > rhythm.length)
     throw new Error(`parseTab: rhythm ('${rhythm}') not long enough for pattern ('${pattern}')`);
 
   const rhythmObject = parseRhythm(rhythm);
   const symbolsAndCounts = patternToSymbolsAndCounts(pattern);
-  const velocityArray = parseVelocity(vPattern, symbolsAndCounts, vLibrary);
+  const dynamicArray = parseVelocity(dPattern, symbolsAndCounts, dLibrary);
 
   let p = 0; // position (in the rhythmObject)
   const clip = {
@@ -118,20 +119,25 @@ const parseTab = function(rhythm, pattern, noteLibrary, vPattern, vLibrary) {
         };
 
         // note may be a number (MIDI note) or object (arbitrary event)
-        if (typeof note === 'number') noteObject.n = note;
-        else noteObject.e = note;
+        if (typeof note === 'number') {
+          noteObject.n = note;
+          noteObject.e = { type: eventTypes.midiNote, n: note };
+        } else {
+          noteObject.e = note;
+        }
 
-        if (vLibrary !== undefined) {
-          let v = velocityArray[index];
+        if (dLibrary !== undefined) {
+          let d = dynamicArray[index];
           // v may be a number (MIDI velocity) or object (dynamics object)
-          if (typeof v === 'number')
-            noteObject.v = v;
-          else {
-            noteObject.d = v;
+          if (typeof d === 'number') {
+            noteObject.v = d;
+            noteObject.d = { v: d };
+          } else {
+            noteObject.d = d;
             // As a convenience, if the dynamics object has a .v (velocity) copy
             // the .v directly to the noteObject. This allows dynamics objects
             // to specify a midi velocity like this: `{ dbfs: -10, v: 32 }`
-            if (v && typeof(v.v) === 'number') noteObject.v = v.v;
+            if (d && typeof(d.v) === 'number') noteObject.v = d.v;
           }
         }
         clip.notes.push(noteObject);
@@ -357,7 +363,7 @@ const patternToSymbolsAndCounts = function(pattern) {
  * @param {Number} [startTime] - offset all the notes by this much
  * @returns {Clip} A Clip object containing all the notes from the input
  */
-const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrary) {
+const parse = function(object, rhythm, noteLibrary, startTime, dPattern, dLibrary) {
   if (typeof startTime !== 'number') startTime = 0;
 
   const clip = {
@@ -367,9 +373,9 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
   };
 
   if (object.hasOwnProperty('nLibrary')) noteLibrary = object.nLibrary;
-  if (object.hasOwnProperty('vLibrary')) vLibrary = object.vLibrary;
+  if (object.hasOwnProperty('dLibrary')) dLibrary = object.dLibrary;
   if (object.hasOwnProperty('r')) rhythm = object.r;
-  if (object.hasOwnProperty('v')) vPattern = object.v;
+  if (object.hasOwnProperty('d')) dPattern = object.d;
   if (object.hasOwnProperty('startTime'))
     throw new Error('parse: startTime is not a legal pattern key');
 
@@ -378,14 +384,14 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
 
   if (Array.isArray(object)) {
     for (let o of object) {
-      let newClip = parse(o, rhythm, noteLibrary, startTime, vPattern, vLibrary);
+      let newClip = parse(o, rhythm, noteLibrary, startTime, dPattern, dLibrary);
       clip.notes.push(...newClip.notes);
       clip.duration += newClip.duration;
       startTime += newClip.duration; // NOTE: must be '+=', not '='
     }
   } else if (typeof object === 'string') {
     // We have a string that can be parsed with parseTab
-    const newClip = parseTab(rhythm, object, noteLibrary, vPattern, vLibrary);
+    const newClip = parseTab(rhythm, object, noteLibrary, dPattern, dLibrary);
     newClip.notes.forEach((n) => n.s += startTime);
     newClip.startTime = startTime;
     return newClip;
@@ -393,7 +399,7 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
     let duration = 0;
     for (let [key, val] of Object.entries(object)) {
       if (reservedKeys.hasOwnProperty(key)) continue;
-      let newClip = parse(val, rhythm, noteLibrary, startTime, vPattern, vLibrary);
+      let newClip = parse(val, rhythm, noteLibrary, startTime, dPattern, dLibrary);
       clip.notes.push(...newClip.notes);
       if (newClip.duration > duration) duration = newClip.duration;
     }
@@ -407,13 +413,14 @@ const parse = function(object, rhythm, noteLibrary, startTime, vPattern, vLibrar
  * These keys cannot be used for patterns in tabs and scores.
  */
 const reservedKeys = {
-  r: null,            // rhythm string
-  v: null,            // velocity string
+  r: null,            // rhythm pattern
+  d: null,            // dynamics pattern
+  v: null,            // deprecated. formerly velocity
   noteLibrary : null, // deprecated in favor of nLibrary
   nLibrary: null,
-  vLibrary: null,
+  vLibrary: null,     // deprecated
   eLibrary: null,     // Possible use: events library
-  dLibrary: null,     // Possible use: dynamics library
+  dLibrary: null,     // dynamics library
   duration: null,
   startTime: null,
   meta: null,

@@ -143,7 +143,7 @@ const create = (availableNotes, opts={}) => {
       n: random.choice(availableNotes),
       s: t,
       l: getLength(t),
-      v: Math.round(getVelocity(t)),
+      d: Math.round(getVelocity(t)),
     });
   }
   return notes;

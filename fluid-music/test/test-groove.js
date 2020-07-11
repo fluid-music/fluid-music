@@ -38,7 +38,7 @@ describe("groove", () => {
         const heavy = {
             name: "Heavy Swing",
             oLibrary: {'a': 0, 'b': 0.05},
-            vLibrary: {'a':64, 'b': 80}, 
+            dLibrary: {'a':64, 'b': 80}, 
             rhythm     : "1+",
             time       : "ab",
             velocity   : "ab", 

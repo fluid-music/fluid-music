@@ -20,7 +20,7 @@ const getGroove = function(groovelib, grooveName){
  * @param {Object[]} notes - An array of note objects
  * @param {string | Object} grooveItem - Either the name of the groove present 
  *        within the groove library, or a new groove object.
- * @param {Object} multipliers - An object of the form {v: number, o: number, l: number}
+ * @param {Object} multipliers - An object of the form {d: number, o: number, l: number}
  *        the keys are: velocity, offset and level respectively. 
  *        Level affects the overall effect the groove has on the note objects.
  * @param {number} randomness - A number representing the amount of randomness added to the offset
@@ -44,9 +44,9 @@ const applyGroove = function(notes, grooveItem, multipliers, randomness=0) {
         multipliers.l = typeof multipliers.l === 'number' ? multipliers.l : 1;
     }
     else
-        multipliers = {v: 1, o: 1, l: 1};
+        multipliers = {d: 1, o: 1, l: 1};
         
-    if (!selG.oLibrary || !selG.vLibrary || !selG.time || !selG.velocity || !selG.rhythm) 
+    if (!selG.oLibrary || !selG.dLibrary || !selG.time || !selG.velocity || !selG.rhythm) 
         throw new Error("Invalid Groove Object");
     
     const sortedNotes = JSON.parse(JSON.stringify(notes)).sort((a, b) => (a.s > b.s) ? 1 : -1);
@@ -65,8 +65,8 @@ const applyGroove = function(notes, grooveItem, multipliers, randomness=0) {
                 let randTime = Math.random() * ((0.05)-0.25) * randomness;
                 sortedNotes[i].s += randTime;
             }
-            if (selG.vLibrary.hasOwnProperty(selG.velocity[rhythmIter])){
-                sortedNotes[i].v = selG.vLibrary[selG.velocity[rhythmIter]];
+            if (selG.dLibrary.hasOwnProperty(selG.velocity[rhythmIter])){
+                sortedNotes[i].v = selG.dLibrary[selG.velocity[rhythmIter]];
                 sortedNotes[i].v *= multipliers.v;
                 sortedNotes[i].v *= multipliers.l;
             }

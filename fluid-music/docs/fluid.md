@@ -52,7 +52,7 @@ note numbers. String arrays can be easier to read than number arrays:</p>
 <dt><a href="#parseRhythm">parseRhythm(rhythm)</a> ⇒ <code>object</code></dt>
 <dd><p>Convert rhythm string to a cumulative array of durations.</p>
 </dd>
-<dt><a href="#parseVelocity">parseVelocity(vPattern, symbolsAndCounts, vLibrary)</a> ⇒ <code>Array.&lt;number&gt;</code></dt>
+<dt><a href="#parseVelocity">parseVelocity(dPattern, symbolsAndCounts, vLibrary)</a> ⇒ <code>Array.&lt;number&gt;</code></dt>
 <dd><p>Helper method to convert velocity string to an array corresponding to
 velocties of each symbol in symbolsAndCounts.</p>
 </dd>
@@ -906,7 +906,7 @@ Convert rhythm string to a cumulative array of durations.
 
 <a name="parseVelocity"></a>
 
-## parseVelocity(vPattern, symbolsAndCounts, vLibrary) ⇒ <code>Array.&lt;number&gt;</code>
+## parseVelocity(dPattern, symbolsAndCounts, vLibrary) ⇒ <code>Array.&lt;number&gt;</code>
 Helper method to convert velocity string to an array corresponding to
 velocties of each symbol in symbolsAndCounts.
 
@@ -915,7 +915,7 @@ velocties of each symbol in symbolsAndCounts.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| vPattern | <code>string</code> | String representation of note velocities. |
+| dPattern | <code>string</code> | String representation of note velocities. |
 | symbolsAndCounts |  | from patternToSymbolsAndCounts |
 | vLibrary | <code>Array.&lt;number&gt;</code> | an indexable array containing velocity values. |
 
@@ -1150,7 +1150,7 @@ Typically called with two arguments (other args are for internal use only)
 | [config.startTime] | <code>number</code> | <code>0</code> |  |
 | [config.rhythm] | <code>string</code> |  | default rhythm string, which may be    overridden by values in `scoreObject`. If not specified, `scoreObject` must have a   `.r` property. |
 | [config.trackKey] | <code>string</code> |  | name of the track being parsed |
-| [config.vPattern] | <code>string</code> |  | optional velocity library |
+| [config.dPattern] | <code>string</code> |  | optional velocity library |
 | [config.vLibrary] | [<code>NoteLibrary</code>](#NoteLibrary) |  |  |
 | [config.nLibrary] | [<code>NoteLibrary</code>](#NoteLibrary) |  | (see tab.parseTab for details about   `NoteLibrary`). If not specified, `scoreObject` must have a `.nLibrary` property. |
 | [session] | [<code>Session</code>](#Session) |  | Only used in recursion. Consuming code should not    supply this argument. |

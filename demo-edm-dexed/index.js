@@ -2,7 +2,7 @@ const R       = require('ramda');
 const fluid   = require('fluid-music');
 const recipes = require('fluid-recipes');
 
-const vLibrary = { 0: 10, 1: 20, 2: 30, 3: 40, 4: 50, 5: 60, 6: 70, 7: 80, 8: 90, 9: 100, a: 110, b: 120, c: 127 };
+const dLibrary = { 0: 10, 1: 20, 2: 30, 3: 40, 4: 50, 5: 60, 6: 70, 7: 80, 8: 90, 9: 100, a: 110, b: 120, c: 127 };
 const nLibrary = {  '0': 31,                                     // 'te'
   '1': 33, '2': 35, '3': 36, '4': 38, '5': 40, '6': 41, '7': 43, // C minor
   '8': 45, '9': 47, 'a': 48, 'b': 50, 'c': 52, 'd': 53, 'e': 55, // C minor 8va
@@ -17,9 +17,9 @@ const nLibrary = {  '0': 31,                                     // 'te'
 let melody;
 const score = [];
 const config = {
-  vLibrary,
+  dLibrary,
   nLibrary,
-  v:     '966855844655',
+  d:     '966855844655',
   r:     '1..2..3..4..'};
 melody = '875a8'        ;
 // melody = '875a864'      ;
@@ -31,12 +31,12 @@ melody = R.reverse(melody);
 melody = recipes.mutators.wiggle(melody, 8);
 const intro = {
   name: 'intro',
-  crash: {crash: 'c.', v: '6'},
+  crash: {crash: 'c.', d: '6'},
   kick: [R.repeat('k..k..k..k..', 7), 'k........sss'],
   hat:   R.repeat('.hh.hh.hh.hh', 7),
   p: {
     r:              '1 2 3 4 ',
-    v:              '89898989',
+    d:              '89898989',
     // hat:   R.repeat(' h h h h', 6),
     // snare: R.repeat('  s   s ', 7),
   },

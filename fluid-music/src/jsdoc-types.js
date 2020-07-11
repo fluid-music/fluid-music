@@ -80,9 +80,9 @@
  *     clips: [
  *       {
  *         notes: [
- *           { s: 0,     l: 0.0833, n: 33, v: 100 },
- *           { s: 0.25,  l: 0.0833, n: 35, v: 90 },
- *           { s: 0.33,  l: 0.0833, n: 38, v: 60 },
+ *           { s: 0,     l: 0.0833, n: 33, d: 100 },
+ *           { s: 0.25,  l: 0.0833, n: 35, d: 90 },
+ *           { s: 0.33,  l: 0.0833, n: 38, d: 60 },
  *         ],
  *         startTime: 2,
  *         duration:  1,
@@ -132,7 +132,7 @@
  * Represents a performance marking such as "forte" or "piano". In practice,
  * this specifies a MIDI velocity, or a dBFS gain value.
  *
- * These can be found in a `vLibrary`, or in the `.d` field of a `NoteObject`.
+ * These can be found in a `dLibrary`, or in the `.d` field of a `NoteObject`.
  * @typedef {Object} DynamicsObject
  * @property {number} [v=64] optional midi velocity
  * @property {number} [dbfs] sample gain
