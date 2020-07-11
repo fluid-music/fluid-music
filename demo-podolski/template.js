@@ -64,9 +64,9 @@ const msg = [
 
   // content
   fluid.score.tracksToFluidMessage(session.tracks, (note, i, context) => {
-    if (!note || !note.e || note.e.type !== 'random') return note;
-    note.e = fluid.random.choice(note.e.choices);
-    return note
+    if (!note.n || note.n.type !== 'random') return note;
+    note.n = fluid.random.choice(note.n.choices);
+    return note;
   }),
 ];
 

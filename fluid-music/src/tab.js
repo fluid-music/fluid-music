@@ -94,7 +94,7 @@ const parseTab = function(rhythm, pattern, noteLibrary, dPattern, dLibrary) {
 
   let p = 0; // position (in the rhythmObject)
   const clip = {
-    notes: [],
+    events: [],
     duration: R.last(rhythmObject.totals),
   };
 
@@ -133,7 +133,7 @@ const parseTab = function(rhythm, pattern, noteLibrary, dPattern, dLibrary) {
             if (d && typeof(d.v) === 'number') noteObject.v = d.v;
           }
         }
-        clip.notes.push(noteObject);
+        clip.events.push(noteObject);
       });
     }
     p += count;
@@ -360,7 +360,7 @@ const parse = function(object, rhythm, noteLibrary, startTime, dPattern, dLibrar
   if (typeof startTime !== 'number') startTime = 0;
 
   const clip = {
-    notes: [],
+    events: [],
     duration: 0,
     startTime
   };
@@ -378,14 +378,14 @@ const parse = function(object, rhythm, noteLibrary, startTime, dPattern, dLibrar
   if (Array.isArray(object)) {
     for (let o of object) {
       let newClip = parse(o, rhythm, noteLibrary, startTime, dPattern, dLibrary);
-      clip.notes.push(...newClip.notes);
+      clip.events.push(...newClip.events);
       clip.duration += newClip.duration;
       startTime += newClip.duration; // NOTE: must be '+=', not '='
     }
   } else if (typeof object === 'string') {
     // We have a string that can be parsed with parseTab
     const newClip = parseTab(rhythm, object, noteLibrary, dPattern, dLibrary);
-    newClip.notes.forEach((n) => n.s += startTime);
+    newClip.events.forEach((n) => n.s += startTime);
     newClip.startTime = startTime;
     return newClip;
   } else {
@@ -393,7 +393,7 @@ const parse = function(object, rhythm, noteLibrary, startTime, dPattern, dLibrar
     for (let [key, val] of Object.entries(object)) {
       if (reservedKeys.hasOwnProperty(key)) continue;
       let newClip = parse(val, rhythm, noteLibrary, startTime, dPattern, dLibrary);
-      clip.notes.push(...newClip.notes);
+      clip.events.push(...newClip.events);
       if (newClip.duration > duration) duration = newClip.duration;
     }
     clip.duration = duration;

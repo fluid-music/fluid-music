@@ -143,7 +143,7 @@ describe('tab.parseTab', () => {
 
   it('should create the correct note objects', () => {
     const result = tab.parseTab(rhythm, pattern, notes);
-    result.notes.should.deepEqual([
+    result.events.should.deepEqual([
       { n: 60, s: 0.0,   l: 0.125 },
       { n: 64, s: 0.5,   l: 0.125 },
       { n: 67, s: 0.875, l: 0.0625 },
@@ -152,7 +152,7 @@ describe('tab.parseTab', () => {
 
   it('should parse arrays in the NoteLibrary as chords', ()=>{
     const result = tab.parseTab(rhythm, pattern, chords);
-    result.notes.should.deepEqual([
+    result.events.should.deepEqual([
       { n: 64, s: 0.0, l: 0.125 },
       { n: 69, s: 0.0, l: 0.125 },
       { n: 71, s: 0.0, l: 0.125 },
@@ -193,13 +193,13 @@ describe('tab.parseTab', () => {
     const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, dLibrary);
 
 
-    it('should output notes with .d values if passed a dPattern and dLibrary', ()=>{
-      clip.notes.length.should.equal(3);
-      clip.notes.forEach((note) => should.exist(note.d));
+    it('should output events with .d values if passed a dPattern and dLibrary', ()=>{
+      clip.events.length.should.equal(3);
+      clip.events.forEach((note) => should.exist(note.d));
     });
 
     it('should add correct .v values when passed a dPattern and a dLibrary', ()=> {
-      clip.notes.should.deepEqual([
+      clip.events.should.deepEqual([
         { n: 0, s: 0.00, l: 0.125, v: 60, d: { v: 60 } },
         { n: 1, s: 0.25, l: 0.125, v: 70, d: { v: 70 } },
         { n: 2, s: 0.50, l: 0.125, v: 80, d: { v: 80 } },
@@ -211,14 +211,14 @@ describe('tab.parseTab', () => {
       [60, dynamicsObject, 80]);
 
     it('should put dynamicsObjects into the .d field of the note object', () => {
-      clipWithDynamics.notes[1].d.should.deepEqual(dynamicsObject);
+      clipWithDynamics.events[1].d.should.deepEqual(dynamicsObject);
     });
 
     it('should add .v to the noteObject when the dynamics obj has a .v number', () => {
-      clipWithDynamics.notes[1].should.deepEqual(
+      clipWithDynamics.events[1].should.deepEqual(
         { n: 1, s: 0.25, l: 0.125, v: 70, d: dynamicsObject }
       );
-      clipWithDynamics.notes[1].v.should.equal(70);
+      clipWithDynamics.events[1].v.should.equal(70);
     });
 
   }); // describe velocities (dPattern/dLibrary)
@@ -237,7 +237,7 @@ describe('tab.parseTab', () => {
 
     const clip = tab.parseTab(rhythm, pattern, nLibrary);
     it('should set the .e property for objects in the nLibrary', () => {
-      clip.notes.should.deepEqual([
+      clip.events.should.deepEqual([
         { n: noteObject0, s: 0.00, l: 0.125 },
         { n: noteObject1, s: 0.25, l: 0.125 },
         { n: noteObject2, s: 0.50, l: 0.125 },

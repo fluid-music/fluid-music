@@ -136,7 +136,7 @@ function midiVelocityToDbfs(v, min = -60, max = 6) {
 
 /**
  * @callback eventMapper
- * @param {NoteObject} note
+ * @param {ClipEvent} note
  * @param {EventContext} context
  */
 
@@ -153,7 +153,7 @@ function midiVelocityToDbfs(v, min = -60, max = 6) {
  * This is a simple example of an event mapper function which only replaces the
  * NoteObject's event (No. 2 on the list above).
  *
- * @param {NoteObject} event
+ * @param {ClipEvent} event
  * @param {EventContext} context Info on the track, clip that contain the note
  */
 function mapIntensityLayers(event, context) {
@@ -184,7 +184,7 @@ function mapIntensityLayers(event, context) {
 }
 
 /**
-* @param {NoteObject} event
+* @param {ClipEvent} event
 * @param {EventContext} context Info on the track, clip that contain the note
 */
 function mapMidiNotes(event, context) {
@@ -285,7 +285,7 @@ function tracksToFluidMessage(tracksObject, eventMappers=[]) {
         data: {},
       };
 
-      let events = clip.notes;
+      let events = clip.events;
       for (const eventMapper of eventMappers) {
         events = events.map((noteEvent, i) => {
           context.eventIndex = i;
@@ -295,7 +295,7 @@ function tracksToFluidMessage(tracksObject, eventMappers=[]) {
 
       // // example clip object
       // const clip = {
-      //   notes: [ note1, note2 ],
+      //   events: [ note1, note2 ],
       //   duration: 4,
       //   startTime: 4,
       // };

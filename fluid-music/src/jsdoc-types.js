@@ -15,22 +15,22 @@
  *     drums: {
  *       clips: [
  *         {
- *           notes: [ { s: 0, l: 0.25, n: 0 } ],
+ *           events: [ { s: 0, l: 0.25, n: 0 } ],
  *           duration: 1,
  *           startTime: 0
  *         },
  *         {
- *           notes: [ { s: 0, l: 0.25, n: 1 } ],
+ *           events: [ { s: 0, l: 0.25, n: 1 } ],
  *           duration: 1,
  *           startTime: 1
  *         },
  *         {
- *           notes: [ { s: 0, l: 0.25, n: 2 } ],
+ *           events: [ { s: 0, l: 0.25, n: 2 } ],
  *           duration: 1,
  *           startTime: 2
  *         },
  *         {
- *           notes: [ { s: 0, l: 0.25, n: 3 } ],
+ *           events: [ { s: 0, l: 0.25, n: 3 } ],
  *           duration: 1,
  *           startTime: 3
  *         }
@@ -43,19 +43,19 @@
  *       duration: 2,
  *       regions: [
  *         {
- *           notes: [ { s: 0, l: 0.25, n: 0 } ],
+ *           events: [ { s: 0, l: 0.25, n: 0 } ],
  *           duration: 1,
  *           startTime: 0
  *         },
  *         {
- *           notes: [ { s: 0, l: 0.25, n: 1 } ],
+ *           events: [ { s: 0, l: 0.25, n: 1 } ],
  *           duration: 1,
  *           startTime: 1
  *         }
  *       ]
  *     },
- *     { notes: [ { s: 0, l: 0.25, n: 2 } ], duration: 1, startTime: 2 },
- *     { notes: [ { s: 0, l: 0.25, n: 3 } ], duration: 1, startTime: 3 }
+ *     { events: [ { s: 0, l: 0.25, n: 2 } ], duration: 1, startTime: 2 },
+ *     { events: [ { s: 0, l: 0.25, n: 3 } ], duration: 1, startTime: 3 },
  *   ]
  * }
  * ```
@@ -111,29 +111,28 @@
 
 /**
  * @typedef {Object} Clip
- * @property {NoteObject[]} notes
+ * @property {ClipEvent[]} events
  * @property {number} duration duration in whole notes
  * @property {number} [startTime] start time in whole notes
  */
 
 /**
- * Represents an event in a score, such as a MIDI note within midi clip or an
- * audio sample on a track.
- * @typedef {Object} NoteObject
+ * Represents a musical event such as a MIDI note within midi clip or an audio
+ * sample on a track.
+ * @typedef {Object} ClipEvent
  * @property {number} l length in whole notes
  * @property {number} s start time in whole notes
- * @property {number} [n] MIDI note number
- * @property {EventObject} [e] Signifies a non-note event
+ * @property {Note} n a `Note` event. Somtimes these might be a number
  * @property {number} [v=64] optional midi velocity
- * @property {DynamicsObject} [d] Signifies a dynamic marking
+ * @property {Dynamic} [d] Signifies a dynamic marking
  */
 
 /**
  * Represents a performance marking such as "forte" or "piano". In practice,
  * this specifies a MIDI velocity, or a dBFS gain value.
  *
- * These can be found in a `dLibrary`, or in the `.d` field of a `NoteObject`.
- * @typedef {Object} DynamicsObject
+ * These can be found in a `dLibrary`, or in the `.d` field of a `ScoreEvent`.
+ * @typedef {Object} Dynamic
  * @property {number} [v=64] optional midi velocity
  * @property {number} [dbfs] sample gain
  * @property {number} [intensity] performance intensity value between 0 and 1.
@@ -142,10 +141,10 @@
  */
 
  /**
-  * Represents a timeline event such as an audio sample.
+  * Represents a timeline event such as a MIDI note or an audio sample.
   *
-  * These can be found in an `nLibrary`, or in the `.e` field of a `NoteObject`.
-  * @typedef {Object} EventObject
+  * These can be found in an `nLibrary`, or in the `.n` field of a `ScoreEvent`.
+  * @typedef {Object} Note
   * @property {string} type String indicating the type of event:
   *   'file' indicates an audio sample, which should have a `.path`.
   *   'iLayers' indicates the presence of a `.iLayers` field, which contains an

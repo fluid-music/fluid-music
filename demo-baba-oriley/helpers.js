@@ -33,9 +33,9 @@ const helpers = {
    */
   humanize(track, amt = 0.01) {
     for (let clip of track.clips) {
-      for (let note of clip.notes) {
-        let startTime = note.s + Math.random() * amt - (amt*0.5);
-        note.s = Math.max(0, startTime);
+      for (let event of clip.events) {
+        let startTime = event.s + Math.random() * amt - (amt*0.5);
+        event.s = Math.max(0, startTime);
       }
     }
   },

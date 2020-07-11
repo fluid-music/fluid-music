@@ -63,7 +63,7 @@ const midiclip = {
    * @param { string } clipName name of the clip.
    * @param { number } startTimeInWholeNotes clip start time in whole notes
    * @param { number} durationInWholeNotes clip length in whole notes
-   * @param { NoteObject[] } notes array of objects, which look like:
+   * @param { Object[] } notes array of objects, which look like:
    *    `{ l: lengthWholeNotes, n: midiNoteNumber, s: startTimeWholeNotes }`
    *    Be careful that all note.n properties are numbers.
    */
