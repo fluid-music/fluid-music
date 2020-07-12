@@ -227,16 +227,6 @@ describe('score', () => {
     });
   }); // describe score.parse
 
-  describe('score.midiVelocityToDbfs', () => {
-    it('should work', () => {
-      score.midiVelocityToDbfs(127, 0, 6).should.equal(6);
-      score.midiVelocityToDbfs(0, 0, 6).should.equal(0);
-      score.midiVelocityToDbfs(0, -60, 0).should.equal(-60);
-      score.midiVelocityToDbfs(127, -60, 0).should.equal(0);
-    });
-  });
-
-
   describe('score.tracksToFluidMessage', () => {
     const flatten = v => {
       if (Array.isArray(v)) {
@@ -277,10 +267,10 @@ describe('score', () => {
     const session2 = score.parse({f: '111', r, d: 'PMF'}, {dLibrary, nLibrary});
 
     const expectedResult = [
-      audiotrack.insertWav('s0', 0,    'f1.wav'),
-      audiotrack.insertWav('s1', 0.25, 'f2.wav'),
-      audiotrack.insertWav('s2', 0.5,  'f3.wav'),
-    ]
+      audiotrack.insertWav('s0-0', 0,    'f1.wav'),
+      audiotrack.insertWav('s0-1', 0.25, 'f2.wav'),
+      audiotrack.insertWav('s0-2', 0.5,  'f3.wav'),
+    ];
 
     it('performance intensity layers (.iLayers) with velocity', () => {
       let msg = score.tracksToFluidMessage(session1.tracks);
@@ -294,5 +284,4 @@ describe('score', () => {
       msg.should.containDeep(expectedResult)
     });
   });
-
 }); // describe score

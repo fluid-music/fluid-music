@@ -1,7 +1,6 @@
 const should = require('should');
 const mocha = require('mocha');
 const tab = require('../src/tab');
-const eventTypes = require('../src/event-types');
 
 const q = 1/4;  // quarter note
 const e = 1/8;  // eighth note
@@ -147,26 +146,6 @@ describe('tab.parseTab', () => {
       { n: 60, s: 0.0,   l: 0.125 },
       { n: 64, s: 0.5,   l: 0.125 },
       { n: 67, s: 0.875, l: 0.0625 },
-    ]);
-  });
-
-  it('should parse arrays in the NoteLibrary as chords', ()=>{
-    const result = tab.parseTab(rhythm, pattern, chords);
-    result.events.should.deepEqual([
-      { n: 64, s: 0.0, l: 0.125 },
-      { n: 69, s: 0.0, l: 0.125 },
-      { n: 71, s: 0.0, l: 0.125 },
-      { n: 73, s: 0.0, l: 0.125 },
-
-      { n: 65, s: 0.5, l: 0.125 },
-      { n: 67, s: 0.5, l: 0.125 },
-      { n: 69, s: 0.5, l: 0.125 },
-      { n: 72, s: 0.5, l: 0.125 },
-
-      { n: 67, s: 0.875, l: 0.0625 },
-      { n: 69, s: 0.875, l: 0.0625 },
-      { n: 71, s: 0.875, l: 0.0625 },
-      { n: 74, s: 0.875, l: 0.0625 },
     ]);
   });
 

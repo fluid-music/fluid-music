@@ -71,7 +71,7 @@
  * Represents a collection of audio tracks, and clips on those tracks.
  *
  * Example of a `TracksObject` containing a single `bass` track, which
- * containins two clips:
+ * contains two clips:
  * 1) a MIDI clip and three MIDI notes.
  * 2) a clip that contains an audio file
  * ```javascript
@@ -117,12 +117,18 @@
  */
 
 /**
- * Represents a musical event such as a MIDI note within midi clip or an audio
- * sample on a track.
+ * ClipEvents combine a `Note`, a `Dynamic` marking, a `s`tart time, and a
+ * `l`ength. The start time is measured from the beginning of the Clip that
+ * contains the event (unlike `Clip.startTime` which is relative to the start of
+ * the session).
+ *
+ * Be aware of the difference between a `Note` and a `ClipEvent`. A `Note` is
+ * not necessarily associated with any duration, or particular position in a
+ * score. `Note` objects also have a `.type` field, while `ClipEvent`s do not.
  * @typedef {Object} ClipEvent
  * @property {number} l length in whole notes
  * @property {number} s start time in whole notes
- * @property {Note} n a `Note` event. Somtimes these might be a number
+ * @property {Note} n a `Note` event. Sometimes these might be a number
  * @property {number} [v=64] optional midi velocity
  * @property {Dynamic} [d] Signifies a dynamic marking
  */
@@ -136,7 +142,7 @@
  * @property {number} [v=64] optional midi velocity
  * @property {number} [dbfs] sample gain
  * @property {number} [intensity] performance intensity value between 0 and 1.
- *  intensity may be interperated several different ways by different note/event
+ *  intensity may be interpreted several different ways by different note/event
  *  handlers.
  */
 

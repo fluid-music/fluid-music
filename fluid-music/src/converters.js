@@ -1,4 +1,5 @@
-const s11 = require('sharp11');
+const R      = require('ramda');
+const s11    = require('sharp11');
 const Parser = require('expr-eval').Parser;
 const parser = new Parser();
 
@@ -58,9 +59,16 @@ const m2f = (midiNote) => 440 * Math.pow(2, (midiNote-69)/12);
  */
 const f2m = (hz) => 69 + 12 * Math.log2(hz/440);
 
+
+function midiVelocityToDbfs(v, min = -60, max = 6) {
+  const range = max - min;
+  return R.clamp(min, max, v / 127 * range + min);
+};
+
 module.exports = {
   m2f,
   f2m,
+  midiVelocityToDbfs,
   valueToWholeNotes,
   valueToMidiNoteNumber,
 };

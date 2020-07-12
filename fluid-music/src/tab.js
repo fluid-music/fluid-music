@@ -1,5 +1,4 @@
 const R = require('ramda');
-const eventTypes = require('./event-types');
 
 /**
  * Convert rhythm string to a cumulative array of durations.
@@ -105,36 +104,31 @@ const parseTab = function(rhythm, pattern, noteLibrary, dPattern, dLibrary) {
       if (!noteLibrary.hasOwnProperty(symbol))
         throw new Error(`noteLibrary has no note or chord for "${symbol}"`);
 
-      // We have the contents of the noteLibrary, which may be a single item, or
-      // an array of items.
-      let notes = noteLibrary[symbol];
-      if (!Array.isArray(notes)) notes = [notes];
-      notes.forEach((note) => {
-        const start = (p === 0) ? 0 : rhythmObject.totals[p-1];
-        const end = rhythmObject.totals[p+count-1];
+      const note = noteLibrary[symbol]; // get the Note from the NoteLibrary
+      const start = (p === 0) ? 0 : rhythmObject.totals[p-1];
+      const end = rhythmObject.totals[p+count-1];
 
-        let noteObject = {
-          s: start,
-          l: end - start,
-          n: note,
-        };
+      let noteObject = {
+        s: start,
+        l: end - start,
+        n: note,
+      };
 
-        if (dLibrary !== undefined) {
-          let d = dynamicArray[index];
-          // v may be a number (MIDI velocity) or object (dynamics object)
-          if (typeof d === 'number') {
-            noteObject.v = d;
-            noteObject.d = { v: d };
-          } else {
-            noteObject.d = d;
-            // As a convenience, if the dynamics object has a .v (velocity) copy
-            // the .v directly to the noteObject. This allows dynamics objects
-            // to specify a midi velocity like this: `{ dbfs: -10, v: 32 }`
-            if (d && typeof(d.v) === 'number') noteObject.v = d.v;
-          }
+      if (dLibrary !== undefined) {
+        let d = dynamicArray[index];
+        // v may be a number (MIDI velocity) or object (dynamics object)
+        if (typeof d === 'number') {
+          noteObject.v = d;
+          noteObject.d = { v: d };
+        } else {
+          noteObject.d = d;
+          // As a convenience, if the dynamics object has a .v (velocity) copy
+          // the .v directly to the noteObject. This allows dynamics objects
+          // to specify a midi velocity like this: `{ dbfs: -10, v: 32 }`
+          if (d && typeof(d.v) === 'number') noteObject.v = d.v;
         }
-        clip.events.push(noteObject);
-      });
+      }
+      clip.events.push(noteObject);
     }
     p += count;
   }

@@ -21,7 +21,8 @@ const tempo = require('./fluid/tempo');
 
 // Other Stuff
 const eventLibrary = require('./event-library');
-const eventTypes = require('./event-types');
+const noteTypes = require('./note-types');
+const eventMappers = require('./event-mappers');
 const score = require('./score');
 const tab = require('./tab');
 const groove = require('./groove')
@@ -44,7 +45,8 @@ module.exports = {
   converters,
   content,
   eventLibrary,
-  eventTypes,
+  eventMappers,
+  noteTypes,
   global,
   m,
   midiclip,

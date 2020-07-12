@@ -27,6 +27,14 @@ describe('valueToWholeNotes', () => {
   });
 });
 
+describe('converters.midiVelocityToDbfs', () => {
+  it('should work', () => {
+    converters.midiVelocityToDbfs(127, 0, 6).should.equal(6);
+    converters.midiVelocityToDbfs(0, 0, 6).should.equal(0);
+    converters.midiVelocityToDbfs(0, -60, 0).should.equal(-60);
+    converters.midiVelocityToDbfs(127, -60, 0).should.equal(0);
+  });
+});
 
 describe('valueToMidiNoteNumber', () => {
   it('should convert "c4" string to 60', () => {
