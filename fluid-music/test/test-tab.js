@@ -177,27 +177,12 @@ describe('tab.parseTab', () => {
       clip.events.forEach((note) => should.exist(note.d));
     });
 
-    it('should add correct .v values when passed a dPattern and a dLibrary', ()=> {
-      clip.events.should.deepEqual([
-        { n: 0, s: 0.00, l: 0.125, v: 60, d: { v: 60 } },
-        { n: 1, s: 0.25, l: 0.125, v: 70, d: { v: 70 } },
-        { n: 2, s: 0.50, l: 0.125, v: 80, d: { v: 80 } },
-      ]);
-    });
-
     const dynamicsObject = { v: 70, dbfs: 1 };
     const clipWithDynamics = tab.parseTab(rhythm, pattern, nLibrary, dPattern,
       [60, dynamicsObject, 80]);
 
     it('should put dynamicsObjects into the .d field of the note object', () => {
       clipWithDynamics.events[1].d.should.deepEqual(dynamicsObject);
-    });
-
-    it('should add .v to the noteObject when the dynamics obj has a .v number', () => {
-      clipWithDynamics.events[1].should.deepEqual(
-        { n: 1, s: 0.25, l: 0.125, v: 70, d: dynamicsObject }
-      );
-      clipWithDynamics.events[1].v.should.equal(70);
     });
 
   }); // describe velocities (dPattern/dLibrary)

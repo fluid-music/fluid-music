@@ -163,7 +163,7 @@ function tracksToFluidMessage(tracksObject, customEventMappers=[]) {
 
       // Create a sub-message for each clip. Note that the naming convention
       // gets a little confusing, because we do not yet know if "clip" contains
-      // a single "Midi Clip", a collection of audio clips/events, or both.
+      // a single "Midi Clip", a collection of audio file events, or both.
       const clipMessages = [];
       trackMessages.push(clipMessages);
 

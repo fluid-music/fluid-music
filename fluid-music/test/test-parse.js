@@ -160,7 +160,7 @@ describe('tab.parse', () => {
       };
 
       tab.parse(obj).events.should.containDeep([
-        { n: 0, s: 0.25, l: 0.25, d: {v: 60}},
+        { n: 0, s: 0.25, l: 0.25, d: 60},
       ]);
     });
 
@@ -175,7 +175,7 @@ describe('tab.parse', () => {
         ]
       };
       tab.parse(obj).events.should.containDeep([
-        { n: 0, s: 0.25, l: 0.25, d: {v: 60} },
+        { n: 0, s: 0.25, l: 0.25, d: 60 },
         { n: 1, s: 1.00, l: 0.25 },
       ]);
     });
@@ -193,8 +193,8 @@ describe('tab.parse', () => {
       };
 
       tab.parse(obj).events.should.containDeep([
-        { n: 0, s: 0.00, l: 0.25, d: {v: 60} },
-        { n: 1, s: 0.25, l: 0.25, d: {v: 70} },
+        { n: 0, s: 0.00, l: 0.25, d: 60 },
+        { n: 1, s: 0.25, l: 0.25, d: 70 },
       ]);
     });
 
@@ -211,10 +211,10 @@ describe('tab.parse', () => {
       };
 
       tab.parse(obj).events.should.containDeep([
-        { n: 0, s: 0.25, l: 0.25, d: { v: 70 } },
-        { n: 1, s: 0.25, l: 0.25, d: { v: 70 } },
-        { n: 2, s: 1.00, l: 0.25, d: { v: 60 } },
-        { n: 3, s: 1.00, l: 0.25, d: { v: 60 } },
+        { n: 0, s: 0.25, l: 0.25, d: 70 },
+        { n: 1, s: 0.25, l: 0.25, d: 70 },
+        { n: 2, s: 1.00, l: 0.25, d: 60 },
+        { n: 3, s: 1.00, l: 0.25, d: 60 },
         { n: 4, s: 0.75, l: 0.25 },
       ]);
     });
@@ -235,11 +235,11 @@ describe('tab.parse', () => {
       const result = tab.parse(obj);
       
       result.events.should.containDeep([
-        { n: 0, s: 0.00, l: 0.50, d: { v: 60 } },
-        { n: 1, s: 0.50, l: 0.50, d: { v: 70 } },
-        { n: 20, s: 1.0, l: 0.25, d: { v: 120 } },
-        { n: 30, s: 1.0, l: 0.25, d: { v: 120 } },
-        { n: 4, s: 2.00, l: 0.25, d: { v: 60 } },
+        { n: 0, s: 0.00, l: 0.50, d: 60 },
+        { n: 1, s: 0.50, l: 0.50, d: 70 },
+        { n: 20, s: 1.0, l: 0.25, d: 120 },
+        { n: 30, s: 1.0, l: 0.25, d: 120 },
+        { n: 4, s: 2.00, l: 0.25, d: 60 },
         { n: 5, s: 0.75, l: 0.25 },
       ]);
     });
@@ -258,17 +258,17 @@ describe('tab.parse', () => {
 
       const result = tab.parse(obj);
       result.events.should.containDeep([
-        { n: 0, s: 0.0, l: 0.25, d: { v: 60 } },
-        { n: 1, s: 0.5, l: 0.25, d: { v: 70 } },
+        { n: 0, s: 0.0, l: 0.25, d: 60 },
+        { n: 1, s: 0.5, l: 0.25, d: 70 },
       ]);
       result.events.should.containDeep([
-        { n: 2, s: 1.0, l: 0.25, d: { v: 80 } },
-        { n: 3, s: 1.5, l: 0.25, d: { v: 90 } },
+        { n: 2, s: 1.0, l: 0.25, d: 80 },
+        { n: 3, s: 1.5, l: 0.25, d: 90 },
       ]);
       result.events.should.containDeep([
-        { n: 4, s: 2.0,  l: 0.25, d: { v: 100 } },
-        { n: 5, s: 2.5,  l: 0.25, d: { v: 110 } },
-        { n: 6, s: 2.75, l: 0.25, d: { v: 110 } },
+        { n: 4, s: 2.0,  l: 0.25, d: 100 },
+        { n: 5, s: 2.5,  l: 0.25, d: 110 },
+        { n: 6, s: 2.75, l: 0.25, d: 110 },
       ]);
     });
 
@@ -282,8 +282,8 @@ describe('tab.parse', () => {
       tab.parse(obj).events.should.containDeep([
         { n: 0, s: 0.00, l: 0.25 },
         { n: 1, s: 0.25, l: 0.25 },
-        { n: 2, s: 0.50, l: 0.25, d: { v: 60 } },
-        { n: 3, s: 0.75, l: 0.25, d: { v: 70 } },
+        { n: 2, s: 0.50, l: 0.25, d: 60 },
+        { n: 3, s: 0.75, l: 0.25, d: 70 },
       ]);
     });
 

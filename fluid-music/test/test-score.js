@@ -267,9 +267,9 @@ describe('score', () => {
     const session2 = score.parse({f: '111', r, d: 'PMF'}, {dLibrary, nLibrary});
 
     const expectedResult = [
-      audiotrack.insertWav('s0-0', 0,    'f1.wav'),
-      audiotrack.insertWav('s0-1', 0.25, 'f2.wav'),
-      audiotrack.insertWav('s0-2', 0.5,  'f3.wav'),
+      audiotrack.insertWav('s0.0', 0,    'f1.wav'),
+      audiotrack.insertWav('s0.1', 0.25, 'f2.wav'),
+      audiotrack.insertWav('s0.2', 0.5,  'f3.wav'),
     ];
 
     it('performance intensity layers (.iLayers) with velocity', () => {

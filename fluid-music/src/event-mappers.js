@@ -44,6 +44,27 @@ const converters = require('./converters');
  * @param {ClipEvent} event
  * @param {ClipEventContext} context
  */
+function mapVelocityNumbersToDynamic(event, context) {
+  if (!event.hasOwnProperty('d')) return event;
+
+  if (typeof event.d === 'number') {
+    event.d = {
+      v: event.d,
+      dbfs: converters.midiVelocityToDbfs(event.d, -10, 10),
+      intensity: R.clamp(0, 1, Math.floor(event.d / 127)),
+    }
+  }
+
+  // As a convenience, add v directly to the event.
+  if (typeof event.d.v === 'number') event.v = event.d.v;
+
+  return event;
+}
+
+/**
+ * @param {ClipEvent} event
+ * @param {ClipEventContext} context
+ */
 function mapNumbersToMidiNotes(event, context) {
   if (typeof event.n !== 'number') return event;
   event.n = {type: noteTypes.midiNote, n: event.n }
@@ -99,7 +120,7 @@ function mapIntensityLayers(event, context) {
   //   d: { dbfs: -2, intensity: 0.7, v: 64 }
   // }
   let length = event.n.iLayers.length; // number of layers
-  let index = length - 1;             // default to last layer
+  let index = length - 1;              // default to last layer
 
   // Look for an intensity
   if (event.d && typeof(event.d.intensity) === 'number') {
@@ -116,7 +137,7 @@ function mapIntensityLayers(event, context) {
 
 /**
  * @param {ClipEvent} event
- * @param {ClipEventContext} context 
+ * @param {ClipEventContext} context
  */
 function mapAudioFiles(event, context) {
   if (!event.hasOwnProperty('n') || event.n.type !== noteTypes.file) return event;
@@ -137,7 +158,7 @@ function mapAudioFiles(event, context) {
     throw new Error('tracksToFluidMessage: A file object found in note library does not have a .path string');
   };
 
-  const clipName = `s${context.clipIndex}-${context.eventIndex}`;
+  const clipName = `s${context.clipIndex}.${context.eventIndex}`;
   const msg = [fluid.audiotrack.insertWav(clipName, startTime, event.n.path)];
 
   // adjust the clip length, unless the event is a .oneShot
@@ -147,26 +168,22 @@ function mapAudioFiles(event, context) {
   if (typeof event.n.fadeOut === 'number' || typeof event.n.fadeIn === 'number')
     msg.push(fluid.audioclip.fadeInOutSeconds(event.n.fadeIn, event.n.fadeOut));
 
-  // Try to get sample gain
-  let gain = null;
-  // If there is a dynamics object, look for a dbfs property
-  if (event.d && typeof(event.d.dbfs) === 'number') gain = event.d.dbfs;
-  // Otherwise, look for a .v property, and use a hard-coded default
-  // conversion from midi velocity to dbfs
-  else if (typeof event.v === 'number') gain = converters.midiVelocityToDbfs(event.v, -10, 10);
-  // Iff gain was found add it to the result
-  if (gain !== null) msg.push(fluid.audioclip.gain(gain));
+  // If there is a dynamics object, look for a dbfs property and apply gain.
+  if (event.d && typeof(event.d.dbfs) === 'number')
+    msg.push(fluid.audioclip.gain(event.d.dbfs));
 
   context.messages.push(msg);
   return null;
 }
 
 module.exports = {
+  mapVelocityNumbersToDynamic,
   mapNumbersToMidiNotes,
   mapMidiNotes,
   mapIntensityLayers,
   mapAudioFiles,
   default: [
+    mapVelocityNumbersToDynamic,
     mapNumbersToMidiNotes,
     mapMidiNotes,
     mapIntensityLayers,

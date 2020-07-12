@@ -33,7 +33,7 @@ const parseRhythm = function(rhythm) {
 
 /**
  * Helper method to convert velocity string to an array corresponding to
- * velocties of each symbol in symbolsAndCounts.
+ * velocities of each symbol in symbolsAndCounts.
  *
  * @param {string} dPattern - String representation of note velocities.
  * @param symbolsAndCounts from patternToSymbolsAndCounts
@@ -66,11 +66,11 @@ const parseVelocity = function(dPattern, symbolsAndCounts, dLibrary){
 }
 
 /**
- * Convert a rhythm, pattern, and note library to a collection of note objects.
+ * Convert a rhythm, pattern, and note library to a `Clip`.
  *
  * @param {string} rhythm
- * @param {string} pattern
- * @param {NoteLibrary} noteLibrary - an indexable object
+ * @param {string} nPattern
+ * @param {NoteLibrary} nLibrary an indexable object
  *        containing notes or arrays of notes. Can be an object or an array.
  *        If it is an array, the pattern may only contain single digit numbers
  *        (i.e. 0-9).
@@ -83,12 +83,12 @@ const parseVelocity = function(dPattern, symbolsAndCounts, dLibrary){
  *        noteLibrary = [60, 62]
  *        noteLibrary = {'0': 60, '1': 62 }
  */
-const parseTab = function(rhythm, pattern, noteLibrary, dPattern, dLibrary) {
-  if (pattern.length > rhythm.length)
-    throw new Error(`parseTab: rhythm ('${rhythm}') not long enough for pattern ('${pattern}')`);
+const parseTab = function(rhythm, nPattern, nLibrary, dPattern, dLibrary) {
+  if (nPattern.length > rhythm.length)
+    throw new Error(`parseTab: rhythm ('${rhythm}') not long enough for pattern ('${nPattern}')`);
 
   const rhythmObject = parseRhythm(rhythm);
-  const symbolsAndCounts = patternToSymbolsAndCounts(pattern);
+  const symbolsAndCounts = patternToSymbolsAndCounts(nPattern);
   const dynamicArray = parseVelocity(dPattern, symbolsAndCounts, dLibrary);
 
   let p = 0; // position (in the rhythmObject)
@@ -101,14 +101,14 @@ const parseTab = function(rhythm, pattern, noteLibrary, dPattern, dLibrary) {
     let symbol = sc[0];
     let count = sc[1];
     if (symbol !== '.') {
-      if (!noteLibrary.hasOwnProperty(symbol))
+      if (!nLibrary.hasOwnProperty(symbol))
         throw new Error(`noteLibrary has no note or chord for "${symbol}"`);
 
-      const note = noteLibrary[symbol]; // get the Note from the NoteLibrary
+      const note = nLibrary[symbol]; // get the Note from the NoteLibrary
       const start = (p === 0) ? 0 : rhythmObject.totals[p-1];
       const end = rhythmObject.totals[p+count-1];
 
-      let noteObject = {
+      let event = {
         s: start,
         l: end - start,
         n: note,
@@ -116,19 +116,9 @@ const parseTab = function(rhythm, pattern, noteLibrary, dPattern, dLibrary) {
 
       if (dLibrary !== undefined) {
         let d = dynamicArray[index];
-        // v may be a number (MIDI velocity) or object (dynamics object)
-        if (typeof d === 'number') {
-          noteObject.v = d;
-          noteObject.d = { v: d };
-        } else {
-          noteObject.d = d;
-          // As a convenience, if the dynamics object has a .v (velocity) copy
-          // the .v directly to the noteObject. This allows dynamics objects
-          // to specify a midi velocity like this: `{ dbfs: -10, v: 32 }`
-          if (d && typeof(d.v) === 'number') noteObject.v = d.v;
-        }
+        if (d != null) event.d = d;
       }
-      clip.events.push(noteObject);
+      clip.events.push(event);
     }
     p += count;
   }
