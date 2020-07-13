@@ -207,6 +207,17 @@ describe('tab.parseTab', () => {
       ])
     });
 
+    it('should omit a .d value on events when the dLibrary+dPattern specify null/undefined ', () => {
+      const pattern  = '0.1.2...';
+      const dPattern = '0.1.2';
+      const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, [0, null, undefined]);
+      clip.events.should.deepEqual([
+        {s: 0,    l: 0.125, n: 0, d: 0 },
+        {s: 0.25, l: 0.125, n: 1 },
+        {s: 0.5,  l: 0.125, n: 2 },
+      ])
+    });
+
   }); // describe velocities (dPattern/dLibrary)
 
   describe('note objects', () => {

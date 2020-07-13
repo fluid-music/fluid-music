@@ -1,5 +1,6 @@
-function pathToNoteObject(path, fadeOut) {
+function pathToNoteObject(path, fadeOut, oneShot) {
   const obj = { type: 'file', path };
+  if (oneShot) obj.oneShot = true;
   if (typeof fadeOut === 'number') obj.fadeOut = fadeOut;
   return obj;
 }
@@ -35,7 +36,7 @@ const tambourineIntensityLayers = [
   'Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 05.wav',
   'Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 06.wav',
   'Session Drummer 2/Contents/Kits/9 - Percussion 1/Moon Tambourine/Moon Tambourine 07.wav',
-].map((path) => pathToNoteObject(path));
+].map((path) => pathToNoteObject(path, undefined, true));
 
 /**
  * Simple drum pattern note library

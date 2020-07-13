@@ -54,7 +54,7 @@ const msg = [
   fluid.pluginTCompressor.setThresholdDbfs(-25.44),
   fluid.pluginTCompressor.setRatio(3.7),
   fluid.pluginTCompressor.setAttackMs(24.5),  // medium attack, lets the transient through
-  fluid.pluginTCompressor.setReleaseMs(84.5), // mid-fast release exagerates the body+decay
+  fluid.pluginTCompressor.setReleaseMs(84.5), // mid-fast release exaggerates the body+decay
   fluid.pluginTCompressor.setMakeUpDbfs(10),  // yea
   fluid.audiotrack.send('verb room', -35),
 
