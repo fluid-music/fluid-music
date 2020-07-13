@@ -185,6 +185,28 @@ describe('tab.parseTab', () => {
       clipWithDynamics.events[1].d.should.deepEqual(dynamicsObject);
     });
 
+    it('should apply the most recent dynamic object', () => {
+      const pattern  = '0.1.2...';
+      const dPattern = '1.2.....';
+      const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, [0,1,2]);
+      clip.events.should.deepEqual([
+        {s: 0,    l: 0.125, n: 0, d: 1 },
+        {s: 0.25, l: 0.125, n: 1, d: 2 },
+        {s: 0.5,  l: 0.125, n: 2, d: 2 },
+      ])
+    });
+
+    it('should apply the most recent dynamic object even if the dPattern ends early', () => {
+      const pattern  = '0.1.2...';
+      const dPattern = '1.2';
+      const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, [0,1,2]);
+      clip.events.should.deepEqual([
+        {s: 0,    l: 0.125, n: 0, d: 1 },
+        {s: 0.25, l: 0.125, n: 1, d: 2 },
+        {s: 0.5,  l: 0.125, n: 2, d: 2 },
+      ])
+    });
+
   }); // describe velocities (dPattern/dLibrary)
 
   describe('note objects', () => {
@@ -211,3 +233,27 @@ describe('tab.parseTab', () => {
   }); // describe note objects
 
 }); // describe tab.parseTab
+
+
+describe('tab.parseDynamicPattern', () => {
+  const a        = {a: 'a'};
+  const b        = {b: 'b'};
+  const dPattern = 'a b ';
+  const dLibrary = {a, b, n: null, u: undefined}
+
+  it('should handle a simple case ', () => {
+    tab.parseDynamicPattern(dPattern, dLibrary).should.deepEqual([a, a, b, b]);
+  });
+
+  it('should output undefined when dPattern begins with a "." or " "',  () => {
+    tab.parseDynamicPattern('..b.', dLibrary).should.deepEqual([undefined, undefined, b, b]);
+  });
+
+  it('should treat null in the dLibrary like any other value', () => {
+    tab.parseDynamicPattern('abn.a', dLibrary).should.deepEqual([a,b,null,null,a]);
+  });
+
+  it('should treat undefined in the dLibrary like any other value', () => {
+    tab.parseDynamicPattern('abu.a', dLibrary).should.deepEqual([a,b,undefined,undefined,a]);
+  });
+});

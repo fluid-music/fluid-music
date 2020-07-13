@@ -32,8 +32,8 @@ const parseRhythm = function(rhythm) {
 };
 
 /**
- * Helper method to convert velocity string to an array corresponding to
- * velocities of each symbol in symbolsAndCounts.
+ * Helper method to convert Dynamic pattern string to an array corresponding to
+ * dynamic objects for of each symbol in symbolsAndCounts.
  *
  * @param {string} dPattern - String representation of note velocities.
  * @param symbolsAndCounts from patternToSymbolsAndCounts
@@ -56,13 +56,41 @@ const parseVelocity = function(dPattern, symbolsAndCounts, dLibrary){
     }
 
     if (!dLibrary.hasOwnProperty(dPattern[p]))
-        throw new Error(`velLibrary has no velocity value for "${dPattern[p]}"`);
+      throw new Error(`velLibrary has no velocity value for "${dPattern[p]}"`);
     let vel = dLibrary[dPattern[p]];
 
     velArray.push(vel)
     p += count;
   }
   return velArray;
+}
+
+/**
+ * @param {string} dPattern
+ * @param {Object|Object[]} dLibrary
+ */
+function parseDynamicPattern(dPattern, dLibrary) {
+  // dPattern = ' a .b'
+  const alpha = Array.from(dPattern).map(c => (c === ' ') ? '.' : c);
+  // ['.' 'a', '.', '.', 'b']
+  alpha.forEach((c, i, a) => {
+    if (i === 0) return;
+    if (c === '.') return a[i] = a[i-1];
+  });
+  // ['.', 'a', 'a', 'a', 'b']
+  const beta = arrayToSymbolsAndCounts(alpha);
+  // [['.', 1'], ['a', 3], ['b', 1]]
+  const gamma = beta.map(sc=> {
+    const [symbol, count] = sc;
+    if (symbol === '.' ) return [undefined, count];
+    if (!dLibrary.hasOwnProperty(symbol))
+      throw new Error('dLibrary does not have an object for '+symbol);
+    return [dLibrary[symbol], count];
+  });
+  // [undefined, aObj, aObj, aObj, bObj];
+  const oneObjectPerStep = gamma.flatMap(oc => R.repeat(oc[0], oc[1]));
+
+  return oneObjectPerStep;
 }
 
 /**
@@ -82,6 +110,7 @@ const parseVelocity = function(dPattern, symbolsAndCounts, dLibrary){
  *        pattern = '0.1.'
  *        noteLibrary = [60, 62]
  *        noteLibrary = {'0': 60, '1': 62 }
+ * @returns {Clip}
  */
 const parseTab = function(rhythm, nPattern, nLibrary, dPattern, dLibrary) {
   if (nPattern.length > rhythm.length)
@@ -89,7 +118,7 @@ const parseTab = function(rhythm, nPattern, nLibrary, dPattern, dLibrary) {
 
   const rhythmObject = parseRhythm(rhythm);
   const symbolsAndCounts = patternToSymbolsAndCounts(nPattern);
-  const dynamicArray = parseVelocity(dPattern, symbolsAndCounts, dLibrary);
+  const dynamicArray = (dPattern) ? parseDynamicPattern(dPattern, dLibrary) : null;
 
   let p = 0; // position (in the rhythmObject)
   const clip = {
@@ -114,8 +143,8 @@ const parseTab = function(rhythm, nPattern, nLibrary, dPattern, dLibrary) {
         n: note,
       };
 
-      if (dLibrary !== undefined) {
-        let d = dynamicArray[index];
+      if (dynamicArray) {
+        let d = dynamicArray[R.min(p, dynamicArray.length - 1)];
         if (d != null) event.d = d;
       }
       clip.events.push(event);
@@ -265,8 +294,12 @@ const getSegmentStartTotals = function(advances) {
  * positions that that symbols is active for.
  * @param {string} pattern
  */
-const patternToSymbolsAndCounts = function(pattern) {
-  const chars = Array.from(pattern.replace(/ /g, '.'));
+function patternToSymbolsAndCounts(pattern) {
+  return arrayToSymbolsAndCounts(Array.from(pattern));
+}
+
+function arrayToSymbolsAndCounts(chars) {
+  chars = chars.map(c => c === ' ' ? '.' : c);
   const results = [];
   // pattern: '0-......1-....22'
   // symbols:  0 .     1 .   22
@@ -340,7 +373,7 @@ const patternToSymbolsAndCounts = function(pattern) {
  * @param {Number} [startTime] - offset all the notes by this much
  * @returns {Clip} A Clip object containing all the notes from the input
  */
-const parse = function(object, rhythm, noteLibrary, startTime, dPattern, dLibrary) {
+function parse(object, rhythm, noteLibrary, startTime, dPattern, dLibrary) {
   if (typeof startTime !== 'number') startTime = 0;
 
   const clip = {
@@ -414,6 +447,7 @@ module.exports = {
   parse,
   parseTab,
   parseRhythm,
+  parseDynamicPattern,
   reservedKeys,
   rhythmToElapsedArray,
   rhythmToAdvanceArray,
