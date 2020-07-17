@@ -10,7 +10,7 @@ const score = {
   r:     '1 + 2 + 3 + 4 + ',
   kick:  {
   kick:  '.   . dd dD .D  ',
-  d:     '.   . mf ff .f  '},
+  d:     '.   . mf        '},
   snare: '.   k-  .   k-  ',
   tamb:  'c c c c c c c c ',
   bass:{
