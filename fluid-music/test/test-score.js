@@ -3,6 +3,7 @@ const should = require('should');
 const mocha = require('mocha');
 const score = require('../src/score');
 const audiotrack = require('../src/fluid/audiotrack');
+const fluid = require('../src/fluid');
 
 describe('score', () => {
   const nLibrary = [0, 1, 2, 3, 4, 5, 6];
@@ -265,6 +266,8 @@ describe('score', () => {
 
     const session1 = score.parse({f: '111', r, d: 'pmf'}, {dLibrary, nLibrary});
     const session2 = score.parse({f: '111', r, d: 'PMF'}, {dLibrary, nLibrary});
+    score.applyEventMappers(session1);
+    score.applyEventMappers(session2);
 
     const expectedResult = [
       audiotrack.insertWav('s0.0', 0,    'f1.wav'),

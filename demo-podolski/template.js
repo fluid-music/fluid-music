@@ -24,7 +24,17 @@ const dLibrary = {
   m: { dbfs: -2.6, intensity: 3/4 },
 };
 
+const customEventMappers = [
+  (note, context) => {
+    if (!note.n || note.n.type !== 'random') return note;
+    note.n = fluid.random.choice(note.n.choices);
+    return note;
+  }
+].concat(fluid.eventMappers.default);
+
 const session = fluid.score.parse(score, {nLibrary: drums.nLibrary, dLibrary});
+fluid.score.applyEventMappers(session, customEventMappers);
+
 const msg = [
   fluid.global.activate(file, true),
   fluid.tempo.set(96),
@@ -63,11 +73,7 @@ const msg = [
   fluid.audiotrack.send('verb room', -28),
 
   // content
-  fluid.score.tracksToFluidMessage(session.tracks, (note, context) => {
-    if (!note.n || note.n.type !== 'random') return note;
-    note.n = fluid.random.choice(note.n.choices);
-    return note;
-  }),
+  fluid.score.tracksToFluidMessage(session.tracks),
 ];
 
 const client = new fluid.Client();

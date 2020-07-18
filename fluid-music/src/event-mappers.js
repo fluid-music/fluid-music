@@ -2,6 +2,7 @@ const R          = require('ramda');
 const fluid      = require('./fluid/index');
 const noteTypes  = require('./note-types');
 const converters = require('./converters');
+const { clip } = require('./fluid/index');
 
 /**
  * score.tracksToFluidMessage passes ClipEvents through a series of eventMapper
@@ -21,7 +22,7 @@ const converters = require('./converters');
  */
 
 /**
- * Score.parse passes ClipEventContext objects as the second argument to
+ * Score.parse passes ClipContext objects as the second argument to
  * eventMapper functions. Its fields specify the context of the NoteObject
  * currently being processed, including the track and clip that contain the
  * note.
@@ -29,11 +30,11 @@ const converters = require('./converters');
  * @property {Clip} clip the Clip that contains the current event
  * @property {Track} track the Track that contains the current event
  * @property {TracksObject} tracks
- * @property {FluidMessage[]} messages
  * @property {number} clipIndex index of the clip within the track
- * @property {number} eventIndex index of the event within the clip.
- *    tracksToFluidMessage updates this automatically before each eventMapper
- *    callback.
+ * @property {number} [eventIndex] index of the event within the clip.
+ *    score.parse updates this automatically before each eventMapper
+ *    callback. Note available in (non-end-user) cases where a callback is
+ *    passed an array of events, this will not be available.
  * @property {Object} data this is a convenient place for `eventMapper`
  *    callbacks to store data if (for example) the event mapper needs to
  *    preserve information between callbacks. Like the EventContext, it is
@@ -78,22 +79,10 @@ function mapNumbersToMidiNotes(event, context) {
 function mapMidiNotes(event, context) {
   if (event.n.type !== noteTypes.midiNote) return event; // Arrays will still get returned
 
-  if (!context.data.createdMidiClip) {
-    const clipName  = `${context.track.name} ${context.clipIndex}`
-    const startTime = context.clip.startTime;
-    const duration  = context.clip.duration;
-    const clipMsg   = fluid.midiclip.select(clipName, startTime, duration)
-    context.messages.push(clipMsg);
-    context.data.createdMidiClip = true;
+  if (!context.clip.midiEvents) {
+    context.clip.midiEvents = [];
   }
-
-  // example midi notes
-  // NOTE: velocities are optional
-  // NOTE: velocity objects can specify .v (midi velocity) and/or dbfs gain
-  // { s: 0.0, l: 0.25, n: 60 v: 70 };
-  // { s: 0.5, l: 0.25, n: 60 d: { v: 70, dbfs: -12 } };
-  const noteMsg = fluid.midiclip.note(event.n.n, event.s, event.l, event.v);
-  context.messages.push(noteMsg);
+  context.clip.midiEvents.push(event);
   return null;
 }
 
@@ -141,38 +130,8 @@ function mapIntensityLayers(event, context) {
  */
 function mapAudioFiles(event, context) {
   if (!event.hasOwnProperty('n') || event.n.type !== noteTypes.file) return event;
-
-  // exampleClipEvent = {
-  //   s: 0.50, // start
-  //   l: 0.25, // length
-  //   n: { type: 'file', path: 'media/kick.wav' },
-  //   d: { v: 70, dbfs: -10 }, // If .v is present here...
-  //   v: 70,                   // ...it will also be here...
-  //                            // (but vice versa is not guaranteed)
-  // };
-
-  const startTime = context.clip.startTime + event.s;
-
-  if (typeof event.n.path !== 'string') {
-    console.error(event.n);
-    throw new Error('tracksToFluidMessage: A file object found in note library does not have a .path string');
-  };
-
-  const clipName = `s${context.clipIndex}.${context.eventIndex}`;
-  const msg = [fluid.audiotrack.insertWav(clipName, startTime, event.n.path)];
-
-  // adjust the clip length, unless the event is a .oneShot
-  if (!event.n.oneShot) msg.push(fluid.clip.length(event.l));
-
-  // apply fade in/out times (if specified)
-  if (typeof event.n.fadeOut === 'number' || typeof event.n.fadeIn === 'number')
-    msg.push(fluid.audioclip.fadeInOutSeconds(event.n.fadeIn, event.n.fadeOut));
-
-  // If there is a dynamics object, look for a dbfs property and apply gain.
-  if (event.d && typeof(event.d.dbfs) === 'number')
-    msg.push(fluid.audioclip.gain(event.d.dbfs));
-
-  context.messages.push(msg);
+  if (!context.clip.fileEvents) context.clip.fileEvents = [];
+  context.clip.fileEvents.push(event);
   return null;
 }
 
