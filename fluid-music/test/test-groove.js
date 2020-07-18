@@ -8,7 +8,7 @@ const fluid = require('../src/index');
 const file = fs.readFileSync('./test/test-content.yaml', 'utf8');
 const content = YAML.parse(file);
 
-describe("groove", () => {
+describe.skip("groove", () => {
     const notes = [
         { n: 42, s: 0, l: 0.125 },
         { n: 42, s: 0.125, l: 0.125 },
