@@ -32,40 +32,6 @@ const parseRhythm = function(rhythm) {
 };
 
 /**
- * Helper method to convert Dynamic pattern string to an array corresponding to
- * dynamic objects for of each symbol in symbolsAndCounts.
- *
- * @param {string} dPattern - String representation of note velocities.
- * @param symbolsAndCounts from patternToSymbolsAndCounts
- * @param {number[]} dLibrary - an indexable array containing velocity values.
- *
- * @returns {number[]} - an array representing the velocity of each symbol.
- */
-const parseVelocity = function(dPattern, symbolsAndCounts, dLibrary){
-  let p = 0;
-  const velArray = []
-  if(typeof(dPattern) !== 'string') return false;
-  for (let sc of symbolsAndCounts){
-    let symbol = sc[0];
-    let count = sc[1];
-
-    if (isEmpty(symbol)) {
-      velArray.push(0);
-      p += count;
-      continue;
-    }
-
-    if (!dLibrary.hasOwnProperty(dPattern[p]))
-      throw new Error(`velLibrary has no velocity value for "${dPattern[p]}"`);
-    let vel = dLibrary[dPattern[p]];
-
-    velArray.push(vel)
-    p += count;
-  }
-  return velArray;
-}
-
-/**
  * @param {string} dPattern
  * @param {Object|Object[]} dLibrary
  */
@@ -427,8 +393,8 @@ const reservedKeys = {
   d: null,            // dynamics pattern
   v: null,            // deprecated. formerly velocity
   noteLibrary : null, // deprecated in favor of nLibrary
-  nLibrary: null,
-  vLibrary: null,     // deprecated
+  nLibrary: null,     // note library
+  vLibrary: null,     // deprecated in favor of dLibrary
   eLibrary: null,     // Possible use: events library
   dLibrary: null,     // dynamics library
   duration: null,
