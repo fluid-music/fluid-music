@@ -197,7 +197,7 @@ them to FluidMessages.</p>
 <p>In general, eventMapper functions have 5 things they can do:</p>
 <p>1) Return the unmodified <code>ClipEvent</code>, passing it to subsequent eventMappers.
 2) Return null or a falsy value - the event will be ignored
-3) Return a different Event object, which replaces the input note object
+3) Return a different Event object, which replaces the input Event
 4) Return an array of Event objects, each of which will be parsed by
    subsequent eventMapper functions.
 5) Add fluid messages to <code>context.messages</code></p>
@@ -273,17 +273,17 @@ contains two clips:</p>
   bass: {
     clips: [
       {
-        notes: [
-          { s: 0,     l: 0.0833, n: 33, d: 100 },
-          { s: 0.25,  l: 0.0833, n: 35, d: 90 },
-          { s: 0.33,  l: 0.0833, n: 38, d: 60 },
+        events: [
+          { s: 0,     l: 0.0833, n: { n: 33, type: &#39;midiNote&#39; }, d: { v: 100 } },
+          { s: 0.25,  l: 0.0833, n: { n: 35, type: &#39;midiNote&#39; }, d: { v: 90 } },
+          { s: 0.33,  l: 0.0833, n: { n: 38, type: &#39;midiNote&#39; }, d: { v: 60 } },
         ],
         startTime: 2,
         duration:  1,
       },
       {
-        notes: [
-          { s: 0.5, l: 0.25, e: { type: &#39;file&#39;, path: &#39;media/kick.wav&#39; } },
+        events: [
+          { s: 0.5, l: 0.25, n: { type: &#39;file&#39;, path: &#39;media/kick.wav&#39; } },
         ],
         startTime: 3,
         duration:  1,
@@ -312,7 +312,10 @@ this specifies a MIDI velocity, or a dBFS gain value.</p>
 </dd>
 <dt><a href="#Note">Note</a> : <code>Object</code></dt>
 <dd><p>Represents a timeline event such as a MIDI note or an audio sample.</p>
-<p>These can be found in an <code>nLibrary</code>, or in the <code>.n</code> field of a <code>ScoreEvent</code>.</p>
+<pre><code>const exampleNotes = [
+{ type: &#39;midiNote&#39;, n: 64 },
+{ type: &#39;file&#39;, path: &#39;path/to/sample.wav&#39; }
+];</code></pre><p>These can be found in an <code>nLibrary</code>, or in the <code>.n</code> field of a <code>ScoreEvent</code>.</p>
 </dd>
 <dt><a href="#FluidMessage">FluidMessage</a> : <code>Object</code> | <code>Array</code></dt>
 <dd><p>Represents any type of message that can be sent from a client such as
@@ -1275,7 +1278,7 @@ them to FluidMessages.
 In general, eventMapper functions have 5 things they can do:
 1) Return the unmodified `ClipEvent`, passing it to subsequent eventMappers.
 2) Return null or a falsy value - the event will be ignored
-3) Return a different Event object, which replaces the input note object
+3) Return a different Event object, which replaces the input Event
 4) Return an array of Event objects, each of which will be parsed by
    subsequent eventMapper functions.
 5) Add fluid messages to `context.messages`
@@ -1306,7 +1309,7 @@ note.
 | messages | [<code>Array.&lt;FluidMessage&gt;</code>](#FluidMessage) |  |
 | clipIndex | <code>number</code> | index of the clip within the track |
 | eventIndex | <code>number</code> | index of the event within the clip.    tracksToFluidMessage updates this automatically before each eventMapper    callback. |
-| data | <code>Object</code> | this is a convenient place for `eventMapper`    callbacks to store data it, for example, the event mapper needs to    preserve information between callbacks. Like the EventContext, it is    replaced for each Clip. |
+| data | <code>Object</code> | this is a convenient place for `eventMapper`    callbacks to store data if (for example) the event mapper needs to    preserve information between callbacks. Like the EventContext, it is    replaced for each Clip. |
 
 <a name="ScoreObject"></a>
 
@@ -1396,17 +1399,17 @@ contains two clips:
   bass: {
     clips: [
       {
-        notes: [
-          { s: 0,     l: 0.0833, n: 33, d: 100 },
-          { s: 0.25,  l: 0.0833, n: 35, d: 90 },
-          { s: 0.33,  l: 0.0833, n: 38, d: 60 },
+        events: [
+          { s: 0,     l: 0.0833, n: { n: 33, type: 'midiNote' }, d: { v: 100 } },
+          { s: 0.25,  l: 0.0833, n: { n: 35, type: 'midiNote' }, d: { v: 90 } },
+          { s: 0.33,  l: 0.0833, n: { n: 38, type: 'midiNote' }, d: { v: 60 } },
         ],
         startTime: 2,
         duration:  1,
       },
       {
-        notes: [
-          { s: 0.5, l: 0.25, e: { type: 'file', path: 'media/kick.wav' } },
+        events: [
+          { s: 0.5, l: 0.25, n: { type: 'file', path: 'media/kick.wav' } },
         ],
         startTime: 3,
         duration:  1,
@@ -1485,6 +1488,13 @@ These can be found in a `dLibrary`, or in the `.d` field of a `ScoreEvent`.
 
 ## Note : <code>Object</code>
 Represents a timeline event such as a MIDI note or an audio sample.
+
+```
+const exampleNotes = [
+{ type: 'midiNote', n: 64 },
+{ type: 'file', path: 'path/to/sample.wav' }
+];
+```
 
 These can be found in an `nLibrary`, or in the `.n` field of a `ScoreEvent`.
 

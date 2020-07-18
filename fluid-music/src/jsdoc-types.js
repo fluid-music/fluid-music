@@ -79,17 +79,17 @@
  *   bass: {
  *     clips: [
  *       {
- *         notes: [
- *           { s: 0,     l: 0.0833, n: 33, d: 100 },
- *           { s: 0.25,  l: 0.0833, n: 35, d: 90 },
- *           { s: 0.33,  l: 0.0833, n: 38, d: 60 },
+ *         events: [
+ *           { s: 0,     l: 0.0833, n: { n: 33, type: 'midiNote' }, d: { v: 100 } },
+ *           { s: 0.25,  l: 0.0833, n: { n: 35, type: 'midiNote' }, d: { v: 90 } },
+ *           { s: 0.33,  l: 0.0833, n: { n: 38, type: 'midiNote' }, d: { v: 60 } },
  *         ],
  *         startTime: 2,
  *         duration:  1,
  *       },
  *       {
- *         notes: [
- *           { s: 0.5, l: 0.25, e: { type: 'file', path: 'media/kick.wav' } },
+ *         events: [
+ *           { s: 0.5, l: 0.25, n: { type: 'file', path: 'media/kick.wav' } },
  *         ],
  *         startTime: 3,
  *         duration:  1,
@@ -148,6 +148,13 @@
 
  /**
   * Represents a timeline event such as a MIDI note or an audio sample.
+  *
+  * ```
+  * const exampleNotes = [
+  * { type: 'midiNote', n: 64 },
+  * { type: 'file', path: 'path/to/sample.wav' }
+  * ];
+  * ```
   *
   * These can be found in an `nLibrary`, or in the `.n` field of a `ScoreEvent`.
   * @typedef {Object} Note

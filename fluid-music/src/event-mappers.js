@@ -11,7 +11,7 @@ const converters = require('./converters');
  * In general, eventMapper functions have 5 things they can do:
  * 1) Return the unmodified `ClipEvent`, passing it to subsequent eventMappers.
  * 2) Return null or a falsy value - the event will be ignored
- * 3) Return a different Event object, which replaces the input note object
+ * 3) Return a different Event object, which replaces the input Event
  * 4) Return an array of Event objects, each of which will be parsed by
  *    subsequent eventMapper functions.
  * 5) Add fluid messages to `context.messages`
@@ -35,7 +35,7 @@ const converters = require('./converters');
  *    tracksToFluidMessage updates this automatically before each eventMapper
  *    callback.
  * @property {Object} data this is a convenient place for `eventMapper`
- *    callbacks to store data it, for example, the event mapper needs to
+ *    callbacks to store data if (for example) the event mapper needs to
  *    preserve information between callbacks. Like the EventContext, it is
  *    replaced for each Clip.
  */
