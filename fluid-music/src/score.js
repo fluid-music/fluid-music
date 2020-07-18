@@ -47,7 +47,7 @@ function parse(scoreObject, config, session, tracks={}) {
   // Internally, there are three handlers for (1)arrays (2)strings (3)objects
   //
   // All three handlers must:
-  // - return an object that has a .duration property. Duration are interperated
+  // - return an object that has a .duration property. Duration are interpreted
   //   differently for Arrays, Objects, and Strings found in the input object.
   //   - Array:  sum of the duration of the array's elements
   //   - Object: duration of the longest child
@@ -87,16 +87,14 @@ function parse(scoreObject, config, session, tracks={}) {
     if (config.nLibrary === undefined)
       throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a nLibrary`);
 
-    const duration = R.last(parseRhythm(config.r).totals);
-    const result = parseTab(config.r, scoreObject, config.nLibrary, config.d, config.dLibrary);
-    result.startTime = config.startTime;
-    result.duration = duration;
+    const resultClip = parseTab(config.r, scoreObject, config.nLibrary, config.d, config.dLibrary);
+    resultClip.startTime = config.startTime;
 
     const trackKey = config.trackKey;
     if (!tracks[trackKey]) tracks[trackKey] = {clips: [], name: trackKey};
-    tracks[trackKey].clips.push(result);
+    tracks[trackKey].clips.push(resultClip);
 
-    return result;
+    return resultClip;
   } else {
     // Assume we have a JavaScript Object
     for (let [key, val] of Object.entries(scoreObject)) {

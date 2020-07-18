@@ -110,7 +110,7 @@ function parseDynamicPattern(dPattern, dLibrary) {
  *        pattern = '0.1.'
  *        noteLibrary = [60, 62]
  *        noteLibrary = {'0': 60, '1': 62 }
- * @returns {Clip}
+ * @returns {Clip} (missing `startTime`. `startTime` is added by `score.parse`)
  */
 const parseTab = function(rhythm, nPattern, nLibrary, dPattern, dLibrary) {
   if (nPattern.length > rhythm.length)
