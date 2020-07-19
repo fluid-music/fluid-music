@@ -28,7 +28,6 @@ const score = {
 
 // nLibrary = { F: [41, 53], c: [34, 46], f: [41, 29], d: [44], e: [46], H: [48], k };
 const session = fluid.score.parse(score, {nLibrary, r, dLibrary, d, startTime: 1});
-fluid.score.applyEventMappers(session);
 
 helpers.humanize(session.tracks.organ1, 0.008);
 const message = [

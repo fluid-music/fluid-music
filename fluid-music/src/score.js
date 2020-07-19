@@ -36,10 +36,11 @@ function parse(scoreObject, config, session, tracks={}) {
   if (!config) config = {};
   else config = Object.assign({}, config); // Shallow copy should be ok
 
-  if (scoreObject.hasOwnProperty('nLibrary')) config.nLibrary = scoreObject.nLibrary;
-  if (scoreObject.hasOwnProperty('dLibrary')) config.dLibrary = scoreObject.dLibrary;
-  if (scoreObject.hasOwnProperty('r'))        config.r = scoreObject.r;
-  if (scoreObject.hasOwnProperty('d'))        config.d = scoreObject.d;
+  if (scoreObject.hasOwnProperty('eventMappers')) config.eventMappers = scoreObject.eventMappers
+  if (scoreObject.hasOwnProperty('nLibrary'))     config.nLibrary = scoreObject.nLibrary;
+  if (scoreObject.hasOwnProperty('dLibrary'))     config.dLibrary = scoreObject.dLibrary;
+  if (scoreObject.hasOwnProperty('r'))            config.r = scoreObject.r;
+  if (scoreObject.hasOwnProperty('d'))            config.d = scoreObject.d;
   // Note that we cannot specify a .startTime in a score like we can for rhythms
   if (typeof config.startTime !== 'number') config.startTime = 0;
 
@@ -87,6 +88,7 @@ function parse(scoreObject, config, session, tracks={}) {
 
     const resultClip = parseTab(config.r, scoreObject, config.nLibrary, config.d, config.dLibrary);
     resultClip.startTime = config.startTime;
+    if (config.eventMappers) resultClip.eventMappers = config.eventMappers;
 
     const trackKey = config.trackKey;
     if (!tracks[trackKey]) tracks[trackKey] = {clips: [], name: trackKey};
@@ -109,11 +111,12 @@ function parse(scoreObject, config, session, tracks={}) {
 };
 
 /**
- *
  * @param {Session} session
- * @param {eventMapper[]} eventMappers
+ * @param {eventMapper[]} [ubiquitousMappers] fluid supplies a default
+ *    collection of mappers that are needed for proper parsing. To override
+ *    the default mappers, specify null or an empty array.
  */
-function applyEventMappers(session, eventMappers=mappers.default) {
+function applyEventMappers(session, ubiquitousMappers=mappers.default) {
 
   for (const [trackName, track] of Object.entries(session.tracks)) {
     if (tab.reservedKeys.hasOwnProperty(trackName)) {
@@ -134,6 +137,13 @@ function applyEventMappers(session, eventMappers=mappers.default) {
         data: {},
       };
 
+      ubiquitousMappers = ubiquitousMappers || []; // null overrides default
+      let customMappers = [];
+      if (clip.hasOwnProperty('eventMappers')) {
+        customMappers = clip.eventMappers;
+        delete clip.eventMappers;
+      }
+      const eventMappers = customMappers.concat(ubiquitousMappers);
       // The code below shows what data are available inside eventMapper
       // callbacks. The contents of context.clip.events can look different to
       // each round of callbacks. Note the order of the loops: In the first
@@ -155,12 +165,12 @@ function applyEventMappers(session, eventMappers=mappers.default) {
       // they will still be mutated by event mappers, so the event.n members
       // will likely not look the same as the objects in the .nLibrary objects.
       clip.unmappedEvents = clip.events;
-      let events = clip.events.flat();
+      clip.events = clip.events.flat();
       for (const eventMapper of eventMappers) {
-        clip.events = events.flatMap((event, i) => {
+        clip.events = clip.events.flatMap((event, i) => {
           context.eventIndex = i;
           return eventMapper(event, context);
-        }).filter(noteEvent => !!noteEvent);
+        }).filter(event => !!event);
       }; // iterate over eventMappers
     });  // iterate over clips
   }      // iterate over tracks

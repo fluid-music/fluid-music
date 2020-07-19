@@ -397,6 +397,7 @@ const reservedKeys = {
   vLibrary: null,     // deprecated in favor of dLibrary
   eLibrary: null,     // Possible use: events library
   dLibrary: null,     // dynamics library
+  eventMappers: null, // specifies custom eventMapper methods
   duration: null,
   startTime: null,
   meta: null,
