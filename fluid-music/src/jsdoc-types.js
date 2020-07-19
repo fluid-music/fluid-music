@@ -18,21 +18,25 @@
  *           events: [ { s: 0, l: 0.25, n: 0 } ],
  *           duration: 1,
  *           startTime: 0
+ *           midiEvents: [{s: 0, l: 0.25, n: {n: 0, type: 'midiNote'}}],
  *         },
  *         {
  *           events: [ { s: 0, l: 0.25, n: 1 } ],
  *           duration: 1,
  *           startTime: 1
+ *           midiEvents: [{s: 0, l: 0.25, n: {n: 1, type: 'midiNote'}}],
  *         },
  *         {
  *           events: [ { s: 0, l: 0.25, n: 2 } ],
  *           duration: 1,
  *           startTime: 2
+ *           midiEvents: [{s: 0, l: 0.25, n: {n: 2, type: 'midiNote'}}],
  *         },
  *         {
  *           events: [ { s: 0, l: 0.25, n: 3 } ],
  *           duration: 1,
  *           startTime: 3
+ *           midiEvents: [{s: 0, l: 0.25, n: {n: 3, type: 'midiNote'}}],
  *         }
  *       ]
  *     }
@@ -104,7 +108,7 @@
 /**
  * @typedef {Object} Track
  * @param {Clip[]} clips
- * @param {string} name - The Track name
+ * @param {string} name The Track name
  * @param {number} [duration]  // Charles: do all Track objects have a duration?
  * @param {number} [startTime] // Charles: do all Track objects have a startTime?
  */
@@ -112,6 +116,8 @@
 /**
  * @typedef {Object} Clip
  * @property {ClipEvent[]} events
+ * @property {ClipEvent[]} midiEvents
+ * @property {ClipEvent[]} fileEvents
  * @property {number} duration duration in whole notes
  * @property {number} [startTime] start time in whole notes
  */

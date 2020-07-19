@@ -12,14 +12,14 @@ describe('score', () => {
   describe('score.parse', () => {
     const p1 = '.0..'
     const clip1 = {
-      events: [{ n: 0, s: 0.25, l: 0.25 }],
+      events: [{ n: {n: 0}, s: 0.25, l: 0.25 }],
       startTime: 0,
       duration: 1,
     };
 
     const p2 = '01..';
     const clip2 = {
-      events: [{ n: 0, s: 0, l: 0.25 }, { n:1, s: 0.25, l: 0.25 }],
+      events: [{ n: {n: 0}, s: 0, l: 0.25 }, { n: {n: 1}, s: 0.25, l: 0.25 }],
       duration: 1,
     };
 
@@ -49,13 +49,13 @@ describe('score', () => {
         const result = score.parse(s1);
 
         const clip1 = {
-          events: [{s: 0.25, l: 0.25, n: 0}],
+          events: [{s: 0.25, l: 0.25, n: {n: 0}}],
           duration: 1,
           startTime: 0,
         };
 
         const clip2 = {
-          events: [{s: 0.25, l: 0.25, n: 1}],
+          events: [{s: 0.25, l: 0.25, n: {n: 1}}],
           duration: 1,
           startTime: 1,
         }
@@ -75,10 +75,10 @@ describe('score', () => {
           ['0...', '1...'],
           '2...', '3...'
         ]};
-        const clip0 = { events: [{n: 0, s: 0, l: 0.25}], startTime: 0, duration: 1 };
-        const clip1 = { events: [{n: 1, s: 0, l: 0.25}], startTime: 1, duration: 1 };
-        const clip2 = { events: [{n: 2, s: 0, l: 0.25}], startTime: 2, duration: 1 };
-        const clip3 = { events: [{n: 3, s: 0, l: 0.25}], startTime: 3, duration: 1 };
+        const clip0 = { events: [{n: {n: 0}, s: 0, l: 0.25}], startTime: 0, duration: 1 };
+        const clip1 = { events: [{n: {n: 1}, s: 0, l: 0.25}], startTime: 1, duration: 1 };
+        const clip2 = { events: [{n: {n: 2}, s: 0, l: 0.25}], startTime: 2, duration: 1 };
+        const clip3 = { events: [{n: {n: 3}, s: 0, l: 0.25}], startTime: 3, duration: 1 };
 
         const result1 = score.parse(s1);
         result1.tracks.should.containDeep({
@@ -95,10 +95,10 @@ describe('score', () => {
           ['2...', '3...']
         ]};
 
-        const clip0 = { events: [{n: 1, s: 0, l: 0.25}], startTime: 0 };
-        const clip1 = { events: [{n: 0, s: 0, l: 0.25}, { n:1, s: 0.5, l: 0.25 }], startTime: 1 };
-        const clip2 = { events: [{n: 2, s: 0, l: 0.25}], startTime: 2 };
-        const clip3 = { events: [{n: 3, s: 0, l: 0.25}], startTime: 3 };
+        const clip0 = { events: [{n: {n: 1}, s: 0, l: 0.25}], startTime: 0 };
+        const clip1 = { events: [{n: {n: 0}, s: 0, l: 0.25}, { n: {n: 1}, s: 0.5, l: 0.25 }], startTime: 1 };
+        const clip2 = { events: [{n: {n: 2}, s: 0, l: 0.25}], startTime: 2 };
+        const clip3 = { events: [{n: {n: 3}, s: 0, l: 0.25}], startTime: 3 };
 
         const result1 = score.parse(s1);
         result1.tracks.should.containDeep({
@@ -120,10 +120,10 @@ describe('score', () => {
         ]};
 
         // expected
-        const clip0 = { events: [{n: 0, s: 0, l: 0.25}], startTime: 0, duration: 1 };
-        const clip1 = { events: [{n: 1, s: 0, l: 0.25}], startTime: 1, duration: 1 };
-        const clip2 = { events: [{n: 2, s: 0, l: 0.25}], startTime: 2, duration: 1 };
-        const clip3 = { events: [{n: 3, s: 0, l: 0.25}], startTime: 3, duration: 1 };
+        const clip0 = { events: [{n: {n: 0}, s: 0, l: 0.25}], startTime: 0, duration: 1 };
+        const clip1 = { events: [{n: {n: 1}, s: 0, l: 0.25}], startTime: 1, duration: 1 };
+        const clip2 = { events: [{n: {n: 2}, s: 0, l: 0.25}], startTime: 2, duration: 1 };
+        const clip3 = { events: [{n: {n: 3}, s: 0, l: 0.25}], startTime: 3, duration: 1 };
         const expectedResult = {
           main: {
             clips: [clip0, clip3],
@@ -146,10 +146,10 @@ describe('score', () => {
           {r, nLibrary, trackKey});
 
         // expected result
-        const clip0 = { events: [{n: 0, s: 0, l: 0.25}], startTime: 0, duration: 1 };
-        const clip1 = { events: [{n: 1, s: 0, l: 0.25}], startTime: 1, duration: 1 };
-        const clip2 = { events: [{n: 2, s: 0, l: 0.25}], startTime: 2, duration: 1 };
-        const clip3 = { events: [{n: 3, s: 0, l: 0.25}], startTime: 3, duration: 1 };
+        const clip0 = { events: [{n: { n: 0 }, s: 0, l: 0.25}], startTime: 0, duration: 1 };
+        const clip1 = { events: [{n: { n: 1 }, s: 0, l: 0.25}], startTime: 1, duration: 1 };
+        const clip2 = { events: [{n: { n: 2 }, s: 0, l: 0.25}], startTime: 2, duration: 1 };
+        const clip3 = { events: [{n: { n: 3 }, s: 0, l: 0.25}], startTime: 3, duration: 1 };
         const expectedResult = {
           duration: 4,
           tracks: {
@@ -177,11 +177,11 @@ describe('score', () => {
       ]};
 
       const s1Copy = R.clone(s1);
-      const clip0 = { events: [{n: 0, s: 0, l: 0.25}], startTime: 0, duration: 1 };
-      const clip1 = { events: [{n: 1, s: 0, l: 0.25}], startTime: 0, duration: 2 };
-      const clip2 = { events: [{n: 2, s: 0, l: 0.25}], startTime: 0, duration: 1 };
-      const clip3 = { events: [{n: 3, s: 0, l: 0.25}], startTime: 2, duration: 1 };
-      const clip4 = { events: [{n: 4, s: 0, l: 0.25}], startTime: 3, duration: 1 };
+      const clip0 = { events: [{n: { n: 0 }, s: 0, l: 0.25}], startTime: 0, duration: 1 };
+      const clip1 = { events: [{n: { n: 1 }, s: 0, l: 0.25}], startTime: 0, duration: 2 };
+      const clip2 = { events: [{n: { n: 2 }, s: 0, l: 0.25}], startTime: 0, duration: 1 };
+      const clip3 = { events: [{n: { n: 3 }, s: 0, l: 0.25}], startTime: 2, duration: 1 };
+      const clip4 = { events: [{n: { n: 4 }, s: 0, l: 0.25}], startTime: 3, duration: 1 };
 
       const expectedResult = {
         main:  { clips: [clip4] },
@@ -210,10 +210,10 @@ describe('score', () => {
       ]};
 
       // expected
-      const clip0 = { events: [{n: 0, s: 0, l: 0.25}], startTime: 0, duration: 1 };
-      const clip1 = { events: [{n: 1, s: 0, l: 0.25}], startTime: 1, duration: 1 };
-      const clip2 = { events: [{n: 2, s: 0, l: 0.25}], startTime: 2, duration: 1 };
-      const clip3 = { events: [{n: 3, s: 0, l: 0.25}], startTime: 3, duration: 1 };
+      const clip0 = { events: [{n: { n: 0, type: 'midiNote'} , s: 0, l: 0.25}], startTime: 0, duration: 1 };
+      const clip1 = { events: [{n: { n: 1, type: 'midiNote'} , s: 0, l: 0.25}], startTime: 1, duration: 1 };
+      const clip2 = { events: [{n: { n: 2, type: 'midiNote'} , s: 0, l: 0.25}], startTime: 2, duration: 1 };
+      const clip3 = { events: [{n: { n: 3, type: 'midiNote'} , s: 0, l: 0.25}], startTime: 3, duration: 1 };
       const expectedResult = {
         main: {
           clips: [clip0, clip3],

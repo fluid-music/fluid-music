@@ -104,7 +104,7 @@ function parse(scoreObject, config, session, tracks={}) {
     }
   }
 
-  // if (isOutermost) applyEventMappers(returnValue)
+  if (isOutermost) applyEventMappers(returnValue)
   return returnValue;
 };
 
