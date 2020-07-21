@@ -73,6 +73,15 @@ function mapNumbersToMidiNotes(event, context) {
 }
 
 /**
+ * @param {ClipEvent} event
+ * @param {ClipEventContext} context
+ */
+function mapAutomation(event, context) {
+  if (typeof event.n !== 'auto') return event;
+  return event; // TODO: insert into automation
+}
+
+/**
 * @param {ClipEvent} event
 * @param {ClipEventContext} context
 */
@@ -138,12 +147,14 @@ function mapAudioFiles(event, context) {
 module.exports = {
   mapVelocityNumbersToDynamic,
   mapNumbersToMidiNotes,
+  mapAutomation,
   mapMidiNotes,
   mapIntensityLayers,
   mapAudioFiles,
   default: [
     mapVelocityNumbersToDynamic,
     mapNumbersToMidiNotes,
+    mapAutomation,
     mapMidiNotes,
     mapIntensityLayers,
     mapAudioFiles,

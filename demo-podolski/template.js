@@ -6,6 +6,14 @@ const drums   = require('./drums');
 const file    = path.join(process.cwd(), 'session.tracktionedit');
 const dragonflyRoom = fluid.pluginDragonflyRoomReverb;
 
+// experimental automation point
+const a = {
+  type: fluid.noteTypes.auto,
+  plugin: { name: 'Podolski.64' },
+  param: fluid.pluginPodolski.params.vcf0Cutoff,
+  value: 0.5,
+};
+
 const score = {
   r:     '1 + 2 + 3 + 4 + ',
   kick:  {
@@ -14,8 +22,8 @@ const score = {
   snare: '.   k-  .   k-  ',
   tamb:  'c c c c c c c c ',
   bass:{
-    bass:'       b-       ',
-    nLibrary: {b: 40, c: 48},
+    bass:'       b-   ab  ',
+    nLibrary: {b: 40, c: 48, a },
   },
 };
 

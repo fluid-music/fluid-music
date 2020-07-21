@@ -83,11 +83,12 @@
  *   bass: {
  *     clips: [
  *       {
- *         events: [
+ *         midiEvents: [
  *           { s: 0,     l: 0.0833, n: { n: 33, type: 'midiNote' }, d: { v: 100 } },
  *           { s: 0.25,  l: 0.0833, n: { n: 35, type: 'midiNote' }, d: { v: 90 } },
  *           { s: 0.33,  l: 0.0833, n: { n: 38, type: 'midiNote' }, d: { v: 60 } },
  *         ],
+ *         fileEvents: [...],
  *         startTime: 2,
  *         duration:  1,
  *       },
@@ -98,7 +99,17 @@
  *         startTime: 3,
  *         duration:  1,
  *       },
- *     ]
+ *     ], // clips
+ *     plugins: [
+ *       {
+ *         name: 'Podolski.64',
+ *         type: 'VST',
+ *         automation: {
+ *           "VCF0: Cutoff":    { points: [ { startTime: 0, value: 0.4 } ] },
+ *           "VCF0: Resonance": { points: [ { startTime: 0, value: 0.5 } ] },
+ *         }
+ *       }
+ *     ] // plugins
  *   }
  * }
  * ```
@@ -123,6 +134,26 @@
  */
 
 /**
+ * @typedef {Object} PluginInstance
+ * @property {string} name
+ * @property {string} [type] VST, VST3, AudioUnit
+ * @property {Object.<string, Automation>} automation
+ */
+
+/**
+ * @typedef {Object} Automation
+ * @property {AutomationPoint[]} points
+ */
+
+ /**
+  * @typedef {Object} AutomationPoint
+  * @property {number} startTime the time in beats
+  * @property {number} [curve=0]
+  * @property {number} value
+  */
+
+
+/**
  * ClipEvents combine a `Note`, a `Dynamic` marking, a `s`tart time, and a
  * `l`ength. The start time is measured from the beginning of the Clip that
  * contains the event (unlike `Clip.startTime` which is relative to the start of
@@ -133,7 +164,7 @@
  * score. `Note` objects also have a `.type` field, while `ClipEvent`s do not.
  * @typedef {Object} ClipEvent
  * @property {number} l length in whole notes
- * @property {number} s start time in whole notes
+ * @property {number} s start time in whole notes, measured from clip start
  * @property {Note} n a `Note` event. Sometimes these might be a number
  * @property {number} [v=64] optional midi velocity
  * @property {Dynamic} [d] Signifies a dynamic marking
