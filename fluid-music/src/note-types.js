@@ -5,6 +5,10 @@ module.exports = {
   auto: 'auto',
 
   examples: {
+    /**
+     * The `auto` note type represents an an automation point for a specific
+     * plugin on an arbitrary (selected) audio track.
+     */
     auto: {
       type: 'auto',
       plugin: {      // identifies a plugin on an arbitrary track
@@ -14,7 +18,7 @@ module.exports = {
                      // same name. Index from within those plugins.
                      // Most of the time this isn't needed, because it is
                      // unusual to have more than one plugin with a given
-                     // name on a particular track. This is the index
+                     // name on a particular track.
       },
       param: {
         name: 'Early Send',        // Parameter's name as reported by the plugin
@@ -22,7 +26,8 @@ module.exports = {
         normalize: (v) => v / 100, // The plugin GUI measures this parameter in
                                    // percent. The normalize function transforms
                                    // a percent into a value between 0 and 1.
-      }
+      },
+      value: 80,                   // param.units indicates value's unit type
     }
   }
 };

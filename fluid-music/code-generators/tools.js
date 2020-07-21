@@ -78,10 +78,14 @@ module.exports = {
   /**
    * Select a \`${pluginName}\` vst plugin on the selected track, creating a new
    * plugin instance if needed
-   * @param {number} [pluginId] - optional index of the plugin to select
+   * @param {number} [nth] Optional index of the \`${pluginName}\` instance.
+   *    The selected track may have multiple plugins with the same name. Index
+   *    from within those plugins. Most of the time this isn't needed, because
+   *    it is unusual to have more than one plugin with a given name on a
+   *    particular track.
    */
-  select(pluginId) {
-    return fluid.plugin.select('${pluginName}', 'vst', pluginId);
+  select(nth) {
+    return fluid.plugin.select('${pluginName}', 'vst', nth);
   },
 ` );
 
