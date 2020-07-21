@@ -19,7 +19,13 @@ const plugin = {
    * @param {string} pluginName - the name of the vst plugin
    * @param {string} [pluginType] - optional type, for example 'VST', 'VST3',
    *        'AudioUnit'. If omitted, search all types.
-   * @param {number} [pluginId=0] - the id of the plugin
+   * @param {number} [pluginId=0] - If there are multiple instances of the named
+   *    plugin on the selected track, use this argument if you want to select a
+   *    specific one one (by default this selects the first plugin with the
+   *    given name). Note that pluginId only counts plugins that match the given
+   *    pluginName, so pluginName='podolski', pluginId=1 will always select the
+   *    second podolski instance, even if there are many other plugins on the
+   *    track.
    */
   select(pluginName, pluginType, pluginId = 0) {
     if (typeof pluginName !== 'string')

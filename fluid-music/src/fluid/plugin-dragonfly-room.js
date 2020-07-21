@@ -279,24 +279,95 @@ const dragonflyRoom = module.exports = {
   },
 
   params: {
-    "dryLevel": "Dry Level",
-    "wetLevel": "Wet Level",
-    "earlyLevel": "Early Level",
-    "earlySend": "Early Send",
-    "lateLevel": "Late Level",
-    "size": "Size",
-    "width": "Width",
-    "predelay": "Predelay",
-    "decay": "Decay",
-    "diffuse": "Diffuse",
-    "spin": "Spin",
-    "wander": "Wander",
-    "highCut": "High Cut",
-    "earlyDamp": "Early Damp",
-    "lateDamp": "Late Damp",
-    "lowBoost": "Low Boost",
-    "boostFreq": "Boost Freq", // changed to setLowBoostHz
-    "lowCut": "Low Cut"
+    dryLevelPercent: {
+      name: 'Dry Level',
+      units: 'percent',
+      normalize: percent,
+    },
+    wetLevelPercent: {
+      name: 'Wet Level',
+      units: 'percent',
+      normalize: percent,
+    },
+    earlyLevelPercent: {
+      name: 'Early Level',
+      units: 'percent',
+      normalize: percent,
+    },
+    earlySendPercent: {
+      name: 'Early Send',
+      units: 'percent',
+      normalize: percent,
+    },
+    lateLevelPercent: {
+      name: 'Late Level',
+      units: 'percent',
+      normalize: percent,
+    },
+    sizeMeters: {
+      name: 'Size',
+      units: 'meters',
+      normalize: linear(8, 32),
+    },
+    widthPercent: {
+      name: 'Width',
+      units: 'percent',
+      normalize: linear(50, 150),
+    },
+    predelayMs: {
+      name: 'Predelay',
+      units: 'milliseconds',
+      normalize: linear(0, 100),
+    },
+    decaySeconds: {
+      name: 'Decay',
+      units: 'seconds',
+      normalize: linear(0.1, 10),
+    },
+    diffusePercent: {
+      name: 'Diffuse',
+      units: 'percent',
+      normalize: percent,
+    },
+    spinHz: {
+      name: 'Spin',
+      units: 'hz',
+      normalize: linear(0, 5),
+    },
+    wanderPercent: {
+      name: 'Wander',
+      units: 'percent',
+      normalize: percent,
+    },
+    highCutHz: {
+      name: 'High Cut',
+      units: 'hz',
+      normalize: linear(1000, 16000),
+    },
+    earlyDampHz: {
+      name: 'Early Damp',
+      units: 'hz',
+      normalize: linear(1000, 16000),
+    },
+    lateDampHz: {
+      name: 'Late Damp',
+      units: 'hz',
+      normalize: linear(1000, 16000),
+    },
+    lowBoostPercent: {
+      name: 'Low Boost',
+      units: 'percent',
+      normalize: percent,
+    },
+    lowBoostHz: { // renamed from boostFreq
+      name: 'Boost Freq',
+      units: 'hz',
+      normalize: linear(50, 1050),
+    },
+    lowCutHz: {
+      name: 'Low Cut',
+      units: 'hz',
+      normalize: linear(50, 200),
+    },
   },
-
 };
