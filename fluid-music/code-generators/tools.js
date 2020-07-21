@@ -68,8 +68,8 @@ const writePluginHelperFile = (pluginName, paramNames, writableStream, includePa
   const camelCaseNames = paramNames.map(camelCaseFromParamName);
   const functionNames  = camelCaseNames.map(s => 'set' + upperFirstLetter(s));
 
-  const funcNamesToParamNames = R.zipObj(paramNames, functionNames);
-  const paramNamesToFuncNames = R.zipObj(camelCaseNames, paramNames);
+  const funcNamesToParamNames  = R.zipObj(paramNames, functionNames);
+  const camelNamesToParamNames = R.zipObj(camelCaseNames, paramNames);
 
   writableStream.write(`
 const plugin = require('./plugin');
@@ -91,8 +91,18 @@ module.exports = {
     return { funcName, funcBody };
   }, funcNamesToParamNames);
 
-  if (includeParams)
-    writableStream.write(`\n  params: ${JSON.stringify(paramNamesToFuncNames, null, 2)},\n`)
+  if (includeParams) {
+    writableStream.write(`\n  params: {`);
+    for (const [camelName, fullName] of Object.entries(camelNamesToParamNames)) {
+      writableStream.write(`
+    ${camelName}: {
+      name: '${fullName}',
+      units: undefined,
+      normalize: undefined,
+    },`)
+    }
+    writableStream.write(`\n  },`);
+  }
 
   writableStream.write('\n};\n');
 };
