@@ -91,7 +91,7 @@ function parse(scoreObject, config, session, tracks={}) {
     if (config.eventMappers) resultClip.eventMappers = config.eventMappers;
 
     const trackKey = config.trackKey;
-    if (!tracks[trackKey]) tracks[trackKey] = {clips: [], name: trackKey};
+    if (!tracks[trackKey]) tracks[trackKey] = {clips: [], name: trackKey, plugins: []};
     tracks[trackKey].clips.push(resultClip);
 
     returnValue = resultClip;

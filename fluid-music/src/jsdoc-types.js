@@ -119,6 +119,7 @@
 /**
  * @typedef {Object} Track
  * @param {Clip[]} clips
+ * @param {PluginInstance[]} plugins
  * @param {string} name The Track name
  * @param {number} [duration]  // Charles: do all Track objects have a duration?
  * @param {number} [startTime] // Charles: do all Track objects have a startTime?

@@ -77,8 +77,47 @@ function mapNumbersToMidiNotes(event, context) {
  * @param {ClipEventContext} context
  */
 function mapAutomation(event, context) {
-  if (typeof event.n !== 'auto') return event;
-  return event; // TODO: insert into automation
+  if (event.n.type !== 'auto') return event;
+
+  if (!event.n.plugin || typeof event.n.plugin.name !== 'string')
+    throw new Error(`note with type="auto" missing plugin.name string: ${JSON.stringify(event.n)}`);
+  if (!event.n.param || typeof event.n.param.name !== 'string')
+    throw new Error(`note with type="auto" missing param.name string: ${JSON.stringify(event.n)}`);
+  if (!event.n.param || event.n.value == null)
+    throw new Error(`note with type="auto" missing .value: ${JSON.stringify(event.n)}`);
+
+  // Find or create the plugin
+  const nth     = event.n.plugin.nth || 0;
+  const matches = context.track.plugins.filter(plugin => plugin.name === event.n.plugin.name);
+  if (nth >= matches.length) {
+    const needed = nth - matches.length + 1;
+    R.times(() => {
+      const plugin = { // create PluginInstance object
+        name: event.n.plugin.name,
+        automation: {},
+        type: event.n.plugin.type,
+      };
+      matches.push(plugin);
+      context.track.plugins.push(plugin);
+    }, needed);
+  }
+  const plugin = matches[nth];
+  const paramName = event.n.param.name;
+  if (!plugin.automation.hasOwnProperty(paramName))
+    plugin.automation[paramName] = [];
+
+  const normalizedValue = typeof event.n.param.normalize === 'function'
+    ? event.n.param.normalize(event.n.value)
+    : event.n.param.value;
+
+  const autoPoint = { // create AutomationPoint object
+    value: normalizedValue,
+    startTime: context.clip.startTime + event.s,
+  };
+  if (typeof event.n.curve === 'string') autoPoint.curve = event.n.curve;
+
+  plugin.automation[paramName].push(autoPoint);
+  return null;
 }
 
 /**

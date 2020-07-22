@@ -277,6 +277,53 @@ describe('score', () => {
         session.tracks.a.clips[1].events[0].should.containDeep({s: 0.5, l: 0.25, n: {v: 8, type: 'test'}});
       })
     });
+
+    describe('score.parse with automation points', () => {
+      const p1 = { name: 'cutoff', units: '%', normalize: v => v * 0.01 };
+      const p2 = { name: 'send lvl', units: '%', normalize: v => v * 0.01 };
+
+      const nLibrary = {
+        a: {
+          type: 'auto',
+          plugin: { name: 'examplePlugin' }, // name only
+          param: p1,
+          value: 100
+        },
+        b: {
+          type: 'auto',
+          plugin: { name: 'examplePlugin' },
+          param: p2,
+          value: 50,
+        },
+        n: {
+          type: 'auto',
+          plugin: { name: 'manyPlugin', nth: 2 },
+          param: p1,
+          value: 25,
+        },
+      }
+
+      const config = { nLibrary, r: '1234' };
+      const s1 = score.parse({bass: 'a.b.'}, config);
+
+      it('should add a plugin to the data', () => {
+        s1.tracks.bass.plugins.length.should.equal(1);
+        s1.tracks.bass.plugins[0].name.should.equal('examplePlugin');
+        s1.tracks.bass.plugins[0].automation.should.containDeep({
+          'cutoff':   [ { startTime: 0,   value: 1 } ],
+          'send lvl': [ { startTime: 0.5, value: 0.5 } ],
+        });
+      });
+
+      it('should add many plugins if they are needed', () => {
+        const s2 = score.parse({ bass: ['', 'n']}, config);
+        s2.tracks.bass.plugins.length.should.equal(nLibrary.n.plugin.nth + 1);
+        s2.tracks.bass.plugins[nLibrary.n.plugin.nth].automation.should.deepEqual({
+          'cutoff': [ {startTime: 1, value: 0.25 }],
+        });
+      });
+
+    });
   }); // describe score.parse
 
   describe('score.tracksToFluidMessage', () => {
