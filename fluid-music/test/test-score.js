@@ -310,8 +310,8 @@ describe('score', () => {
         s1.tracks.bass.plugins.length.should.equal(1);
         s1.tracks.bass.plugins[0].name.should.equal('examplePlugin');
         s1.tracks.bass.plugins[0].automation.should.containDeep({
-          'cutoff':   [ { startTime: 0,   value: 1 } ],
-          'send lvl': [ { startTime: 0.5, value: 0.5 } ],
+          'cutoff':   { points: [ { startTime: 0,   value: 1 } ] },
+          'send lvl': { points: [ { startTime: 0.5, value: 0.5 } ] },
         });
       });
 
@@ -319,7 +319,7 @@ describe('score', () => {
         const s2 = score.parse({ bass: ['', 'n']}, config);
         s2.tracks.bass.plugins.length.should.equal(nLibrary.n.plugin.nth + 1);
         s2.tracks.bass.plugins[nLibrary.n.plugin.nth].automation.should.deepEqual({
-          'cutoff': [ {startTime: 1, value: 0.25 }],
+          'cutoff': { points: [ {startTime: 1, value: 0.25 }] },
         });
       });
 
@@ -384,5 +384,29 @@ describe('score', () => {
       msg = flatten(msg).filter( v => v.address === '/audiotrack/insert/wav');
       msg.should.containDeep(expectedResult)
     });
-  });
+
+    describe('tracksToFluidMessage with automation', () => {
+      const param1 = { name: 'cutoff', units: '%', normalize: v => v * 0.01 };
+      const param2 = { name: 'send lvl', units: '%', normalize: v => v * 0.01 };
+      const plug1  = { name: 'examplePlugin' }
+      const nLibrary = {
+        a: { plugin: plug1, param: param1, value: 50, type: 'auto' },
+        b: { plugin: plug1, param: param2, value: 75, type: 'auto' },
+      };
+
+      const s1   = score.parse({bass: '.a.b', r: '1234', nLibrary});
+      const msg  = score.tracksToFluidMessage(s1.tracks);
+      const flat = flatten(msg);
+
+      const expected = [
+        fluid.plugin.setParamExplicitAt('cutoff', 0.5, 0.25, 0),
+        fluid.plugin.setParamExplicitAt('send lvl', 0.75, 0.75, 0),
+      ];
+
+      it('should add fluid messages for automation points', () => {
+        const result = flat.filter(m => m.address === '/plugin/param/set/at');
+        result.should.deepEqual(expected);
+      });
+    }); // describe automation
+  }); // describe tracksToFluidMessage
 }); // describe score

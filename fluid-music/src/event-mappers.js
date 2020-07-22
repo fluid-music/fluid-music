@@ -1,8 +1,6 @@
 const R          = require('ramda');
-const fluid      = require('./fluid/index');
 const noteTypes  = require('./note-types');
 const converters = require('./converters');
-const { clip } = require('./fluid/index');
 
 /**
  * score.tracksToFluidMessage passes ClipEvents through a series of eventMapper
@@ -104,7 +102,7 @@ function mapAutomation(event, context) {
   const plugin = matches[nth];
   const paramName = event.n.param.name;
   if (!plugin.automation.hasOwnProperty(paramName))
-    plugin.automation[paramName] = [];
+    plugin.automation[paramName] = {points: []};
 
   const normalizedValue = typeof event.n.param.normalize === 'function'
     ? event.n.param.normalize(event.n.value)
@@ -116,7 +114,7 @@ function mapAutomation(event, context) {
   };
   if (typeof event.n.curve === 'string') autoPoint.curve = event.n.curve;
 
-  plugin.automation[paramName].push(autoPoint);
+  plugin.automation[paramName].points.push(autoPoint);
   return null;
 }
 

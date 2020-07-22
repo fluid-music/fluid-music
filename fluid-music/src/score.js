@@ -84,14 +84,14 @@ function parse(scoreObject, config, session, tracks={}) {
     if (config.r === undefined)
       throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a rhythm`);
     if (config.nLibrary === undefined)
-      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a nLibrary`);
+      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find an nLibrary`);
 
     const resultClip = parseTab(config.r, scoreObject, config.nLibrary, config.d, config.dLibrary);
     resultClip.startTime = config.startTime;
     if (config.eventMappers) resultClip.eventMappers = config.eventMappers;
 
     const trackKey = config.trackKey;
-    if (!tracks[trackKey]) tracks[trackKey] = {clips: [], name: trackKey, plugins: []};
+    if (!tracks[trackKey]) tracks[trackKey] = {clips: [], name: trackKey, plugins: []}; // Create Track object
     tracks[trackKey].clips.push(resultClip);
 
     returnValue = resultClip;
@@ -203,9 +203,11 @@ function tracksToFluidMessage(tracksObject) {
       continue;
     }
 
-    if (!track.clips || !track.clips.length) {
-      console.log(`skipping ${trackName}, because it has no .clips`);
-      continue;
+    if (!track.clips.length) {
+      if (!tracks.plugins.length) {
+        console.log(`skipping ${trackName}, because it has no .clips and no .plugins`);
+        continue;
+      }
     }
 
     // Create a sub-message for each track
@@ -240,7 +242,20 @@ function tracksToFluidMessage(tracksObject) {
       }
 
     }); // track.clips.forEach
-  } // for (track of tracks)
+
+    // Handle plugins/plugin automation
+    for (const plugin of track.plugins) {
+      for (const [paramName, automation] of Object.entries(plugin.automation)) {
+        for (const autoPoint of automation.points) {
+          trackMessages.push(fluid.plugin.setParamExplicitAt(
+            paramName,
+            autoPoint.value,
+            autoPoint.startTime,
+            autoPoint.curve));
+        } // for (autoPoint of automation.points)
+      }   // for (paramName, automation of plugin.automation)
+    }     // for (plugin of track.plugins)
+  }       // for (track of tracks)
 
   return sessionMessages;
 };
