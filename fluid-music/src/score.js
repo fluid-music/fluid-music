@@ -247,11 +247,21 @@ function tracksToFluidMessage(tracksObject) {
     for (const plugin of track.plugins) {
       for (const [paramName, automation] of Object.entries(plugin.automation)) {
         for (const autoPoint of automation.points) {
+          if (typeof autoPoint.explicitValue === 'number') {
           trackMessages.push(fluid.plugin.setParamExplicitAt(
             paramName,
-            autoPoint.value,
+            autoPoint.explicitValue,
             autoPoint.startTime,
             autoPoint.curve));
+          } else if (typeof autoPoint.normalizedValue === 'number') {
+            trackMessages.push(fluid.plugin.setParamNormalizedAt(
+              paramName,
+              autoPoint.normalizedValue,
+              autoPoint.startTime,
+              autoPoint.curve));
+          } else {
+            throw new Error(`AutomationPoint is missing a .explicitValue and a .normalizedValue: ${JSON.stringify(autoPoint)}`);
+          }
         } // for (autoPoint of automation.points)
       }   // for (paramName, automation of plugin.automation)
     }     // for (plugin of track.plugins)

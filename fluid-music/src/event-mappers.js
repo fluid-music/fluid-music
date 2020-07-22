@@ -90,7 +90,7 @@ function mapAutomation(event, context) {
   if (nth >= matches.length) {
     const needed = nth - matches.length + 1;
     R.times(() => {
-      const plugin = { // create PluginInstance object
+      const plugin = { // Create PluginInstance object
         name: event.n.plugin.name,
         automation: {},
         type: event.n.plugin.type,
@@ -104,15 +104,16 @@ function mapAutomation(event, context) {
   if (!plugin.automation.hasOwnProperty(paramName))
     plugin.automation[paramName] = {points: []};
 
-  const normalizedValue = typeof event.n.param.normalize === 'function'
-    ? event.n.param.normalize(event.n.value)
-    : event.n.param.value;
+  // Create AutomationPoint object
+  const autoPoint = { startTime: context.clip.startTime + event.s };
+  // Check the param for a normalization method
+  if (typeof event.n.param.normalize === 'function')
+    autoPoint.normalizedValue = event.n.param.normalize(event.n.value);
+  else
+    autoPoint.explicitValue = event.n.value;
 
-  const autoPoint = { // create AutomationPoint object
-    value: normalizedValue,
-    startTime: context.clip.startTime + event.s,
-  };
-  if (typeof event.n.curve === 'string') autoPoint.curve = event.n.curve;
+  if (typeof event.n.curve === 'number')
+    autoPoint.curve = event.n.curve;
 
   plugin.automation[paramName].points.push(autoPoint);
   return null;

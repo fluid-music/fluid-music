@@ -105,8 +105,8 @@
  *         name: 'Podolski.64',
  *         type: 'VST',
  *         automation: {
- *           "VCF0: Cutoff":    { points: [ { startTime: 0, value: 0.4 } ] },
- *           "VCF0: Resonance": { points: [ { startTime: 0, value: 0.5 } ] },
+ *           "VCF0: Cutoff":    { points: [ { startTime: 0, explicitValue: 0.4 } ] },
+ *           "VCF0: Resonance": { points: [ { startTime: 0, normalizedValue: 0.5, curve: -0.5 } ] },
  *         }
  *       }
  *     ] // plugins
@@ -147,10 +147,12 @@
  */
 
  /**
+  * AutomationPoints must have either an explicitValue or a normalizedValue
   * @typedef {Object} AutomationPoint
   * @property {number} startTime the time in beats
   * @property {number} [curve=0]
-  * @property {number} value
+  * @property {number} [explicitValue]
+  * @property {number} [normalizedValue]
   */
 
 

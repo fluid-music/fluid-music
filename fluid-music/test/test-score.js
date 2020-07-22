@@ -279,7 +279,7 @@ describe('score', () => {
     });
 
     describe('score.parse with automation points', () => {
-      const p1 = { name: 'cutoff', units: '%', normalize: v => v * 0.01 };
+      const p1 = { name: 'cutoff'  };
       const p2 = { name: 'send lvl', units: '%', normalize: v => v * 0.01 };
 
       const nLibrary = {
@@ -287,7 +287,7 @@ describe('score', () => {
           type: 'auto',
           plugin: { name: 'examplePlugin' }, // name only
           param: p1,
-          value: 100
+          value: 0.5
         },
         b: {
           type: 'auto',
@@ -299,7 +299,7 @@ describe('score', () => {
           type: 'auto',
           plugin: { name: 'manyPlugin', nth: 2 },
           param: p1,
-          value: 25,
+          value: .25,
         },
       }
 
@@ -310,8 +310,8 @@ describe('score', () => {
         s1.tracks.bass.plugins.length.should.equal(1);
         s1.tracks.bass.plugins[0].name.should.equal('examplePlugin');
         s1.tracks.bass.plugins[0].automation.should.containDeep({
-          'cutoff':   { points: [ { startTime: 0,   value: 1 } ] },
-          'send lvl': { points: [ { startTime: 0.5, value: 0.5 } ] },
+          'cutoff':   { points: [ { startTime: 0,   explicitValue: 0.5 } ] },
+          'send lvl': { points: [ { startTime: 0.5, normalizedValue: 0.5 } ] },
         });
       });
 
@@ -319,7 +319,7 @@ describe('score', () => {
         const s2 = score.parse({ bass: ['', 'n']}, config);
         s2.tracks.bass.plugins.length.should.equal(nLibrary.n.plugin.nth + 1);
         s2.tracks.bass.plugins[nLibrary.n.plugin.nth].automation.should.deepEqual({
-          'cutoff': { points: [ {startTime: 1, value: 0.25 }] },
+          'cutoff': { points: [ {startTime: 1, explicitValue: .25 }] },
         });
       });
 
@@ -386,12 +386,12 @@ describe('score', () => {
     });
 
     describe('tracksToFluidMessage with automation', () => {
-      const param1 = { name: 'cutoff', units: '%', normalize: v => v * 0.01 };
+      const param1 = { name: 'cutoff' };
       const param2 = { name: 'send lvl', units: '%', normalize: v => v * 0.01 };
       const plug1  = { name: 'examplePlugin' }
       const nLibrary = {
-        a: { plugin: plug1, param: param1, value: 50, type: 'auto' },
-        b: { plugin: plug1, param: param2, value: 75, type: 'auto' },
+        a: { plugin: plug1, param: param1, value: .5, type: 'auto' },
+        b: { plugin: plug1, param: param2, value: 50, type: 'auto' },
       };
 
       const s1   = score.parse({bass: '.a.b', r: '1234', nLibrary});
@@ -400,7 +400,7 @@ describe('score', () => {
 
       const expected = [
         fluid.plugin.setParamExplicitAt('cutoff', 0.5, 0.25, 0),
-        fluid.plugin.setParamExplicitAt('send lvl', 0.75, 0.75, 0),
+        fluid.plugin.setParamNormalizedAt('send lvl', 0.5, 0.75, 0),
       ];
 
       it('should add fluid messages for automation points', () => {
