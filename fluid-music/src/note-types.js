@@ -27,7 +27,8 @@ module.exports = {
                                    // percent. The normalize function transforms
                                    // a percent into a value between 0 and 1.
       },
-      value: 80,                   // param.units indicates value's unit type
+      value: 80, // param.units indicates value's unit type
+      curve: 0,  // optional curvature from this point to the next. 0=linear.
     }
   }
 };
