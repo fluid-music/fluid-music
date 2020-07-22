@@ -32,7 +32,7 @@ const dLibrary = {
   m: { dbfs: -2.6, intensity: 3/4 },
 };
 
-const customEventMappers = [
+const eventMappers = [
   (note, context) => {
     if (!note.n || note.n.type !== 'random') return note;
     note.n = fluid.random.choice(note.n.choices);
@@ -40,8 +40,8 @@ const customEventMappers = [
   }
 ].concat(fluid.eventMappers.default);
 
-const session = fluid.score.parse(score, {nLibrary: drums.nLibrary, dLibrary});
-fluid.score.applyEventMappers(session, customEventMappers);
+const session = fluid.score.parse(score, {nLibrary: drums.nLibrary, dLibrary, eventMappers});
+const content = fluid.score.tracksToFluidMessage(session.tracks)
 
 const msg = [
   fluid.global.activate(file, true),
@@ -80,8 +80,7 @@ const msg = [
   fluid.audiotrack.select('tamb'),
   fluid.audiotrack.send('verb room', -28),
 
-  // content
-  fluid.score.tracksToFluidMessage(session.tracks),
+  content,
 ];
 
 const client = new fluid.Client();

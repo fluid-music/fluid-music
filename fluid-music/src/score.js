@@ -245,6 +245,7 @@ function tracksToFluidMessage(tracksObject) {
 
     // Handle plugins/plugin automation
     for (const plugin of track.plugins) {
+      trackMessages.push(fluid.plugin.select(plugin.name, plugin.type, plugin.nth));
       for (const [paramName, automation] of Object.entries(plugin.automation)) {
         for (const autoPoint of automation.points) {
           if (typeof autoPoint.explicitValue === 'number') {
@@ -260,7 +261,7 @@ function tracksToFluidMessage(tracksObject) {
               autoPoint.startTime,
               autoPoint.curve));
           } else {
-            throw new Error(`AutomationPoint is missing a .explicitValue and a .normalizedValue: ${JSON.stringify(autoPoint)}`);
+            throw new Error(`AutomationPoint has neither of .explicitValue/.normalizedValue: ${JSON.stringify(autoPoint)}`);
           }
         } // for (autoPoint of automation.points)
       }   // for (paramName, automation of plugin.automation)
