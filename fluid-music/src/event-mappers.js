@@ -1,6 +1,7 @@
 const R          = require('ramda');
 const noteTypes  = require('./note-types');
 const converters = require('./converters');
+const random     = require('./random');
 
 /**
  * score.tracksToFluidMessage passes ClipEvents through a series of eventMapper
@@ -67,6 +68,16 @@ function mapVelocityNumbersToDynamic(event, context) {
 function mapNumbersToMidiNotes(event, context) {
   if (typeof event.n !== 'number') return event;
   event.n = {type: noteTypes.midiNote, n: event.n }
+  return event;
+}
+
+/**
+ * @param {ClipEvent} event
+ * @param {ClipEventContext} context
+ */
+function mapRandom(event, context) {
+  if (!event.n || event.n.type !== 'random') return event;
+  event.n = random.choice(event.n.choices);
   return event;
 }
 
@@ -185,6 +196,7 @@ function mapAudioFiles(event, context) {
 module.exports = {
   mapVelocityNumbersToDynamic,
   mapNumbersToMidiNotes,
+  mapRandom,
   mapAutomation,
   mapMidiNotes,
   mapIntensityLayers,
@@ -192,6 +204,7 @@ module.exports = {
   default: [
     mapVelocityNumbersToDynamic,
     mapNumbersToMidiNotes,
+    mapRandom,
     mapAutomation,
     mapMidiNotes,
     mapIntensityLayers,

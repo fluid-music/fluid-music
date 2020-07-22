@@ -1,4 +1,5 @@
 const path    = require('path');
+const R       = require('ramda');
 const fluid   = require('../fluid-music');
 const recipes = require('../fluid-recipes');
 const tr909   = require('@fluid-music/tr-909');
@@ -13,6 +14,10 @@ const a = {
   param: fluid.pluginPodolski.params.vcf0Cutoff,
   value: 0.5,
 };
+
+const nLibrary = Object.assign({}, drums.nLibrary);
+// nLibrary.c.choices = R.dropLast(1, nLibrary.c.choices);
+console.dir(nLibrary.c, {depth: null})
 
 const score = {
   r:     '1 + 2 + 3 + 4 + ',
@@ -32,15 +37,7 @@ const dLibrary = {
   m: { dbfs: -2.6, intensity: 3/4 },
 };
 
-const eventMappers = [
-  (note, context) => {
-    if (!note.n || note.n.type !== 'random') return note;
-    note.n = fluid.random.choice(note.n.choices);
-    return note;
-  }
-].concat(fluid.eventMappers.default);
-
-const session = fluid.score.parse(score, {nLibrary: drums.nLibrary, dLibrary, eventMappers});
+const session = fluid.score.parse(score, {nLibrary, dLibrary });
 const content = fluid.score.tracksToFluidMessage(session.tracks)
 
 const msg = [

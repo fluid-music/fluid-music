@@ -29,6 +29,19 @@ module.exports = {
       },
       value: 80, // param.units indicates value's unit type
       curve: 0,  // optional curvature from this point to the next. 0=linear.
+    },
+
+    /**
+     * The `random` type notes get are replaced with one of the types in the
+     * .choices array. The implementer must ensure that the .choices array
+     * exists, and all of its contents are valid `Note`s.
+     */
+    random: {
+      type: 'random',
+      choices: [
+        { type: 'file', path: 'snare.wav' },
+        { type: 'midiNote', n: 64 },
+      ],
     }
   }
 };
