@@ -46,7 +46,41 @@ const nLibrary = {
   D: { type: 'file', path: electronicKickPath, oneShot: true },
   k: { type: 'file', path: snarePaths[0] },
   c: { type: 'random', choices: tambourineIntensityLayers },
+  r: {
+    type: 'ripple',
+    path: snarePaths[0],
+  }
 };
+
+const eventMappers = [
+  /**
+   * @param {ClipEvent} event
+   * @param {ClipEventContext} context
+   */
+  (event, context) => {
+    if (!event.n || event.n.type !== 'ripple') return event;
+    // 1/24 and 0.020
+    // 1/16 and 0.040 [or whatever yields 061]
+    // How long to wait between re-triggers measured in whole notes
+    const stepSize = 1/24;
+    // StartOffsetIncrement Number of seconds adjust sample start time
+    const soi = 0.040;
+
+    const numSteps = Math.floor(event.l / stepSize);
+    const result =  new Array(numSteps).fill(null).map((_, i) => {
+      const newEvent = Object.assign({}, event);
+      newEvent.n = {
+        type: 'file',
+        path: event.n.path,
+        fadeOutSeconds: 0.1,
+        startInSourceSeconds: (numSteps - i - 1) * soi,
+      };
+      newEvent.s = event.s + i*stepSize;
+      return newEvent;
+    });
+    return result;
+  }
+];
 
 module.exports = {
   acousticKickIntensityLayers,
@@ -54,4 +88,5 @@ module.exports = {
   snarePaths,
   tambourineIntensityLayers,
   nLibrary,
+  eventMappers,
 };

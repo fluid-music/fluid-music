@@ -30,7 +30,7 @@ const score = {
   kick:  {
   kick:  '.   . dd dD .D  ',
   d:     '.   . mf        '},
-  snare: '.   k-  .   k-  ',
+  snare: 'r---k-  .   k-  ',
   tamb:  'c s c s c s c s ',
   bass:{
     bass:'       b-   ab  ',
@@ -43,7 +43,7 @@ const dLibrary = {
   m: { dbfs: -2.6, intensity: 3/4 },
 };
 
-const session = fluid.score.parse(score, {nLibrary, dLibrary });
+const session = fluid.score.parse(score, {nLibrary, dLibrary, eventMappers: drums.eventMappers});
 const content = fluid.score.tracksToFluidMessage(session.tracks)
 
 const msg = [

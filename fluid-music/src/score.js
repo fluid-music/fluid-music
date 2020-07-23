@@ -322,8 +322,8 @@ function fileEventsToFluidMessage(fileEvents, context) {
     const clipName = `s${context.clipIndex}.${eventIndex}`;
     const msg = [fluid.audiotrack.insertWav(clipName, startTime, event.n.path)];
 
-    if (event.n.startInSource)
-      msg.push(fluid.clip.setSourceOffsetSeconds(event.n.startInSource));
+    if (event.n.startInSourceSeconds)
+      msg.push(fluid.clip.setSourceOffsetSeconds(event.n.startInSourceSeconds));
 
     // adjust the clip length, unless the event is a .oneShot
     if (!event.n.oneShot)

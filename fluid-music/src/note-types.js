@@ -51,7 +51,7 @@ module.exports = {
     /**
      * The `random` type notes get are replaced with one of the types in the
      * .choices array. The implementer must ensure that the .choices array
-     * exists, and all of its contents are valid `Note`s.
+     * exists, and all of its contents are valid `Note` objects.
      */
     {
       type: 'random',
