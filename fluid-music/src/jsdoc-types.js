@@ -204,8 +204,8 @@
   *    array of EventObjects with `.type === 'file'`. Files in the `.iLayers`
   *    array should be arranged in order of increasing performance intensity.
   * @property {string} [path] file objects must include a path string
-  * @property {number} [fadeOut] file objects may specify a fade out in seconds
-  * @property {number} [fadeIn] file objects may specify a fade in in seconds
+  * @property {number} [fadeOutSeconds] fade out in seconds (file objects)
+  * @property {number} [fadeInSeconds] fade in in seconds (file objects)
   * @property {boolean} [oneShot] if true, file objects will play until the end,
   *   ignoring the note's length
   */

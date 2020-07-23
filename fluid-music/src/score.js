@@ -322,13 +322,16 @@ function fileEventsToFluidMessage(fileEvents, context) {
     const clipName = `s${context.clipIndex}.${eventIndex}`;
     const msg = [fluid.audiotrack.insertWav(clipName, startTime, event.n.path)];
 
+    if (event.n.startInSource)
+      msg.push(fluid.clip.setSourceOffsetSeconds(event.n.startInSource));
+
     // adjust the clip length, unless the event is a .oneShot
     if (!event.n.oneShot)
       msg.push(fluid.clip.length(event.l));
 
     // apply fade in/out times (if specified)
-    if (typeof event.n.fadeOut === 'number' || typeof event.n.fadeIn === 'number')
-      msg.push(fluid.audioclip.fadeInOutSeconds(event.n.fadeIn, event.n.fadeOut));
+    if (typeof event.n.fadeOutSeconds === 'number' || typeof event.n.fadeInSeconds === 'number')
+      msg.push(fluid.audioclip.fadeInOutSeconds(event.n.fadeInSeconds, event.n.fadeOutSeconds));
 
     // If there is a dynamics object, look for a dbfs property and apply gain.
     if (event.d && typeof(event.d.dbfs) === 'number')

@@ -16,8 +16,14 @@ const a = {
 };
 
 const nLibrary = Object.assign({}, drums.nLibrary);
-// nLibrary.c.choices = R.dropLast(1, nLibrary.c.choices);
-console.dir(nLibrary.c, {depth: null})
+nLibrary.c = {
+  type: 'random',
+  choices: R.dropLast(1, nLibrary.c.choices),
+};
+
+nLibrary.s = Object.assign({}, nLibrary.c);
+nLibrary.s.choices = nLibrary.c.choices.map(choice => Object.assign({}, choice))
+nLibrary.s.choices.forEach(f =>  { f.startInSourceSeconds=0.02; f.fadeInSeconds=0.003; });
 
 const score = {
   r:     '1 + 2 + 3 + 4 + ',
@@ -25,7 +31,7 @@ const score = {
   kick:  '.   . dd dD .D  ',
   d:     '.   . mf        '},
   snare: '.   k-  .   k-  ',
-  tamb:  'c c c c c c c c ',
+  tamb:  'c s c s c s c s ',
   bass:{
     bass:'       b-   ab  ',
     nLibrary: {b: 40, c: 48, a },

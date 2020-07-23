@@ -1,15 +1,32 @@
 module.exports = {
-  midiNote: 'midiNote',
+  auto: 'auto',
   file: 'file',
   iLayers: 'iLayers',
-  auto: 'auto',
+  midiNote: 'midiNote',
+  random: 'random',
 
-  examples: {
+  examples: [
+    /**
+     * An audio file event placed on a particular track.
+     */
+    {
+      type: 'file',
+      path: 'a/file.wav',
+      oneShot: false, // When true, the inserted audio file will play to its
+                      // end instead of obeying event length (default=false)
+
+      fadeInSeconds: 0.01,       // Fade in time in seconds (default=0)
+      fadeOutSeconds: 0.01,      // Fade out time in seconds (default=0)
+      startInSourceSeconds: 0.1, // Specify the source start time in seconds.
+                                 // Does not affect time that the clip starts
+                                 // in the session.
+    },
+
     /**
      * The `auto` note type represents an an automation point for a specific
      * plugin on an arbitrary (selected) audio track.
      */
-    auto: {
+    {
       type: 'auto',
       plugin: {      // identifies a plugin on an arbitrary track
         name: 'DragonflyRoomReverb-vst',
@@ -36,12 +53,12 @@ module.exports = {
      * .choices array. The implementer must ensure that the .choices array
      * exists, and all of its contents are valid `Note`s.
      */
-    random: {
+    {
       type: 'random',
       choices: [
         { type: 'file', path: 'snare.wav' },
         { type: 'midiNote', n: 64 },
       ],
     }
-  }
+  ] // examples
 };

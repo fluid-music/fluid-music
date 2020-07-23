@@ -1,7 +1,7 @@
 function pathToNoteObject(path, fadeOut, oneShot) {
   const obj = { type: 'file', path };
   if (oneShot) obj.oneShot = true;
-  if (typeof fadeOut === 'number') obj.fadeOut = fadeOut;
+  if (typeof fadeOut === 'number') obj.fadeOutSeconds = fadeOut;
   return obj;
 }
 
