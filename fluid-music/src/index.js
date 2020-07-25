@@ -20,7 +20,7 @@ const content = require('./fluid/content');
 const tempo = require('./fluid/tempo');
 
 // Other Stuff
-const eventLibrary = require('./event-library');
+const noteLibrary = require('./note-library');
 const noteTypes = require('./note-types');
 const eventMappers = require('./event-mappers');
 const score = require('./score');
@@ -44,7 +44,7 @@ module.exports = {
   clip,
   converters,
   content,
-  eventLibrary,
+  noteLibrary,
   eventMappers,
   noteTypes,
   global,
