@@ -4,6 +4,7 @@ const fluid   = require('../fluid-music');
 const recipes = require('../fluid-recipes');
 const tr909   = require('@fluid-music/tr-909');
 const drums   = require('./drums');
+const chords  = require('./chords');
 const file    = path.join(process.cwd(), 'session.tracktionedit');
 const dragonflyRoom = fluid.pluginDragonflyRoomReverb;
 
@@ -33,8 +34,10 @@ const score = {
   snare: 'r---k-  .   k-  ',
   tamb:  'c s c s c s c s ',
   bass:{
-    bass:'       b-   ab  ',
-    nLibrary: {b: 40, c: 48, a },
+    bass:'       b-   ab  ', nLibrary: { b: 40, c: 48, a },
+  },
+  chrd: {
+  chrd:  'a-  .  ab---    ', nLibrary: chords.nLibrary,
   },
 };
 
@@ -82,6 +85,12 @@ const msg = [
   // hat/tambourine
   fluid.audiotrack.select('tamb'),
   fluid.audiotrack.send('verb room', -28),
+
+  // chords
+  fluid.audiotrack.select('chrd'),
+  fluid.pluginPodolski.select(),
+  fluid.pluginPodolski.setEnv1Attack(0.05),
+  fluid.audiotrack.send('verb room', -20),
 
   content,
 ];

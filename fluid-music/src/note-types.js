@@ -1,9 +1,10 @@
 module.exports = {
-  auto: 'auto',
-  file: 'file',
-  iLayers: 'iLayers',
-  midiNote: 'midiNote',
-  random: 'random',
+  auto:      'auto',
+  file:      'file',
+  iLayers:   'iLayers',
+  midiChord: 'midiChord',
+  midiNote:  'midiNote',
+  random:    'random',
 
   examples: [
     /**
@@ -48,6 +49,7 @@ module.exports = {
       curve: 0,  // optional curvature from this point to the next. 0=linear.
     },
 
+
     /**
      * The `random` type notes get are replaced with one of the types in the
      * .choices array. The implementer must ensure that the .choices array
@@ -59,6 +61,16 @@ module.exports = {
         { type: 'file', path: 'snare.wav' },
         { type: 'midiNote', n: 64 },
       ],
+    },
+
+
+    /**
+     * A midi chord
+     */
+    {
+      type: 'midiChord',
+      name: "Cm6",
+      notes: [ 60, 63, 67, 69 ],
     }
   ] // examples
 };

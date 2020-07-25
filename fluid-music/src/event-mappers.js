@@ -65,19 +65,34 @@ function mapVelocityNumbersToDynamic(event, context) {
  * @param {ClipEvent} event
  * @param {ClipEventContext} context
  */
-function mapNumbersToMidiNotes(event, context) {
-  if (typeof event.n !== 'number') return event;
-  event.n = {type: noteTypes.midiNote, n: event.n }
+function mapRandom(event, context) {
+  if (!event.n || event.n.type !== 'random') return event;
+  event.n = random.choice(event.n.choices);
   return event;
+}
+
+/**
+* @param {ClipEvent} event
+* @param {ClipEventContext} context
+*/
+function mapMidiChords(event, context) {
+  if (event.n.type !== 'midiChord') return event;
+  const result = event.n.notes.map(note => {
+    const newEvent = Object.assign({}, event);
+    newEvent.n = note;
+    return newEvent;
+  });
+  console.log(result);
+  return result;
 }
 
 /**
  * @param {ClipEvent} event
  * @param {ClipEventContext} context
  */
-function mapRandom(event, context) {
-  if (!event.n || event.n.type !== 'random') return event;
-  event.n = random.choice(event.n.choices);
+function mapNumbersToMidiNotes(event, context) {
+  if (typeof event.n !== 'number') return event;
+  event.n = {type: noteTypes.midiNote, n: event.n }
   return event;
 }
 
@@ -198,13 +213,15 @@ module.exports = {
   mapNumbersToMidiNotes,
   mapRandom,
   mapAutomation,
+  mapMidiChords,
   mapMidiNotes,
   mapIntensityLayers,
   mapAudioFiles,
   default: [
     mapVelocityNumbersToDynamic,
-    mapNumbersToMidiNotes,
     mapRandom,
+    mapMidiChords,
+    mapNumbersToMidiNotes,
     mapAutomation,
     mapMidiNotes,
     mapIntensityLayers,
