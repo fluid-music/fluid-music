@@ -29,7 +29,7 @@ te::Edit* createEmptyEdit(File inputFile, te::Engine& engine, te::Edit::EditRole
 te::Edit* createEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role) {
     // we are assuming the file exists.
     ValueTree valueTree = te::loadEditFromFile(engine, inputFile, te::ProjectItemID::createNewID(0));
-    
+
     // Create the edit object.
     // Note we cannot save an edit file without and edit file retriever. It is
     // also used resolves audioclips that have source='./any/relative/path.wav'.
@@ -41,12 +41,12 @@ te::Edit* createEdit(File inputFile, te::Engine& engine, te::Edit::EditRole role
     editOptions.role = role;
     editOptions.editFileRetriever = [inputFile] { return inputFile; };
     te::Edit* newEdit = new te::Edit(editOptions);
-    
+
     // By default (and for simplicity), all clips in an in-memory edit should
     // have a source property with an absolute path value. We want to avoid
     // clip sources with project ids or relative path values.
     setClipAndSamplerSourcesToDirectFileReferences(*newEdit, SamplePathMode::absolute, false);
-    
+
     // List any missing plugins
     for (auto plugin : newEdit->getPluginCache().getPlugins()) {
         if (plugin->isMissing()) {
@@ -84,7 +84,7 @@ void setClipAndSamplerSourcesToDirectFileReferences(te::Edit& changeEdit, Sample
         if (mode == SamplePathMode::relative) std::cout << "to relative paths" << std::endl;
         if (mode == SamplePathMode::decide) std::cout << "to absolute paths, if sample is not in a subdirectory" << std::endl;
     }
-    
+
     for (auto track : te::getClipTracks(changeEdit)) { // for each track
         for (auto clip : track->getClips()) { // inspect each clip
             if (auto audioClip = dynamic_cast<te::WaveAudioClip*>(clip)) { // if it is an audio clip
@@ -182,7 +182,7 @@ void autodetectPmSettings(te::Engine& engine)
     .getChildFile("Tracktion")
     .getChildFile("Waveform")
     .getChildFile("Waveform.settings");
-    
+
     std::cout << "Looking for Waveform settings: " << file.getFullPathName() << std::endl;
     if (!file.existsAsFile())
     {
@@ -194,7 +194,7 @@ void autodetectPmSettings(te::Engine& engine)
         XmlDocument parser(file);
         std::unique_ptr<XmlElement> xml(parser.getDocumentElement());
         if (xml == nullptr) std::cout << "Failed to parse Waveform.settings" << std::endl;
-        
+
         ValueTree folders;
         folders = ValueTree::fromXml(*xml);
         if (folders.isValid())
@@ -256,7 +256,7 @@ void listWaveDevices(te::Engine& engine) {
         << (d->isEnabled() ? "" : " (disabled)") << std::endl;
     }
     std::cout << std::endl;
-    
+
     std::cout << "Wav Output Devices:" << std::endl;
     for (int i = 0; i < dm.getNumWaveOutDevices(); i++) {
         auto d = dm.getWaveOutDevice(i);
@@ -279,7 +279,7 @@ void listMidiDevices(te::Engine& engine) {
         << (d->isEnabled() ? "" : " (disabled)") << std::endl;
     }
     std::cout << std::endl;
-    
+
     std::cout << "MIDI Output Devices:" << std::endl;
     for (int i = 0; i < dm.getNumMidiOutDevices(); i++) {
         auto d = dm.getMidiOutDevice(i);
@@ -294,7 +294,7 @@ void scanVst3(te::Engine& engine)
 {
 #if (JUCE_PLUGINHOST_VST3 && (JUCE_MAC || JUCE_WINDOWS))
     std::cout << "Scanning for VST3 plugins..." << std::endl;
-    
+
     juce::VST3PluginFormat vst3;
     juce::String deadPlugins;
     juce::PluginDirectoryScanner pluginScanner{
@@ -304,12 +304,12 @@ void scanVst3(te::Engine& engine)
         true,
         deadPlugins
     };
-    
+
     juce::String pluginName;
     do {
         std::cout << "Scanning: \"" << pluginScanner.getNextPluginFileThatWillBeScanned() << "\"" << std::endl;
     } while (pluginScanner.scanNextFile(true, pluginName));
-    
+
     // log failures
     std::cout << "Dead Plugins: " << deadPlugins << std::endl << std::endl;
     for (auto filename : pluginScanner.getFailedFiles()) {
@@ -344,12 +344,12 @@ void scanVst2(te::Engine& engine) {
         true,
         deadPlugins
     };
-    
+
     juce::String pluginName;
     do {
         std::cout << "Scanning: \"" << pluginScanner.getNextPluginFileThatWillBeScanned() << "\"" << std::endl;
     } while (pluginScanner.scanNextFile(true, pluginName));
-    
+
     // log failures
     std::cout << "Dead Plugins: " << deadPlugins << std::endl << std::endl;
     for (auto filename : pluginScanner.getFailedFiles()) {
@@ -691,7 +691,7 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
         return nullptr;
     }
 
-    // insert it just before the volume. If no volume plugin is found, insert at the end
+    // Insert it just before the volume.
     int insertPoint = 0;
     bool found = false;
     for (te::Plugin* checkPlugin : track.pluginList) {
@@ -701,7 +701,22 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
         }
         insertPoint++;
     }
+    // If we are inserting a volume plugin, we actually want to insert it after
+    // the last volume plugin in the track instead of inserting it just before
+    // the first volume plugin. This helps to ensure that if we select the nth
+    // volume plugin we get the same one as when we insert the nth volume plugin
+    if (found && name == "volume" && (type.isEmpty() || type.equalsIgnoreCase("tracktion"))) {
+        int i = 0;
+        for (te::Plugin* checkPlugin : track.pluginList) {
+            i++; // This should always be one more than the current index
+            if (auto x = dynamic_cast<te::VolumeAndPanPlugin*>(checkPlugin)) {
+                insertPoint = i;
+            }
+        }
+    }
+    // If no volume plugin is found, insert at the end
     if (!found) insertPoint = -1;
+
     std::cout << "Plugin insert index: " << insertPoint << std::endl;
     for (PluginDescription desc : track.edit.engine.getPluginManager().knownPluginList.getTypes()) {
         if (desc.name.equalsIgnoreCase(name)) {
