@@ -17,7 +17,7 @@ const audioFile = {
 };
 
 // This is a single `Note` object, describing three-note midi chord
-const chord = {                       
+const chord = {
     type: "midiChord", // All Note objects have a .type string
     name: "Cm",
     notes: [ 60, 63, 67 ],
@@ -57,9 +57,9 @@ typical workflow. Starting from the `nLibrary` and ending with a `fluidMessage`.
 
 ## `Score` Objects and Score Parsing
 
-This score object below describes a single clip of with a length of 4 quarter notes. It two distinct events, which will eventually be inserted onto a track named `"rev"`:
-- A three note MIDI chord, `c` on the down beat, which single quarter note duration. 
-- An automation point, `p`, on the third quarter note. 
+This score object below describes a single clip of with a length of 4 quarter notes. It reverences two distinct `Note` events, which will eventually be inserted onto a track named `"rev"`:
+1. A three note MIDI chord, `c` on the down beat, which single quarter note duration.
+1. An automation point, `p`, on the third quarter note.
 
 ```javascript
 const score = {
@@ -83,7 +83,7 @@ Internally, the `fluid.score.parse` method calls `parseTab` on our rhythm and pa
 
 ```javascript
 const events = [
-    {   
+    {
         s: 0,    // start time within the clip, measured in whole notes
         l: 0.25, // length of the event in the clip, measured in whole notes
         n: { type: 'midiChord', name: 'Cm', notes: [60, 63, 67] },
@@ -91,7 +91,7 @@ const events = [
     {
         s: 0.5,  // start time within the clip, measured in whole notes
         l: 0.25, // length of the event in the clip, measured in whole notes
-        n: { type: 'auto', /* contents omitted for brevity */ },  
+        n: { type: 'auto', /* contents omitted for brevity */ },
     },
 ];
 ```
@@ -136,7 +136,7 @@ const session = {
                         { s: 0, l: 0.25, n: {n: 67, type: 'midiNote'} },
                     ],
 
-                    // eventMapper functions handled all events from the 
+                    // eventMapper functions handled all events from the
                     // intermediary clip, leaving the .events array empty
                     events: [],
                 },
@@ -146,7 +146,7 @@ const session = {
                 name: 'DragonflyRoomReverb-vst',
                 type: 'VST',
                 automation: {
-                    "Early Send": { 
+                    "Early Send": {
                         points: [ { startTime: 0.5, normalizedValue:0.8 } ],
                     },
                 },
