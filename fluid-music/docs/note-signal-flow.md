@@ -1,5 +1,6 @@
-How does the `fluid-music` library transform Note to a full DAW session?
+How does the `fluid-music` library transform `Note` objects to a full DAW session?
 
+## `Note`, `NoteLibrary`, and Score objects
 A `Note` object is a representation of an item or items that can be placed on
 a timeline in a DAW. The following `Note` examples show an **audio file**, a
 **midi chord**, and an **automation point**.
@@ -53,23 +54,29 @@ const nLibrary = {
 We'll now follow the transformation of a `Note` object as it passes through a
 typical workflow. Starting from the `nLibrary` and ending with a `fluidMessage`.
 
+## `Score` Objects and Score Parsing
+
 This score object below describes a single clip of with a length of 4 quarter notes. It two distinct events, which will eventually be inserted onto a track named `"rev"`:
 - A three note MIDI chord, `c` on the down beat, which single quarter note duration. 
 - An automation point, `p`, on the third quarter note. 
 
 ```javascript
 const score = {
-    r:   '1234' // quarter note rhythm string
-    rev: 'c  p' // insert the automation point on beat three of the 'rev' track
+    r:   '1234', // Quarter note rhythm string
+    rev: 'c p ', // Pattern string creates a clip on the 'rev' track, inserting:
+                 //   - A chord on beat one
+                 //   - An automation point on beat three
 };
-``` 
+```
 
-Create a `Session` object by passing the `score` object and `nLibrary` to
-`fluid.score.parse`.
+Create a `Session` object by passing the `score` object `fluid.score.parse`.
 
 ```javascript
 const session = fluid.score.parse(score, {nLibrary});
 ```
+
+
+### 1. Create `ClipEvent` objects from `Note` objects.
 
 Internally, the `parse` method calls `parseTab` on our rhythm and pattern strings which creates `ClipEvent` objects.
 
@@ -84,26 +91,31 @@ const events = [
         s: 0.5,  // start time within the clip, measured in whole notes
         l: 0.25, // length of the event in the clip, measured in whole notes
         n: { type: 'auto', /* contents omitted for brevity */ },  
-    }
-]
+    },
+];
 ```
 
 Notice that `Note` Objects do not have a timing information -- they do not describe *where* notes should be positioned on the timeline in our DAW. `ClipEvents`, wrap around `Note` objects, adding the timing information extracted from the `Score`.
 
-For each pattern string in the score (ex. `'c.p.'`), `fluid.score.parse` creates a `Clip` object. Initially, the clips look like this:
+### 2. Create intermediary `Clip` objects
+
+For each pattern string in the score (ex. `'c p '`), `fluid.score.parse` creates a `Clip` object. Initially, the clips look like this:
 
 ```javascript
 const intermediaryClip = {
     startTime: 0, // start time within the session, measured in whole notes
     duration: 1,  // length of the clip, measured in whole notes
-    events: [ /* contsins the events object shown above */ ],
+    events: [ /* contains the events objects shown above */ ],
 }
 ```
 
-However, before `fluid.score.parse` returns, all the `ClipEvent` objects pass through a series of `eventMapper` function that mutate the contents of the clip.
+The parser recurses over the score, and creates intermediary `Clip` objects (like the one above) for each `Note` pattern string.
 
-You don't need to memorize the structure of the object below, but I recommend
-studying how the `Clip` object in the `.clips` array in the example below was mutated from the `intermediaryClip` above. For example, an `eventMapper` function was responsible for converting the `midiChord` to `midiNote` objects, and moving those `midiNote` objects to the from the `.events` array to the `.midiEvents` array.
+### 3. `eventMapper` mutators
+
+After creating intermediary clips for each note pattern string, `fluid.score.parse` passes all `ClipEvents` through a series of `eventMapper` functions that mutate the contents of the clip.
+
+It is not necessary to memorize the structure of the object below, but it will be helpful to study how the `Clip` object in the `.clips` array in the example below was mutated from the `intermediaryClip` above. For example, an `eventMapper` function was responsible for converting the `midiChord` to `midiNote` objects, and moving those `midiNote` objects to the from the `.events` array to the `.midiEvents` array.
 
 ```javascript
 const session = {
@@ -123,28 +135,33 @@ const session = {
                         { s: 0, l: 0.25, n: {n: 67, type: 'midiNote'} },
                     ],
 
-                    // eventMapper functions handled (emptied) the .events array
-                    events: []
-                }
+                    // eventMapper functions handled all events from the 
+                    // intermediary clip, leaving the .events array empty
+                    events: [],
+                },
             ],
             // eventMapper functions moved the automation points below
-            plugins: {
+            plugins: [{
                 name: 'DragonflyRoomReverb-vst',
                 type: 'VST',
                 automation: {
                     "Early Send": { 
                         points: [ { startTime: 0.5, normalizedValue:0.8 } ],
-                    }
-                }
-            }
-        }
-    }
-}
+                    },
+                },
+            }],
+        },
+    },
+};
 ```
 
 The power of `fluid-music` comes from designing custom types of `Note` objects, and creating custom `eventMapper` functions to handle those `Note` objects. You can see in the example above, that `eventMapper` functions are very powerful. A single `Note` object in a script can have impact on the entire session.
 
+### Convert the `tracks` to a fluid message
+
 Finally, the `tracksToFluidMessage` function converts the `tracks` object above to a `FluidMessage` object that can be sent to the `cybr` server.
+
+`tracksToFluidMessage` is relatively simple. It just iterates over all the tracks, clips, and plugins, creating messages for all of them.
 
 ```javascript
 const client = new fluid.Client();
