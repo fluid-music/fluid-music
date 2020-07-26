@@ -39,8 +39,8 @@
  *           midiEvents: [{s: 0, l: 0.25, n: {n: 3, type: 'midiNote'}}],
  *         },
  *       ],
+ *       automation: {},
  *     },
- *     automation: {},
  *   },
  *   regions: [
  *     {
@@ -100,7 +100,8 @@
  *         startTime: 3,
  *         duration:  1,
  *       },
- *     ], // clips
+ *     ], // end clips
+ *
  *     plugins: [
  *       {
  *         name: 'Podolski.64',
@@ -110,7 +111,8 @@
  *           "VCF0: Resonance": { points: [ { startTime: 0, normalizedValue: 0.5, curve: -0.5 } ] },
  *         },
  *       },
- *     ], // plugins
+ *     ], // end plugins
+ *
  *     automation: {}, // automation for the track itself (volume, pan)
  *   },
  * }
