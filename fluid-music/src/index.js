@@ -25,6 +25,7 @@ const noteTypes = require('./note-types');
 const eventMappers = require('./event-mappers');
 const score = require('./score');
 const tab = require('./tab');
+const trackAutomation = require('./track-automation');
 const groove = require('./groove')
 const UdpClient = require('./FluidUdpClient');
 const IpcClient = require('./FluidIpcClient');
@@ -65,6 +66,7 @@ module.exports = {
   score,
   tab,
   tempo,
+  trackAutomation,
   transport,
   groove,
 };

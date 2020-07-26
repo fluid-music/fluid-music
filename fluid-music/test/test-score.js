@@ -5,6 +5,8 @@ const score = require('../src/score');
 const audiotrack = require('../src/fluid/audiotrack');
 const fluid = require('../src/fluid');
 
+fluid.trackAutomation = require('../src/track-automation');
+
 describe('score', () => {
   const nLibrary = [0, 1, 2, 3, 4, 5, 6];
   const r = '1234'
@@ -301,6 +303,12 @@ describe('score', () => {
           param: p1,
           value: .25,
         },
+        p: {
+          type: 'auto',
+          plugin: fluid.trackAutomation.plugin,
+          param: fluid.trackAutomation.params.pan,
+          value: -0.5,
+        }
       }
 
       const config = { nLibrary, r: '1234' };
@@ -323,7 +331,15 @@ describe('score', () => {
         });
       });
 
-    });
+      it('should put automation points with type="fluid" in the correct place', () => {
+        const s2 = score.parse({ bass: '..p.'}, config);
+        s2.tracks.bass.plugins.should.be.empty();
+        s2.tracks.bass.automation.should.deepEqual({
+          'pan': { points: [{startTime: 0.5, explicitValue: -0.5}]},
+        });
+      });
+
+    }); // automation points
   }); // describe score.parse
 
   describe('score.tracksToFluidMessage', () => {
@@ -407,6 +423,6 @@ describe('score', () => {
         const result = flat.filter(m => m.address === '/plugin/param/set/at');
         result.should.deepEqual(expected);
       });
-    }); // describe automation
+    }); // describe tracksToFluidMessage with automation
   }); // describe tracksToFluidMessage
 }); // describe score

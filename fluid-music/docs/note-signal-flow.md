@@ -144,6 +144,7 @@ const session = {
                     events: [],
                 },
             ],
+
             // eventMapper functions moved the automation points below
             plugins: [{
                 name: 'DragonflyRoomReverb-vst',
@@ -154,6 +155,9 @@ const session = {
                     },
                 },
             }],
+
+            // automation for track itself goes here (ex. volume, pan)
+            automation: {},
         },
     },
 };

@@ -18,7 +18,7 @@ const plugin = {
    * ```
    * @param {string} pluginName - the name of the vst plugin
    * @param {string} [pluginType] - optional type, for example 'VST', 'VST3',
-   *        'AudioUnit'. If omitted, search all types.
+   *        'AudioUnit', or 'tracktion'. If omitted, search all types.
    * @param {number} [pluginId=0] - If there are multiple instances of the named
    *    plugin on the selected track, use this argument if you want to select a
    *    specific one one (by default this selects the first plugin with the

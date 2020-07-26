@@ -107,10 +107,11 @@
  *         automation: {
  *           "VCF0: Cutoff":    { points: [ { startTime: 0, explicitValue: 0.4 } ] },
  *           "VCF0: Resonance": { points: [ { startTime: 0, normalizedValue: 0.5, curve: -0.5 } ] },
- *         }
- *       }
- *     ] // plugins
- *   }
+ *         },
+ *       },
+ *     ], // plugins
+ *     automation: {}, // automation for the track itself (volume, pan)
+ *   },
  * }
  * ```
  * @typedef {Object.<string, Track>} TracksObject
@@ -123,6 +124,9 @@
  * @param {string} name The Track name
  * @param {number} [duration]  // Charles: do all Track objects have a duration?
  * @param {number} [startTime] // Charles: do all Track objects have a startTime?
+ * @param {Object.<string, Automation} automation this contains automation
+ *    associated with the track. Note that PluginInstance objects have their own
+ *    .automation object.
  */
 
 /**
@@ -137,7 +141,7 @@
 /**
  * @typedef {Object} PluginInstance
  * @property {string} name
- * @property {string} [type] VST, VST3, AudioUnit
+ * @property {string} [type] VST, VST3, AudioUnit, fluid
  * @property {Object.<string, Automation>} automation
  */
 

@@ -91,7 +91,12 @@ function parse(scoreObject, config, session, tracks={}) {
     if (config.eventMappers) resultClip.eventMappers = config.eventMappers;
 
     const trackKey = config.trackKey;
-    if (!tracks[trackKey]) tracks[trackKey] = {clips: [], name: trackKey, plugins: []}; // Create Track object
+    if (!tracks[trackKey]) tracks[trackKey] = { // Create Track object
+      clips: [],
+      name: trackKey,
+      plugins: [],
+      automation: {}, // Create Automation object
+    };
     tracks[trackKey].clips.push(resultClip);
 
     returnValue = resultClip;
@@ -243,26 +248,33 @@ function tracksToFluidMessage(tracksObject) {
 
     }); // track.clips.forEach
 
+    // Handle track specific automation.
+    for (const [name, automation] of Object.entries(track.automation)) {
+      let trackAutoMsg = [];
+      trackMessages.push(trackAutoMsg);
+      if (name === 'volume' || name === 'pan') {
+        // Create a second volume/pan plugin for automation. The first one will
+        // be used for trim.
+        trackAutoMsg.push(fluid.plugin.select('volume', 'tracktion', 1));
+
+        // Iterate over the automation points. If we are just dealing with
+        // volume and pan, then the autoPoint should usable unedited. When
+        // dealing with sends, this might need to be more complicated.
+        for (const autoPoint of automation.points) {
+          trackAutoMsg.push(createFluidMessageForAutomationPoint(name, autoPoint));
+        }
+
+      } else {
+        throw new Error(`Fluid Track Automation found unsupported parameter: "${name}"`);
+      }
+    } // for [name, automation] of track.automation
+
     // Handle plugins/plugin automation
     for (const plugin of track.plugins) {
       trackMessages.push(fluid.plugin.select(plugin.name, plugin.type, plugin.nth));
       for (const [paramName, automation] of Object.entries(plugin.automation)) {
         for (const autoPoint of automation.points) {
-          if (typeof autoPoint.explicitValue === 'number') {
-          trackMessages.push(fluid.plugin.setParamExplicitAt(
-            paramName,
-            autoPoint.explicitValue,
-            autoPoint.startTime,
-            autoPoint.curve));
-          } else if (typeof autoPoint.normalizedValue === 'number') {
-            trackMessages.push(fluid.plugin.setParamNormalizedAt(
-              paramName,
-              autoPoint.normalizedValue,
-              autoPoint.startTime,
-              autoPoint.curve));
-          } else {
-            throw new Error(`AutomationPoint has neither of .explicitValue/.normalizedValue: ${JSON.stringify(autoPoint)}`);
-          }
+          trackMessages.push(createFluidMessageForAutomationPoint(paramName, autoPoint));
         } // for (autoPoint of automation.points)
       }   // for (paramName, automation of plugin.automation)
     }     // for (plugin of track.plugins)
@@ -270,6 +282,39 @@ function tracksToFluidMessage(tracksObject) {
 
   return sessionMessages;
 };
+
+/**
+ * FluidMessage objects are guaranteed to have either a .normalizedValue or a
+ * .explicitValue -- this just checks which one the AutomationPoint has, and
+ * returns an appropriate FluidMessage.
+ *
+ * Throws if the AutomationPoint does not have either type of value.
+ *
+ * This function is only used inside of tracksToFluidMessage, and should not be
+ * exported.
+ *
+ * @param {string} paramName
+ * @param {AutomationPoint} autoPoint
+ * @returns {FluidMessage}
+ */
+const createFluidMessageForAutomationPoint = (paramName, autoPoint) => {
+  if (typeof autoPoint.explicitValue === 'number') {
+    return fluid.plugin.setParamExplicitAt(
+      paramName,
+      autoPoint.explicitValue,
+      autoPoint.startTime,
+      autoPoint.curve);
+  } else if (typeof autoPoint.normalizedValue === 'number') {
+    return fluid.plugin.setParamNormalizedAt(
+      paramName,
+      autoPoint.normalizedValue,
+      autoPoint.startTime,
+      autoPoint.curve);
+  } else {
+    throw new Error(`AutomationPoint has neither of .explicitValue/.normalizedValue: ${JSON.stringify(autoPoint)}`);
+  }
+}
+
 
 /**
  * @param {ClipEvent[]} midiEvents

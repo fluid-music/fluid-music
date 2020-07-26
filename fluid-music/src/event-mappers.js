@@ -82,7 +82,6 @@ function mapMidiChords(event, context) {
     newEvent.n = note;
     return newEvent;
   });
-  console.log(result);
   return result;
 }
 
@@ -110,25 +109,37 @@ function mapAutomation(event, context) {
   if (!event.n.param || event.n.value == null)
     throw new Error(`note with type="auto" missing .value: ${JSON.stringify(event.n)}`);
 
-  // Find or create the plugin
-  const nth     = event.n.plugin.nth || 0;
-  const matches = context.track.plugins.filter(plugin => plugin.name === event.n.plugin.name);
-  if (nth >= matches.length) {
-    const needed = nth - matches.length + 1;
-    R.times(() => {
-      const plugin = { // Create PluginInstance object
-        name: event.n.plugin.name,
-        automation: {},
-        type: event.n.plugin.type,
-      };
-      matches.push(plugin);
-      context.track.plugins.push(plugin);
-    }, needed);
+  let automation = null;
+  if (event.n.plugin.type === 'fluid') {
+    if (event.n.plugin.name === 'track') {
+      automation = context.track.automation;
+    } else {
+      throw new Error(`note type type="auto", plugin.type="fluid" and plugin.name="${event.n.plugin.name}" not supported`);
+    }
+  } else {
+    // Find or create the plugin
+    const nth     = event.n.plugin.nth || 0;
+    const matches = context.track.plugins.filter(plugin => plugin.name === event.n.plugin.name && plugin.type == event.n.plugin.type);
+    if (nth >= matches.length) {
+      const needed = nth - matches.length + 1;
+      R.times(() => {
+        const plugin = { // Create PluginInstance object
+          name: event.n.plugin.name,
+          automation: {},
+          type: event.n.plugin.type,
+        };
+        matches.push(plugin);
+        context.track.plugins.push(plugin);
+      }, needed);
+    }
+    const plugin = matches[nth];
+    automation = plugin.automation;
   }
-  const plugin = matches[nth];
+
   const paramName = event.n.param.name;
-  if (!plugin.automation.hasOwnProperty(paramName))
-    plugin.automation[paramName] = {points: []};
+
+  if (!automation.hasOwnProperty(paramName))
+    automation[paramName] = {points: []};
 
   // Create AutomationPoint object
   const autoPoint = { startTime: context.clip.startTime + event.s };
@@ -141,7 +152,7 @@ function mapAutomation(event, context) {
   if (typeof event.n.curve === 'number')
     autoPoint.curve = event.n.curve;
 
-  plugin.automation[paramName].points.push(autoPoint);
+  automation[paramName].points.push(autoPoint);
   return null;
 }
 
