@@ -1,6 +1,8 @@
+# The Architecture of `fluid-music`
+
 How does the `fluid-music` library transform `Note` objects to a full DAW session?
 
-## `Note`, `NoteLibrary`, and Score objects
+## `Note`, `NoteLibrary`, and `Score` objects
 A `Note` object is a representation of an item or items that can be placed on
 a timeline in a DAW. The following `Note` examples show an **audio file**, a
 **midi chord**, and an **automation point**.
@@ -19,7 +21,7 @@ const chord = {
     type: "midiChord", // All Note objects have a .type string
     name: "Cm",
     notes: [ 60, 63, 67 ],
-},
+};
 
 // This `Note` object describes a plugin automation point
 const automationPoint =  {
@@ -36,12 +38,11 @@ const automationPoint =  {
                                // a percent into a value between 0 and 1.
     },
     value: 80, // param.units indicates value's unit type
-},
+};
 
 ```
 
-`Note` objects usually start out in a `NoteLibrary`, which is just an object with
-single character keys.
+`Note` objects usually start out in a `NoteLibrary`, which is just an object in which all keys have only one character like `"a"`,  `"b"`, `"0"`, or `"1"`.
 
 ```javascript
 const nLibrary = {
@@ -78,7 +79,7 @@ const session = fluid.score.parse(score, {nLibrary});
 
 ### 1. Create `ClipEvent` objects from `Note` objects.
 
-Internally, the `parse` method calls `parseTab` on our rhythm and pattern strings which creates `ClipEvent` objects.
+Internally, the `fluid.score.parse` method calls `parseTab` on our rhythm and pattern strings which creates `ClipEvent` objects.
 
 ```javascript
 const events = [
@@ -157,7 +158,7 @@ const session = {
 
 The power of `fluid-music` comes from designing custom types of `Note` objects, and creating custom `eventMapper` functions to handle those `Note` objects. You can see in the example above, that `eventMapper` functions are very powerful. A single `Note` object in a script can have impact on the entire session.
 
-### Convert the `tracks` to a fluid message
+## Convert the `tracks` to a fluid message
 
 Finally, the `tracksToFluidMessage` function converts the `tracks` object above to a `FluidMessage` object that can be sent to the `cybr` server.
 
