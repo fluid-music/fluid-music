@@ -89,14 +89,14 @@
  *           { s: 0.25,  l: 0.0833, n: { n: 35, type: 'midiNote' }, d: { v: 90 } },
  *           { s: 0.33,  l: 0.0833, n: { n: 38, type: 'midiNote' }, d: { v: 60 } },
  *         ],
- *         fileEvents: [...],
+ *         fileEvents: [
+ *           { s: 0.5, l: 0.25, n: { type: 'file', path: 'media/kick.wav' } },
+ *         ],
  *         startTime: 2,
  *         duration:  1,
  *       },
  *       {
- *         events: [
- *           { s: 0.5, l: 0.25, n: { type: 'file', path: 'media/kick.wav' } },
- *         ],
+ *         events: [],
  *         startTime: 3,
  *         duration:  1,
  *       },
