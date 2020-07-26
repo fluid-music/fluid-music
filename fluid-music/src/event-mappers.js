@@ -100,22 +100,23 @@ function mapNumbersToMidiNotes(event, context) {
  * @param {ClipEventContext} context
  */
 function mapAutomation(event, context) {
-  if (event.n.type !== 'auto') return event;
-
-  if (!event.n.plugin || typeof event.n.plugin.name !== 'string')
-    throw new Error(`note with type="auto" missing plugin.name string: ${JSON.stringify(event.n)}`);
-  if (!event.n.param || typeof event.n.param.name !== 'string')
-    throw new Error(`note with type="auto" missing param.name string: ${JSON.stringify(event.n)}`);
-  if (!event.n.param || event.n.value == null)
-    throw new Error(`note with type="auto" missing .value: ${JSON.stringify(event.n)}`);
+  if (event.n.type === 'pluginAuto') {
+    if (!event.n.plugin || !event.n.param)
+      throw new Error(`note with type='pluginAuto' missing either a .plugin or a .param ${JSON.stringify(event.n)}`)
+    if (typeof event.n.plugin.name !== 'string')
+      throw new Error(`note with type='pluginAuto' missing plugin.name string: ${JSON.stringify(event.n)}`);
+    if (event.n.value == null)
+      throw new Error(`note with type='pluginAuto' missing .value: ${JSON.stringify(event.n)}`);
+  } else if (event.n.type === 'trackAuto') {
+    if (!event.n.param || !event.n.param.name)
+      throw new Error(`note with type='trackAuto' missing .param.name: ${JSON.stringify(event.n)}`)
+  } else {
+    return event; // only handle 'trackAuto' and 'pluginAuto' types
+  }
 
   let automation = null;
-  if (event.n.plugin.type === 'fluid') {
-    if (event.n.plugin.name === 'track') {
-      automation = context.track.automation;
-    } else {
-      throw new Error(`note type type="auto", plugin.type="fluid" and plugin.name="${event.n.plugin.name}" not supported`);
-    }
+  if (event.n.type === 'trackAuto') {
+    automation = context.track.automation;
   } else {
     // Find or create the plugin
     const nth     = event.n.plugin.nth || 0;

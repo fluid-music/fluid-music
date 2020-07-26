@@ -1,10 +1,11 @@
 module.exports = {
-  auto:      'auto',
-  file:      'file',
-  iLayers:   'iLayers',
-  midiChord: 'midiChord',
-  midiNote:  'midiNote',
-  random:    'random',
+  trackAuto:  'trackAuto',
+  pluginAuto: 'pluginAuto',
+  file:       'file',
+  iLayers:    'iLayers',
+  midiChord:  'midiChord',
+  midiNote:   'midiNote',
+  random:     'random',
 
   examples: [
     /**
@@ -24,11 +25,11 @@ module.exports = {
     },
 
     /**
-     * The `auto` note type represents an an automation point for a specific
+     * The `pluginAuto` note type represents an an automation point for a specific
      * plugin on an arbitrary (selected) audio track.
      */
     {
-      type: 'auto',
+      type: 'pluginAuto',
       plugin: {      // identifies a plugin on an arbitrary track
         name: 'DragonflyRoomReverb-vst',
         type: 'VST', // 'VST', 'VST3', 'AudioUnit'
@@ -49,6 +50,15 @@ module.exports = {
       curve: 0,  // optional curvature from this point to the next. 0=linear.
     },
 
+    /**
+     * `trackAuto` represents an automation point for a track parameter such as
+     * `'volume'` or `'pan'`.
+     *
+     * Unlike `pluginAuto`, it does not specify a `.plugin`.
+     * Like   `pluginAuto`, it specifies a `.param.name` string and a value.
+     */
+    {type: 'trackAuto', param: {name: 'volume', units: 'db'},      value: -6 },
+    {type: 'trackAuto', param: {name: 'pan',    units: '-1 to 1'}, value: 1 },
 
     /**
      * The `random` type notes get are replaced with one of the types in the

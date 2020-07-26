@@ -10,10 +10,16 @@ const dragonflyRoom = fluid.pluginDragonflyRoomReverb;
 
 // experimental automation point
 const a = {
-  type: fluid.noteTypes.auto,
+  type: fluid.noteTypes.pluginAuto,
   plugin: { name: 'Podolski.64' },
   param: fluid.pluginPodolski.params.vcf0Cutoff,
   value: 0.5,
+};
+
+const p = {
+  type: fluid.noteTypes.trackAuto,
+  param: fluid.trackAutomation.params.pan,
+  value: -0.5,
 };
 
 const nLibrary = Object.assign({}, drums.nLibrary);
@@ -34,7 +40,7 @@ const score = {
   snare: 'r---k-  .   k-  ',
   tamb:  'c s c s c s c s ',
   bass:{
-    bass:'       b-   ab  ', nLibrary: { b: 40, c: 48, a },
+    bass:'       b-   abp ', nLibrary: { b: 40, c: 48, a, p },
   },
   chrd: {
   chrd:  'a-  .  ab---    ', nLibrary: chords.nLibrary,
@@ -62,6 +68,15 @@ const msg = [
   // bass
   fluid.audiotrack.select('bass'),
   recipes.presets.podolski.sineSlowDecay(),
+  // fluid.plugin.select('volume', 'tracktion', 0),
+  // fluid.plugin.select('volume', 'tracktion', 1),
+  // fluid.plugin.select('volume', 'tracktion', 2),
+  // fluid.plugin.select('volume', 'tracktion', 0),
+  // fluid.plugin.setParamExplicit('pan', -.5),
+  // fluid.plugin.select('volume', 'tracktion', 1),
+  // fluid.plugin.setParamExplicit('pan', .5),
+  // fluid.plugin.select('volume', 'tracktion', 2),
+  // fluid.plugin.setParamExplicit('pan', 1),
 
   // kick
   fluid.audiotrack.select('kick'),

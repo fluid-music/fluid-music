@@ -286,26 +286,25 @@ describe('score', () => {
 
       const nLibrary = {
         a: {
-          type: 'auto',
+          type: 'pluginAuto',
           plugin: { name: 'examplePlugin' }, // name only
           param: p1,
           value: 0.5
         },
         b: {
-          type: 'auto',
+          type: 'pluginAuto',
           plugin: { name: 'examplePlugin' },
           param: p2,
           value: 50,
         },
         n: {
-          type: 'auto',
+          type: 'pluginAuto',
           plugin: { name: 'manyPlugin', nth: 2 },
           param: p1,
           value: .25,
         },
         p: {
-          type: 'auto',
-          plugin: fluid.trackAutomation.plugin,
+          type: 'trackAuto',
           param: fluid.trackAutomation.params.pan,
           value: -0.5,
         }
@@ -331,7 +330,7 @@ describe('score', () => {
         });
       });
 
-      it('should put automation points with type="fluid" in the correct place', () => {
+      it('should put automation points with type="trackAuto" in the correct place', () => {
         const s2 = score.parse({ bass: '..p.'}, config);
         s2.tracks.bass.plugins.should.be.empty();
         s2.tracks.bass.automation.should.deepEqual({
@@ -406,8 +405,8 @@ describe('score', () => {
       const param2 = { name: 'send lvl', units: '%', normalize: v => v * 0.01 };
       const plug1  = { name: 'examplePlugin' }
       const nLibrary = {
-        a: { plugin: plug1, param: param1, value: .5, type: 'auto' },
-        b: { plugin: plug1, param: param2, value: 50, type: 'auto' },
+        a: { plugin: plug1, param: param1, value: .5, type: 'pluginAuto' },
+        b: { plugin: plug1, param: param2, value: 50, type: 'pluginAuto' },
       };
 
       const s1   = score.parse({bass: '.a.b', r: '1234', nLibrary});

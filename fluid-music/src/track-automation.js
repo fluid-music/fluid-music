@@ -13,10 +13,6 @@
  * ```
  */
 module.exports = {
-  plugin: {
-    type: 'fluid',
-    name: 'track',
-  },
 
   params: {
 
