@@ -37,9 +37,10 @@
  *           duration: 1,
  *           startTime: 3
  *           midiEvents: [{s: 0, l: 0.25, n: {n: 3, type: 'midiNote'}}],
- *         }
- *       ]
- *     }
+ *         },
+ *       ],
+ *     },
+ *     automation: {},
  *   },
  *   regions: [
  *     {
@@ -124,7 +125,7 @@
  * @param {string} name The Track name
  * @param {number} [duration]  // Charles: do all Track objects have a duration?
  * @param {number} [startTime] // Charles: do all Track objects have a startTime?
- * @param {Object.<string, Automation} automation this contains automation
+ * @param {Object.<string, Automation>} automation this contains automation
  *    associated with the track. Note that PluginInstance objects have their own
  *    .automation object.
  */
