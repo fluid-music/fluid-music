@@ -136,6 +136,9 @@ const session = {
                         { s: 0, l: 0.25, n: {n: 67, type: 'midiNote'} },
                     ],
 
+                    // no files were written in the score
+                    fileEvents: [],
+
                     // eventMapper functions handled all events from the
                     // intermediary clip, leaving the .events array empty
                     events: [],
