@@ -60,7 +60,7 @@ const eventMappers = [
   (event, context) => {
     if (!event.n || event.n.type !== 'ripple') return event;
     // 1/24 and 0.020
-    // 1/16 and 0.040 [or whatever yields 061]
+    // 1/16 and 0.040
     // How long to wait between re-triggers measured in whole notes
     const stepSize = 1/24;
     // StartOffsetIncrement Number of seconds adjust sample start time

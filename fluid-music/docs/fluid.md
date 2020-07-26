@@ -52,10 +52,6 @@ note numbers. String arrays can be easier to read than number arrays:</p>
 <dt><a href="#parseRhythm">parseRhythm(rhythm)</a> ⇒ <code>object</code></dt>
 <dd><p>Convert rhythm string to a cumulative array of durations.</p>
 </dd>
-<dt><a href="#parseVelocity">parseVelocity(dPattern, symbolsAndCounts, dLibrary)</a> ⇒ <code>Array.&lt;number&gt;</code></dt>
-<dd><p>Helper method to convert Dynamic pattern string to an array corresponding to
-dynamic objects for of each symbol in symbolsAndCounts.</p>
-</dd>
 <dt><a href="#parseDynamicPattern">parseDynamicPattern(dPattern, dLibrary)</a></dt>
 <dd></dd>
 <dt><a href="#parseTab">parseTab(rhythm, nPattern, nLibrary)</a> ⇒ <code><a href="#Clip">Clip</a></code></dt>
@@ -156,7 +152,13 @@ you need an integer note number.</p>
 </dd>
 <dt><a href="#mapVelocityNumbersToDynamic">mapVelocityNumbersToDynamic(event, context)</a></dt>
 <dd></dd>
+<dt><a href="#mapRandom">mapRandom(event, context)</a></dt>
+<dd></dd>
+<dt><a href="#mapMidiChords">mapMidiChords(event, context)</a></dt>
+<dd></dd>
 <dt><a href="#mapNumbersToMidiNotes">mapNumbersToMidiNotes(event, context)</a></dt>
+<dd></dd>
+<dt><a href="#mapAutomation">mapAutomation(event, context)</a></dt>
 <dd></dd>
 <dt><a href="#mapMidiNotes">mapMidiNotes(event, context)</a></dt>
 <dd></dd>
@@ -178,13 +180,19 @@ different input format, and outputs a <code>Session</code> instead of an array o
 <li>A config object with (at minimum) a <code>.nLibrary</code> and <code>.r</code>hythm</li>
 </ul>
 </dd>
-<dt><a href="#tracksToFluidMessage">tracksToFluidMessage(tracksObject, customEventMappers)</a> ⇒ <code><a href="#FluidMessage">FluidMessage</a></code></dt>
+<dt><a href="#applyEventMappers">applyEventMappers(session, [ubiquitousMappers])</a></dt>
+<dd></dd>
+<dt><a href="#tracksToFluidMessage">tracksToFluidMessage(tracksObject)</a> ⇒ <code><a href="#FluidMessage">FluidMessage</a></code></dt>
 <dd><p>Create a <code>FluidMessage</code> from a <code>TracksObject</code></p>
 <pre><code class="language-javascript">const session = fluid.score.parse(myScore, myConfig);
 const message = fluid.score.tracksToFluidMessage(session.tracks);
 const client = new fluid.Client();
 client.send(message);</code></pre>
 </dd>
+<dt><a href="#midiEventsToFluidMessage">midiEventsToFluidMessage(midiEvents, context)</a></dt>
+<dd></dd>
+<dt><a href="#fileEventsToFluidMessage">fileEventsToFluidMessage(fileEvents, context)</a></dt>
+<dd></dd>
 </dl>
 
 ## Typedefs
@@ -203,7 +211,7 @@ them to FluidMessages.</p>
 5) Add fluid messages to <code>context.messages</code></p>
 </dd>
 <dt><a href="#ClipEventContext">ClipEventContext</a> : <code>Object</code></dt>
-<dd><p>Score.parse passes ClipEventContext objects as the second argument to
+<dd><p>Score.parse passes ClipContext objects as the second argument to
 eventMapper functions. Its fields specify the context of the NoteObject
 currently being processed, including the track and clip that contain the
 note.</p>
@@ -223,21 +231,25 @@ note.</p>
           events: [ { s: 0, l: 0.25, n: 0 } ],
           duration: 1,
           startTime: 0
+          midiEvents: [{s: 0, l: 0.25, n: {n: 0, type: &#39;midiNote&#39;}}],
         },
         {
           events: [ { s: 0, l: 0.25, n: 1 } ],
           duration: 1,
           startTime: 1
+          midiEvents: [{s: 0, l: 0.25, n: {n: 1, type: &#39;midiNote&#39;}}],
         },
         {
           events: [ { s: 0, l: 0.25, n: 2 } ],
           duration: 1,
           startTime: 2
+          midiEvents: [{s: 0, l: 0.25, n: {n: 2, type: &#39;midiNote&#39;}}],
         },
         {
           events: [ { s: 0, l: 0.25, n: 3 } ],
           duration: 1,
           startTime: 3
+          midiEvents: [{s: 0, l: 0.25, n: {n: 3, type: &#39;midiNote&#39;}}],
         }
       ]
     }
@@ -273,11 +285,12 @@ contains two clips:</p>
   bass: {
     clips: [
       {
-        events: [
+        midiEvents: [
           { s: 0,     l: 0.0833, n: { n: 33, type: &#39;midiNote&#39; }, d: { v: 100 } },
           { s: 0.25,  l: 0.0833, n: { n: 35, type: &#39;midiNote&#39; }, d: { v: 90 } },
           { s: 0.33,  l: 0.0833, n: { n: 38, type: &#39;midiNote&#39; }, d: { v: 60 } },
         ],
+        fileEvents: [...],
         startTime: 2,
         duration:  1,
       },
@@ -288,7 +301,17 @@ contains two clips:</p>
         startTime: 3,
         duration:  1,
       },
-    ]
+    ], // clips
+    plugins: [
+      {
+        name: &#39;Podolski.64&#39;,
+        type: &#39;VST&#39;,
+        automation: {
+          &quot;VCF0: Cutoff&quot;:    { points: [ { startTime: 0, explicitValue: 0.4 } ] },
+          &quot;VCF0: Resonance&quot;: { points: [ { startTime: 0, normalizedValue: 0.5, curve: -0.5 } ] },
+        }
+      }
+    ] // plugins
   }
 }</code></pre>
 </dd>
@@ -296,6 +319,13 @@ contains two clips:</p>
 <dd></dd>
 <dt><a href="#Clip">Clip</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#PluginInstance">PluginInstance</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Automation">Automation</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#AutomationPoint">AutomationPoint</a> : <code>Object</code></dt>
+<dd><p>AutomationPoints must have either an explicitValue or a normalizedValue</p>
+</dd>
 <dt><a href="#ClipEvent">ClipEvent</a> : <code>Object</code></dt>
 <dd><p>ClipEvents combine a <code>Note</code>, a <code>Dynamic</code> marking, a <code>s</code>tart time, and a
 <code>l</code>ength. The start time is measured from the beginning of the Clip that
@@ -529,7 +559,7 @@ Creates an object that looks like this:
 | --- | --- | --- | --- |
 | pluginName | <code>string</code> |  | the name of the vst plugin |
 | [pluginType] | <code>string</code> |  | optional type, for example 'VST', 'VST3',        'AudioUnit'. If omitted, search all types. |
-| [pluginId] | <code>number</code> | <code>0</code> | the id of the plugin |
+| [pluginId] | <code>number</code> | <code>0</code> | If there are multiple instances of the named    plugin on the selected track, use this argument if you want to select a    specific one one (by default this selects the first plugin with the    given name). Note that pluginId only counts plugins that match the given    pluginName, so pluginName='podolski', pluginId=1 will always select the    second podolski instance, even if there are many other plugins on the    track. |
 
 <a name="plugin.setParamNormalized"></a>
 
@@ -931,21 +961,6 @@ Convert rhythm string to a cumulative array of durations.
 | --- | --- | --- |
 | rhythm | <code>string</code> | String representing of a rhythm |
 
-<a name="parseVelocity"></a>
-
-## parseVelocity(dPattern, symbolsAndCounts, dLibrary) ⇒ <code>Array.&lt;number&gt;</code>
-Helper method to convert Dynamic pattern string to an array corresponding to
-dynamic objects for of each symbol in symbolsAndCounts.
-
-**Kind**: global function  
-**Returns**: <code>Array.&lt;number&gt;</code> - - an array representing the velocity of each symbol.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| dPattern | <code>string</code> | String representation of note velocities. |
-| symbolsAndCounts |  | from patternToSymbolsAndCounts |
-| dLibrary | <code>Array.&lt;number&gt;</code> | an indexable array containing velocity values. |
-
 <a name="parseDynamicPattern"></a>
 
 ## parseDynamicPattern(dPattern, dLibrary)
@@ -962,6 +977,7 @@ dynamic objects for of each symbol in symbolsAndCounts.
 Convert a rhythm, pattern, and note library to a `Clip`.
 
 **Kind**: global function  
+**Returns**: [<code>Clip</code>](#Clip) - (missing `startTime`. `startTime` is added by `score.parse`)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1177,9 +1193,39 @@ you need an integer note number.
 | event | [<code>ClipEvent</code>](#ClipEvent) | 
 | context | [<code>ClipEventContext</code>](#ClipEventContext) | 
 
+<a name="mapRandom"></a>
+
+## mapRandom(event, context)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| event | [<code>ClipEvent</code>](#ClipEvent) | 
+| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
+
+<a name="mapMidiChords"></a>
+
+## mapMidiChords(event, context)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| event | [<code>ClipEvent</code>](#ClipEvent) | 
+| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
+
 <a name="mapNumbersToMidiNotes"></a>
 
 ## mapNumbersToMidiNotes(event, context)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| event | [<code>ClipEvent</code>](#ClipEvent) | 
+| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
+
+<a name="mapAutomation"></a>
+
+## mapAutomation(event, context)
 **Kind**: global function  
 
 | Param | Type |
@@ -1249,9 +1295,19 @@ Typically called with two arguments (other args are for internal use only)
 | [config.nLibrary] | [<code>NoteLibrary</code>](#NoteLibrary) |  | (see tab.parseTab for details about   `NoteLibrary`). If not specified, `scoreObject` must have a `.nLibrary` property. |
 | [session] | [<code>Session</code>](#Session) |  | Only used in recursion. Consuming code should not    supply this argument. |
 
+<a name="applyEventMappers"></a>
+
+## applyEventMappers(session, [ubiquitousMappers])
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| session | [<code>Session</code>](#Session) |  |
+| [ubiquitousMappers] | [<code>Array.&lt;eventMapper&gt;</code>](#eventMapper) | fluid supplies a default    collection of mappers that are needed for proper parsing. To override    the default mappers, specify null or an empty array. |
+
 <a name="tracksToFluidMessage"></a>
 
-## tracksToFluidMessage(tracksObject, customEventMappers) ⇒ [<code>FluidMessage</code>](#FluidMessage)
+## tracksToFluidMessage(tracksObject) ⇒ [<code>FluidMessage</code>](#FluidMessage)
 Create a `FluidMessage` from a `TracksObject`
 
 ```javascript
@@ -1266,7 +1322,26 @@ client.send(message);
 | Param | Type | Description |
 | --- | --- | --- |
 | tracksObject | [<code>TracksObject</code>](#TracksObject) | A tracks object generated by score.parse |
-| customEventMappers | [<code>Array.&lt;eventMapper&gt;</code>](#eventMapper) | tracksToFluidMessage will call each    function in this array on each NoteObject that is being parsed. Put    custom functions in here to override or augment the default NoteObject    handlers. |
+
+<a name="midiEventsToFluidMessage"></a>
+
+## midiEventsToFluidMessage(midiEvents, context)
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| midiEvents | [<code>Array.&lt;ClipEvent&gt;</code>](#ClipEvent) |  |
+| context | [<code>ClipEventContext</code>](#ClipEventContext) | This will not have a .eventIndex |
+
+<a name="fileEventsToFluidMessage"></a>
+
+## fileEventsToFluidMessage(fileEvents, context)
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fileEvents | [<code>Array.&lt;ClipEvent&gt;</code>](#ClipEvent) |  |
+| context | [<code>ClipEventContext</code>](#ClipEventContext) | This will not have a .eventIndex |
 
 <a name="eventMapper"></a>
 
@@ -1293,7 +1368,7 @@ In general, eventMapper functions have 5 things they can do:
 <a name="ClipEventContext"></a>
 
 ## ClipEventContext : <code>Object</code>
-Score.parse passes ClipEventContext objects as the second argument to
+Score.parse passes ClipContext objects as the second argument to
 eventMapper functions. Its fields specify the context of the NoteObject
 currently being processed, including the track and clip that contain the
 note.
@@ -1306,9 +1381,8 @@ note.
 | clip | [<code>Clip</code>](#Clip) | the Clip that contains the current event |
 | track | [<code>Track</code>](#Track) | the Track that contains the current event |
 | tracks | [<code>TracksObject</code>](#TracksObject) |  |
-| messages | [<code>Array.&lt;FluidMessage&gt;</code>](#FluidMessage) |  |
 | clipIndex | <code>number</code> | index of the clip within the track |
-| eventIndex | <code>number</code> | index of the event within the clip.    tracksToFluidMessage updates this automatically before each eventMapper    callback. |
+| [eventIndex] | <code>number</code> | index of the event within the clip.    score.parse updates this automatically before each eventMapper    callback. Note available in (non-end-user) cases where a callback is    passed an array of events, this will not be available. |
 | data | <code>Object</code> | this is a convenient place for `eventMapper`    callbacks to store data if (for example) the event mapper needs to    preserve information between callbacks. Like the EventContext, it is    replaced for each Clip. |
 
 <a name="ScoreObject"></a>
@@ -1333,21 +1407,25 @@ const exampleSession = {
           events: [ { s: 0, l: 0.25, n: 0 } ],
           duration: 1,
           startTime: 0
+          midiEvents: [{s: 0, l: 0.25, n: {n: 0, type: 'midiNote'}}],
         },
         {
           events: [ { s: 0, l: 0.25, n: 1 } ],
           duration: 1,
           startTime: 1
+          midiEvents: [{s: 0, l: 0.25, n: {n: 1, type: 'midiNote'}}],
         },
         {
           events: [ { s: 0, l: 0.25, n: 2 } ],
           duration: 1,
           startTime: 2
+          midiEvents: [{s: 0, l: 0.25, n: {n: 2, type: 'midiNote'}}],
         },
         {
           events: [ { s: 0, l: 0.25, n: 3 } ],
           duration: 1,
           startTime: 3
+          midiEvents: [{s: 0, l: 0.25, n: {n: 3, type: 'midiNote'}}],
         }
       ]
     }
@@ -1399,11 +1477,12 @@ contains two clips:
   bass: {
     clips: [
       {
-        events: [
+        midiEvents: [
           { s: 0,     l: 0.0833, n: { n: 33, type: 'midiNote' }, d: { v: 100 } },
           { s: 0.25,  l: 0.0833, n: { n: 35, type: 'midiNote' }, d: { v: 90 } },
           { s: 0.33,  l: 0.0833, n: { n: 38, type: 'midiNote' }, d: { v: 60 } },
         ],
+        fileEvents: [...],
         startTime: 2,
         duration:  1,
       },
@@ -1414,7 +1493,17 @@ contains two clips:
         startTime: 3,
         duration:  1,
       },
-    ]
+    ], // clips
+    plugins: [
+      {
+        name: 'Podolski.64',
+        type: 'VST',
+        automation: {
+          "VCF0: Cutoff":    { points: [ { startTime: 0, explicitValue: 0.4 } ] },
+          "VCF0: Resonance": { points: [ { startTime: 0, normalizedValue: 0.5, curve: -0.5 } ] },
+        }
+      }
+    ] // plugins
   }
 }
 ```
@@ -1428,6 +1517,7 @@ contains two clips:
 | Param | Type | Description |
 | --- | --- | --- |
 | clips | [<code>Array.&lt;Clip&gt;</code>](#Clip) |  |
+| plugins | [<code>Array.&lt;PluginInstance&gt;</code>](#PluginInstance) |  |
 | name | <code>string</code> | The Track name |
 | [duration] | <code>number</code> | // Charles: do all Track objects have a duration? |
 | [startTime] | <code>number</code> | // Charles: do all Track objects have a startTime? |
@@ -1441,8 +1531,47 @@ contains two clips:
 | Name | Type | Description |
 | --- | --- | --- |
 | events | [<code>Array.&lt;ClipEvent&gt;</code>](#ClipEvent) |  |
+| midiEvents | [<code>Array.&lt;ClipEvent&gt;</code>](#ClipEvent) |  |
+| fileEvents | [<code>Array.&lt;ClipEvent&gt;</code>](#ClipEvent) |  |
 | duration | <code>number</code> | duration in whole notes |
 | [startTime] | <code>number</code> | start time in whole notes |
+
+<a name="PluginInstance"></a>
+
+## PluginInstance : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> |  |
+| [type] | <code>string</code> | VST, VST3, AudioUnit |
+| automation | <code>Object.&lt;string, Automation&gt;</code> |  |
+
+<a name="Automation"></a>
+
+## Automation : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| points | [<code>Array.&lt;AutomationPoint&gt;</code>](#AutomationPoint) | 
+
+<a name="AutomationPoint"></a>
+
+## AutomationPoint : <code>Object</code>
+AutomationPoints must have either an explicitValue or a normalizedValue
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| startTime | <code>number</code> |  | the time in beats |
+| [curve] | <code>number</code> | <code>0</code> |  |
+| [explicitValue] | <code>number</code> |  |  |
+| [normalizedValue] | <code>number</code> |  |  |
 
 <a name="ClipEvent"></a>
 
@@ -1462,7 +1591,7 @@ score. `Note` objects also have a `.type` field, while `ClipEvent`s do not.
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | l | <code>number</code> |  | length in whole notes |
-| s | <code>number</code> |  | start time in whole notes |
+| s | <code>number</code> |  | start time in whole notes, measured from clip start |
 | n | [<code>Note</code>](#Note) |  | a `Note` event. Sometimes these might be a number |
 | [v] | <code>number</code> | <code>64</code> | optional midi velocity |
 | [d] | [<code>Dynamic</code>](#Dynamic) |  | Signifies a dynamic marking |
@@ -1505,8 +1634,8 @@ These can be found in an `nLibrary`, or in the `.n` field of a `ScoreEvent`.
 | --- | --- | --- |
 | type | <code>string</code> | String indicating the type of event:   'file' indicates an audio sample, which should have a `.path`.   'iLayers' indicates the presence of a `.iLayers` field, which contains an    array of EventObjects with `.type === 'file'`. Files in the `.iLayers`    array should be arranged in order of increasing performance intensity. |
 | [path] | <code>string</code> | file objects must include a path string |
-| [fadeOut] | <code>number</code> | file objects may specify a fade out in seconds |
-| [fadeIn] | <code>number</code> | file objects may specify a fade in in seconds |
+| [fadeOutSeconds] | <code>number</code> | fade out in seconds (file objects) |
+| [fadeInSeconds] | <code>number</code> | fade in in seconds (file objects) |
 | [oneShot] | <code>boolean</code> | if true, file objects will play until the end,   ignoring the note's length |
 
 <a name="FluidMessage"></a>
