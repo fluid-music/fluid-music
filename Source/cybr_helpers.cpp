@@ -691,7 +691,7 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
         return nullptr;
     }
 
-    // Insert it just before the volume.
+    // Insert it just before the volume last volume instance.
     int insertPoint = 0;
     bool found = false;
     for (te::Plugin* checkPlugin : track.pluginList) {
@@ -700,19 +700,6 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
             break;
         }
         insertPoint++;
-    }
-    // If we are inserting a volume plugin, we actually want to insert it after
-    // the last volume plugin in the track instead of inserting it just before
-    // the first volume plugin. This helps to ensure that if we select the nth
-    // volume plugin we get the same one as when we insert the nth volume plugin
-    if (found && name == "volume" && (type.isEmpty() || type.equalsIgnoreCase("tracktion"))) {
-        int i = 0;
-        for (te::Plugin* checkPlugin : track.pluginList) {
-            i++; // This should always be one more than the current index
-            if (auto x = dynamic_cast<te::VolumeAndPanPlugin*>(checkPlugin)) {
-                insertPoint = i;
-            }
-        }
     }
     // If no volume plugin is found, insert at the end
     if (!found) insertPoint = -1;

@@ -96,6 +96,10 @@ const audiotrack = {
    */
   unmute() { return { address: '/audiotrack/unmute'}},
 
+  /**
+   * Adjust the gain of the last volume plugin on the track's PluginList.
+   * @param {number} dbfs
+   */
   gain(dbfs) {
     if (typeof dbfs !== 'number')
       throw new Error('audiotrack.gain requires a number in dbfs');
