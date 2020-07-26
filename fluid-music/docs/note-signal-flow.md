@@ -105,15 +105,13 @@ However, before `fluid.score.parse` returns, all the `ClipEvent` objects pass th
 You don't need to memorize the structure of the object below, but I recommend
 studying how the `Clip` object in the `.clips` array in the example below was mutated from the `intermediaryClip` above. For example, an `eventMapper` function was responsible for converting the `midiChord` to `midiNote` objects, and moving those `midiNote` objects to the from the `.events` array to the `.midiEvents` array.
 
-The power of `fluid-music` comes from designing custom types of `Note` objects, and creating custom `eventMapper` functions to handle those `Note` objects.
-
 ```javascript
 const session = {
     tracks: {
         rev: {
             name: 'rev',
             clips: [
-                // This clip was 
+                // eventMappers mutated the intermediaryClip to create this one
                 {
                     startTime: 0, // clip start time, measured in whole notes
                     duration: 1,  // clip length, measured in whole notes
@@ -143,6 +141,8 @@ const session = {
     }
 }
 ```
+
+The power of `fluid-music` comes from designing custom types of `Note` objects, and creating custom `eventMapper` functions to handle those `Note` objects. You can see in the example above, that `eventMapper` functions are very powerful. A single `Note` object in a script can have impact on the entire session.
 
 Finally, the `tracksToFluidMessage` function converts the `tracks` object above to a `FluidMessage` object that can be sent to the `cybr` server.
 
