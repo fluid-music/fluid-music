@@ -57,13 +57,13 @@ typical workflow. Starting from the `nLibrary` and ending with a `fluidMessage`.
 
 ## `Score` Objects and Score Parsing
 
-This score object below describes a single clip of with a length of 4 quarter notes. It reverences two distinct `Note` events, which will eventually be inserted onto a track named `"rev"`:
+This score object below describes a single clip of with a length of 4 quarter notes. It references two distinct `Note` events, which will eventually be inserted onto a track named `"rev"`:
 1. A three note MIDI chord, `c` on the down beat, which single quarter note duration.
 1. An automation point, `p`, on the third quarter note.
 
 ```javascript
 const score = {
-    r:   '1234', // Quarter note rhythm string
+    r:   '1234', // Quarter note rhythm string represents four quarter notes
     rev: 'c p ', // Pattern string creates a clip on the 'rev' track, inserting:
                  //   - A chord on beat one
                  //   - An automation point on beat three
