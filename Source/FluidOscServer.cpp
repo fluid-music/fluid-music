@@ -758,7 +758,7 @@ OSCMessage FluidOscServer::ensureSend(const OSCMessage& message) {
 }
 
 OSCMessage FluidOscServer::selectPlugin(const OSCMessage& message) {
-    OSCMessage reply("/plugin/select");
+    OSCMessage reply("/plugin/select/reply");
     if (message.size() > 3 ||
         !message[0].isString() ||
         !message[1].isInt32() ){
