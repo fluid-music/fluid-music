@@ -92,6 +92,7 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/save"})) return savePluginPreset(message);
     if (msgAddressPattern.matches({"/plugin/load/trkpreset"})) return loadPluginTrkpreset(message);
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
+    if (msgAddressPattern.matches({"/plugin/param/report"})) return getPluginParamReport(message);
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/select/return"})) return selectReturnTrack(message);
@@ -601,6 +602,13 @@ OSCMessage FluidOscServer::changeWorkingDirectory(const OSCMessage& message) {
 
 OSCMessage FluidOscServer::selectAudioTrack(const juce::OSCMessage& message) {
     OSCMessage reply("/audiotrack/select/reply");
+
+    if (!activeCybrEdit) {
+        String errorString = "Cannot select track: no active edit";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
     if (!message.size() || !message[0].isString()){
         String errorString = "Cannot select audio track: no track name provided";
         constructReply(reply, 1, errorString);
@@ -952,6 +960,40 @@ OSCMessage FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
     selectedPlugin->guessSidechainRouting();
 
     reply.addInt32(0);
+    return reply;
+}
+
+OSCMessage FluidOscServer::getPluginParamReport(const juce::OSCMessage& message) {
+    OSCMessage reply("/plugin/param/report/reply");
+
+    if (!selectedPlugin) {
+        String errorString = "Cannot get plugin report: No selected plugin";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    OwnedArray<var> oArray;
+    Array<var> array;
+
+    for (auto param : selectedPlugin->getAutomatableParameters()) {
+        DynamicObject* object = new DynamicObject();
+        var* v = new var(object);
+
+        object->setProperty("name", param->paramName);
+        array.add(*v);
+        oArray.add(v);
+    }
+
+    // Create JSON of the results
+    MemoryBlock blob;
+    MemoryOutputStream jsonStream(blob, false);
+    JSON::writeToStream(jsonStream, array, true);
+    blob.setSize(jsonStream.getDataSize());
+
+    reply.addInt32(0);
+    reply.addString("Retrieved JSON report about plugin parameters");
+    reply.addBlob(blob);
+
     return reply;
 }
 
