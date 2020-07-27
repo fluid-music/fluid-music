@@ -12,7 +12,7 @@ module.exports = {
    *    particular track.
    */
   select(nth) {
-    return fluid.plugin.select('podolski.64', 'vst', nth);
+    return fluid.plugin.select('Podolski', 'vst', nth);
   },
 
   /**

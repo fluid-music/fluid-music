@@ -253,9 +253,12 @@ function tracksToFluidMessage(tracksObject) {
       let trackAutoMsg = [];
       trackMessages.push(trackAutoMsg);
       if (name === 'volume' || name === 'pan') {
-        // Create a second volume/pan plugin for automation. The first one will
-        // be used for trim.
+        // fluid.audiotrack.gain should always adjust the last volume plugin on
+        // the track. That means that we want to apply automation on an earlier
+        // volume plugin. First, ensure that we have at least two volume plugins
         trackAutoMsg.push(fluid.plugin.select('volume', 'tracktion', 1));
+        // ...then select the first volume plugin which will be automated
+        trackAutoMsg.push(fluid.plugin.select('volume', 'tracktion', 0));
 
         // Iterate over the automation points. If we are just dealing with
         // volume and pan, then the autoPoint should usable unedited. When

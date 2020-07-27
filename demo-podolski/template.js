@@ -11,7 +11,7 @@ const dragonflyRoom = fluid.pluginDragonflyRoomReverb;
 // experimental automation point
 const a = {
   type: fluid.noteTypes.pluginAuto,
-  plugin: { name: 'Podolski.64' },
+  plugin: { name: 'Podolski' },
   param: fluid.pluginPodolski.params.vcf0Cutoff,
   value: 0.5,
 };

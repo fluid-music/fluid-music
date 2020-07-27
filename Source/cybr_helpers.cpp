@@ -658,7 +658,7 @@ te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name
     return clip;
 }
 
-te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, const String type, const int index) {
+te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, const String type, const int index, const bool checkStartsWith) {
     int nthPluginOfName = 0;
     for (te::Plugin* checkPlugin : track.pluginList) {
         // Internal plugins like "volume"
@@ -669,10 +669,15 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
         // checkPlugin->getName();         // "Zebra2"
         bool match = false;
         if (auto x = dynamic_cast<te::ExternalPlugin*>(checkPlugin)) {
-            if (checkPlugin->getName().equalsIgnoreCase(name)) {
-                if (type.isEmpty() || checkPlugin->getPluginType().equalsIgnoreCase(type)) match = true; // built in check
+            // For external plugins, check against plugin->getName()
+            const String checkName = checkPlugin->getName();
+            if (checkName.equalsIgnoreCase(name) || (checkStartsWith && checkName.startsWithIgnoreCase(name))) {
+                // In addition to the name match, also check for the type
+                if (type.isEmpty() || checkPlugin->getPluginType().equalsIgnoreCase(type)) match = true;
             }
         } else {
+            // For internal ("tracktion") plugins, check against the plugin.getPluginType()
+            // For internal ("tracktion") plugins, the name must always match exatcly
             if (checkPlugin->getPluginType().equalsIgnoreCase(name)) {
                 if (type.isEmpty() || type.equalsIgnoreCase("tracktion")) match = true; // external/vst check
             }
@@ -691,7 +696,7 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
         return nullptr;
     }
 
-    // Insert it just before the last volume instance.
+    // Insert it just before the first volume instance.
     int insertPoint = 0;
     int numToInsert = index - nthPluginOfName + 1;
     jassert(numToInsert > 0);
@@ -709,7 +714,7 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
 
     std::cout << "Plugin insert index: " << insertPoint << std::endl;
     for (PluginDescription desc : track.edit.engine.getPluginManager().knownPluginList.getTypes()) {
-        if (desc.name.equalsIgnoreCase(name)) {
+        if (desc.name.equalsIgnoreCase(name) || (checkStartsWith && desc.name.startsWithIgnoreCase(name))) {
             if (type.isNotEmpty()) {
                 if (!type.equalsIgnoreCase(desc.pluginFormatName)) {
                     continue;
@@ -737,6 +742,11 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
         }
         if (plugin.get()) return plugin.get();
     }
+
+    // If we didn't find an exact match, search again. The second time through, also accept
+    // external plugins that begin with the supplied name. For example if name=="Podolski"
+    // also accept plugins named "Podolski.64"
+    if (!checkStartsWith) return getOrCreatePluginByName(track, name, type, index, true);
 
     String typeName = type.isEmpty() ? "any type" : type;
     std::cout << "Plugin not found: " << name << " (" << typeName << ") " << std::endl;
