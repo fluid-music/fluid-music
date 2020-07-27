@@ -691,8 +691,11 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
         return nullptr;
     }
 
-    // Insert it just before the volume last volume instance.
+    // Insert it just before the last volume instance.
     int insertPoint = 0;
+    int numToInsert = index - nthPluginOfName + 1;
+    jassert(numToInsert > 0);
+    
     bool found = false;
     for (te::Plugin* checkPlugin : track.pluginList) {
         if (auto x = dynamic_cast<te::VolumeAndPanPlugin*>(checkPlugin)) {
@@ -712,21 +715,27 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
                     continue;
                 }
             }
-            std::cout
-                << "Inserting \"" << desc.name << "\" (" << desc.pluginFormatName << ") "
-                << "into track: " << track.getName() << std::endl;
-            te::Plugin::Ptr pluginPtr = track.edit.getPluginCache().createNewPlugin(te::ExternalPlugin::xmlTypeName, desc);
-            track.pluginList.insertPlugin(pluginPtr, insertPoint, nullptr);
+            te::Plugin::Ptr pluginPtr;
+            for(int i = 0; i < numToInsert; i++){
+                std::cout
+                    << "Inserting \"" << desc.name << "\" (" << desc.pluginFormatName << ") "
+                    << "into track: " << track.getName() << std::endl;
+                pluginPtr = track.edit.getPluginCache().createNewPlugin(te::ExternalPlugin::xmlTypeName, desc);
+                track.pluginList.insertPlugin(pluginPtr, insertPoint, nullptr);
+                insertPoint++;
+            }
             return pluginPtr.get();
         }
     }
 
     if (type.equalsIgnoreCase("tracktion") || type.isEmpty()) {
-        te::Plugin::Ptr plugin = track.edit.getPluginCache().createNewPlugin(name, PluginDescription());
-        if (plugin.get()) {
-            track.pluginList.insertPlugin(plugin, insertPoint, nullptr);
-            return plugin.get();
+        te::Plugin::Ptr plugin;
+        for(int i = 0; i < numToInsert; i++){
+            plugin = track.edit.getPluginCache().createNewPlugin(name, PluginDescription());
+            if (plugin.get()) track.pluginList.insertPlugin(plugin, insertPoint, nullptr);
+            insertPoint++;
         }
+        if (plugin.get()) return plugin.get();
     }
 
     String typeName = type.isEmpty() ? "any type" : type;
