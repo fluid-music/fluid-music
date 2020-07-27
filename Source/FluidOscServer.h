@@ -46,6 +46,7 @@ public:
     juce::OSCMessage setPluginParam(const juce::OSCMessage& message);
     juce::OSCMessage setPluginParamAt(const juce::OSCMessage& message);
     juce::OSCMessage setPluginSideChainInput(const juce::OSCMessage& message);
+    juce::OSCMessage getPluginReport(const juce::OSCMessage& message);
     juce::OSCMessage getPluginParamReport(const juce::OSCMessage& message);
     juce::OSCMessage savePluginPreset(const juce::OSCMessage& message);
     juce::OSCMessage loadPluginPreset(const juce::OSCMessage& message);

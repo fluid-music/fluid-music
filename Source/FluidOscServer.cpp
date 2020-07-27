@@ -92,6 +92,7 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/save"})) return savePluginPreset(message);
     if (msgAddressPattern.matches({"/plugin/load/trkpreset"})) return loadPluginTrkpreset(message);
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
+    if (msgAddressPattern.matches({"/plugin/report"})) return getPluginReport(message);
     if (msgAddressPattern.matches({"/plugin/param/report"})) return getPluginParamReport(message);
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
@@ -963,8 +964,8 @@ OSCMessage FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::getPluginParamReport(const juce::OSCMessage& message) {
-    OSCMessage reply("/plugin/param/report/reply");
+OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
+    OSCMessage reply("/plugin/report/reply");
 
     if (!selectedPlugin) {
         String errorString = "Cannot get plugin report: No selected plugin";
@@ -972,16 +973,69 @@ OSCMessage FluidOscServer::getPluginParamReport(const juce::OSCMessage& message)
         return reply;
     }
 
-    OwnedArray<var> oArray;
+    // This is a recommended way of storing dynamic objects safely described here:
+    // https://forum.juce.com/t/style-question-with-dynamicobject/9413
+    DynamicObject::Ptr object = new DynamicObject();
+    object->setProperty("shortName10", selectedPlugin->getShortName(10));
+    object->setProperty("name",selectedPlugin->getName());
+    object->setProperty("idString", selectedPlugin->getIdentifierString());
+    object->setProperty("automatableParamsCount", selectedPlugin->getNumAutomatableParameters());
+
+    reply.addInt32(0);
+    reply.addString("Retrieved JSON report about plugin");
+    reply.addString(JSON::toString(object.get(), true));
+
+    return reply;
+}
+
+OSCMessage FluidOscServer::getPluginParamReport(const juce::OSCMessage& message) {
+    OSCMessage reply("/plugin/param/report/reply");
+
+    if (!selectedPlugin) {
+        String errorString = "Cannot get plugin parameter report: No selected plugin";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    // We have to allocate vars dynamically. Store them in this array so the vars will be
+    // cleaned with it goes out of scope. The standard Array is needed for creating JSON.
+    OwnedArray<var> toDelete;
     Array<var> array;
 
     for (auto param : selectedPlugin->getAutomatableParameters()) {
+        // var works like a Smart Pointer. It deletes reference counted objects in its
+        // destructor. Jules describes this behavior here:
+        // https://forum.juce.com/t/way-to-init-a-var-with-a-dynamicobject/12037
         DynamicObject* object = new DynamicObject();
-        var* v = new var(object);
+
+        // All our var objects created with 'new' should be added to (and deleted by)
+        // the toDelete OwnedArray.
+        var* v = new var(object); toDelete.add(v);
+        array.add(*v);
 
         object->setProperty("name", param->paramName);
-        array.add(*v);
-        oArray.add(v);
+        object->setProperty("currentExplicitValue", param->getCurrentExplicitValue());
+        object->setProperty("currentNormalizedValue", param->getCurrentNormalisedValue());
+        object->setProperty("currentValue", param->getCurrentValue());
+        object->setProperty("currentValueAsStringWithLabel", param->getCurrentValueAsStringWithLabel());
+        object->setProperty("currentValueAsString", param->getCurrentValueAsString());
+        object->setProperty("currentBaseValue", param->getCurrentBaseValue());
+        object->setProperty("isDiscrete", param->isDiscrete());
+        object->setProperty("isAutomationActive", param->isAutomationActive());
+        object->setProperty("isActive", param->isParameterActive()); // external plugin params seem to always be active
+        object->setProperty("hasAutomationPoints", param->hasAutomationPoints());
+        object->setProperty("hasLabels", param->hasLabels());
+        object->setProperty("currentLabel", param->getLabel());
+
+        // I believe that anything we put in a var will get cleaned up correctly as
+        // if the var is cleaned up correctly itself. It might be worth veryifying.
+        var* valueRange = new var(); toDelete.add(valueRange);
+        valueRange->append(param->getValueRange().getStart());
+        valueRange->append(param->getValueRange().getEnd());
+        // setProperty passes by reference, but I think that the underlying Var object
+        // still get copied. If that var object is an Array<var> then the contents of
+        // that array get copied as well. We have to .setProperty AFTER adding values.
+        object->setProperty("valueRange", *valueRange);
     }
 
     // Create JSON of the results

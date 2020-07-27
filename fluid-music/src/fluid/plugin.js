@@ -276,6 +276,9 @@ const plugin = {
     };
   },
 
+  getReport() { return { address: '/plugin/report' }; },
+  getParamReport() { return { address: '/plugin/param/report' }; },
+
   addpath(presetDir) {
     throw new Error('fluid.plugin.addpath is deprecated, and should not be used.\n\
     To change the plugin search path, use ./cybr --preset-dirs=path \n\
