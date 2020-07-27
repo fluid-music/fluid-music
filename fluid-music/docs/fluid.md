@@ -260,8 +260,8 @@ note.</p>
           midiEvents: [{s: 0, l: 0.25, n: {n: 3, type: &#39;midiNote&#39;}}],
         },
       ],
+      automation: {},
     },
-    automation: {},
   },
   regions: [
     {
@@ -299,18 +299,19 @@ contains two clips:</p>
           { s: 0.25,  l: 0.0833, n: { n: 35, type: &#39;midiNote&#39; }, d: { v: 90 } },
           { s: 0.33,  l: 0.0833, n: { n: 38, type: &#39;midiNote&#39; }, d: { v: 60 } },
         ],
-        fileEvents: [...],
+        fileEvents: [
+          { s: 0.5, l: 0.25, n: { type: &#39;file&#39;, path: &#39;media/kick.wav&#39; } },
+        ],
         startTime: 2,
         duration:  1,
       },
       {
-        events: [
-          { s: 0.5, l: 0.25, n: { type: &#39;file&#39;, path: &#39;media/kick.wav&#39; } },
-        ],
+        events: [],
         startTime: 3,
         duration:  1,
       },
-    ], // clips
+    ], // end clips
+
     plugins: [
       {
         name: &#39;Podolski.64&#39;,
@@ -320,8 +321,12 @@ contains two clips:</p>
           &quot;VCF0: Resonance&quot;: { points: [ { startTime: 0, normalizedValue: 0.5, curve: -0.5 } ] },
         },
       },
-    ], // plugins
-    automation: {}, // automation for the track itself (volume, pan)
+    ], // end plugins
+
+    automation: { // automation for the track itself (volume, pan)
+      &quot;volume&quot;: { points: [] },
+      &quot;pan&quot;:    { points: [] },
+    },
   },
 }</code></pre>
 </dd>
@@ -1469,8 +1474,8 @@ const exampleSession = {
           midiEvents: [{s: 0, l: 0.25, n: {n: 3, type: 'midiNote'}}],
         },
       ],
+      automation: {},
     },
-    automation: {},
   },
   regions: [
     {
@@ -1524,18 +1529,19 @@ contains two clips:
           { s: 0.25,  l: 0.0833, n: { n: 35, type: 'midiNote' }, d: { v: 90 } },
           { s: 0.33,  l: 0.0833, n: { n: 38, type: 'midiNote' }, d: { v: 60 } },
         ],
-        fileEvents: [...],
+        fileEvents: [
+          { s: 0.5, l: 0.25, n: { type: 'file', path: 'media/kick.wav' } },
+        ],
         startTime: 2,
         duration:  1,
       },
       {
-        events: [
-          { s: 0.5, l: 0.25, n: { type: 'file', path: 'media/kick.wav' } },
-        ],
+        events: [],
         startTime: 3,
         duration:  1,
       },
-    ], // clips
+    ], // end clips
+
     plugins: [
       {
         name: 'Podolski.64',
@@ -1545,8 +1551,12 @@ contains two clips:
           "VCF0: Resonance": { points: [ { startTime: 0, normalizedValue: 0.5, curve: -0.5 } ] },
         },
       },
-    ], // plugins
-    automation: {}, // automation for the track itself (volume, pan)
+    ], // end plugins
+
+    automation: { // automation for the track itself (volume, pan)
+      "volume": { points: [] },
+      "pan":    { points: [] },
+    },
   },
 }
 ```

@@ -113,7 +113,10 @@
  *       },
  *     ], // end plugins
  *
- *     automation: {}, // automation for the track itself (volume, pan)
+ *     automation: { // automation for the track itself (volume, pan)
+ *       "volume": { points: [] },
+ *       "pan":    { points: [] },
+ *     },
  *   },
  * }
  * ```
