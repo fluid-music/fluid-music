@@ -14,12 +14,18 @@ const m1 = [
 client.send(m1)
 .then((data) => {
   console.dir(data, {depth:null})
-  const lastElement = data.elements[data.elements.length -1];
-  for (const arg of lastElement.args) {
-    if (arg.type === 'blob') {
-      const str = arg.value.toString();
-      console.log(str);
-      console.log(JSON.parse(str));
-    }
+
+  for (const oscMsg of data.elements) {
+    console.log(oscMsg.address);
+    if (oscMsg.address !== '/plugin/param/report/reply') continue;
+
+    const details = oscMsg.args[1];
+    const jsonStr = oscMsg.args[2];
+
+    console.log('details:', details && details.value);
+    console.log('json:', jsonStr && jsonStr.value);
+
+    if (jsonStr && jsonStr.type === 'string')
+      console.log(JSON.parse(jsonStr.value));
   }
 });

@@ -985,14 +985,11 @@ OSCMessage FluidOscServer::getPluginParamReport(const juce::OSCMessage& message)
     }
 
     // Create JSON of the results
-    MemoryBlock blob;
-    MemoryOutputStream jsonStream(blob, false);
-    JSON::writeToStream(jsonStream, array, true);
-    blob.setSize(jsonStream.getDataSize());
+    String jsonString = JSON::toString(array, true);
 
     reply.addInt32(0);
     reply.addString("Retrieved JSON report about plugin parameters");
-    reply.addBlob(blob);
+    reply.addString(jsonString);
 
     return reply;
 }
