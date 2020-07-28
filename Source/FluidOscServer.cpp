@@ -970,6 +970,20 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
     object->setProperty("automatableParamsCount", selectedPlugin->getNumAutomatableParameters());
     object->setProperty("pluginType", selectedPlugin->getPluginType());
 
+    if (auto x = dynamic_cast<te::ExternalPlugin*>(selectedPlugin)) {
+        x->flushPluginStateToValueTree();
+        var state = x->state.getProperty(te::IDs::state);
+        MemoryBlock chunk;
+        if (chunk.fromBase64Encoding(state.toString())) {
+            String properBase64 = Base64::toBase64(chunk.getData(), chunk.getSize());
+            object->setProperty("stateBase64", properBase64);
+        } else {
+            object->setProperty("stateBase64", var::undefined());
+        }
+
+        object->setProperty("elementStateXml", x->elementState.toXmlString());
+    }
+
     reply.addInt32(0);
     reply.addString("Retrieved JSON report about plugin");
     reply.addString(JSON::toString(object.get(), true));
