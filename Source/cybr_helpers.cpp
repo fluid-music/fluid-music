@@ -658,21 +658,21 @@ te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name
 }
 
 te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, const String type, const int index) {
+    // To insert a plugin, we need two things:
+    // (1) A PluginDescription. For internal plugins, a description is arbitrary
+    PluginDescription foundPluginDesc;
+    // (2) A "type" xml string. All external plugins have the same type
+    String tracktionPluginType;
+    // The "foundIt" flag will be set when we have both (1) and (2)
+    bool foundIt = false;
 
-    // Internal plugins like "volume"
+    // Different properties are needed to identify different plugin types
+    // Internal plugins like "volume" look like this:
     // checkPlugin->getPluginType();   // "volume" - this is the "type" XML parameter
     // checkPlugin->getName();         // "Volume & Pan Plugin"
-    // External plugins like "zebra 2"
+    // External plugins like "zebra 2" look like this:
     // checkPlugin->getPluginType();   // "VST" or "VST3" of "AudioUnit"
     // checkPlugin->getName();         // "Zebra2"
-
-    // To insert a plugin, we need two things:
-    // 1) the PluginDescription
-    PluginDescription foundPluginDesc;
-    // 2) the "type" xml string. All external plugins have the same type
-    String tracktionPluginType;
-
-    bool foundIt = false;
 
     // first, search for a plugin that matches the full name (case insensitive)
     for (PluginDescription desc : track.edit.engine.getPluginManager().knownPluginList.getTypes()) {
