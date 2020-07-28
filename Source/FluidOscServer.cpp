@@ -825,23 +825,11 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
             else param->setParameter(paramValue, NotificationType::sendNotification);
             param->parameterChangeGestureEnd();
 
-            std::cout << "Set " << param->paramName << " to " << paramValue << std::endl
-            << "  explicitvalue:     " <<  param->valueToString(param->getCurrentExplicitValue()) << std::endl
-            << "  valueRange:        " <<  param->getValueRange().getStart() << "->" << param->getValueRange().getEnd() << std::endl
-            << "  currentValue:      " <<  param->getCurrentValue()                  << std::endl
-            << "  valStringLabl:     " <<  param->getCurrentValueAsStringWithLabel() << std::endl // helm always returns 0
-            << "  valString:         " <<  param->getCurrentValueAsString()          << std::endl // helm always returns 0
-            << "  currBaseVal:       " <<  param->getCurrentBaseValue()              << std::endl
-            << "  currNormVal:       " <<  param->getCurrentNormalisedValue()        << std::endl
-            << "  isDiscrete/states: " << (param->isDiscrete() ? "true" : "false") << "/" << param->getNumberOfStates() << std::endl
-            << "  autoActive:        " << (param->isAutomationActive() ? "true" : "false")  << std::endl
-            << "  paramActive        " << (param->isParameterActive() ? "true" : "false")   << std::endl // extermal params are always active
-            << "  hasAutomation:     " << (param->hasAutomationPoints() ? "true" : "false") << std::endl;
-
             String replyString = "set " + paramName
             + " to " + String(message[1].getFloat32())
             + " explicitvalue: "
             + param->valueToString(param->getCurrentExplicitValue());
+
             constructReply(reply, 0, replyString);
             break;
         }

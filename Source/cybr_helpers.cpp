@@ -620,7 +620,6 @@ int ensureBus(te::Edit& edit, String busName) {
     return busIndex;
 }
 
-
 void printOscMessage(const OSCMessage& message) {
     std::cout << message.getAddressPattern().toString();
     for (const auto& arg : message) {
@@ -759,11 +758,13 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
     }
 
     // We have a description for the plugin. Insert the needed number of copies.
+    String printableName = isExternal ? foundPluginDesc.name : tracktionPluginType;
+    String printableType = isExternal ? foundPluginDesc.pluginFormatName : "tracktion";
     te::Plugin::Ptr pluginPtr;
     for(int i = 0; i < numToInsert; i++){
         std::cout
-            << "Inserting \"" << foundPluginDesc.name << "\" (" << foundPluginDesc.pluginFormatName << ") "
-            << "into track: " << track.getName() << std::endl;
+            << "Inserting \"" << printableName << "\" (" << printableType << ") "
+            << "into track: \"" << track.getName() << "\" at position:" << insertPoint << std::endl;
         pluginPtr = track.edit.getPluginCache().createNewPlugin(tracktionPluginType, foundPluginDesc);
         track.pluginList.insertPlugin(pluginPtr, insertPoint, nullptr);
         insertPoint++;
