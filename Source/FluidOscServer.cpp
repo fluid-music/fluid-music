@@ -980,6 +980,7 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
     object->setProperty("name",selectedPlugin->getName());
     object->setProperty("idString", selectedPlugin->getIdentifierString());
     object->setProperty("automatableParamsCount", selectedPlugin->getNumAutomatableParameters());
+    object->setProperty("pluginType", selectedPlugin->getPluginType());
 
     reply.addInt32(0);
     reply.addString("Retrieved JSON report about plugin");

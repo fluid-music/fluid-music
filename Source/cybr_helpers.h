@@ -61,18 +61,11 @@ te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const juce::Strin
 
 /** Add a plugin just before the VolumeAndPan plugin.
  `type` can be 'vst|vst3|tracktion|AudioUnit' or an empty string.
- If `type` is an empty string, search all types.
- Charles: The `checkStartsWith` argument name is misldeading.
- getOrCreatePluginByName always checks for plugins that
- "start with" the supplied name. The flag is really just used
- by the function to know if it is on the first pass, where only
- full complete matches are accepted, or the second pass, where
- "startWith" matches are also accepted.*/
+ If `type` is an empty string, search all types.*/
 te::Plugin* getOrCreatePluginByName(te::AudioTrack& track,
                                     const juce::String name,
                                     const juce::String type = {},
-                                    const int index = 0,
-                                    const bool checkStartsWith = false);
+                                    const int index = 0);
 
 class CybrEdit;
 /** Create a copy of a the cybrEdit, suitable for playback and editing.
