@@ -971,17 +971,69 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
     object->setProperty("pluginType", selectedPlugin->getPluginType());
 
     if (auto x = dynamic_cast<te::ExternalPlugin*>(selectedPlugin)) {
+        // Annoyingly:
+        // - PluginDescription.pluginFormatName is "VST" (upper case)
+        // - Plugin::getPluginType()       returns "vst" (lower case)
+        object->setProperty("externalPluginFormat", x->desc.pluginFormatName);
+
+        // update the plugin's .state value Tree
         x->flushPluginStateToValueTree();
         var state = x->state.getProperty(te::IDs::state);
         MemoryBlock chunk;
         if (chunk.fromBase64Encoding(state.toString())) {
             String properBase64 = Base64::toBase64(chunk.getData(), chunk.getSize());
-            object->setProperty("stateBase64", properBase64);
-        } else {
-            object->setProperty("stateBase64", var::undefined());
+            object->setProperty("tracktionXmlStateBase64", properBase64);
         }
 
-        object->setProperty("elementStateXml", x->elementState.toXmlString());
+        object->setProperty("tracktionXml", x->elementState.toXmlString());
+        // Try a different method of getting the state
+
+        juce::AudioPluginInstance* jucePlugin = x->getAudioPluginInstance();
+
+        MemoryBlock stateInfoBlock;
+        MemoryBlock programStateInfoBlock;
+
+        TRACKTION_ASSERT_MESSAGE_THREAD
+        jucePlugin->suspendProcessing (true);
+        jucePlugin->getCurrentProgramStateInformation(programStateInfoBlock); // Verify: If this is a VST2, get fxp (patch)
+        jucePlugin->getStateInformation(stateInfoBlock);                      // Verify: If this is a VST2, get fxb (bank)
+        jucePlugin->suspendProcessing(false);
+
+        String programStateInfo = Base64::toBase64(programStateInfoBlock.getData(), programStateInfoBlock.getSize());
+        String stateInfo  = Base64::toBase64(stateInfoBlock.getData(), stateInfoBlock.getSize());
+
+        object->setProperty("currentProgramStateInfo", programStateInfo);
+        object->setProperty("currentStateInfo", stateInfo);
+
+        object->setProperty("numPrograms", jucePlugin->getNumPrograms());     // number of programs in the bank
+        object->setProperty("currentProgramIndex", jucePlugin->getCurrentProgram()); // program number within (bank)
+        object->setProperty("currentProgramName", jucePlugin->getProgramName(jucePlugin->getCurrentProgram()));
+
+        // This doesn't work, but I don't know why: if (auto* vst = dynamic_cast<VSTPluginInstance*> (plugin)) {
+        if (x->isVST()) {
+            // if for some reason, we wanted to get the AEffect, we could do it like this:
+            // #if (JUCE_PLUGINHOST_VST)
+            // #include "pluginterfaces/vst2.x/aeffect.h" // required
+            // AEffect* vst2 = static_cast<AEffect*>(jucePlugin->getPlatformSpecificData());
+            // #endif
+
+            // My understanding is that stateInfo and programStateInfo map to
+            // fxb and fxp formats for VST2 plugins. This assumption needs to be
+            // verified.
+            object->setProperty("fxb", stateInfo);        // same as: currentStateInfo
+            object->setProperty("fxp", programStateInfo); // same as: currentProgramStateInfo
+
+            if (JUCE_PLUGINHOST_VST) {
+                MemoryBlock presetChunk;
+                if (VSTPluginFormat::getChunkData(jucePlugin, presetChunk, true)) {
+                    object->setProperty("vst2State", Base64::toBase64(presetChunk.getData(), presetChunk.getSize()));
+                }
+            }
+        } else if (x->isVST3()) {
+            if (JUCE_PLUGINHOST_VST3) {
+                // missing state
+            }
+        }
     }
 
     reply.addInt32(0);
