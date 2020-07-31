@@ -17,6 +17,9 @@
     "bitset": "cpp",
     "memory": "cpp",
     "future": "cpp",
-    "optional": "cpp"
+    "optional": "cpp",
+    "array": "cpp",
+    "string": "cpp",
+    "string_view": "cpp"
   },
 }

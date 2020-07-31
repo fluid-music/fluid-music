@@ -3,10 +3,14 @@
         {
             "name": "Linux",
             "includePath": [
+                "${workspaceFolder}/JuceLibraryCode/",
                 "${workspaceFolder}/**",
                 "${HOME}/projects/VST_SDK/VST2_SDK/"
             ],
-            "defines": [],
+            "defines": [
+                "JUCE_PLUGINHOST_VST3=1",
+                "JUCE_PLUGINHOST_VST=1"
+            ],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
             "cppStandard": "c++14",
