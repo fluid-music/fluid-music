@@ -8,21 +8,21 @@
 ## Objects
 
 <dl>
-<dt><a href="#audioclip">audioclip</a> : <code>object</code></dt>
-<dd></dd>
-<dt><a href="#clip">clip</a> : <code>object</code></dt>
-<dd></dd>
-<dt><a href="#plugin">plugin</a> : <code>object</code></dt>
-<dd></dd>
-<dt><a href="#global">global</a> : <code>object</code></dt>
-<dd></dd>
 <dt><a href="#audiotrack">audiotrack</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#audioclip">audioclip</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#transport">transport</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#global">global</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#sampler">sampler</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#clip">clip</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#midiclip">midiclip</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#plugin">plugin</a> : <code>object</code></dt>
 <dd></dd>
 </dl>
 
@@ -136,9 +136,6 @@ example above, the two layers in the pattern object occur simultaneously.</p>
 }</code></pre>
 <p>For more diverse examples (and more deeply nested objects), see the tests.</p>
 </dd>
-<dt><a href="#applyGroove">applyGroove(notes, grooveItem, multipliers, randomness)</a> ⇒ <code>Array.&lt;Object&gt;</code></dt>
-<dd><p>Applies a specified groove onto an array of note objects</p>
-</dd>
 <dt><a href="#valueToWholeNotes">valueToWholeNotes(value)</a> ⇒ <code>Number</code></dt>
 <dd><p>Convert a string or number to a number of whole notes.</p>
 </dd>
@@ -150,27 +147,6 @@ example above, the two layers in the pattern object occur simultaneously.</p>
 The output is not rounded to an integer, so use Math.round on the output if
 you need an integer note number.</p>
 </dd>
-<dt><a href="#mapVelocityNumbersToDynamic">mapVelocityNumbersToDynamic(event, context)</a></dt>
-<dd></dd>
-<dt><a href="#mapRandom">mapRandom(event, context)</a></dt>
-<dd></dd>
-<dt><a href="#mapMidiChords">mapMidiChords(event, context)</a></dt>
-<dd></dd>
-<dt><a href="#mapNumbersToMidiNotes">mapNumbersToMidiNotes(event, context)</a></dt>
-<dd></dd>
-<dt><a href="#mapAutomation">mapAutomation(event, context)</a></dt>
-<dd></dd>
-<dt><a href="#mapMidiNotes">mapMidiNotes(event, context)</a></dt>
-<dd></dd>
-<dt><a href="#mapIntensityLayers">mapIntensityLayers(event, context)</a></dt>
-<dd><p>Parse a NoteObject with <code>type=iLayer</code>. Its job is to select an event from
-<code>note.e.iLayers</code> based on the current dynamic marking, and replace <code>note.e</code>
-with that event.</p>
-<p>This is a simple example of an event mapper function which only replaces the
-NoteObject&#39;s event.</p>
-</dd>
-<dt><a href="#mapAudioFiles">mapAudioFiles(event, context)</a></dt>
-<dd></dd>
 <dt><a href="#parse">parse(scoreObject, [config], [session])</a> ⇒ <code><a href="#Session">Session</a></code></dt>
 <dd><p>score.parse is somewhat similar to tab.parse, except that it expects a
 different input format, and outputs a <code>Session</code> instead of an array of notes.</p>
@@ -200,6 +176,30 @@ exported.</p>
 <dt><a href="#midiEventsToFluidMessage">midiEventsToFluidMessage(midiEvents, context)</a></dt>
 <dd></dd>
 <dt><a href="#fileEventsToFluidMessage">fileEventsToFluidMessage(fileEvents, context)</a></dt>
+<dd></dd>
+<dt><a href="#applyGroove">applyGroove(notes, grooveItem, multipliers, randomness)</a> ⇒ <code>Array.&lt;Object&gt;</code></dt>
+<dd><p>Applies a specified groove onto an array of note objects</p>
+</dd>
+<dt><a href="#mapVelocityNumbersToDynamic">mapVelocityNumbersToDynamic(event, context)</a></dt>
+<dd></dd>
+<dt><a href="#mapRandom">mapRandom(event, context)</a></dt>
+<dd></dd>
+<dt><a href="#mapMidiChords">mapMidiChords(event, context)</a></dt>
+<dd></dd>
+<dt><a href="#mapNumbersToMidiNotes">mapNumbersToMidiNotes(event, context)</a></dt>
+<dd></dd>
+<dt><a href="#mapAutomation">mapAutomation(event, context)</a></dt>
+<dd></dd>
+<dt><a href="#mapMidiNotes">mapMidiNotes(event, context)</a></dt>
+<dd></dd>
+<dt><a href="#mapIntensityLayers">mapIntensityLayers(event, context)</a></dt>
+<dd><p>Parse a NoteObject with <code>type=iLayer</code>. Its job is to select an event from
+<code>note.e.iLayers</code> based on the current dynamic marking, and replace <code>note.e</code>
+with that event.</p>
+<p>This is a simple example of an event mapper function which only replaces the
+NoteObject&#39;s event.</p>
+</dd>
+<dt><a href="#mapAudioFiles">mapAudioFiles(event, context)</a></dt>
 <dd></dd>
 </dl>
 
@@ -392,6 +392,129 @@ notes, chords, values, or annotations) in a music score or MIDI clip.</p>
 <a name="module_fluid"></a>
 
 ## fluid
+<a name="audiotrack"></a>
+
+## audiotrack : <code>object</code>
+**Kind**: global namespace  
+
+* [audiotrack](#audiotrack) : <code>object</code>
+    * [.select(trackName)](#audiotrack.select)
+    * [.insertWav(clipName, startTimeInWholeNotes, fileName)](#audiotrack.insertWav)
+    * [.selectReturnTrack(busName)](#audiotrack.selectReturnTrack)
+    * [.send(busName, [levelDb])](#audiotrack.send)
+    * [.mute([mute])](#audiotrack.mute)
+    * [.unmute()](#audiotrack.unmute)
+    * [.gain(dbfs)](#audiotrack.gain)
+    * [.renderRegion(outFilename, [startTimeInWholeNotes], [durationInWholeNotes])](#audiotrack.renderRegion)
+    * [.removeClips()](#audiotrack.removeClips)
+    * [.removeAutomation()](#audiotrack.removeAutomation)
+
+<a name="audiotrack.select"></a>
+
+### audiotrack.select(trackName)
+Select an audio track by name
+
+**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
+
+| Param | Type |
+| --- | --- |
+| trackName | <code>string</code> | 
+
+<a name="audiotrack.insertWav"></a>
+
+### audiotrack.insertWav(clipName, startTimeInWholeNotes, fileName)
+Insert and select an audio file clip into the selected audio track. Noop
+when there is no selected track.
+
+**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| clipName | <code>string</code> | name the new clip |
+| startTimeInWholeNotes | <code>number</code> | clip start time in quarter notes |
+| fileName | <code>string</code> |  |
+
+<a name="audiotrack.selectReturnTrack"></a>
+
+### audiotrack.selectReturnTrack(busName)
+Selects a track, ensuring that it has a bus return. Afterwords, other
+tracks can add sends that target the track selected with this method.
+
+Use the audiotrack.send method to send from other tracks to a return.
+
+**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| busName | <code>string</code> | name of audiotrack (the return will be named                           after the audio track). |
+
+<a name="audiotrack.send"></a>
+
+### audiotrack.send(busName, [levelDb])
+Adjust the send level to the specified bus, adding the send (post-gain) if
+it does not yet exist. Use with audiotrack.selectReturnTrack(busName).
+
+**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| busName | <code>string</code> |  | The name of the return bus to send to |
+| [levelDb] | <code>number</code> | <code>0</code> | default on the server is 0 |
+
+<a name="audiotrack.mute"></a>
+
+### audiotrack.mute([mute])
+Mute or unmute the selected audio track.
+
+**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [mute] | <code>boolean</code> | <code>true</code> | true if track should be muted. false = unmute. |
+
+<a name="audiotrack.unmute"></a>
+
+### audiotrack.unmute()
+Unmute the selected audio track.
+
+**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
+<a name="audiotrack.gain"></a>
+
+### audiotrack.gain(dbfs)
+Adjust the gain of the last volume plugin on the track's PluginList.
+
+**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
+
+| Param | Type |
+| --- | --- |
+| dbfs | <code>number</code> | 
+
+<a name="audiotrack.renderRegion"></a>
+
+### audiotrack.renderRegion(outFilename, [startTimeInWholeNotes], [durationInWholeNotes])
+Render a region of the track to an audio file. If no time range is
+supplied, the engine should use the loop time range.
+
+**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| outFilename | <code>string</code> | output filename |
+| [startTimeInWholeNotes] | <code>number</code> | start time in whole notes |
+| [durationInWholeNotes] | <code>number</code> | duration in whole notes |
+
+<a name="audiotrack.removeClips"></a>
+
+### audiotrack.removeClips()
+Remove all clips (ex. audio, midi clips) from the selected audio track.
+
+**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
+<a name="audiotrack.removeAutomation"></a>
+
+### audiotrack.removeAutomation()
+Remove all automation from the track and from all the tracks plugins.
+
+**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
 <a name="audioclip"></a>
 
 ## audioclip : <code>object</code>
@@ -462,6 +585,46 @@ Adjust the gain of the selected audio clip.
 | Param | Type | Description |
 | --- | --- | --- |
 | dBFS | <code>number</code> | full scale decibel to set |
+
+<a name="transport"></a>
+
+## transport : <code>object</code>
+**Kind**: global namespace  
+<a name="transport.loop"></a>
+
+### transport.loop(startTimeInWholeNotes, durationInWholeNotes)
+Set loop points, and enable looping.
+
+**Kind**: static method of [<code>transport</code>](#transport)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| startTimeInWholeNotes | <code>Number</code> \| <code>false</code> | The number of quarter notes    at which the loop should begin. Or `false`, which disables looping. |
+| durationInWholeNotes | <code>Number</code> | The length of the loop, measured in    quarter notes. |
+
+<a name="global"></a>
+
+## global : <code>object</code>
+**Kind**: global namespace  
+<a name="sampler"></a>
+
+## sampler : <code>object</code>
+**Kind**: global namespace  
+<a name="sampler.add"></a>
+
+### sampler.add(name, filename, noteNum, [gain], [pan], [oneShot])
+Add a sample to the currently selected sampler.
+
+**Kind**: static method of [<code>sampler</code>](#sampler)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| name | <code>string</code> |  | the name of the sample to add |
+| filename | <code>string</code> |  | the filename (relative to server WD, or absolute) |
+| noteNum | <code>Number</code> |  | the Midi note number to add the sample to |
+| [gain] | <code>number</code> | <code>0</code> | Gain in DBFS (0 is unity) |
+| [pan] | <code>number</code> | <code>0</code> | pan (-1 = hard left, 1 = hard right) |
+| [oneShot] | <code>boolean</code> | <code>false</code> |  |
 
 <a name="clip"></a>
 
@@ -536,6 +699,65 @@ positioned within the session.
 | --- | --- | --- |
 | startAtSeconds | <code>number</code> | Time in the source to start the clip |
 
+<a name="midiclip"></a>
+
+## midiclip : <code>object</code>
+**Kind**: global namespace  
+
+* [midiclip](#midiclip) : <code>object</code>
+    * [.clear()](#midiclip.clear)
+    * [.select(name, startTimeInWholeNotes, durationInWholeNotes)](#midiclip.select)
+    * [.note(noteNum, startTimeInWholeNotes, [durationInWholeNotes], [velocity])](#midiclip.note)
+    * [.create(clipName, startTimeInWholeNotes, durationInWholeNotes, notes)](#midiclip.create)
+
+<a name="midiclip.clear"></a>
+
+### midiclip.clear()
+Clear all MIDI notes in the currently selected clip.
+
+**Kind**: static method of [<code>midiclip</code>](#midiclip)  
+<a name="midiclip.select"></a>
+
+### midiclip.select(name, startTimeInWholeNotes, durationInWholeNotes)
+Select a MIDI clip by name on the currently selected track. Create the clip
+if it does not exist. Set the clip's start time and length in whole notes.
+
+**Kind**: static method of [<code>midiclip</code>](#midiclip)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | name of the MIDI clip to select. |
+| startTimeInWholeNotes | <code>number</code> |  |
+| durationInWholeNotes | <code>number</code> |  |
+
+<a name="midiclip.note"></a>
+
+### midiclip.note(noteNum, startTimeInWholeNotes, [durationInWholeNotes], [velocity])
+Create an /midiclip/n message
+
+**Kind**: static method of [<code>midiclip</code>](#midiclip)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| noteNum | <code>Integer</code> |  | MIDI Note Number |
+| startTimeInWholeNotes | <code>Number</code> |  | Note start time in whole notes |
+| [durationInWholeNotes] | <code>Number</code> | <code>0.25</code> | Note length in whole notes |
+| [velocity] | <code>Integer</code> |  | Optional MIDI note velocity. |
+
+<a name="midiclip.create"></a>
+
+### midiclip.create(clipName, startTimeInWholeNotes, durationInWholeNotes, notes)
+Build an OSC message that creates a clip with a bunch of midi notes
+
+**Kind**: static method of [<code>midiclip</code>](#midiclip)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| clipName | <code>string</code> | name of the clip. |
+| startTimeInWholeNotes | <code>number</code> | clip start time in whole notes |
+| durationInWholeNotes | <code>number</code> | clip length in whole notes |
+| notes | <code>Array.&lt;Object&gt;</code> | array of objects, which look like:    `{ l: lengthWholeNotes, n: midiNoteNumber, s: startTimeWholeNotes }`    Be careful that all note.n properties are numbers. |
+
 <a name="plugin"></a>
 
 ## plugin : <code>object</code>
@@ -552,6 +774,8 @@ positioned within the session.
     * [.save(presetName)](#plugin.save)
     * [.load(presetName)](#plugin.load)
     * [.loadTrkpreset(file)](#plugin.loadTrkpreset)
+    * [.getReport()](#plugin.getReport)
+    * [.getParamReport()](#plugin.getParamReport)
 
 <a name="plugin.select"></a>
 
@@ -705,228 +929,54 @@ preset on the currently selected track.
 | --- | --- | --- |
 | file | <code>String</code> \| <code>Buffer</code> | A .trkpreset filename string OR a node Buffer    object containing the contents of a .trkpreset file |
 
-<a name="global"></a>
-
-## global : <code>object</code>
-**Kind**: global namespace  
-<a name="audiotrack"></a>
-
-## audiotrack : <code>object</code>
-**Kind**: global namespace  
-
-* [audiotrack](#audiotrack) : <code>object</code>
-    * [.select(trackName)](#audiotrack.select)
-    * [.insertWav(clipName, startTimeInWholeNotes, fileName)](#audiotrack.insertWav)
-    * [.selectReturnTrack(busName)](#audiotrack.selectReturnTrack)
-    * [.send(busName, [levelDb])](#audiotrack.send)
-    * [.mute([mute])](#audiotrack.mute)
-    * [.unmute()](#audiotrack.unmute)
-    * [.gain(dbfs)](#audiotrack.gain)
-    * [.renderRegion(outFilename, [startTimeInWholeNotes], [durationInWholeNotes])](#audiotrack.renderRegion)
-    * [.removeClips()](#audiotrack.removeClips)
-    * [.removeAutomation()](#audiotrack.removeAutomation)
-
-<a name="audiotrack.select"></a>
-
-### audiotrack.select(trackName)
-Select an audio track by name
-
-**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
-
-| Param | Type |
-| --- | --- |
-| trackName | <code>string</code> | 
-
-<a name="audiotrack.insertWav"></a>
-
-### audiotrack.insertWav(clipName, startTimeInWholeNotes, fileName)
-Insert and select an audio file clip into the selected audio track. Noop
-when there is no selected track.
-
-**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| clipName | <code>string</code> | name the new clip |
-| startTimeInWholeNotes | <code>number</code> | clip start time in quarter notes |
-| fileName | <code>string</code> |  |
-
-<a name="audiotrack.selectReturnTrack"></a>
-
-### audiotrack.selectReturnTrack(busName)
-Selects a track, ensuring that it has a bus return. Afterwords, other
-tracks can add sends that target the track selected with this method.
-
-Use the audiotrack.send method to send from other tracks to a return.
-
-**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| busName | <code>string</code> | name of audiotrack (the return will be named                           after the audio track). |
-
-<a name="audiotrack.send"></a>
-
-### audiotrack.send(busName, [levelDb])
-Adjust the send level to the specified bus, adding the send (post-gain) if
-it does not yet exist. Use with audiotrack.selectReturnTrack(busName).
-
-**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| busName | <code>string</code> |  | The name of the return bus to send to |
-| [levelDb] | <code>number</code> | <code>0</code> | default on the server is 0 |
-
-<a name="audiotrack.mute"></a>
-
-### audiotrack.mute([mute])
-Mute or unmute the selected audio track.
-
-**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [mute] | <code>boolean</code> | <code>true</code> | true if track should be muted. false = unmute. |
-
-<a name="audiotrack.unmute"></a>
-
-### audiotrack.unmute()
-Unmute the selected audio track.
-
-**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
-<a name="audiotrack.gain"></a>
-
-### audiotrack.gain(dbfs)
-Adjust the gain of the last volume plugin on the track's PluginList.
-
-**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
-
-| Param | Type |
-| --- | --- |
-| dbfs | <code>number</code> | 
-
-<a name="audiotrack.renderRegion"></a>
-
-### audiotrack.renderRegion(outFilename, [startTimeInWholeNotes], [durationInWholeNotes])
-Render a region of the track to an audio file. If no time range is
-supplied, the engine should use the loop time range.
-
-**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| outFilename | <code>string</code> | output filename |
-| [startTimeInWholeNotes] | <code>number</code> | start time in whole notes |
-| [durationInWholeNotes] | <code>number</code> | duration in whole notes |
-
-<a name="audiotrack.removeClips"></a>
-
-### audiotrack.removeClips()
-Remove all clips (ex. audio, midi clips) from the selected audio track.
-
-**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
-<a name="audiotrack.removeAutomation"></a>
-
-### audiotrack.removeAutomation()
-Remove all automation from the track and from all the tracks plugins.
-
-**Kind**: static method of [<code>audiotrack</code>](#audiotrack)  
-<a name="transport"></a>
-
-## transport : <code>object</code>
-**Kind**: global namespace  
-<a name="transport.loop"></a>
-
-### transport.loop(startTimeInWholeNotes, durationInWholeNotes)
-Set loop points, and enable looping.
-
-**Kind**: static method of [<code>transport</code>](#transport)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| startTimeInWholeNotes | <code>Number</code> \| <code>false</code> | The number of quarter notes    at which the loop should begin. Or `false`, which disables looping. |
-| durationInWholeNotes | <code>Number</code> | The length of the loop, measured in    quarter notes. |
-
-<a name="sampler"></a>
-
-## sampler : <code>object</code>
-**Kind**: global namespace  
-<a name="sampler.add"></a>
-
-### sampler.add(name, filename, noteNum, [gain], [pan], [oneShot])
-Add a sample to the currently selected sampler.
-
-**Kind**: static method of [<code>sampler</code>](#sampler)  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| name | <code>string</code> |  | the name of the sample to add |
-| filename | <code>string</code> |  | the filename (relative to server WD, or absolute) |
-| noteNum | <code>Number</code> |  | the Midi note number to add the sample to |
-| [gain] | <code>number</code> | <code>0</code> | Gain in DBFS (0 is unity) |
-| [pan] | <code>number</code> | <code>0</code> | pan (-1 = hard left, 1 = hard right) |
-| [oneShot] | <code>boolean</code> | <code>false</code> |  |
-
-<a name="midiclip"></a>
-
-## midiclip : <code>object</code>
-**Kind**: global namespace  
-
-* [midiclip](#midiclip) : <code>object</code>
-    * [.clear()](#midiclip.clear)
-    * [.select(name, startTimeInWholeNotes, durationInWholeNotes)](#midiclip.select)
-    * [.note(noteNum, startTimeInWholeNotes, [durationInWholeNotes], [velocity])](#midiclip.note)
-    * [.create(clipName, startTimeInWholeNotes, durationInWholeNotes, notes)](#midiclip.create)
-
-<a name="midiclip.clear"></a>
-
-### midiclip.clear()
-Clear all MIDI notes in the currently selected clip.
-
-**Kind**: static method of [<code>midiclip</code>](#midiclip)  
-<a name="midiclip.select"></a>
-
-### midiclip.select(name, startTimeInWholeNotes, durationInWholeNotes)
-Select a MIDI clip by name on the currently selected track. Create the clip
-if it does not exist. Set the clip's start time and length in whole notes.
-
-**Kind**: static method of [<code>midiclip</code>](#midiclip)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| name | <code>string</code> | name of the MIDI clip to select. |
-| startTimeInWholeNotes | <code>number</code> |  |
-| durationInWholeNotes | <code>number</code> |  |
-
-<a name="midiclip.note"></a>
-
-### midiclip.note(noteNum, startTimeInWholeNotes, [durationInWholeNotes], [velocity])
-Create an /midiclip/n message
-
-**Kind**: static method of [<code>midiclip</code>](#midiclip)  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| noteNum | <code>Integer</code> |  | MIDI Note Number |
-| startTimeInWholeNotes | <code>Number</code> |  | Note start time in whole notes |
-| [durationInWholeNotes] | <code>Number</code> | <code>0.25</code> | Note length in whole notes |
-| [velocity] | <code>Integer</code> |  | Optional MIDI note velocity. |
-
-<a name="midiclip.create"></a>
-
-### midiclip.create(clipName, startTimeInWholeNotes, durationInWholeNotes, notes)
-Build an OSC message that creates a clip with a bunch of midi notes
-
-**Kind**: static method of [<code>midiclip</code>](#midiclip)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| clipName | <code>string</code> | name of the clip. |
-| startTimeInWholeNotes | <code>number</code> | clip start time in whole notes |
-| durationInWholeNotes | <code>number</code> | clip length in whole notes |
-| notes | <code>Array.&lt;Object&gt;</code> | array of objects, which look like:    `{ l: lengthWholeNotes, n: midiNoteNumber, s: startTimeWholeNotes }`    Be careful that all note.n properties are numbers. |
-
+<a name="plugin.getReport"></a>
+
+### plugin.getReport()
+getReport asks the server for a JSON report containing information about
+the state of the currently selected plugin. The exact contents of this may
+change, so use with caution.
+
+Example output for a VST(2) plugin as of July 31, 2020:
+
+```json
+{
+  "shortName10": "#TCompressor",
+  "name": "#TCompressor",
+  "idString": "VST-#TCompressor-9b9288bb-436f6d70",
+  "automatableParamsCount": 26,
+  "pluginType": "vst",
+  "externalPluginFormat": "VST",
+  "uid": "436f6d70",
+  "tracktionXmlStateBase64": "Q2NuSwAAAABGQkNoAAAAAUNvbXAAAQAmAAAAAQ...",
+  "pluginState": "Q2NuSwAAAABGQkNoAAAAAUNvbXAAAQAmAAAAAQAAAAAAAAAAAA...",
+  "tracktionXml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n<PLUGIN type=\"vst\"...",
+  "currentProgramStateInfo": "Q2NuSwAAAABGUENoAAAAAUNvbXAAAQAmAAAAAU...",
+  "currentStateInfo": "Q2NuSwAAAABGQkNoAAAAAUNvbXAAAQAmAAAAAQAAAAAAA...",
+  "numPrograms": 1,
+  "currentProgramIndex": 0,
+  "currentProgramName": "Factory Default",
+  "fxb": "Q2NuSwAAAABGQkNoAAAAAUNvbXAAAQAmAAAAAQAAAAAAAAAAAAAAAAAAAA...",
+  "fxp": "Q2NuSwAAAABGUENoAAAAAUNvbXAAAQAmAAAAAUZhY3RvcnkgRGVmYXVsdA...",
+  "vst2State": "UFJPR1JBTQABBHBsdWdpbklEAAENBVRDb21wcmVzc29yAHByb2dy..."
+}
+```
+
+Tracktion engine includes a variety of different methods for retrieving
+plugin state. Many of these do the same thing as each other, so some data
+in the fields of the report will be redundant.
+
+Take note of the `.vst2State` field. This is will not be present when a
+VST3 plugin is selected. In that case, look for a `.vst3State` field.
+
+**Kind**: static method of [<code>plugin</code>](#plugin)  
+<a name="plugin.getParamReport"></a>
+
+### plugin.getParamReport()
+getParamReport asks the server for the state of all the automatable
+parameters on the selected plugin. The results will be returned in a
+JSONified array.
+
+**Kind**: static method of [<code>plugin</code>](#plugin)  
 <a name="reservedKeys"></a>
 
 ## reservedKeys
@@ -1157,21 +1207,6 @@ For more diverse examples (and more deeply nested objects), see the tests.
 | [noteLibrary] | <code>Object</code> \| <code>Array</code> | An object or array noteLibrary (see        parseTab for details). If not specified, `object` must have a        `.nLibrary` property. |
 | [startTime] | <code>Number</code> | offset all the notes by this much |
 
-<a name="applyGroove"></a>
-
-## applyGroove(notes, grooveItem, multipliers, randomness) ⇒ <code>Array.&lt;Object&gt;</code>
-Applies a specified groove onto an array of note objects
-
-**Kind**: global function  
-**Returns**: <code>Array.&lt;Object&gt;</code> - - The modified note array  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| notes | <code>Array.&lt;Object&gt;</code> |  | An array of note objects |
-| grooveItem | <code>string</code> \| <code>Object</code> |  | Either the name of the groove present         within the groove library, or a new groove object. |
-| multipliers | <code>Object</code> |  | An object of the form {d: number, o: number, l: number}        the keys are: velocity, offset and level respectively.         Level affects the overall effect the groove has on the note objects. |
-| randomness | <code>number</code> | <code>0</code> | A number representing the amount of randomness added to the offset |
-
 <a name="valueToWholeNotes"></a>
 
 ## valueToWholeNotes(value) ⇒ <code>Number</code>
@@ -1209,93 +1244,6 @@ you need an integer note number.
 | Param | Type | Description |
 | --- | --- | --- |
 | hz | <code>number</code> | frequency in hz |
-
-<a name="mapVelocityNumbersToDynamic"></a>
-
-## mapVelocityNumbersToDynamic(event, context)
-**Kind**: global function  
-
-| Param | Type |
-| --- | --- |
-| event | [<code>ClipEvent</code>](#ClipEvent) | 
-| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
-
-<a name="mapRandom"></a>
-
-## mapRandom(event, context)
-**Kind**: global function  
-
-| Param | Type |
-| --- | --- |
-| event | [<code>ClipEvent</code>](#ClipEvent) | 
-| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
-
-<a name="mapMidiChords"></a>
-
-## mapMidiChords(event, context)
-**Kind**: global function  
-
-| Param | Type |
-| --- | --- |
-| event | [<code>ClipEvent</code>](#ClipEvent) | 
-| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
-
-<a name="mapNumbersToMidiNotes"></a>
-
-## mapNumbersToMidiNotes(event, context)
-**Kind**: global function  
-
-| Param | Type |
-| --- | --- |
-| event | [<code>ClipEvent</code>](#ClipEvent) | 
-| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
-
-<a name="mapAutomation"></a>
-
-## mapAutomation(event, context)
-**Kind**: global function  
-
-| Param | Type |
-| --- | --- |
-| event | [<code>ClipEvent</code>](#ClipEvent) | 
-| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
-
-<a name="mapMidiNotes"></a>
-
-## mapMidiNotes(event, context)
-**Kind**: global function  
-
-| Param | Type |
-| --- | --- |
-| event | [<code>ClipEvent</code>](#ClipEvent) | 
-| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
-
-<a name="mapIntensityLayers"></a>
-
-## mapIntensityLayers(event, context)
-Parse a NoteObject with `type=iLayer`. Its job is to select an event from
-`note.e.iLayers` based on the current dynamic marking, and replace `note.e`
-with that event.
-
-This is a simple example of an event mapper function which only replaces the
-NoteObject's event.
-
-**Kind**: global function  
-
-| Param | Type |
-| --- | --- |
-| event | [<code>ClipEvent</code>](#ClipEvent) | 
-| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
-
-<a name="mapAudioFiles"></a>
-
-## mapAudioFiles(event, context)
-**Kind**: global function  
-
-| Param | Type |
-| --- | --- |
-| event | [<code>ClipEvent</code>](#ClipEvent) | 
-| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
 
 <a name="parse"></a>
 
@@ -1388,6 +1336,108 @@ exported.
 | --- | --- | --- |
 | fileEvents | [<code>Array.&lt;ClipEvent&gt;</code>](#ClipEvent) |  |
 | context | [<code>ClipEventContext</code>](#ClipEventContext) | This will not have a .eventIndex |
+
+<a name="applyGroove"></a>
+
+## applyGroove(notes, grooveItem, multipliers, randomness) ⇒ <code>Array.&lt;Object&gt;</code>
+Applies a specified groove onto an array of note objects
+
+**Kind**: global function  
+**Returns**: <code>Array.&lt;Object&gt;</code> - - The modified note array  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| notes | <code>Array.&lt;Object&gt;</code> |  | An array of note objects |
+| grooveItem | <code>string</code> \| <code>Object</code> |  | Either the name of the groove present         within the groove library, or a new groove object. |
+| multipliers | <code>Object</code> |  | An object of the form {d: number, o: number, l: number}        the keys are: velocity, offset and level respectively.         Level affects the overall effect the groove has on the note objects. |
+| randomness | <code>number</code> | <code>0</code> | A number representing the amount of randomness added to the offset |
+
+<a name="mapVelocityNumbersToDynamic"></a>
+
+## mapVelocityNumbersToDynamic(event, context)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| event | [<code>ClipEvent</code>](#ClipEvent) | 
+| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
+
+<a name="mapRandom"></a>
+
+## mapRandom(event, context)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| event | [<code>ClipEvent</code>](#ClipEvent) | 
+| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
+
+<a name="mapMidiChords"></a>
+
+## mapMidiChords(event, context)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| event | [<code>ClipEvent</code>](#ClipEvent) | 
+| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
+
+<a name="mapNumbersToMidiNotes"></a>
+
+## mapNumbersToMidiNotes(event, context)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| event | [<code>ClipEvent</code>](#ClipEvent) | 
+| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
+
+<a name="mapAutomation"></a>
+
+## mapAutomation(event, context)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| event | [<code>ClipEvent</code>](#ClipEvent) | 
+| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
+
+<a name="mapMidiNotes"></a>
+
+## mapMidiNotes(event, context)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| event | [<code>ClipEvent</code>](#ClipEvent) | 
+| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
+
+<a name="mapIntensityLayers"></a>
+
+## mapIntensityLayers(event, context)
+Parse a NoteObject with `type=iLayer`. Its job is to select an event from
+`note.e.iLayers` based on the current dynamic marking, and replace `note.e`
+with that event.
+
+This is a simple example of an event mapper function which only replaces the
+NoteObject's event.
+
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| event | [<code>ClipEvent</code>](#ClipEvent) | 
+| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
+
+<a name="mapAudioFiles"></a>
+
+## mapAudioFiles(event, context)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| event | [<code>ClipEvent</code>](#ClipEvent) | 
+| context | [<code>ClipEventContext</code>](#ClipEventContext) | 
 
 <a name="eventMapper"></a>
 

@@ -276,7 +276,50 @@ const plugin = {
     };
   },
 
+  /**
+   * getReport asks the server for a JSON report containing information about
+   * the state of the currently selected plugin. The exact contents of this may
+   * change, so use with caution.
+   *
+   * Example output for a VST(2) plugin as of July 31, 2020:
+   *
+   * ```json
+   * {
+   *   "shortName10": "#TCompressor",
+   *   "name": "#TCompressor",
+   *   "idString": "VST-#TCompressor-9b9288bb-436f6d70",
+   *   "automatableParamsCount": 26,
+   *   "pluginType": "vst",
+   *   "externalPluginFormat": "VST",
+   *   "uid": "436f6d70",
+   *   "tracktionXmlStateBase64": "Q2NuSwAAAABGQkNoAAAAAUNvbXAAAQAmAAAAAQ...",
+   *   "pluginState": "Q2NuSwAAAABGQkNoAAAAAUNvbXAAAQAmAAAAAQAAAAAAAAAAAA...",
+   *   "tracktionXml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n<PLUGIN type=\"vst\"...",
+   *   "currentProgramStateInfo": "Q2NuSwAAAABGUENoAAAAAUNvbXAAAQAmAAAAAU...",
+   *   "currentStateInfo": "Q2NuSwAAAABGQkNoAAAAAUNvbXAAAQAmAAAAAQAAAAAAA...",
+   *   "numPrograms": 1,
+   *   "currentProgramIndex": 0,
+   *   "currentProgramName": "Factory Default",
+   *   "fxb": "Q2NuSwAAAABGQkNoAAAAAUNvbXAAAQAmAAAAAQAAAAAAAAAAAAAAAAAAAA...",
+   *   "fxp": "Q2NuSwAAAABGUENoAAAAAUNvbXAAAQAmAAAAAUZhY3RvcnkgRGVmYXVsdA...",
+   *   "vst2State": "UFJPR1JBTQABBHBsdWdpbklEAAENBVRDb21wcmVzc29yAHByb2dy..."
+   * }
+   * ```
+   *
+   * Tracktion engine includes a variety of different methods for retrieving
+   * plugin state. Many of these do the same thing as each other, so some data
+   * in the fields of the report will be redundant.
+   *
+   * Take note of the `.vst2State` field. This is will not be present when a
+   * VST3 plugin is selected. In that case, look for a `.vst3State` field.
+   **/
   getReport() { return { address: '/plugin/report' }; },
+
+  /**
+   * getParamReport asks the server for the state of all the automatable
+   * parameters on the selected plugin. The results will be returned in a
+   * JSONified array.
+   */
   getParamReport() { return { address: '/plugin/param/report' }; },
 
   addpath(presetDir) {
