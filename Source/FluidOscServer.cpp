@@ -1031,7 +1031,7 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
             // My understanding is that stateInfo and programStateInfo map to
             // fxb and fxp formats for VST2 plugins. This assumption needs to be
             // verified.
-#if (JUCE_PLUGIN_VST)
+#if (JUCE_PLUGINHOST_VST)
             object->setProperty("fxb", stateInfo);        // same as: currentStateInfo
             object->setProperty("fxp", programStateInfo); // same as: currentProgramStateInfo
 
