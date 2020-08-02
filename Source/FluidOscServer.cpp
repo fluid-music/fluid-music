@@ -12,6 +12,10 @@
 
 #if (JUCE_PLUGINHOST_VST3)
 #include <pluginterfaces/vst/ivstcomponent.h>
+#include <pluginterfaces/vst/ivstaudioprocessor.h>
+#include <pluginterfaces/vst/ivsteditcontroller.h>
+#include <pluginterfaces/base/ipluginbase.h>
+#include <pluginterfaces/vst/vsttypes.h>
 #include <public.sdk/source/common/memorystream.h>
 #endif
 
@@ -981,7 +985,8 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
         // - PluginDescription.pluginFormatName is "VST"  or "VST3" (upper case)
         // - Plugin::getPluginType()       returns "vst"            (lower case)
         object->setProperty("externalPluginFormat", x->desc.pluginFormatName);
-        object->setProperty("uid", x->getPluginUID());
+        object->setProperty("uidHex", x->getPluginUID());
+        object->setProperty("uidInt", x->desc.uid);
         // update the plugin's .state value Tree
         x->flushPluginStateToValueTree();
         var state = x->state.getProperty(te::IDs::state);
@@ -1050,13 +1055,25 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
             // read the plugin state.
             auto funknown = static_cast<Steinberg::FUnknown*> (jucePlugin->getPlatformSpecificData());
             Steinberg::Vst::IComponent* vstcomponent = nullptr;
+            Steinberg::Vst::IAudioProcessor* vstprocessor = nullptr;
+            
+            if (funknown->queryInterface(Steinberg::Vst::IAudioProcessor_iid, (void**) &vstprocessor) == Steinberg::kResultOk
+                && vstprocessor != nullptr)
+            {
+                object->setProperty("vst3IsAudioProcessor", true);
+                char strUID[33] = {0};
+                vstprocessor->iid.toString(strUID);
+                object->setProperty("vst3ProcessorId", String(strUID));
+                // Charles: does the vstprocessor need to be ->release()d like the vstcomponent? This might be a memory leak.
+            }
 
-            if (funknown->queryInterface (Steinberg::Vst::IComponent_iid, (void**) &vstcomponent) == 0
+            if (funknown->queryInterface (Steinberg::Vst::IComponent_iid, (void**) &vstcomponent) == Steinberg::kResultOk
                 && vstcomponent != nullptr)
             {
+                object->setProperty("vst3IsComponent", true);
                 auto* memoryStream = new Steinberg::MemoryStream();
                 auto result = vstcomponent->getState(memoryStream);
-                if (result) {
+                if (result != Steinberg::kResultOk) {
                     object->setProperty("vst3StateError", result);
                 } else {
                     // The output of this looks very similar to the way that REAPER stores VSTs
@@ -1066,7 +1083,46 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
                     String state = Base64::toBase64(memoryStream->getData(), memoryStream->getSize());
                     object->setProperty("vst3State", state);
                 }
+                
+                // Get the long ClassID for the plugin. Send it to the client, Base64 encoded
+                {
+                    Steinberg::TUID id;
+                    // Charles: My understanding is that we can only get the ControllerClassID
+                    // from with this .getControllerClassId method if this is a "split" aka
+                    // "kDistributable" plugin. if the plugin is implemented as a single component
+                    // (i.e. is derived from SingleComponentEffect), we must get the plugin using
+                    // queryInterface(Steinberg::Vst::IEditController_iid, ...)
+                    Steinberg::tresult result = vstcomponent->getControllerClassId(id);
+                    if (result != Steinberg::kResultOk) {
+                        object->setProperty("vst3EditControllerIdError", result);
+                    } else {
+                        Steinberg::FUID fid = Steinberg::FUID::fromTUID(id);
+                        char strUID[33] = {0};
+                        fid.toString(strUID);
+                        object->setProperty("vst3EditControllerId", String(strUID));
+                    }
+                    
+                }
+                {
+                    Steinberg::Vst::IEditController* vsteditcontroller = nullptr;
+                    if (vstcomponent->queryInterface(Steinberg::Vst::IEditController_iid, (void**) &vsteditcontroller) == 0
+                        && vsteditcontroller != nullptr)
+                    {
+                        // I believe that this will not overlap with a successful call to
+                        // getControllderClassId above, but I don't know for sure. I suspect
+                        // that this is what happens when the plugin is written
+                        // so that the same class derives from all three VST3 components
+                        // vst::IComponent, Vst::IAudioProcessor, and Vst::IEditController
 
+                        // My understanding is that when a plugin derives from
+                        // SimpleComponentEffect, the EditController iid IS exactly
+                        // Steinberg::Vst::IEditController_iid.
+                        char strUID[33] = {0};
+                        vsteditcontroller->iid.toString(strUID);
+                        object->setProperty("vst3IsEditController", true);
+                        object->setProperty("vst3EditControllerId", String(strUID));
+                    }
+                }
                 memoryStream->release();
                 vstcomponent->release();
            }
