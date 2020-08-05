@@ -17,6 +17,7 @@
 #include <pluginterfaces/base/ipluginbase.h>
 #include <pluginterfaces/vst/vsttypes.h>
 #include <public.sdk/source/common/memorystream.h>
+#include <public.sdk/source/vst/vstpresetfile.h>
 #endif
 
 using namespace juce;
@@ -1049,6 +1050,29 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
 #endif
         } else if (x->isVST3()) {
 #if (JUCE_PLUGINHOST_VST3)
+            {
+                auto* presetStream = new Steinberg::MemoryStream(stateInfoBlock.getData(), stateInfoBlock.getSize());
+                Steinberg::Vst::PresetFile presetFile(presetStream);
+                presetFile.readChunkList();
+                if (presetFile.contains(Steinberg::Vst::kControllerState)) {
+                    object->setProperty("vst3FoundControllerState", true);
+                    if (auto* entry = presetFile.getEntry(Steinberg::Vst::kControllerState)) {
+                        presetFile.seekToControllerState();
+                        auto* stream = presetFile.getStream();
+                        MemoryBlock controllerState;
+                        controllerState.ensureSize(entry->size);
+                        
+                        if (stream->write(controllerState.getData(), entry->size)) {
+                            object->setProperty("vst3ControllerState", controllerState);
+                        }
+                    }
+                }
+                if (presetFile.contains(Steinberg::Vst::kComponentState)) {
+                    object->setProperty("vst3FoundComponentState", true);
+                }
+                presetStream->release();
+            }
+            
             // This code is modeled after a suggestion on the forum
             // https://forum.juce.com/t/fr-vst3pluginformat-loadfromvstpresetfile/24881/7
             // However, the code on the forum is for writing to plugin's state, while I want to
@@ -1081,11 +1105,12 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
                     // and an extra 8 bytes at the end.
                     memoryStream->truncateToCursor();
                     String state = Base64::toBase64(memoryStream->getData(), memoryStream->getSize());
-                    object->setProperty("vst3State", state);
+                    object->setProperty("vst3IComponentState", state);
                 }
-                
+
                 // Get the long ClassID for the plugin. Send it to the client, Base64 encoded
                 {
+                    
                     Steinberg::TUID id;
                     // Charles: My understanding is that we can only get the ControllerClassID
                     // from with this .getControllerClassId method if this is a "split" aka
@@ -1105,7 +1130,7 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
                 }
                 {
                     Steinberg::Vst::IEditController* vsteditcontroller = nullptr;
-                    if (vstcomponent->queryInterface(Steinberg::Vst::IEditController_iid, (void**) &vsteditcontroller) == 0
+                    if (vstcomponent->queryInterface(Steinberg::Vst::IEditController_iid, (void**) &vsteditcontroller) == Steinberg::kResultOk
                         && vsteditcontroller != nullptr)
                     {
                         // I believe that this will not overlap with a successful call to
@@ -1115,12 +1140,21 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
                         // vst::IComponent, Vst::IAudioProcessor, and Vst::IEditController
 
                         // My understanding is that when a plugin derives from
-                        // SimpleComponentEffect, the EditController iid IS exactly
+                        // SimpleComponentEffect, the IEditController iid IS exactly
                         // Steinberg::Vst::IEditController_iid.
                         char strUID[33] = {0};
                         vsteditcontroller->iid.toString(strUID);
                         object->setProperty("vst3IsEditController", true);
                         object->setProperty("vst3EditControllerId", String(strUID));
+
+                        // get EditControllerState
+                        auto* memoryStream = new Steinberg::MemoryStream();
+                        if (vsteditcontroller->getState(memoryStream) == Steinberg::kResultOk) {
+                            memoryStream->truncateToCursor();
+                            String state = Base64::toBase64(memoryStream->getData(), memoryStream->getSize());
+                            object->setProperty("vst3EditControlerState", state);
+                        };
+                        memoryStream->release();
                     }
                 }
                 memoryStream->release();
