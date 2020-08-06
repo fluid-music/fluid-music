@@ -45,7 +45,6 @@ JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wnon-virtual-dtor",
                                      "-Wextra",
                                      "-Wclass-memaccess")
 
-//#include <juce_audio_processors/format_types/juce_VST3Headers.h>
 #include <pluginterfaces/vst/ivstcomponent.h>
 #include <pluginterfaces/vst/ivstaudioprocessor.h>
 #include <pluginterfaces/vst/ivsteditcontroller.h>
