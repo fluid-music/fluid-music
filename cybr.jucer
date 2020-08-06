@@ -47,6 +47,9 @@
             file="Source/OpenFrameworksPlugin.cpp"/>
       <FILE id="HfQVk6" name="SamplePathMode.h" compile="0" resource="0"
             file="Source/SamplePathMode.h"/>
+      <FILE id="KWJolC" name="plugin_report.cpp" compile="1" resource="0"
+            file="Source/plugin_report.cpp"/>
+      <FILE id="OHcgSO" name="plugin_report.h" compile="0" resource="0" file="Source/plugin_report.h"/>
     </GROUP>
     <FILE id="OhQeKm" name="temp_OSCInputStream.cpp" compile="1" resource="0"
           file="Source/temp_OSCInputStream.cpp"/>
