@@ -9,11 +9,7 @@
 */
 
 #include "FluidOscServer.h"
-
-#if (JUCE_PLUGINHOST_VST3)
-#include <pluginterfaces/vst/ivstcomponent.h>
-#include <public.sdk/source/common/memorystream.h>
-#endif
+#include "plugin_report.h"
 
 using namespace juce;
 
@@ -966,113 +962,7 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
         return reply;
     }
 
-    // This is a recommended way of storing dynamic objects safely described here:
-    // https://forum.juce.com/t/style-question-with-dynamicobject/9413
-    DynamicObject::Ptr object = new DynamicObject();
-    object->setProperty("shortName10", selectedPlugin->getShortName(10));
-    object->setProperty("name",selectedPlugin->getName());
-    object->setProperty("idString", selectedPlugin->getIdentifierString());
-    object->setProperty("automatableParamsCount", selectedPlugin->getNumAutomatableParameters());
-    object->setProperty("pluginType", selectedPlugin->getPluginType());
-
-
-    if (auto x = dynamic_cast<te::ExternalPlugin*>(selectedPlugin)) {
-        // Annoyingly:
-        // - PluginDescription.pluginFormatName is "VST"  or "VST3" (upper case)
-        // - Plugin::getPluginType()       returns "vst"            (lower case)
-        object->setProperty("externalPluginFormat", x->desc.pluginFormatName);
-        object->setProperty("uid", x->getPluginUID());
-        // update the plugin's .state value Tree
-        x->flushPluginStateToValueTree();
-        var state = x->state.getProperty(te::IDs::state);
-        MemoryBlock chunk;
-        if (chunk.fromBase64Encoding(state.toString())) {
-            String properBase64 = Base64::toBase64(chunk.getData(), chunk.getSize());
-            object->setProperty("tracktionXmlStateBase64", properBase64);
-        }
-        {
-            x->getPluginStateFromTree(chunk);
-            String pluginState = Base64::toBase64(chunk.getData(), chunk.getSize());
-            object->setProperty("pluginState", pluginState);
-        }
-
-        object->setProperty("tracktionXml", x->elementState.toXmlString());
-        // Try a different method of getting the state
-
-        juce::AudioPluginInstance* jucePlugin = x->getAudioPluginInstance();
-
-        MemoryBlock stateInfoBlock;
-        MemoryBlock programStateInfoBlock;
-
-        TRACKTION_ASSERT_MESSAGE_THREAD
-        jucePlugin->suspendProcessing (true);
-        jucePlugin->getCurrentProgramStateInformation(programStateInfoBlock); // Verify: If this is a VST2, get fxp (patch)
-        jucePlugin->getStateInformation(stateInfoBlock);                      // Verify: If this is a VST2, get fxb (bank)
-        jucePlugin->suspendProcessing(false);
-
-        String programStateInfo = Base64::toBase64(programStateInfoBlock.getData(), programStateInfoBlock.getSize());
-        String stateInfo  = Base64::toBase64(stateInfoBlock.getData(), stateInfoBlock.getSize());
-
-        object->setProperty("currentProgramStateInfo", programStateInfo);
-        object->setProperty("currentStateInfo", stateInfo);
-
-        object->setProperty("numPrograms", jucePlugin->getNumPrograms());     // number of programs in the bank
-        object->setProperty("currentProgramIndex", jucePlugin->getCurrentProgram()); // program number within (bank)
-        object->setProperty("currentProgramName", jucePlugin->getProgramName(jucePlugin->getCurrentProgram()));
-
-        // Dynamic cast doesn't work, but I don't know why: if (auto* vst = dynamic_cast<VSTPluginInstance*> (plugin)) {
-        if (x->isVST()) {
-            // if for some reason, we wanted to get the AEffect, we could do it like this:
-            // #if (JUCE_PLUGINHOST_VST)
-            // #include "pluginterfaces/vst2.x/aeffect.h" // required
-            // AEffect* vst2 = static_cast<AEffect*>(jucePlugin->getPlatformSpecificData());
-            // #endif
-
-            // My understanding is that stateInfo and programStateInfo map to
-            // fxb and fxp formats for VST2 plugins. This assumption needs to be
-            // verified.
-#if (JUCE_PLUGINHOST_VST)
-            object->setProperty("fxb", stateInfo);        // same as: currentStateInfo
-            object->setProperty("fxp", programStateInfo); // same as: currentProgramStateInfo
-
-            MemoryBlock presetChunk;
-            if (VSTPluginFormat::getChunkData(jucePlugin, presetChunk, true)) {
-                object->setProperty("vst2State", Base64::toBase64(presetChunk.getData(), presetChunk.getSize()));
-            } else {
-                object->setProperty("vst2StateError", 1);
-            }
-#endif
-        } else if (x->isVST3()) {
-#if (JUCE_PLUGINHOST_VST3)
-            // This code is modeled after a suggestion on the forum
-            // https://forum.juce.com/t/fr-vst3pluginformat-loadfromvstpresetfile/24881/7
-            // However, the code on the forum is for writing to plugin's state, while I want to
-            // read the plugin state.
-            auto funknown = static_cast<Steinberg::FUnknown*> (jucePlugin->getPlatformSpecificData());
-            Steinberg::Vst::IComponent* vstcomponent = nullptr;
-
-            if (funknown->queryInterface (Steinberg::Vst::IComponent_iid, (void**) &vstcomponent) == 0
-                && vstcomponent != nullptr)
-            {
-                auto* memoryStream = new Steinberg::MemoryStream();
-                auto result = vstcomponent->getState(memoryStream);
-                if (result) {
-                    object->setProperty("vst3StateError", result);
-                } else {
-                    // The output of this looks very similar to the way that REAPER stores VSTs
-                    // Reaper's Base64 binary has an extra 8 bytes at the beginning of the stream,
-                    // and an extra 8 bytes at the end.
-                    memoryStream->truncateToCursor();
-                    String state = Base64::toBase64(memoryStream->getData(), memoryStream->getSize());
-                    object->setProperty("vst3State", state);
-                }
-
-                memoryStream->release();
-                vstcomponent->release();
-           }
-#endif
-        }
-    } // end isExternalPlugin block
+    DynamicObject::Ptr object = getPluginReportObject(selectedPlugin);
 
     reply.addInt32(0);
     reply.addString("Retrieved JSON report about plugin");

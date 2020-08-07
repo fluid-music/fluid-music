@@ -6,13 +6,12 @@ const m1 = [
   fluid.global.activate("deleteme.tracktionedit", true),
   fluid.audiotrack.select('hi'),
   fluid.pluginTStereoDelay.select(),
-  //fluid.plugin.select('Podolski'),
+  // fluid.plugin.select('Podolski'),
   fluid.plugin.getParamReport(),
   fluid.plugin.getReport(),
 ];
 
-client.send(m1)
-.then((data) => {
+client.send(m1).then((data) => {
   console.dir(data, {depth:null})
 
   for (const oscMsg of data.elements) {
