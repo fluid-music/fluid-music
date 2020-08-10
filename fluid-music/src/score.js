@@ -115,7 +115,6 @@ function parse(scoreObject, config, session, tracks={}) {
     const resultClip = parseTab(r, scoreObject, nLibrary, d, dLibrary);
     resultClip.startTime = config.startTime;
     if (config.eventMappers) resultClip.eventMappers = config.eventMappers;
-    console.log('trackKey:', trackKey, 'pattern:', scoreObject);
     tracks[trackKey].clips.push(resultClip);
     returnValue = resultClip;
   } else {
