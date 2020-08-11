@@ -37,7 +37,7 @@ const template = {
   kick:   { d: '.   . mf      ' },
   snare:  { d: 'm   f   m   f ' },
   chrd:   { nLibrary: chords.nLibrary },
-  bass:   { nLibrary: { a: 36, b: 39, f, p } },
+  bass:   { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p } },
 };
 
 const score = {
