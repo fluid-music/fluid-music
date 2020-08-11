@@ -15,28 +15,28 @@
  *     drums: {
  *       clips: [
  *         {
- *           events: [ { s: 0, l: 0.25, n: 0 } ],
+ *           events: [ { startTime 0, length: 0.25, n: 0 } ],
  *           duration: 1,
  *           startTime: 0
- *           midiEvents: [{s: 0, l: 0.25, n: {n: 0, type: 'midiNote'}}],
+ *           midiEvents: [{ startTime: 0, length: 0.25, n: {n: 0, type: 'midiNote'}}],
  *         },
  *         {
- *           events: [ { s: 0, l: 0.25, n: 1 } ],
+ *           events: [ { startTime 0, length: 0.25, n: 1 } ],
  *           duration: 1,
  *           startTime: 1
- *           midiEvents: [{s: 0, l: 0.25, n: {n: 1, type: 'midiNote'}}],
+ *           midiEvents: [{ startTime: 0, length: 0.25, n: {n: 1, type: 'midiNote'}}],
  *         },
  *         {
- *           events: [ { s: 0, l: 0.25, n: 2 } ],
+ *           events: [ { startTime 0, length: 0.25, n: 2 } ],
  *           duration: 1,
  *           startTime: 2
- *           midiEvents: [{s: 0, l: 0.25, n: {n: 2, type: 'midiNote'}}],
+ *           midiEvents: [{ startTime: 0, length: 0.25, n: {n: 2, type: 'midiNote'}}],
  *         },
  *         {
- *           events: [ { s: 0, l: 0.25, n: 3 } ],
+ *           events: [ { startTime 0, length: 0.25, n: 3 } ],
  *           duration: 1,
  *           startTime: 3
- *           midiEvents: [{s: 0, l: 0.25, n: {n: 3, type: 'midiNote'}}],
+ *           midiEvents: [{ startTime: 0, length: 0.25, n: {n: 3, type: 'midiNote'}}],
  *         },
  *       ],
  *       automation: {},
@@ -48,19 +48,19 @@
  *       duration: 2,
  *       regions: [
  *         {
- *           events: [ { s: 0, l: 0.25, n: 0 } ],
+ *           events: [ { startTime 0, length: 0.25, n: 0 } ],
  *           duration: 1,
  *           startTime: 0
  *         },
  *         {
- *           events: [ { s: 0, l: 0.25, n: 1 } ],
+ *           events: [ { startTime 0, length: 0.25, n: 1 } ],
  *           duration: 1,
  *           startTime: 1
  *         }
  *       ]
  *     },
- *     { events: [ { s: 0, l: 0.25, n: 2 } ], duration: 1, startTime: 2 },
- *     { events: [ { s: 0, l: 0.25, n: 3 } ], duration: 1, startTime: 3 },
+ *     { events: [ { startTime 0, length: 0.25, n: 2 } ], duration: 1, startTime: 2 },
+ *     { events: [ { startTime 0, length: 0.25, n: 3 } ], duration: 1, startTime: 3 },
  *   ]
  * }
  * ```
@@ -85,12 +85,12 @@
  *     clips: [
  *       {
  *         midiEvents: [
- *           { s: 0,     l: 0.0833, n: { n: 33, type: 'midiNote' }, d: { v: 100 } },
- *           { s: 0.25,  l: 0.0833, n: { n: 35, type: 'midiNote' }, d: { v: 90 } },
- *           { s: 0.33,  l: 0.0833, n: { n: 38, type: 'midiNote' }, d: { v: 60 } },
+ *           { startTime 0,     length: 0.0833, n: { n: 33, type: 'midiNote' }, d: { v: 100 } },
+ *           { startTime 0.25,  length: 0.0833, n: { n: 35, type: 'midiNote' }, d: { v: 90 } },
+ *           { startTime 0.33,  length: 0.0833, n: { n: 38, type: 'midiNote' }, d: { v: 60 } },
  *         ],
  *         fileEvents: [
- *           { s: 0.5, l: 0.25, n: { type: 'file', path: 'media/kick.wav' } },
+ *           { startTime 0.5, length: 0.25, n: { type: 'file', path: 'media/kick.wav' } },
  *         ],
  *         startTime: 2,
  *         duration:  1,
@@ -137,9 +137,9 @@
 
 /**
  * @typedef {Object} Clip
- * @property {ClipEvent[]} events
- * @property {ClipEvent[]} midiEvents
- * @property {ClipEvent[]} fileEvents
+ * @property {Event[]} events
+ * @property {Event[]} midiEvents
+ * @property {Event[]} fileEvents
  * @property {number} duration duration in whole notes
  * @property {number} [startTime] start time in whole notes
  */
@@ -165,24 +165,6 @@
   * @property {number} [normalizedValue]
   */
 
-
-/**
- * ClipEvents combine a `Note`, a `Dynamic` marking, a `s`tart time, and a
- * `l`ength. The start time is measured from the beginning of the Clip that
- * contains the event (unlike `Clip.startTime` which is relative to the start of
- * the session).
- *
- * Be aware of the difference between a `Note` and a `ClipEvent`. A `Note` is
- * not necessarily associated with any duration, or particular position in a
- * score. `Note` objects also have a `.type` field, while `ClipEvent`s do not.
- * @typedef {Object} ClipEvent
- * @property {number} l length in whole notes
- * @property {number} s start time in whole notes, measured from clip start
- * @property {Note} n a `Note` event. Sometimes these might be a number
- * @property {number} [v=64] optional midi velocity
- * @property {Dynamic} [d] Signifies a dynamic marking
- */
-
 /**
  * Represents a performance marking such as "forte" or "piano". In practice,
  * this specifies a MIDI velocity, or a dBFS gain value.
@@ -206,8 +188,8 @@
   * ];
   * ```
   *
-  * These can be found in an `nLibrary`, or in the `.n` field of a `ScoreEvent`.
-  * @typedef {Object} Note
+  * These can be found in an `nLibrary`, or in a Clip
+  * @typedef {Object} Event
   * @property {string} type String indicating the type of event:
   *   'file' indicates an audio sample, which should have a `.path`.
   *   'iLayers' indicates the presence of a `.iLayers` field, which contains an
@@ -218,6 +200,9 @@
   * @property {number} [fadeInSeconds] fade in in seconds (file objects)
   * @property {boolean} [oneShot] if true, file objects will play until the end,
   *   ignoring the note's length
+  * @property {number} [startTime]
+  * @property {number} [length]
+  * @property {Dynamic} [d]
   */
 
 /**

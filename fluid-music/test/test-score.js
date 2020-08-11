@@ -5,29 +5,30 @@ const score = require('../src/score');
 const audiotrack = require('../src/fluid/audiotrack');
 const fluid = require('../src/fluid');
 
+converters = require('./../src/converters');
 fluid.trackAutomation = require('../src/track-automation');
 
 describe('score', () => {
-  const nLibrary = [0, 1, 2, 3, 4, 5, 6];
+  const nLibrary = [0, 1, 2, 3, 4, 5, 6].map(converters.numberToMidiNote);
   const r = '1234'
 
   describe('score.parse', () => {
     const p1 = '.0..'
     const clip1 = {
-      midiEvents: [{ n: {n: 0}, s: 0.25, l: 0.25 }],
+      midiEvents: [{ n: 0, startTime: 0.25, length: 0.25 }],
       startTime: 0,
       duration: 1,
     };
 
     const p2 = '01..';
     const clip2 = {
-      midiEvents: [{ n: {n: 0}, s: 0, l: 0.25 }, { n: {n: 1}, s: 0.25, l: 0.25 }],
+      midiEvents: [{ n: 0, startTime: 0, length: 0.25 }, { n: 1, startTime: 0.25, length: 0.25 }],
       duration: 1,
     };
 
     const obj = {
       p1,
-      nLibrary: [0, 1, 2, 3, 4, 5, 6],
+      nLibrary: [0, 1, 2, 3, 4, 5, 6].map(converters.numberToMidiNote),
       r: '1234',
     };
 
@@ -51,13 +52,13 @@ describe('score', () => {
         const result = score.parse(s1);
 
         const clip1 = {
-          midiEvents: [{s: 0.25, l: 0.25, n: {n: 0}}],
+          midiEvents: [{ startTime: 0.25, length: 0.25, n: 0 }],
           duration: 1,
           startTime: 0,
         };
 
         const clip2 = {
-          midiEvents: [{s: 0.25, l: 0.25, n: {n: 1}}],
+          midiEvents: [{ startTime: 0.25, length: 0.25, n: 1 }],
           duration: 1,
           startTime: 1,
         }
@@ -77,10 +78,10 @@ describe('score', () => {
           ['0...', '1...'],
           '2...', '3...'
         ]};
-        const clip0 = { midiEvents: [{n: {n: 0}, s: 0, l: 0.25}], startTime: 0, duration: 1 };
-        const clip1 = { midiEvents: [{n: {n: 1}, s: 0, l: 0.25}], startTime: 1, duration: 1 };
-        const clip2 = { midiEvents: [{n: {n: 2}, s: 0, l: 0.25}], startTime: 2, duration: 1 };
-        const clip3 = { midiEvents: [{n: {n: 3}, s: 0, l: 0.25}], startTime: 3, duration: 1 };
+        const clip0 = { midiEvents: [{ n: 0, startTime: 0, length: 0.25 }], startTime: 0, duration: 1 };
+        const clip1 = { midiEvents: [{ n: 1, startTime: 0, length: 0.25 }], startTime: 1, duration: 1 };
+        const clip2 = { midiEvents: [{ n: 2, startTime: 0, length: 0.25 }], startTime: 2, duration: 1 };
+        const clip3 = { midiEvents: [{ n: 3, startTime: 0, length: 0.25 }], startTime: 3, duration: 1 };
 
         const result1 = score.parse(s1);
         result1.tracks.should.containDeep({
@@ -97,10 +98,10 @@ describe('score', () => {
           ['2...', '3...']
         ]};
 
-        const clip0 = { midiEvents: [{n: {n: 1}, s: 0, l: 0.25}], startTime: 0 };
-        const clip1 = { midiEvents: [{n: {n: 0}, s: 0, l: 0.25}, { n: {n: 1}, s: 0.5, l: 0.25 }], startTime: 1 };
-        const clip2 = { midiEvents: [{n: {n: 2}, s: 0, l: 0.25}], startTime: 2 };
-        const clip3 = { midiEvents: [{n: {n: 3}, s: 0, l: 0.25}], startTime: 3 };
+        const clip0 = { midiEvents: [{n: 1, startTime: 0, length: 0.25}], startTime: 0 };
+        const clip1 = { midiEvents: [{n: 0, startTime: 0, length: 0.25}, { n: 1, startTime: 0.5, length: 0.25 }], startTime: 1 };
+        const clip2 = { midiEvents: [{n: 2, startTime: 0, length: 0.25}], startTime: 2 };
+        const clip3 = { midiEvents: [{n: 3, startTime: 0, length: 0.25}], startTime: 3 };
 
         const result1 = score.parse(s1);
         result1.tracks.should.containDeep({
@@ -122,10 +123,10 @@ describe('score', () => {
         ]};
 
         // expected
-        const clip0 = { midiEvents: [{n: {n: 0}, s: 0, l: 0.25}], startTime: 0, duration: 1 };
-        const clip1 = { midiEvents: [{n: {n: 1}, s: 0, l: 0.25}], startTime: 1, duration: 1 };
-        const clip2 = { midiEvents: [{n: {n: 2}, s: 0, l: 0.25}], startTime: 2, duration: 1 };
-        const clip3 = { midiEvents: [{n: {n: 3}, s: 0, l: 0.25}], startTime: 3, duration: 1 };
+        const clip0 = { midiEvents: [{ n: 0, startTime: 0, length: 0.25 }], startTime: 0, duration: 1 };
+        const clip1 = { midiEvents: [{ n: 1, startTime: 0, length: 0.25 }], startTime: 1, duration: 1 };
+        const clip2 = { midiEvents: [{ n: 2, startTime: 0, length: 0.25 }], startTime: 2, duration: 1 };
+        const clip3 = { midiEvents: [{ n: 3, startTime: 0, length: 0.25 }], startTime: 3, duration: 1 };
         const expectedResult = {
           main: {
             clips: [clip0, clip3],
@@ -148,10 +149,10 @@ describe('score', () => {
           {r, nLibrary, trackKey});
 
         // expected result
-        const clip0 = {  midiEvents: [{n: { n: 0 }, s: 0, l: 0.25}], startTime: 0, duration: 1 };
-        const clip1 = {  midiEvents: [{n: { n: 1 }, s: 0, l: 0.25}], startTime: 1, duration: 1 };
-        const clip2 = {  midiEvents: [{n: { n: 2 }, s: 0, l: 0.25}], startTime: 2, duration: 1 };
-        const clip3 = {  midiEvents: [{n: { n: 3 }, s: 0, l: 0.25}], startTime: 3, duration: 1 };
+        const clip0 = {  midiEvents: [{ n: 0, startTime: 0, length: 0.25 }], startTime: 0, duration: 1 };
+        const clip1 = {  midiEvents: [{ n: 1, startTime: 0, length: 0.25 }], startTime: 1, duration: 1 };
+        const clip2 = {  midiEvents: [{ n: 2, startTime: 0, length: 0.25 }], startTime: 2, duration: 1 };
+        const clip3 = {  midiEvents: [{ n: 3, startTime: 0, length: 0.25 }], startTime: 3, duration: 1 };
         const expectedResult = {
           duration: 4,
           tracks: {
@@ -179,11 +180,11 @@ describe('score', () => {
       ]};
 
       const s1Copy = R.clone(s1);
-      const clip0 = { midiEvents: [{n: { n: 0 }, s: 0, l: 0.25}], startTime: 0, duration: 1 };
-      const clip1 = { midiEvents: [{n: { n: 1 }, s: 0, l: 0.25}], startTime: 0, duration: 2 };
-      const clip2 = { midiEvents: [{n: { n: 2 }, s: 0, l: 0.25}], startTime: 0, duration: 1 };
-      const clip3 = { midiEvents: [{n: { n: 3 }, s: 0, l: 0.25}], startTime: 2, duration: 1 };
-      const clip4 = { midiEvents: [{n: { n: 4 }, s: 0, l: 0.25}], startTime: 3, duration: 1 };
+      const clip0 = { midiEvents: [{ n: 0, startTime: 0, length: 0.25 }], startTime: 0, duration: 1 };
+      const clip1 = { midiEvents: [{ n: 1, startTime: 0, length: 0.25 }], startTime: 0, duration: 2 };
+      const clip2 = { midiEvents: [{ n: 2, startTime: 0, length: 0.25 }], startTime: 0, duration: 1 };
+      const clip3 = { midiEvents: [{ n: 3, startTime: 0, length: 0.25 }], startTime: 2, duration: 1 };
+      const clip4 = { midiEvents: [{ n: 4, startTime: 0, length: 0.25 }], startTime: 3, duration: 1 };
 
       const expectedResult = {
         main:  { clips: [clip4] },
@@ -200,34 +201,34 @@ describe('score', () => {
       it('should not modify the input object', () => {
         s1.should.deepEqual(s1Copy);
       });
+
+      it('should skip over keys named "clips"', () => {
+        const s1 = { nLibrary, r, main: [
+          '0...',
+          { drum: {
+            clips: ['1...', '2...']
+          }},
+          '3...'
+        ]};
+
+        // expected
+        const clip0 = { midiEvents: [{ n: 0, type: 'midiNote', startTime: 0, length: 0.25 }], startTime: 0, duration: 1 };
+        const clip1 = { midiEvents: [{ n: 1, type: 'midiNote', startTime: 0, length: 0.25 }], startTime: 1, duration: 1 };
+        const clip2 = { midiEvents: [{ n: 2, type: 'midiNote', startTime: 0, length: 0.25 }], startTime: 2, duration: 1 };
+        const clip3 = { midiEvents: [{ n: 3, type: 'midiNote', startTime: 0, length: 0.25 }], startTime: 3, duration: 1 };
+        const expectedResult = {
+          main: {
+            clips: [clip0, clip3],
+          },
+          drum: {
+            clips: [clip1, clip2],
+          },
+        };
+
+        const result1 = score.parse(s1);
+        result1.tracks.should.containDeep(expectedResult);
+      });
     }); // score.parse on deeply nested objects
-
-    describe('skip over keys named "clips"', () => {
-      const s1 = { nLibrary, r, main: [
-        '0...',
-        { drum: {
-          clips: ['1...', '2...']
-        }},
-        '3...'
-      ]};
-
-      // expected
-      const clip0 = { midiEvents: [{n: { n: 0, type: 'midiNote'} , s: 0, l: 0.25}], startTime: 0, duration: 1 };
-      const clip1 = { midiEvents: [{n: { n: 1, type: 'midiNote'} , s: 0, l: 0.25}], startTime: 1, duration: 1 };
-      const clip2 = { midiEvents: [{n: { n: 2, type: 'midiNote'} , s: 0, l: 0.25}], startTime: 2, duration: 1 };
-      const clip3 = { midiEvents: [{n: { n: 3, type: 'midiNote'} , s: 0, l: 0.25}], startTime: 3, duration: 1 };
-      const expectedResult = {
-        main: {
-          clips: [clip0, clip3],
-        },
-        drum: {
-          clips: [clip1, clip2],
-        },
-      };
-
-      const result1 = score.parse(s1);
-      result1.tracks.should.containDeep(expectedResult);
-    });
 
     describe('score.parse with eventMappers', () => {
       const nLibrary = [
@@ -238,13 +239,12 @@ describe('score', () => {
 
       const eventMappers = [
         (event, context) => {
-          if (event.n.type === 'test') {
-            event.n = Object.assign({}, event.n);
-            event.n.v *= 4;
+          if (event.type === 'test') {
+            event.v *= 4;
           }
           return event;
         },
-        (event, context) => (event.n.type === 'test' && event.n.v > 0) ? event : null,
+        (event, context) => (event.type === 'test' && event.v > 0) ? event : null,
       ];
       const r = '1234';
 
@@ -254,7 +254,7 @@ describe('score', () => {
         const session = score.parse(s, config);
 
         session.tracks.a.clips[0].events.length.should.equal(1);
-        session.tracks.a.clips[0].events[0].should.containDeep({s: 0.5, l: 0.25, n: {v: 4, type: 'test'}})
+        session.tracks.a.clips[0].events[0].should.containDeep({startTime: 0.5, length: 0.25, v: 4, type: 'test'});
       });
 
       it('should apply eventMappers in the score', () => {
@@ -263,7 +263,7 @@ describe('score', () => {
         const session = score.parse(s, config);
 
         session.tracks.a.clips[0].events.length.should.equal(1);
-        session.tracks.a.clips[0].events[0].should.containDeep({s: 0.5, l: 0.25, n: {v: 4, type: 'test'}})
+        session.tracks.a.clips[0].events[0].should.containDeep({startTime: 0.5, length: 0.25, v: 4, type: 'test'});
       });
 
       it('should handle scores with arrays', () => {
@@ -275,10 +275,10 @@ describe('score', () => {
         session.tracks.a.clips[0].events.length.should.equal(1);
         session.tracks.a.clips[1].events.length.should.equal(1);
 
-        session.tracks.a.clips[0].events[0].should.containDeep({s: 0.5, l: 0.25, n: {v: 4, type: 'test'}});
-        session.tracks.a.clips[1].events[0].should.containDeep({s: 0.5, l: 0.25, n: {v: 8, type: 'test'}});
-      })
-    });
+        session.tracks.a.clips[0].events[0].should.containDeep({ startTime: 0.5, length: 0.25, v: 4, type: 'test' });
+        session.tracks.a.clips[1].events[0].should.containDeep({ startTime: 0.5, length: 0.25, v: 8, type: 'test' });
+      });
+    }); // describe "with eventMappers"
 
     describe('score.parse with automation points', () => {
       const p1 = { name: 'cutoff'  };
@@ -379,8 +379,6 @@ describe('score', () => {
 
     const session1 = score.parse({f: '111', r, d: 'pmf'}, {dLibrary, nLibrary});
     const session2 = score.parse({f: '111', r, d: 'PMF'}, {dLibrary, nLibrary});
-    score.applyEventMappers(session1);
-    score.applyEventMappers(session2);
 
     const expectedResult = [
       audiotrack.insertWav('s0.0', 0,    'f1.wav'),
