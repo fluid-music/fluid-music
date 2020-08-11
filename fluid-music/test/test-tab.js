@@ -26,6 +26,7 @@ describe('tab.parseRhythm', () => {
     rObj.should.deepEqual({
       deltas: [.25, .25, .25, .25],
       totals: [.25, .50, .75, 1.0],
+      r: 'h h ',
     });
   });
 });

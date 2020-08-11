@@ -3,9 +3,8 @@ const fluid  = require('../fluid-music')
 const drums  = require('./drums');
 const chords = require('./chords');
 
-// Some experimental automation points. These are really just here to verify
-// that automation is working correctly.
-const a = {
+// experimental automation point
+const f = {
   type: fluid.noteTypes.pluginAuto,
   plugin: { name: 'Podolski' },
   param: fluid.pluginPodolski.params.vcf0Cutoff,
@@ -31,19 +30,24 @@ nLibrary.s = Object.assign({}, nLibrary.c);
 nLibrary.s.choices = nLibrary.c.choices.map(choice => Object.assign({}, choice))
 nLibrary.s.choices.forEach(f =>  { f.startInSourceSeconds=0.02; f.fadeInSeconds=0.003; });
 
+// Here's what I want to be able to do:
+const template = {
+  r: '1 + 2 + 3 + 4 + ',
+  nLibrary, // default for kick and Snare
+  kick:   { d: '.   . mf      ' },
+  snare:  { d: 'm   f   m   f ' },
+  chrd:   { nLibrary: chords.nLibrary },
+  bass:   { nLibrary: { a: 36, b: 39, f, p } },
+};
+
 const score = {
-  r:     '1 + 2 + 3 + 4 + ',
   kick:  {
   kick:  '.   . dd dD .D  ',
   d:     '.   . mf        '},
   snare: 'r---k-  .   k-  ',
   tamb:  'c s c s c s c s ',
-  bass:{
-    bass:'       b-   abp ', nLibrary: { b: 40, c: 48, a, p },
-  },
-  chrd: {
-  chrd:  'a-  .  ab---    ', nLibrary: chords.nLibrary,
-  },
+  bass:  '       ab-      ',
+  chrd:  'a-  .  ab---    ',
 };
 
 const dLibrary = {
@@ -51,7 +55,7 @@ const dLibrary = {
   m: { dbfs: -2.6, intensity: 3/4 },
 };
 
-const session = fluid.score.parse(score, {nLibrary, dLibrary, eventMappers: drums.eventMappers});
+const session = fluid.score.parse(score, {nLibrary, dLibrary, eventMappers: drums.eventMappers}, undefined, template);
 const content = fluid.score.tracksToFluidMessage(session.tracks)
 
 const client = new fluid.Client();

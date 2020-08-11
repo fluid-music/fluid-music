@@ -562,7 +562,7 @@ void loadTracktionPreset(te::AudioTrack& audioTrack, ValueTree v) {
             if (currentConfig.hasProperty(te::IDs::manufacturer)) preset.setProperty(te::IDs::manufacturer, currentConfig[te::IDs::manufacturer], nullptr);
             if (currentConfig.hasProperty(te::IDs::programNum)) preset.setProperty(te::IDs::programNum, currentConfig[te::IDs::programNum], nullptr);
 
-            // Now copy over everything else from the preset. This should inlude the
+            // Now copy over everything else from the preset. This should include the
             // all-important 'state' property of external plugins. External plugins also
             // have some mundane properties like windowLocked="1", enabled="1"
             plugin->restorePluginStateFromValueTree(preset);
@@ -730,7 +730,7 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
     if (isExternal) {
         for (te::Plugin* checkPlugin : track.pluginList) {
             if (auto x = dynamic_cast<te::ExternalPlugin*>(checkPlugin)) {
-                if ((type.isEmpty() || x->getPluginType() == foundPluginDesc.pluginFormatName)
+                if ((type.isEmpty() || x->desc.pluginFormatName == foundPluginDesc.pluginFormatName)
                 && foundPluginDesc.name == x->getName()) {
                     numToInsert--;
                     if (numToInsert == 0) return x; // we already have enough, just return this one
