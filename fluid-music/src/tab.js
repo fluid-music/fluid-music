@@ -1,10 +1,19 @@
 const R = require('ramda');
 
 /**
+ * Rhythm is the parsed representation of a rhythm string. A Rhythm object and
+ * its properties are "frozen", and cannot be modified.
+ * @typedef Rhythm
+ * @property {number[]} totals
+ * @property {number[]} deltas
+ * @property {string} r The original rhythm sting that created this
+ */
+
+/**
  * Convert rhythm string to a cumulative array of durations.
  *
  * @param {string} rhythm - String representing of a rhythm
- * @returns {object} - a javascript object representing timing. The object will
+ * @returns {Rhythm} - a javascript object representing timing. The object will
  *          have two properties, both of which are arrays:
  *          - .totals is a measure of elapsed times
  *          - .deltas is the duration of each character
@@ -28,7 +37,13 @@ const parseRhythm = function(rhythm) {
     });
   });
 
-  return {totals, deltas};
+  const result = Object.freeze({
+    totals: Object.freeze(totals),
+    deltas: Object.freeze(deltas),
+    r: rhythm,
+  });
+
+  return result;
 };
 
 /**

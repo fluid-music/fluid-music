@@ -18,9 +18,9 @@ const oscModes = {
 module.exports = {
   sine() {
     return [
-      fluid.plugin.loadTrkpreset(initPresetFile),
       fluid.pluginPodolski.select(),
-
+      fluid.plugin.loadTrkpreset(initPresetFile),
+      
       // Set the wave shape to a triangle
       fluid.pluginPodolski.setOsc1WaveWarp(1.0),
 

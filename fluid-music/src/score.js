@@ -37,8 +37,8 @@ function parse(scoreObject, config, session, tracks={}) {
   else config = Object.assign({}, config); // Shallow copy should be ok
 
   if (scoreObject.hasOwnProperty('eventMappers')) config.eventMappers = scoreObject.eventMappers
-  if (scoreObject.hasOwnProperty('nLibrary'))     config.nLibrary = scoreObject.nLibrary;
-  if (scoreObject.hasOwnProperty('dLibrary'))     config.dLibrary = scoreObject.dLibrary;
+  if (scoreObject.hasOwnProperty('nLibrary'))     config.nLibrary = Object.assign(config.nLibrary || {}, scoreObject.nLibrary);
+  if (scoreObject.hasOwnProperty('dLibrary'))     config.dLibrary = Object.assign(config.dLibrary || {}, scoreObject.dLibrary);
   if (scoreObject.hasOwnProperty('r'))            config.r = scoreObject.r;
   if (scoreObject.hasOwnProperty('d'))            config.d = scoreObject.d;
   // Note that we cannot specify a .startTime in a score like we can for rhythms
@@ -81,24 +81,41 @@ function parse(scoreObject, config, session, tracks={}) {
     }
   } else if (typeof scoreObject === 'string') {
     // We have a string that can be parsed with parseTab
-    if (config.r === undefined)
-      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a rhythm`);
-    if (config.nLibrary === undefined)
-      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find an nLibrary`);
 
-    const resultClip = parseTab(config.r, scoreObject, config.nLibrary, config.d, config.dLibrary);
+    // Get the track name and create the track
+    const trackKey = config.trackKey;
+    if (typeof trackKey !== 'string')
+      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a track name string`);
+
+    if (!tracks.hasOwnProperty(trackKey)) tracks[trackKey] = {}; // Create Track instance
+    const track = tracks[trackKey];
+    if (track.name && track.name !== trackKey) throw new Error(`score.parse was passed a track with a .name string (${track.name}), but that string's name did not match the TrackObject key (${trackKey})`);
+    track.name = trackKey; // Is this a good idea?
+    if (!track.clips) track.clips = [];
+    if (!track.plugins) track.plugins = [];
+    if (!track.automation) track.automation = {}; // Create Automation instance
+
+    // Get the dynamic and rhythm strings
+    const d = config.d || track.d || tracks.d; // may be undefined
+    const r = config.r || track.r || tracks.r; // must be defined
+    if (r === undefined)
+      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a rhythm`);
+
+    // Make the nLibrary and dLibrary
+    const nLibrary = {};
+    if (tracks.nLibrary) Object.assign(nLibrary, tracks.nLibrary);
+    if (track.nLibrary) Object.assign(nLibrary, track.nLibrary);
+    if (config.nLibrary) Object.assign(nLibrary, config.nLibrary);
+    const dLibrary = {};
+    if (tracks.dLibrary) Object.assign(dLibrary, tracks.dLibrary);
+    if (track.dLibrary) Object.assign(dLibrary, track.dLibrary);
+    if (config.dLibrary) Object.assign(dLibrary, config.dLibrary);
+
+    // create the clip and put it where it belongs
+    const resultClip = parseTab(r, scoreObject, nLibrary, d, dLibrary);
     resultClip.startTime = config.startTime;
     if (config.eventMappers) resultClip.eventMappers = config.eventMappers;
-
-    const trackKey = config.trackKey;
-    if (!tracks[trackKey]) tracks[trackKey] = { // Create Track object
-      clips: [],
-      name: trackKey,
-      plugins: [],
-      automation: {}, // Create Automation object
-    };
     tracks[trackKey].clips.push(resultClip);
-
     returnValue = resultClip;
   } else {
     // Assume we have a JavaScript Object
