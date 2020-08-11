@@ -59,6 +59,7 @@ const m2f = (midiNote) => 440 * Math.pow(2, (midiNote-69)/12);
  */
 const f2m = (hz) => 69 + 12 * Math.log2(hz/440);
 
+const numberToMidiNote = (n) => ({type: 'midiNote', n});
 
 function midiVelocityToDbfs(v, min = -60, max = 6) {
   const range = max - min;
@@ -71,4 +72,5 @@ module.exports = {
   midiVelocityToDbfs,
   valueToWholeNotes,
   valueToMidiNoteNumber,
+  numberToMidiNote,
 };

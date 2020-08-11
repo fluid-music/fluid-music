@@ -103,11 +103,9 @@ const parseTab = function(rhythm, nPattern, nLibrary, dPattern, dLibrary) {
       const start = (p === 0) ? 0 : rhythmObject.totals[p-1];
       const end = rhythmObject.totals[p+count-1];
 
-      let event = {
-        s: start,
-        l: end - start,
-        n: note,
-      };
+      let event = Object.assign({}, note);
+      event.startTime = start;
+      event.length = end - start;
 
       if (dynamicArray) {
         let d = dynamicArray[R.min(p, dynamicArray.length - 1)];
