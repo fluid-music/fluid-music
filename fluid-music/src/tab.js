@@ -401,6 +401,29 @@ function parse(object, rhythm, noteLibrary, startTime, dPattern, dLibrary) {
 }
 
 /**
+ * createDynamicGetter is part of an experiment with dynamics that work even
+ * when applied to clips that were derived from a different rhythm string. For
+ * this to work, we need to be able to get the dynamic at an arbitrary point in
+ * time (and not just at a discrete point in the rhythm string).
+ *
+ * @param {string} rhythm rhythm string
+ * @param {string} dPattern dynamic pattern string
+ * @param {Object} dLibrary
+ * @returns {function}
+ */
+const createDynamicGetter = (rhythm, dPattern, dLibrary) => {
+  const clip = parseTab(rhythm, dPattern, dLibrary);
+  return (time) => {
+    let event = clip.events[0] || null;
+    for (const e of clip.events) {
+      if (e.s > time) break;
+      event = e;
+    }
+    return event;
+  };
+};
+
+/**
  * These keys cannot be used for patterns in tabs and scores.
  */
 const reservedKeys = {
@@ -426,6 +449,7 @@ const reservedKeys = {
 };
 
 module.exports = {
+  createDynamicGetter,
   parse,
   parseTab,
   parseRhythm,

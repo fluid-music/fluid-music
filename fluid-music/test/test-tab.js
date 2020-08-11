@@ -269,3 +269,20 @@ describe('tab.parseDynamicPattern', () => {
     tab.parseDynamicPattern('abu.a', dLibrary).should.deepEqual([a,b,undefined,undefined,a]);
   });
 });
+
+describe('tab.createDynamicGetter', () => {
+  const a        = {a: 'a'};
+  const b        = {b: 'b'};
+  const dPattern = 'a b ';
+  const dLibrary = {a, b, n: null, u: undefined};
+
+  it('should work', () => {
+    const result = tab.createDynamicGetter('1234', dPattern, dLibrary);
+    const expectedA = { n: a, s: 0, l: 0.25};
+    const expectedB = { n: b, s: 0.5, l: 0.25};
+    result(0).should.deepEqual(expectedA);
+    result(0.25).should.deepEqual(expectedA);
+    result(0.45).should.deepEqual(expectedA);
+    result(0.50).should.deepEqual(expectedB);
+  });
+});
