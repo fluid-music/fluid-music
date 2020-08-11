@@ -3,26 +3,30 @@ const fluid  = require('../fluid-music')
 const drums  = require('./drums');
 const chords = require('./chords');
 
-// experimental automation point
+// Some experimental automation points. These are really just here to verify
+// that automation is working correctly.
 const a = {
   type: fluid.noteTypes.pluginAuto,
   plugin: { name: 'Podolski' },
   param: fluid.pluginPodolski.params.vcf0Cutoff,
   value: 0.5,
 };
-
 const p = {
   type: fluid.noteTypes.trackAuto,
   param: fluid.trackAutomation.params.pan,
   value: -0.5,
 };
 
+// Create a derivative drum library, modified for this score.
 const nLibrary = Object.assign({}, drums.nLibrary);
 nLibrary.c = {
   type: 'random',
+  // The high-intensity (aka velocity) sample is dramatically louder than the
+  // earlier ones. Its too harsh, so I'm just going to remove it.
   choices: R.dropLast(1, nLibrary.c.choices),
 };
 
+// Tambourine sound with properties adjusted for a lower intensity sound
 nLibrary.s = Object.assign({}, nLibrary.c);
 nLibrary.s.choices = nLibrary.c.choices.map(choice => Object.assign({}, choice))
 nLibrary.s.choices.forEach(f =>  { f.startInSourceSeconds=0.02; f.fadeInSeconds=0.003; });
