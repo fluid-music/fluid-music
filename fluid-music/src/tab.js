@@ -304,98 +304,8 @@ function arrayToSymbolsAndCounts(chars) {
   return results;
 }
 
-/**
- * Creates noteObject arrays from deeply nested objects. Takes a deeply nested
- * Object or Array, and converts it to an array of notes. The following example
- * will generate four eighth notes separated by eighth note rests.
- * ```json
- *  {
- *    "noteLibrary": [1, 2, 3, 4],
- *    "r": "1+2+",
- *    "p": [
- *      "1.3.",
- *      "3.4."
- *    ]
- *  }
- * ```
- * The `.p` field in the object above is a pattern. Each character in the string
- * indexes the note library (for details, see the parseTab documentation).
- *
- * Several important things to understand:
- * - The example above contains a sub pattern specified in the `.p' field. The
- *   key (`.p`) is arbitrary. It could also `.b`, `.c`, or `.pattern`. However,
- *   it must not be one of the reserved keys such as `.nLibrary` or `.r`.
- * - Pattern arrays imply a sequence of events
- * - Pattern objects imply layering of events
- * - Sub-patterns inherit their parent's `.r`hythm and `.nLibrary` unless it
- *   is an object sub-pattern, in which case it may optionally specify its own.
- *
- * The following example contains has an pattern object, with two layers. One
- * for hi-hat, and one for kick and snare. Note that unlike the pattern array
- * example above, the two layers in the pattern object occur simultaneously.
- * ```json
- * {
- *  "noteLibrary": { "k": 36, "h": 42, "s": 38 },
- *  "r":  "1 + 2 + 3 + 4 + ",
- *  "ks": "k . s . . . s k ",
- *  "hh": "h h h h h h h h "
- * }
- * ```
- * For more diverse examples (and more deeply nested objects), see the tests.
- *
- * @param {Object|Array|String} object - The only required argument.
- * @param {String} [rhythm] - rhythm string, if not specified, `object`
- *        must have a `.r` property.
- * @param {Object|Array} [noteLibrary] - An object or array noteLibrary (see
- *        parseTab for details). If not specified, `object` must have a
- *        `.nLibrary` property.
- * @param {Number} [startTime] - offset all the notes by this much
- * @returns {Clip} A Clip object containing all the notes from the input
- */
 function parse(object, rhythm, noteLibrary, startTime, dPattern, dLibrary) {
-  if (typeof startTime !== 'number') startTime = 0;
-
-  const clip = {
-    events: [],
-    duration: 0,
-    startTime
-  };
-
-  if (object.hasOwnProperty('nLibrary')) noteLibrary = object.nLibrary;
-  if (object.hasOwnProperty('dLibrary')) dLibrary = object.dLibrary;
-  if (object.hasOwnProperty('r')) rhythm = object.r;
-  if (object.hasOwnProperty('d')) dPattern = object.d;
-  if (object.hasOwnProperty('startTime'))
-    throw new Error('parse: startTime is not a legal pattern key');
-
-  if (rhythm === undefined || noteLibrary === undefined)
-    throw new Error('tab.parse could not find rhythm AND a noteLibrary');
-
-  if (Array.isArray(object)) {
-    for (let o of object) {
-      let newClip = parse(o, rhythm, noteLibrary, startTime, dPattern, dLibrary);
-      clip.events.push(...newClip.events);
-      clip.duration += newClip.duration;
-      startTime += newClip.duration; // NOTE: must be '+=', not '='
-    }
-  } else if (typeof object === 'string') {
-    // We have a string that can be parsed with parseTab
-    const newClip = parseTab(rhythm, object, noteLibrary, dPattern, dLibrary);
-    newClip.events.forEach((n) => n.s += startTime);
-    newClip.startTime = startTime;
-    return newClip;
-  } else {
-    let duration = 0;
-    for (let [key, val] of Object.entries(object)) {
-      if (reservedKeys.hasOwnProperty(key)) continue;
-      let newClip = parse(val, rhythm, noteLibrary, startTime, dPattern, dLibrary);
-      clip.events.push(...newClip.events);
-      if (newClip.duration > duration) duration = newClip.duration;
-    }
-    clip.duration = duration;
-  }
-
-  return clip;
+  throw new Error('tab.parse is deprecated in favor of score.parse');
 }
 
 /**
@@ -424,7 +334,6 @@ const reservedKeys = {
 };
 
 module.exports = {
-  parse,
   parseTab,
   parseRhythm,
   parseDynamicPattern,
