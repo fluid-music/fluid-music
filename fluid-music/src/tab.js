@@ -77,7 +77,7 @@ function parseDynamicPattern(dPattern, dLibrary) {
 /**
  * Convert a rhythm, pattern, and note library to a `Clip`.
  *
- * @param {string} rhythm
+ * @param {string|Rhythm} rhythm
  * @param {string} nPattern
  * @param {NoteLibrary} nLibrary an indexable object
  *        containing notes or arrays of notes. Can be an object or an array.
@@ -94,12 +94,13 @@ function parseDynamicPattern(dPattern, dLibrary) {
  * @returns {Clip} (missing `startTime`. `startTime` is added by `score.parse`)
  */
 const parseTab = function(rhythm, nPattern, nLibrary, dPattern, dLibrary) {
-  if (nPattern.length > rhythm.length)
-    throw new Error(`parseTab: rhythm ('${rhythm}') not long enough for pattern ('${nPattern}')`);
 
-  const rhythmObject = parseRhythm(rhythm);
+  const rhythmObject = typeof rhythm === 'string' ? parseRhythm(rhythm) : rhythm;
   const symbolsAndCounts = patternToSymbolsAndCounts(nPattern);
   const dynamicArray = (dPattern) ? parseDynamicPattern(dPattern, dLibrary) : null;
+
+  if (nPattern.length > rhythmObject.r.length)
+    throw new Error(`parseTab: rhythm ('${rhythm}') not long enough for pattern ('${nPattern}')`);
 
   let p = 0; // position (in the rhythmObject)
   const clip = {
@@ -324,7 +325,7 @@ const createDynamicGetter = (rhythm, dPattern, dLibrary) => {
   return (time) => {
     let event = clip.events[0] || null;
     for (const e of clip.events) {
-      if (e.s > time) break;
+      if (e.startTime > time) break;
       event = e;
     }
     return event;

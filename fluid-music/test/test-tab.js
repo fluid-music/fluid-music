@@ -256,8 +256,8 @@ describe('tab.createDynamicGetter', () => {
 
   it('should work', () => {
     const result = tab.createDynamicGetter('1234', dPattern, dLibrary);
-    const expectedA = { n: a, s: 0, l: 0.25};
-    const expectedB = { n: b, s: 0.5, l: 0.25};
+    const expectedA = { a: 'a', startTime: 0, length: 0.25};
+    const expectedB = { b: 'b', startTime: 0.5, length: 0.25};
     result(0).should.deepEqual(expectedA);
     result(0.25).should.deepEqual(expectedA);
     result(0.45).should.deepEqual(expectedA);
