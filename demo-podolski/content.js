@@ -1,6 +1,6 @@
 const R      = require('ramda');
 const fluid  = require('../fluid-music')
-const drums  = require('./drums');
+const drums  = require('@fluid-music/kit');
 const chords = require('./chords');
 
 // experimental automation point
