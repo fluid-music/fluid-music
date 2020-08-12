@@ -18,25 +18,25 @@
  *           events: [ { startTime 0, length: 0.25, n: 0 } ],
  *           duration: 1,
  *           startTime: 0
- *           midiEvents: [{ startTime: 0, length: 0.25, n: {n: 0, type: 'midiNote'}}],
+ *           midiEvents: [{ startTime: 0, length: 0.25, n: 0, type: 'midiNote'}],
  *         },
  *         {
  *           events: [ { startTime 0, length: 0.25, n: 1 } ],
  *           duration: 1,
  *           startTime: 1
- *           midiEvents: [{ startTime: 0, length: 0.25, n: {n: 1, type: 'midiNote'}}],
+ *           midiEvents: [{ startTime: 0, length: 0.25, n: 1, type: 'midiNote'}],
  *         },
  *         {
  *           events: [ { startTime 0, length: 0.25, n: 2 } ],
  *           duration: 1,
  *           startTime: 2
- *           midiEvents: [{ startTime: 0, length: 0.25, n: {n: 2, type: 'midiNote'}}],
+ *           midiEvents: [{ startTime: 0, length: 0.25, n: 2, type: 'midiNote'}],
  *         },
  *         {
  *           events: [ { startTime 0, length: 0.25, n: 3 } ],
  *           duration: 1,
  *           startTime: 3
- *           midiEvents: [{ startTime: 0, length: 0.25, n: {n: 3, type: 'midiNote'}}],
+ *           midiEvents: [{ startTime: 0, length: 0.25, n: 3, type: 'midiNote'}],
  *         },
  *       ],
  *       automation: {},
