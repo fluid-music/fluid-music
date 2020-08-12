@@ -1,6 +1,7 @@
 const should = require('should');
 const mocha = require('mocha');
 const tab = require('../src/tab');
+const converters = require('../src/converters');
 
 const q = 1/4;  // quarter note
 const e = 1/8;  // eighth note
@@ -136,17 +137,17 @@ describe('tab.parseTab', () => {
     [64, 69, 71, 73],
     [65, 67, 69, 72],
     [67, 69, 71, 74],
-  ];
+  ].map(a => a.map(converters.numberToMidiNote));
   const rhythm  = '1e+a2e+a3e+a4e+a';
   const pattern = '0-......1-....2.';
-  const notes = [60, 64, 67];
+  const notes = [60, 64, 67].map(converters.numberToMidiNote);
 
   it('should create the correct note objects', () => {
     const result = tab.parseTab(rhythm, pattern, notes);
     result.events.should.deepEqual([
-      { n: 60, s: 0.0,   l: 0.125 },
-      { n: 64, s: 0.5,   l: 0.125 },
-      { n: 67, s: 0.875, l: 0.0625 },
+      { type: 'midiNote', n: 60, startTime: 0.0,   length: 0.125 },
+      { type: 'midiNote', n: 64, startTime: 0.5,   length: 0.125 },
+      { type: 'midiNote', n: 67, startTime: 0.875, length: 0.0625 },
     ]);
   });
 
@@ -169,7 +170,7 @@ describe('tab.parseTab', () => {
     const pattern  = '0.1.2...';
     const dPattern = '0.1.2...';
     const dLibrary = [60, 70, 80];
-    const nLibrary = [0, 1, 2];
+    const nLibrary = [0, 1, 2].map(converters.numberToMidiNote);
     const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, dLibrary);
 
 
@@ -191,9 +192,9 @@ describe('tab.parseTab', () => {
       const dPattern = '1.2.....';
       const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, [0,1,2]);
       clip.events.should.deepEqual([
-        {s: 0,    l: 0.125, n: 0, d: 1 },
-        {s: 0.25, l: 0.125, n: 1, d: 2 },
-        {s: 0.5,  l: 0.125, n: 2, d: 2 },
+        { type: 'midiNote', startTime: 0,    length: 0.125, n: 0, d: 1 },
+        { type: 'midiNote', startTime: 0.25, length: 0.125, n: 1, d: 2 },
+        { type: 'midiNote', startTime: 0.5,  length: 0.125, n: 2, d: 2 },
       ])
     });
 
@@ -202,9 +203,9 @@ describe('tab.parseTab', () => {
       const dPattern = '1.2';
       const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, [0,1,2]);
       clip.events.should.deepEqual([
-        {s: 0,    l: 0.125, n: 0, d: 1 },
-        {s: 0.25, l: 0.125, n: 1, d: 2 },
-        {s: 0.5,  l: 0.125, n: 2, d: 2 },
+        {type: 'midiNote', startTime: 0,    length: 0.125, n: 0, d: 1 },
+        {type: 'midiNote', startTime: 0.25, length: 0.125, n: 1, d: 2 },
+        {type: 'midiNote', startTime: 0.5,  length: 0.125, n: 2, d: 2 },
       ])
     });
 
@@ -213,36 +214,13 @@ describe('tab.parseTab', () => {
       const dPattern = '0.1.2';
       const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, [0, null, undefined]);
       clip.events.should.deepEqual([
-        {s: 0,    l: 0.125, n: 0, d: 0 },
-        {s: 0.25, l: 0.125, n: 1 },
-        {s: 0.5,  l: 0.125, n: 2 },
+        {type: 'midiNote', startTime: 0,    length: 0.125, n: 0, d: 0 },
+        {type: 'midiNote', startTime: 0.25, length: 0.125, n: 1 },
+        {type: 'midiNote', startTime: 0.5,  length: 0.125, n: 2 },
       ])
     });
 
   }); // describe velocities (dPattern/dLibrary)
-
-  describe('note objects', () => {
-    const rhythm      = '1+2+3+4+';
-    const pattern     = '0.1.2...';
-    const noteObject0 = { arbitrary: 0 };
-    const noteObject1 = { arbitrary: 1 };
-    const noteObject2 = { arbitrary: 2 };
-    const nLibrary = {
-      0: noteObject0,
-      1: noteObject1,
-      2: noteObject2,
-    };
-
-    const clip = tab.parseTab(rhythm, pattern, nLibrary);
-    it('should set the .e property for objects in the nLibrary', () => {
-      clip.events.should.deepEqual([
-        { n: noteObject0, s: 0.00, l: 0.125 },
-        { n: noteObject1, s: 0.25, l: 0.125 },
-        { n: noteObject2, s: 0.50, l: 0.125 },
-      ]);
-    });
-
-  }); // describe note objects
 
 }); // describe tab.parseTab
 

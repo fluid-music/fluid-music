@@ -1,6 +1,6 @@
 const R      = require('ramda');
 const fluid  = require('../fluid-music')
-const drums  = require('./drums');
+const drums  = require('@fluid-music/kit');
 const chords = require('./chords');
 
 // experimental automation point
@@ -37,13 +37,12 @@ const template = {
   kick:   { d: '.   . mf      ' },
   snare:  { d: 'm   f   m   f ' },
   chrd:   { nLibrary: chords.nLibrary },
-  bass:   { nLibrary: { a: 36, b: 39, f, p } },
+  bass:   { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p } },
+  tamb:   {},
 };
 
 const score = {
-  kick:  {
   kick:  '.   . dd dD .D  ',
-  d:     '.   . mf        '},
   snare: 'r---k-  .   k-  ',
   tamb:  'c s c s c s c s ',
   bass:  '       ab-      ',
@@ -64,3 +63,5 @@ client.send([
   fluid.transport.loop(0, session.duration),
   content,
 ]);
+
+//console.dir(session.tracks, {depth: null})

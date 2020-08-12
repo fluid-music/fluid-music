@@ -58,7 +58,7 @@ const eventMappers = [
    * @param {ClipEventContext} context
    */
   (event, context) => {
-    if (!event.n || event.n.type !== 'ripple') return event;
+    if (event.type !== 'ripple') return event;
     // 1/24 and 0.020
     // 1/16 and 0.040
     // How long to wait between re-triggers measured in whole notes
@@ -66,16 +66,17 @@ const eventMappers = [
     // StartOffsetIncrement Number of seconds adjust sample start time
     const soi = 0.040;
 
-    const numSteps = Math.floor(event.l / stepSize);
+    const numSteps = Math.floor(event.length / stepSize);
     const result =  new Array(numSteps).fill(null).map((_, i) => {
-      const newEvent = Object.assign({}, event);
-      newEvent.n = {
+      newEvent = {
+        startTime: event.startTime + i*stepSize,
+        length: event.length,
         type: 'file',
-        path: event.n.path,
+        path: event.path,
         fadeOutSeconds: 0.1,
         startInSourceSeconds: (numSteps - i - 1) * soi,
       };
-      newEvent.s = event.s + i*stepSize;
+      if (event.d) newEvent.d = event.d;
       return newEvent;
     });
     return result;

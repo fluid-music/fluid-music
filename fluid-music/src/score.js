@@ -68,7 +68,22 @@ function parse(scoreObject, config, session, tracks={}) {
     startTime: config.startTime,
     duration: 0,
   };
-  if (isOutermost) returnValue.tracks = tracks;
+  if (isOutermost) {
+    returnValue.tracks = tracks;
+    if (!tracks.plugins) tracks.plugins = [];
+  }
+
+  // create the track if it does not exist
+  if (config.trackKey) {
+    if (!tracks.hasOwnProperty(config.trackKey)) tracks[config.trackKey] = {}; // Create Track instance
+    const track = tracks[config.trackKey];
+    if (track.name && track.name !== config.trackKey)
+      throw new Error(`score.parse was passed a track with a .name string (${track.name}), but that string's name did not match the TrackObject key (${config.trackKey})`);
+    track.name = config.trackKey; // Is this a good idea?
+    if (!track.clips) track.clips = [];
+    if (!track.plugins) track.plugins = [];
+    if (!track.automation) track.automation = {}; // Create Automation instance
+  }
 
   if (Array.isArray(scoreObject)) {
     let arrayStartTime = config.startTime;
@@ -81,19 +96,9 @@ function parse(scoreObject, config, session, tracks={}) {
     }
   } else if (typeof scoreObject === 'string') {
     // We have a string that can be parsed with parseTab
-
-    // Get the track name and create the track
-    const trackKey = config.trackKey;
-    if (typeof trackKey !== 'string')
-      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a track name string`);
-
-    if (!tracks.hasOwnProperty(trackKey)) tracks[trackKey] = {}; // Create Track instance
-    const track = tracks[trackKey];
-    if (track.name && track.name !== trackKey) throw new Error(`score.parse was passed a track with a .name string (${track.name}), but that string's name did not match the TrackObject key (${trackKey})`);
-    track.name = trackKey; // Is this a good idea?
-    if (!track.clips) track.clips = [];
-    if (!track.plugins) track.plugins = [];
-    if (!track.automation) track.automation = {}; // Create Automation instance
+    if (typeof config.trackKey !== 'string')
+      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a track name`);
+    const track = tracks[config.trackKey];
 
     // Get the dynamic and rhythm strings
     const d = config.d || track.d || tracks.d; // may be undefined
@@ -115,7 +120,7 @@ function parse(scoreObject, config, session, tracks={}) {
     const resultClip = parseTab(r, scoreObject, nLibrary, d, dLibrary);
     resultClip.startTime = config.startTime;
     if (config.eventMappers) resultClip.eventMappers = config.eventMappers;
-    tracks[trackKey].clips.push(resultClip);
+    tracks[config.trackKey].clips.push(resultClip);
     returnValue = resultClip;
   } else {
     // Assume we have a JavaScript Object
@@ -146,7 +151,7 @@ function applyEventMappers(session, ubiquitousMappers=mappers.default) {
     }
 
     if (!track.clips || !track.clips.length) {
-      console.log(`skipping ${trackName}, because it has no .clips`);
+      console.log(`applyEventMappers: skipping ${trackName}, because it has no .clips`);
       continue;
     }
 
@@ -225,9 +230,9 @@ function tracksToFluidMessage(tracksObject) {
       continue;
     }
 
-    if (!track.clips.length) {
-      if (!tracks.plugins.length) {
-        console.log(`skipping ${trackName}, because it has no .clips and no .plugins`);
+    if (!track.clips || !track.clips.length) {
+      if (!tracksObject.plugins.length) {
+        console.log(`tracksToFluidMessage: skipping ${trackName}, because it has no .clips and no .plugins`);
         continue;
       }
     }
@@ -352,8 +357,14 @@ function midiEventsToFluidMessage(midiEvents, context) {
   msg.push(clipMsg);
 
   for (const event of midiEvents) {
-    if (event.n.type === 'midiNote')
-      msg.push(fluid.midiclip.note(event.n.n, event.s, event.l, event.v));
+    if (event.type === 'midiNote') {
+      let velocity = (event.d && typeof event.d.v === 'number')
+        ? event.d.v
+        : (typeof event.v === 'number')
+          ? event.v
+          : undefined;
+      msg.push(fluid.midiclip.note(event.n, event.startTime, event.length, velocity));
+    }
   }
 
   return msg;
@@ -368,35 +379,34 @@ function fileEventsToFluidMessage(fileEvents, context) {
     throw new Error('Clip is missing startTime');
 
   // exampleClipEvent = {
-  //   s: 0.50, // start
-  //   l: 0.25, // length
-  //   n: { type: 'file', path: 'media/kick.wav' },
+  //   type: 'file',
+  //   path: 'media/kick.wav',
+  //   startTime: 0.50,
+  //   length: 0.25,
   //   d: { v: 70, dbfs: -10 }, // If .v is present here...
-  //   v: 70,                   // ...it will also be here...
-  //                            // (but vice versa is not guaranteed)
   // };
 
   return fileEvents.map((event, eventIndex) => {
-    const startTime = context.clip.startTime + event.s;
+    const startTime = context.clip.startTime + event.startTime;
 
-    if (typeof event.n.path !== 'string') {
-      console.error(event.n);
-      throw new Error('tracksToFluidMessage: A file object found in the note library does not have a .path string');
+    if (typeof event.path !== 'string') {
+      console.error(event);
+      throw new Error('tracksToFluidMessage: A file event found in the note library does not have a .path string');
     };
 
     const clipName = `s${context.clipIndex}.${eventIndex}`;
-    const msg = [fluid.audiotrack.insertWav(clipName, startTime, event.n.path)];
+    const msg = [fluid.audiotrack.insertWav(clipName, startTime, event.path)];
 
-    if (event.n.startInSourceSeconds)
-      msg.push(fluid.clip.setSourceOffsetSeconds(event.n.startInSourceSeconds));
+    if (event.startInSourceSeconds)
+      msg.push(fluid.clip.setSourceOffsetSeconds(event.startInSourceSeconds));
 
     // adjust the clip length, unless the event is a .oneShot
-    if (!event.n.oneShot)
-      msg.push(fluid.clip.length(event.l));
+    if (!event.oneShot)
+      msg.push(fluid.clip.length(event.length));
 
     // apply fade in/out times (if specified)
-    if (typeof event.n.fadeOutSeconds === 'number' || typeof event.n.fadeInSeconds === 'number')
-      msg.push(fluid.audioclip.fadeInOutSeconds(event.n.fadeInSeconds, event.n.fadeOutSeconds));
+    if (typeof event.fadeOutSeconds === 'number' || typeof event.fadeInSeconds === 'number')
+      msg.push(fluid.audioclip.fadeInOutSeconds(event.fadeInSeconds, event.fadeOutSeconds));
 
     // If there is a dynamics object, look for a dbfs property and apply gain.
     if (event.d && typeof(event.d.dbfs) === 'number')
