@@ -85,9 +85,9 @@
  *     clips: [
  *       {
  *         midiEvents: [
- *           { startTime 0,     length: 0.0833, n: { n: 33, type: 'midiNote' }, d: { v: 100 } },
- *           { startTime 0.25,  length: 0.0833, n: { n: 35, type: 'midiNote' }, d: { v: 90 } },
- *           { startTime 0.33,  length: 0.0833, n: { n: 38, type: 'midiNote' }, d: { v: 60 } },
+ *           { startTime 0,     length: 0.0833, n: 33, type: 'midiNote', d: { v: 100 } },
+ *           { startTime 0.25,  length: 0.0833, n: 35, type: 'midiNote', d: { v: 90 } },
+ *           { startTime 0.33,  length: 0.0833, n: 38, type: 'midiNote', d: { v: 60 } },
  *         ],
  *         fileEvents: [
  *           { startTime 0.5, length: 0.25, n: { type: 'file', path: 'media/kick.wav' } },
