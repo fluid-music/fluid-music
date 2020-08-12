@@ -93,11 +93,10 @@ function parseDynamicPattern(dPattern, dLibrary) {
  *        noteLibrary = {'0': 60, '1': 62 }
  * @returns {Clip} (missing `startTime`. `startTime` is added by `score.parse`)
  */
-const parseTab = function(rhythm, nPattern, nLibrary, dPattern, dLibrary) {
+const parseTab = function(rhythm, nPattern, nLibrary) {
 
   const rhythmObject = typeof rhythm === 'string' ? parseRhythm(rhythm) : rhythm;
   const symbolsAndCounts = patternToSymbolsAndCounts(nPattern);
-  const dynamicArray = (dPattern) ? parseDynamicPattern(dPattern, dLibrary) : null;
 
   if (nPattern.length > rhythmObject.r.length)
     throw new Error(`parseTab: rhythm ('${rhythm}') not long enough for pattern ('${nPattern}')`);
@@ -123,10 +122,6 @@ const parseTab = function(rhythm, nPattern, nLibrary, dPattern, dLibrary) {
       event.startTime = start;
       event.length = end - start;
 
-      if (dynamicArray) {
-        let d = dynamicArray[R.min(p, dynamicArray.length - 1)];
-        if (d != null) event.d = d;
-      }
       clip.events.push(event);
     }
     p += count;
@@ -315,7 +310,7 @@ function parse(object, rhythm, noteLibrary, startTime, dPattern, dLibrary) {
  * this to work, we need to be able to get the dynamic at an arbitrary point in
  * time (and not just at a discrete point in the rhythm string).
  *
- * @param {string} rhythm rhythm string
+ * @param {string|Rhythm} rhythm
  * @param {string} dPattern dynamic pattern string
  * @param {Object} dLibrary
  * @returns {function}

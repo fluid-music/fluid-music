@@ -3,7 +3,6 @@ const tab     = require('./tab');
 const fluid   = require('./fluid/index');
 const mappers = require('./event-mappers');
 
-const parseTab     = tab.parseTab;
 const reservedKeys = tab.reservedKeys;
 
 /**
@@ -35,12 +34,12 @@ function parse(scoreObject, config, session, tracks={}) {
 
   if (!config) config = {};
   else config = Object.assign({}, config); // Shallow copy should be ok
-
-  if (scoreObject.hasOwnProperty('eventMappers')) config.eventMappers = scoreObject.eventMappers
-  if (scoreObject.hasOwnProperty('nLibrary'))     config.nLibrary = Object.assign(config.nLibrary || {}, scoreObject.nLibrary);
-  if (scoreObject.hasOwnProperty('dLibrary'))     config.dLibrary = Object.assign(config.dLibrary || {}, scoreObject.dLibrary);
+  //                                                                               ensure that we do note modify the n/dLibrary, as it may be reused later
+  if (scoreObject.hasOwnProperty('nLibrary'))     config.nLibrary = Object.assign((config.nLibrary && Object.assign({}, config.nLibrary))|| {}, scoreObject.nLibrary);
+  if (scoreObject.hasOwnProperty('dLibrary'))     config.dLibrary = Object.assign((config.dLibrary && Object.assign({}, config.dLibrary))|| {}, scoreObject.dLibrary);
   if (scoreObject.hasOwnProperty('r'))            config.r = scoreObject.r;
   if (scoreObject.hasOwnProperty('d'))            config.d = scoreObject.d;
+  if (scoreObject.hasOwnProperty('eventMappers')) config.eventMappers = scoreObject.eventMappers
   // Note that we cannot specify a .startTime in a score like we can for rhythms
   if (typeof config.startTime !== 'number') config.startTime = 0;
 
@@ -116,10 +115,17 @@ function parse(scoreObject, config, session, tracks={}) {
     if (track.dLibrary) Object.assign(dLibrary, track.dLibrary);
     if (config.dLibrary) Object.assign(dLibrary, config.dLibrary);
 
-    // create the clip and put it where it belongs
-    const resultClip = parseTab(r, scoreObject, nLibrary, d, dLibrary);
+    // create the clip
+    const rhythmObject = tab.parseRhythm(r);
+    const resultClip = tab.parseTab(rhythmObject, scoreObject, nLibrary, d, dLibrary);
     resultClip.startTime = config.startTime;
     if (config.eventMappers) resultClip.eventMappers = config.eventMappers;
+    // add dynamics
+    if (d) {
+      const getDynamic = tab.createDynamicGetter(rhythmObject, d, dLibrary);
+      for (const event of resultClip.events) event.d = getDynamic(event.startTime);
+    }
+
     tracks[config.trackKey].clips.push(resultClip);
     returnValue = resultClip;
   } else {

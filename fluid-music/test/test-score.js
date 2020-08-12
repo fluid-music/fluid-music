@@ -248,6 +248,75 @@ describe('score', () => {
       });
     }); // score.parse on deeply nested objects
 
+
+    describe('score.parse with dPattern and dLibrary arguments', () => {
+
+      const rhythm   = '1+2+3+4+';
+      const pattern  = '0.1.2...';
+      const dPattern = '0.1.2...';
+      const dLibrary = [0, 10, 20].map(v=>({v:v}));
+      const nLibrary = [0, 1, 2].map(converters.numberToMidiNote);
+      const config   = { r: rhythm, d: dPattern, dLibrary, nLibrary };
+
+      it('should output events with .d values if passed a dPattern and dLibrary', () => {
+        const config   = { r: rhythm, d: dPattern, dLibrary, nLibrary };
+        const session = score.parse({ harp: pattern }, config);
+        const clip = session.tracks.harp.clips[0];
+        clip.midiEvents.length.should.equal(3);
+        clip.midiEvents.forEach((note) => should.exist(note.d));
+      });
+
+      it('should put dynamicsObjects into the .d field of the note object', () => {
+        const config   = { r: rhythm, d: dPattern, dLibrary, nLibrary };
+        const dynamicsObject = { v: 70, dbfs: 1 };
+        const session = score.parse({
+          harp: pattern,
+          dLibrary: [60, dynamicsObject, 80],
+          d: dPattern,
+        }, config);
+
+        session.tracks.harp.clips[0].midiEvents[1].d.should.containDeep(dynamicsObject);
+      });
+
+      it('should apply the most recent dynamic object', () => {
+        const config = { r: rhythm, d: dPattern, dLibrary, nLibrary };
+        const s = {
+          harp: '0.1.2...',
+          d:    '1.2.....',
+        };
+
+        const session = score.parse(s, config);
+        session.tracks.harp.clips[0].midiEvents.should.containDeep([
+          { type: 'midiNote', startTime: 0,    length: 0.125, n: 0, d: {v: 10} },
+          { type: 'midiNote', startTime: 0.25, length: 0.125, n: 1, d: {v: 20} },
+          { type: 'midiNote', startTime: 0.5,  length: 0.125, n: 2, d: {v: 20} },
+        ])
+      });
+
+      // it('should apply the most recent dynamic object even if the dPattern ends early', () => {
+      //   const pattern  = '0.1.2...';
+      //   const dPattern = '1.2';
+      //   const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, [0,1,2]);
+      //   clip.events.should.deepEqual([
+      //     {type: 'midiNote', startTime: 0,    length: 0.125, n: 0, d: 1 },
+      //     {type: 'midiNote', startTime: 0.25, length: 0.125, n: 1, d: 2 },
+      //     {type: 'midiNote', startTime: 0.5,  length: 0.125, n: 2, d: 2 },
+      //   ])
+      // });
+
+      // it('should omit a .d value on events when the dLibrary+dPattern specify null/undefined ', () => {
+      //   const pattern  = '0.1.2...';
+      //   const dPattern = '0.1.2';
+      //   const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, [0, null, undefined]);
+      //   clip.events.should.deepEqual([
+      //     {type: 'midiNote', startTime: 0,    length: 0.125, n: 0, d: 0 },
+      //     {type: 'midiNote', startTime: 0.25, length: 0.125, n: 1 },
+      //     {type: 'midiNote', startTime: 0.5,  length: 0.125, n: 2 },
+      //   ])
+      // });
+
+    }); // describe score.parse with dPattern/dLibrary
+
     describe('score.parse with eventMappers', () => {
       const nLibrary = [
         {type: 'test', v: 0},

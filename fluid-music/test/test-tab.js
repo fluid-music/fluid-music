@@ -164,68 +164,10 @@ describe('tab.parseTab', () => {
     }).throw();
   });
 
-  describe('with dPattern and dLibrary arguments', () => {
-
-    const rhythm   = '1+2+3+4+';
-    const pattern  = '0.1.2...';
-    const dPattern = '0.1.2...';
-    const dLibrary = [60, 70, 80];
-    const nLibrary = [0, 1, 2].map(converters.numberToMidiNote);
-    const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, dLibrary);
-
-
-    it('should output events with .d values if passed a dPattern and dLibrary', ()=>{
-      clip.events.length.should.equal(3);
-      clip.events.forEach((note) => should.exist(note.d));
-    });
-
-    const dynamicsObject = { v: 70, dbfs: 1 };
-    const clipWithDynamics = tab.parseTab(rhythm, pattern, nLibrary, dPattern,
-      [60, dynamicsObject, 80]);
-
-    it('should put dynamicsObjects into the .d field of the note object', () => {
-      clipWithDynamics.events[1].d.should.deepEqual(dynamicsObject);
-    });
-
-    it('should apply the most recent dynamic object', () => {
-      const pattern  = '0.1.2...';
-      const dPattern = '1.2.....';
-      const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, [0,1,2]);
-      clip.events.should.deepEqual([
-        { type: 'midiNote', startTime: 0,    length: 0.125, n: 0, d: 1 },
-        { type: 'midiNote', startTime: 0.25, length: 0.125, n: 1, d: 2 },
-        { type: 'midiNote', startTime: 0.5,  length: 0.125, n: 2, d: 2 },
-      ])
-    });
-
-    it('should apply the most recent dynamic object even if the dPattern ends early', () => {
-      const pattern  = '0.1.2...';
-      const dPattern = '1.2';
-      const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, [0,1,2]);
-      clip.events.should.deepEqual([
-        {type: 'midiNote', startTime: 0,    length: 0.125, n: 0, d: 1 },
-        {type: 'midiNote', startTime: 0.25, length: 0.125, n: 1, d: 2 },
-        {type: 'midiNote', startTime: 0.5,  length: 0.125, n: 2, d: 2 },
-      ])
-    });
-
-    it('should omit a .d value on events when the dLibrary+dPattern specify null/undefined ', () => {
-      const pattern  = '0.1.2...';
-      const dPattern = '0.1.2';
-      const clip = tab.parseTab(rhythm, pattern, nLibrary, dPattern, [0, null, undefined]);
-      clip.events.should.deepEqual([
-        {type: 'midiNote', startTime: 0,    length: 0.125, n: 0, d: 0 },
-        {type: 'midiNote', startTime: 0.25, length: 0.125, n: 1 },
-        {type: 'midiNote', startTime: 0.5,  length: 0.125, n: 2 },
-      ])
-    });
-
-  }); // describe velocities (dPattern/dLibrary)
-
 }); // describe tab.parseTab
 
 
-describe('tab.parseDynamicPattern', () => {
+describe.skip('tab.parseDynamicPattern', () => {
   const a        = {a: 'a'};
   const b        = {b: 'b'};
   const dPattern = 'a b ';
@@ -263,4 +205,11 @@ describe('tab.createDynamicGetter', () => {
     result(0.45).should.deepEqual(expectedA);
     result(0.50).should.deepEqual(expectedB);
   });
+
+  it ('should get the most recent dynamic', () => {
+    // (even when the time is longer than the length of the dPattern)
+    const getDynamic = tab.createDynamicGetter('1234', 'ab', dLibrary);
+    const expected = { b: 'b', startTime: 0.25, length: 0.25 };
+    getDynamic(8).should.deepEqual(expected);
+  })
 });
