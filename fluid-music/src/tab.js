@@ -321,6 +321,7 @@ const reservedKeys = {
   eLibrary: null,     // Possible use: events library
   dLibrary: null,     // dynamics library
   eventMappers: null, // specifies custom eventMapper methods
+  plugins: null,      // tracksObject has a .plugins array
   duration: null,
   startTime: null,
   meta: null,

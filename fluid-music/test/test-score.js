@@ -42,6 +42,24 @@ describe('score', () => {
       });
     });
 
+    it('should populate an empty track even when the track has no clips. ', () => {
+      const obj = {
+        snare: {
+          nLibrary: [0, 1, 2, 3, 4, 5, 6].map(converters.numberToMidiNote),
+          r: '1234',
+        },
+      };
+
+      score.parse(obj).should.containDeep({
+        tracks: {
+          snare: {
+            clips: [],
+            plugins: [],
+          },
+        },
+      });
+    });
+
 
     describe('score.parse on arrays', () => {
       it('should handle arrays', () => {

@@ -85,7 +85,7 @@ function copyBasicEventProperties(source, target) {
  */
 function mapRandom(event, context) {
   if (event.type !== 'random') return event;
-  const newEvent = random.choice(event.choices);
+  const newEvent = Object.assign({}, random.choice(event.choices));
   return copyBasicEventProperties(event, newEvent);
 }
 

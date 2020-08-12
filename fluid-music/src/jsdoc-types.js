@@ -142,6 +142,7 @@
  * @property {Event[]} fileEvents
  * @property {number} duration duration in whole notes
  * @property {number} [startTime] start time in whole notes
+ * @property {eventMapper[]} score.parse temporarly puts events mappers into clips
  */
 
 /**
