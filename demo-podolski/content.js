@@ -55,13 +55,18 @@ const dLibrary = {
 };
 
 const session = fluid.score.parse(score, {nLibrary, dLibrary, eventMappers: drums.eventMappers}, undefined, template);
-const content = fluid.score.tracksToFluidMessage(session.tracks)
+session.tracks.bpm = 96;
+// const content = fluid.score.tracksToFluidMessage(session.tracks)
+// console.log(content)
 
-const client = new fluid.Client();
-client.send([
-  fluid.content.clear(),
-  fluid.transport.loop(0, session.duration),
-  content,
-]);
+// const client = new fluid.Client();
+// client.send([
+//   fluid.content.clear(),
+//   fluid.transport.loop(0, session.duration),
+//   content,
+// ]);
 
-//console.dir(session.tracks, {depth: null})
+// console.dir(session.tracks, {depth: null})
+
+const content = fluid.trackToReaperProject(session.tracks)
+console.log(content.dump())

@@ -32,6 +32,7 @@ const IpcClient = require('./FluidIpcClient');
 const converters = require('./converters');
 const m = require('./m');
 const random = require('./random');
+const trackToReaperProject = require('./tracksToReaperProject')
 
 // JSDoc
 const jsDocTypes = require('./jsdoc-types');
@@ -67,6 +68,7 @@ module.exports = {
   tab,
   tempo,
   trackAutomation,
+  trackToReaperProject,
   transport,
   groove,
 };
