@@ -148,30 +148,6 @@ describe('tab.parseTab', () => {
 
 }); // describe tab.parseTab
 
-
-describe.skip('tab.parseDynamicPattern', () => {
-  const a        = {a: 'a'};
-  const b        = {b: 'b'};
-  const dPattern = 'a b ';
-  const dLibrary = {a, b, n: null, u: undefined}
-
-  it('should handle a simple case ', () => {
-    tab.parseDynamicPattern(dPattern, dLibrary).should.deepEqual([a, a, b, b]);
-  });
-
-  it('should output undefined when dPattern begins with a "." or " "',  () => {
-    tab.parseDynamicPattern('..b.', dLibrary).should.deepEqual([undefined, undefined, b, b]);
-  });
-
-  it('should treat null in the dLibrary like any other value', () => {
-    tab.parseDynamicPattern('abn.a', dLibrary).should.deepEqual([a,b,null,null,a]);
-  });
-
-  it('should treat undefined in the dLibrary like any other value', () => {
-    tab.parseDynamicPattern('abu.a', dLibrary).should.deepEqual([a,b,undefined,undefined,a]);
-  });
-});
-
 describe('tab.createDynamicGetter', () => {
   const a        = {a: 'a'};
   const b        = {b: 'b'};
