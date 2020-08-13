@@ -74,24 +74,6 @@ describe('tab.rhythmToAdvanceArray', () => {
   });
 });
 
-describe('tab.rhythmToElapsedArray', () => {
-  let rhythm     = '1e+a2e+a';
-  const desired1 = rhythm.split('').map((letter, i) => (i+1) * 1/16);
-  const desired2 = [0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, .4375, 0.5];
-
-  it('manual calculations should match generated', () => {
-    desired1.should.deepEqual(desired2);
-  });
-
-  it(`should handle ${rhythm}`, () => {
-    tab.rhythmToElapsedArray(rhythm).should.deepEqual(desired1);
-  });
-
-  it('should handle 1+2+', () => {
-    tab.rhythmToElapsedArray('1+2+').should.deepEqual([0.125, 0.25, 0.375, 0.5]);
-  });
-});
-
 describe('tab.advanceArrayToSegments', () => {
   it('should split input into arrays based on position of zeros', () => {
     tab.advanceArrayToSegments([1,0,0,0,1,0]).should.deepEqual([[1,0,0,0],[1,0]]);

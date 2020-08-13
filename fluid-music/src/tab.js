@@ -47,34 +47,6 @@ const parseRhythm = function(rhythm) {
 };
 
 /**
- * @param {string} dPattern
- * @param {Object|Object[]} dLibrary
- */
-function parseDynamicPattern(dPattern, dLibrary) {
-  // dPattern = ' a .b'
-  const alpha = Array.from(dPattern).map(c => (c === ' ') ? '.' : c);
-  // ['.' 'a', '.', '.', 'b']
-  alpha.forEach((c, i, a) => {
-    if (i === 0) return;
-    if (c === '.') return a[i] = a[i-1];
-  });
-  // ['.', 'a', 'a', 'a', 'b']
-  const beta = arrayToSymbolsAndCounts(alpha);
-  // [['.', 1'], ['a', 3], ['b', 1]]
-  const gamma = beta.map(sc=> {
-    const [symbol, count] = sc;
-    if (symbol === '.' ) return [undefined, count];
-    if (!dLibrary.hasOwnProperty(symbol))
-      throw new Error('dLibrary does not have an object for '+symbol);
-    return [dLibrary[symbol], count];
-  });
-  // [undefined, aObj, aObj, aObj, bObj];
-  const oneObjectPerStep = gamma.flatMap(oc => R.repeat(oc[0], oc[1]));
-
-  return oneObjectPerStep;
-}
-
-/**
  * Convert a rhythm, pattern, and note library to a `Clip`.
  *
  * @param {string|Rhythm} rhythm
@@ -200,13 +172,6 @@ const rhythmToAdvanceArray = function(rhythm) {
 
   return result;
 }
-
-const rhythmToElapsedArray = function(rhythm) {
-  rhythm = rhythmToAdvanceArray(rhythm);
-
-  let accumulator = 0;
-  return rhythm.map((value) => accumulator += value);
-};
 
 /**
  * Create sub groups for advances.
@@ -358,9 +323,7 @@ module.exports = {
   parse,
   parseTab,
   parseRhythm,
-  parseDynamicPattern,
   reservedKeys,
-  rhythmToElapsedArray,
   rhythmToAdvanceArray,
   advanceArrayToSegments,
   patternToSymbolsAndCounts,
