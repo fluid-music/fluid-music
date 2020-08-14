@@ -27,8 +27,8 @@ void FluidOscServer::oscMessageReceived(const OSCMessage &message){
     handleOscMessage(message);
 }
 
-void FluidOscServer::constructReply(OSCMessage &reply, int success, String message){
-    reply.addInt32(success);
+void FluidOscServer::constructReply(OSCMessage &reply, int error, String message){
+    reply.addInt32(error);
     reply.addString(message);
     std::cout<<message<<std::endl;
 }
@@ -74,6 +74,7 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
         return message;
     }
     if (msgAddressPattern.matches({"/file/activate"})) return activateEditFile(message);
+    if (msgAddressPattern.matches({"/audiofile/report"})) return getAudioFileReport(message);
 
     if (!activeCybrEdit) {
         std::cout << "NOTE: message failed, because there is no active CybrEdit: ";
@@ -1108,7 +1109,7 @@ OSCMessage FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     if (file.existsAsFile()) {
         filename = file.getFullPathName(); // Found it!
     } else {
-        // Look in the sample search path.
+        // Look in the Cybr Search Path.
         file = CybrSearchPath(CYBR_PRESET).find(filename);
         if (file != File()) filename = file.getFullPathName(); // Found it!
         else std::cout << "Warning: preset file not found: " << filename << std::endl;
@@ -1522,3 +1523,57 @@ OSCMessage FluidOscServer::handleTransportMessage(const OSCMessage& message) {
     reply.addInt32(0);
     return reply;
 };
+
+OSCMessage FluidOscServer::getAudioFileReport(const OSCMessage& message) {
+    OSCMessage reply("/audiofile/report/reply");
+
+    if (!message.size()) {
+        constructReply(reply, 1,  "Cannot get audio file report: missing argument");
+        return reply;
+    }
+    
+    if (!message[0].isString()) {
+        constructReply(reply, 1, "Cannot get audio file report: first argument must be a filename string");
+        return reply;
+    }
+    
+    {
+        const String filePath = message[0].getString();
+        File file;
+        // The default filePathResolver checks for an absolute file, then looks
+        // in the relative to the edit file directory (using edit.editFileRetriever)
+        if (File::isAbsolutePath(filePath))   file = File(filePath);
+        if (file == File() && activeCybrEdit) file = activeCybrEdit->getEdit().filePathResolver(filePath);
+        if (file == File())                   file = CybrSearchPath(CYBR_SAMPLE).find(filePath);
+        if (file == File()) {
+            constructReply(reply, 1, "Cannot get audio file report: file not found");
+            return reply;
+        }
+        
+        juce::DynamicObject::Ptr report = new DynamicObject();
+        std::unique_ptr<juce::AudioFormatReader> reader;
+        reader.reset(te::Engine::getInstance()
+            .getAudioFileFormatManager()
+            .readFormatManager
+            .createReaderFor(file));
+        if (reader)
+        {
+            report->setProperty("format", reader->getFormatName());
+            report->setProperty("lengthSeconds", reader->lengthInSamples / reader->sampleRate );
+            report->setProperty("lengthSamples", reader->lengthInSamples);
+            report->setProperty("sampleRate", reader->sampleRate);
+            report->setProperty("absolutePath", file.getFullPathName());
+            report->setProperty("givenPath", filePath);
+            report->setProperty("numChannels", int(reader->numChannels));
+            report->setProperty("bitDepth", int(reader->bitsPerSample));
+            constructReply(reply, 0, JSON::toString(report.get(), true));
+            return reply;
+        } else {
+            constructReply(reply, 1, "Cannot get audio file report: failed to read file");
+            return reply;
+        }
+    }
+
+    constructReply(reply, 1, "Cannot get audio file report: unknown error");
+    return reply;
+}

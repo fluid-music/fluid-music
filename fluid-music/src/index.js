@@ -10,6 +10,7 @@ const pluginZebra2Vst2 = require('./fluid/plugin-zebra2-vst2');
 const pluginHelm = require('./fluid/plugin-helm');
 const pluginDexedVst = require('./fluid/plugin-dexed-vst');
 const sampler = require('./fluid/sampler');
+const audiofile = require('./fluid/audiofile');
 const audiotrack = require('./fluid/audiotrack');
 const midiclip = require('./fluid/midiclip');
 const transport = require('./fluid/transport');
@@ -38,6 +39,7 @@ const jsDocTypes = require('./jsdoc-types');
 
 module.exports = {
   audioclip,
+  audiofile,
   audiotrack,
   UdpClient,
   IpcClient,

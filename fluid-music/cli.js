@@ -32,6 +32,7 @@ const parsedArgs = {
   "open": null,
   "saveas": null,
   "render": null,
+  "audiofile": null,
 };
 
 
@@ -135,6 +136,31 @@ commands.tempo = function() {
     process.exit(1);
   }
   client.send(fluid.tempo.set(bpm));
+}
+
+addDocstring('audiofile <file.wav>', 'print a report about an audio file');
+commands.audiofile = async function() {
+  let filename = parsedArgs.audiofile;
+  const filenameRelativeToWorkingDir = path.join(process.cwd(), filename);
+  if (!path.isAbsolute(filename) && fs.existsSync(filenameRelativeToWorkingDir)) {
+    filename = filenameRelativeToWorkingDir;
+  }
+
+  const msg = [
+    fluid.global.activate('temp.tracktionedit'),
+    fluid.audiofile.report(filename),
+  ];
+  console.log('send:', msg);
+
+  const results = await client.send(msg);
+  const result  = results.elements.filter(m=> m.address === '/audiofile/report/reply')[0];
+
+  if (!result || !result.args || result.args.length < 2 || result.args[1].type !== 'string' || result.args[0].value) {
+    console.error('Unhelpful results:', results.elements[1]);
+    throw new Error('Server send unhelpful results');
+  }
+
+  console.log(JSON.parse(result.args[1].value));
 }
 
 addDocstring('help', 'print this help information');

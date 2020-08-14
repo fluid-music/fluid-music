@@ -12,7 +12,6 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SamplePathMode.h"
 #include "CybrEdit.h"
-#include "CybrSearchPath.h"
 
 namespace te = tracktion_engine;
 

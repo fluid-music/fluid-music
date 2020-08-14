@@ -71,6 +71,7 @@ public:
     juce::OSCMessage setClipDb(const juce::OSCMessage& message);
     juce::OSCMessage setTempo(const juce::OSCMessage& message);
     juce::OSCMessage clearContent(const juce::OSCMessage& message);
+    juce::OSCMessage getAudioFileReport(const juce::OSCMessage& message);
 
     // everything else
     juce::OSCMessage muteTrack(bool mute);
@@ -87,7 +88,7 @@ private:
      that nested bundles do not leave behind a selection after they have been
      handled. */
 
-    void constructReply(juce::OSCMessage &reply, int success, juce::String message);
+    void constructReply(juce::OSCMessage &reply, int error, juce::String message);
     void constructReply(juce::OSCMessage &reply, juce::String message);
     
     te::AudioTrack* selectedAudioTrack = nullptr;

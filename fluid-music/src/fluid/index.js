@@ -11,6 +11,7 @@ in this file, AND the root level index.js file. */
 const plugin = require('./plugin');
 const sampler = require('./sampler');
 const audioclip = require('./audioclip');
+const audiofile = require('./audiofile');
 const audiotrack = require('./audiotrack');
 const midiclip = require('./midiclip');
 const transport = require('./transport');
@@ -33,6 +34,7 @@ const pluginDragonflyRoomReverb = require('./plugin-dragonfly-room');
  */
 module.exports = {
   audioclip,
+  audiofile,
   audiotrack,
   clip,
   content,

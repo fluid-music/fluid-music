@@ -9,6 +9,7 @@
 */
 
 #include "cybr_helpers.h"
+#include "CybrSearchPath.h"
 
 using namespace juce;
 
