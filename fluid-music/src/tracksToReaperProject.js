@@ -69,6 +69,38 @@ function tracksToReaperProject(tracksObject) {
       
       reaperProject.addTrack(newTrack);
     }); // track.clips.forEach
+
+    // Handle track specific automation.
+    for (const [name, automation] of Object.entries(track.automation)) {
+      if (name === 'volume' || name === 'pan') {
+        var autoObject;
+        if (name === 'volume') autoObject = new rppp.objects.ReaperVolumeAutomation();
+        else autoObject = new rppp.objects.ReaperPanAutomation();
+
+        for (const autoPoint of automation.points) {
+          let val = 0;
+          let curve = 0;
+
+          if (typeof autoPoint.explicitValue === 'number') 
+            val = autoPoint.explicitValue;
+          else if (typeof autoPoint.normalizedValue === 'number') 
+            val = autoPoint.normalizedValue;
+          else 
+            throw new Error(`AutomationPoint has neither of .explicitValue/.normalizedValue: ${JSON.stringify(autoPoint)}`);
+
+          if (typeof autoPoint.curve === 'number'){
+            if (autoPoint.curve < 0) curve = 3;
+            else if (autoPoint.curve > 0) curve = 4;
+          }
+
+          autoObject.addPoint(autoPoint.startTime * 4 * 60 / bpm, val, curve);
+        }
+        newTrack.add(autoObject);
+      } 
+      else {
+        throw new Error(`Fluid Track Automation found unsupported parameter: "${name}"`);
+      }
+    } // for [name, automation] of track.automation
   }
 
   return reaperProject;
