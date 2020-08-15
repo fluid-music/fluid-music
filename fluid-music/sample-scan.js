@@ -3,6 +3,20 @@ const path  = require('path');
 const fs    = require('fs');
 const fluid = require('.');
 
+const usage = `sample-scan [search-dir=.] [outfile.js]
+
+sample-scan recursively searches "search-dir" for audio files, and generates a
+common.js file containing meta data about the files.
+
+"cybr" must be running on the default port for this to work, because sample-scan
+doesn't actually read files, it just requests the meta data from cybr.
+
+The metadata for each file includes a ".path" property which will be specified
+relative to the current working directory.
+`
+
+console.warn(usage);
+
 // Create a generic method for recursively walking a file tree
 const dirsToSkip = ['node_modules', '.git'];
 const extsToGet = ['.wav', 'aiff', '.aif',]; // '.m4a', '.mp3', '.ogg'];
@@ -45,9 +59,11 @@ const getAndHandleReport = async (filename) => {
 }
 
 const args      = process.argv.slice(2);
-const arg       = args[0] || './';
+const arg       = args[0] || '.';
 const inputPath = path.isAbsolute(arg) ? arg : path.join(cwd, arg);
 const stats     = fs.lstatSync(inputPath);
+const writer    = args[1] ? fs.createWriteStream(args[1]) : process.stdout;
+if (args[1]) console.log(`Writing to: ${args[1]}`);
 
 let promise;
 
@@ -63,9 +79,9 @@ if (stats.isDirectory()) {
 }
 
 promise.then(() => {
-  process.stdout.write('module.exports = ');
-  process.stdout.write(JSON.stringify(results, null, 2));
-  process.stdout.write('\n');
+  writer.write('module.exports = ');
+  writer.write(JSON.stringify(results, null, 2));
+  writer.write('\n');
   console.warn('COMPLETE');
 }).finally(() => {
   client.close();
