@@ -33,8 +33,7 @@
     "yaml": "^1.9.2"
   },
   "bin": {
-    "fluid": "./cli.js",
-    "sample-scan": "sample-scan.js"
+    "fluid": "./cli.js"
   },
   "repository": {
     "type": "git",
