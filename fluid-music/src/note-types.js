@@ -22,6 +22,13 @@ module.exports = {
       startInSourceSeconds: 0.1, // Specify the source start time in seconds.
                                  // Does not affect time that the clip starts
                                  // in the session.
+
+      info: {           // info provided by music-metadata npm package
+        duration: 2.99, // source audio sample duration in seconds
+        bitsPerSample: 16,
+        sampleRate: 44100,
+        numberOfChannels: 1,
+      }
     },
 
     /**

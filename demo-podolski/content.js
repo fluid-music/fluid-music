@@ -30,10 +30,16 @@ nLibrary.s = Object.assign({}, nLibrary.c);
 nLibrary.s.choices = nLibrary.c.choices.map(choice => Object.assign({}, choice))
 nLibrary.s.choices.forEach(f =>  { f.startInSourceSeconds=0.02; f.fadeInSeconds=0.003; });
 
+const dLibrary = {
+  f: { dbfs: 0, intensity: 1.0 },
+  m: { dbfs: -2.6, intensity: 3/4 },
+};
+
 // Here's what I want to be able to do:
 const template = {
   r: '1 + 2 + 3 + 4 + ',
-  nLibrary, // default for kick and Snare
+  dLibrary, // default for kick and snare
+  nLibrary, // default for kick and snare
   kick:   { d: '.   . mf      ' },
   snare:  { d: 'm   f   m   f ' },
   chrd:   { nLibrary: chords.nLibrary },
@@ -49,12 +55,7 @@ const score = {
   chrd:  'a-  .  ab---    ',
 };
 
-const dLibrary = {
-  f: { dbfs: 0, intensity: 1.0 },
-  m: { dbfs: -2.6, intensity: 3/4 },
-};
-
-const session = fluid.score.parse(score, {nLibrary, dLibrary, eventMappers: drums.eventMappers}, undefined, template);
+const session = fluid.score.parse(score, {eventMappers: drums.eventMappers}, undefined, template);
 const content = fluid.score.tracksToFluidMessage(session.tracks)
 
 const client = new fluid.Client();
@@ -64,4 +65,4 @@ client.send([
   content,
 ]);
 
-//console.dir(session.tracks, {depth: null})
+// console.dir(session.tracks, {depth: null})
