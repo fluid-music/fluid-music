@@ -23,7 +23,8 @@ module.exports = {
                                  // Does not affect time that the clip starts
                                  // in the session.
 
-      info: {           // info provided by music-metadata npm package
+      info: {           // info provided by music-metadata npm package - info
+                        // is not guaranteed to be present on every `file` event
         duration: 2.99, // source audio sample duration in seconds
         bitsPerSample: 16,
         sampleRate: 44100,
@@ -39,12 +40,12 @@ module.exports = {
       type: 'pluginAuto',
       plugin: {      // identifies a plugin on an arbitrary track
         name: 'DragonflyRoomReverb-vst',
-        type: 'VST', // 'VST', 'VST3', 'AudioUnit'
-        nth: 0,      // The selected track may have multiple plugins with the
-                     // same name. Index from within those plugins.
-                     // Most of the time this isn't needed, because it is
-                     // unusual to have more than one plugin with a given
-                     // name on a particular track.
+        type: 'VST2', // 'VST2', 'VST3', 'AudioUnit'
+        nth: 0,       // The selected track may have multiple plugins with the
+                      // same name. Index from within those plugins.
+                      // Most of the time this isn't needed, because it is
+                      // unusual to have more than one plugin with a given
+                      // name on a particular track.
       },
       param: {
         name: 'Early Send',        // Parameter's name as reported by the plugin
@@ -64,8 +65,8 @@ module.exports = {
      * Unlike `pluginAuto`, it does not specify a `.plugin`.
      * Like   `pluginAuto`, it specifies a `.param.name` string and a value.
      */
-    {type: 'trackAuto', param: {name: 'volume', units: 'db'},      value: -6 },
-    {type: 'trackAuto', param: {name: 'pan',    units: '-1 to 1'}, value: 1 },
+    { type: 'trackAuto', param: {name: 'volume', units: 'db'},      value: -6 },
+    { type: 'trackAuto', param: {name: 'pan',    units: '-1 to 1'}, value: 1 },
 
     /**
      * The `random` type notes get are replaced with one of the types in the

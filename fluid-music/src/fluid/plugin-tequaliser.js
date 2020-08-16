@@ -7,13 +7,15 @@ const freq2V = v => Math.pow((v-10)/29990, 1/5);
 const scaleShape = v => v/6;
 
 const pluginTEqualiser = {
+  type: 'VST2',
+  name: '#TEqualiser',
   /**
    * Select a `#TEqualiser` vst plugin on the selected track, creating a new
    * plugin instance if needed
    * @param {number} [pluginId] - optional index of the plugin to select
    */
   select(pluginId) {
-    return fluid.plugin.select('#TEqualiser', 'vst', pluginId);
+    return fluid.plugin.select('#TEqualiser', 'VST2', pluginId);
   },
 
   /**

@@ -1,13 +1,15 @@
 const plugin = require('./plugin');
 const fluid = { plugin };
 module.exports = {
+    type: 'VST2',
+    name: 'Dexed',
   /**
    * Select a `Dexed` vst plugin on the selected track, creating a new
    * plugin instance if needed
    * @param {number} [pluginId] - optional index of the plugin to select
    */
   select(pluginId) {
-  return fluid.plugin.select('Dexed', 'vst', pluginId);
+    return fluid.plugin.select('Dexed', 'VST2', pluginId);
   },
 
   /**

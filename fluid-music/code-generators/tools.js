@@ -63,7 +63,7 @@ const createFunctionString = (functionName, paramName) => {
 `;
 };
 
-const writePluginHelperFile = (pluginName, paramNames, writableStream, includeParams = true) => {
+const writePluginHelperFile = (pluginName, paramNames, writableStream, includeParams = true, type='VST2') => {
 
   const camelCaseNames = paramNames.map(camelCaseFromParamName);
   const functionNames  = camelCaseNames.map(s => 'set' + upperFirstLetter(s));
@@ -75,6 +75,8 @@ const writePluginHelperFile = (pluginName, paramNames, writableStream, includePa
 const plugin = require('./plugin');
 const fluid = { plugin };
 module.exports = {
+  type: '${type}',
+  name: '${pluginName}',
   /**
    * Select a \`${pluginName}\` vst plugin on the selected track, creating a new
    * plugin instance if needed
@@ -85,7 +87,7 @@ module.exports = {
    *    particular track.
    */
   select(nth) {
-    return fluid.plugin.select('${pluginName}', 'vst', nth);
+    return fluid.plugin.select('${pluginName}', '${type}', nth);
   },
 ` );
 

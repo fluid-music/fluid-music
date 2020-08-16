@@ -7,13 +7,15 @@ const map = (v, min, max) => linear(min, max)(v);
 const percent = linear(0, 100);
 
 const dragonflyRoom = module.exports = {
+  type: 'VST2',
+  name: 'DragonflyRoomReverb-vst',
   /**
    * Select a `DragonflyRoomReverb-vst` vst plugin on the selected track, creating a new
    * plugin instance if needed
    * @param {number} [pluginId] - optional index of the plugin to select
    */
   select(pluginId) {
-    return fluid.plugin.select('DragonflyRoomReverb-vst', 'vst', pluginId);
+    return fluid.plugin.select('DragonflyRoomReverb-vst', 'VST2', pluginId);
   },
 
   /**

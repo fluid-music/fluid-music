@@ -2,6 +2,8 @@
 const plugin = require('./plugin');
 const fluid = { plugin };
 module.exports = {
+  type: 'VST2',
+  name: 'Zebra2',
   /**
    * Select a `Zebra2` vst plugin on the selected track, creating a new
    * plugin instance if needed

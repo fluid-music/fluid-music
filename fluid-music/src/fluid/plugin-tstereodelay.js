@@ -52,13 +52,15 @@ const freq2V = v => Math.sqrt(v-20) / denom;
  * - "R Delay"
  */
 const pluginTStereoDelay = {
+  type: 'VST2',
+  name: '#TStereo Delay',
   /**
    * Select a `#TStereo Delay` vst2 plugin on the selected track, creating a new
    * plugin instance if needed
    * @param {number} [pluginId] - optional index of the plugin to select
    */
   select(pluginId) {
-    return fluid.plugin.select('#TStereo Delay', 'vst', pluginId);
+    return fluid.plugin.select('#TStereo Delay', 'VST2', pluginId);
   },
 
   /**

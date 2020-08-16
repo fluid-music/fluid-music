@@ -27,13 +27,15 @@ const freq2V = v => Math.pow((v-10)/19990, 1/5);
  * `pluginTCompressor.select()`.
  */
 const pluginTCompressor = {
+  type: 'VST2',
+  name: '#TCompressor',
   /**
    * Select a `#TCompressor` vst plugin on the selected track, creating a new
    * plugin instance if needed
    * @param {number} [pluginId] - optional index of the plugin to select
    */
   select(pluginId) {
-    return fluid.plugin.select('#TCompressor', 'vst', pluginId);
+    return fluid.plugin.select('#TCompressor', 'VST2', pluginId);
   },
 
   /**

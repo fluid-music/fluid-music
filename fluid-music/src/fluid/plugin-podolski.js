@@ -2,6 +2,8 @@
 const plugin = require('./plugin');
 const fluid = { plugin };
 module.exports = {
+  type: 'VST2',
+  name: 'Podolski',
   /**
    * Select a `podolski.64` vst plugin on the selected track, creating a new
    * plugin instance if needed
@@ -12,7 +14,7 @@ module.exports = {
    *    particular track.
    */
   select(nth) {
-    return fluid.plugin.select('Podolski', 'vst', nth);
+    return fluid.plugin.select('Podolski', 'VST2', nth);
   },
 
   /**

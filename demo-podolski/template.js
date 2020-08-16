@@ -1,7 +1,6 @@
 const path    = require('path');
 const fluid   = require('../fluid-music');
 const recipes = require('../fluid-recipes');
-const tr909   = require('@fluid-music/tr-909');
 
 const file    = path.join(process.cwd(), 'session.tracktionedit');
 const dragonflyRoom = fluid.pluginDragonflyRoomReverb;

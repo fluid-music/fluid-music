@@ -18,7 +18,8 @@ const plugin = {
    * ```
    * @param {string} pluginName - the name of the vst plugin
    * @param {string} [pluginType] - optional type, for example 'VST', 'VST3',
-   *        'AudioUnit', or 'tracktion'. If omitted, search all types.
+   *        'AudioUnit', or 'tracktion'. If omitted, search all types. 'VST2'
+   *        and 'VST' are interchangeable.
    * @param {number} [pluginId=0] - If there are multiple instances of the named
    *    plugin on the selected track, use this argument if you want to select a
    *    specific one one (by default this selects the first plugin with the
@@ -39,8 +40,8 @@ const plugin = {
       { type: 'integer', value: pluginId},
     ];
     if (typeof pluginType === 'string') {
-      if (pluginType.toLowerCase() === 'vst2') {
-        throw new Error('"vst2" is not a valid plugin type, use "vst" instead');
+      if (pluginType.toUpperCase() === 'VST2') {
+        pluginType = 'VST'; // cybr/tracktion engine expect 'VST' for vst2s
       }
       args.push({ type: 'string', value: pluginType });
     }

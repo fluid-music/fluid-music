@@ -5,13 +5,15 @@ const db2Level = v => Math.exp(v/8.6864); // For "Wet" and "Dry" params
 const Gain2V = v => Math.exp(v/8.6864);
 
 const pluginTReverber8 = {
+  type: 'VST2',
+  name: '#TReverber8',
   /**
    * Select a `#TReverber8` vst plugin on the selected track, creating a new
    * plugin instance if needed
    * @param {number} [pluginId] - optional index of the plugin to select
    */
   select(pluginId) {
-    return fluid.plugin.select('#TReverber8', 'vst', pluginId);
+    return fluid.plugin.select('#TReverber8', 'VST2', pluginId);
   },
 
   zero(){
