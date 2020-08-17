@@ -82,6 +82,8 @@ function parse(scoreObject, config, session, tracks={}) {
     if (!track.clips) track.clips = [];
     if (!track.plugins) track.plugins = [];
     if (!track.automation) track.automation = {}; // Create Automation instance
+    if (!track.hasOwnProperty('gain')) track.gain = 0;
+    if (!track.hasOwnProperty('pan')) track.pan = 0;
   }
 
   if (Array.isArray(scoreObject)) {

@@ -24,8 +24,9 @@ module.exports = {
                                  // in the session.
 
       info: {           // info provided by music-metadata npm package - info
-                        // is not guaranteed to be present on every `file` event
-        duration: 2.99, // source audio sample duration in seconds
+                        // is not currently guaranteed to be present on every
+                        // `file` event
+        duration: 2.99, // source audio file duration in seconds
         bitsPerSample: 16,
         sampleRate: 44100,
         numberOfChannels: 1,
@@ -38,7 +39,7 @@ module.exports = {
      */
     {
       type: 'pluginAuto',
-      plugin: {      // identifies a plugin on an arbitrary track
+      plugin: {       // identifies a plugin on an arbitrary track
         name: 'DragonflyRoomReverb-vst',
         type: 'VST2', // 'VST2', 'VST3', 'AudioUnit'
         nth: 0,       // The selected track may have multiple plugins with the

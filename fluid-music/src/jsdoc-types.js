@@ -15,31 +15,19 @@
  *     drums: {
  *       clips: [
  *         {
- *           events: [ { startTime 0, length: 0.25, n: 0 } ],
+ *           events: [ {type: 'unknown', startTime 0, length: 0.25} ],
  *           duration: 1,
  *           startTime: 0
- *           midiEvents: [{ startTime: 0, length: 0.25, n: 0, type: 'midiNote'}],
+ *           midiEvents: [ {type: 'midiNote', startTime: 0, length: 0.25, n: 0} ],
  *         },
  *         {
- *           events: [ { startTime 0, length: 0.25, n: 1 } ],
+ *           events: [ {type: 'unknown', startTime 0, length: 0.25} ],
  *           duration: 1,
  *           startTime: 1
- *           midiEvents: [{ startTime: 0, length: 0.25, n: 1, type: 'midiNote'}],
- *         },
- *         {
- *           events: [ { startTime 0, length: 0.25, n: 2 } ],
- *           duration: 1,
- *           startTime: 2
- *           midiEvents: [{ startTime: 0, length: 0.25, n: 2, type: 'midiNote'}],
- *         },
- *         {
- *           events: [ { startTime 0, length: 0.25, n: 3 } ],
- *           duration: 1,
- *           startTime: 3
- *           midiEvents: [{ startTime: 0, length: 0.25, n: 3, type: 'midiNote'}],
+ *           midiEvents: [ {type: 'midiNote', startTime: 0, length: 0.25, n: 1} ],
  *         },
  *       ],
- *       automation: {},
+ *       automation: {}, // automation for the track itself (volume, pan)
  *     },
  *   },
  *   regions: [
@@ -48,20 +36,18 @@
  *       duration: 2,
  *       regions: [
  *         {
- *           events: [ { startTime 0, length: 0.25, n: 0 } ],
+ *           events: [ { type: 'midiNote', startTime 0, length: 0.25, n: 0 } ],
  *           duration: 1,
  *           startTime: 0
  *         },
  *         {
- *           events: [ { startTime 0, length: 0.25, n: 1 } ],
+ *           events: [ { type: 'midiNote', startTime 0, length: 0.25, n: 1 } ],
  *           duration: 1,
  *           startTime: 1
- *         }
- *       ]
+ *         },
+ *       ],
  *     },
- *     { events: [ { startTime 0, length: 0.25, n: 2 } ], duration: 1, startTime: 2 },
- *     { events: [ { startTime 0, length: 0.25, n: 3 } ], duration: 1, startTime: 3 },
- *   ]
+ *   ],
  * }
  * ```
  *
@@ -73,7 +59,7 @@
  */
 
 /**
- * Represents a collection of audio tracks, and clips on those tracks.
+ * TracksObject represents a collection of audio tracks.
  *
  * Example of a `TracksObject` containing a single `bass` track, which
  * contains two clips:
@@ -90,7 +76,7 @@
  *           { startTime 0.33,  length: 0.0833, n: 38, type: 'midiNote', d: { v: 60 } },
  *         ],
  *         fileEvents: [
- *           { startTime 0.5, length: 0.25, n: { type: 'file', path: 'media/kick.wav' } },
+ *           { startTime 0.5, length: 0.25, type: 'file', path: 'media/kick.wav' },
  *         ],
  *         startTime: 2,
  *         duration:  1,
@@ -102,13 +88,17 @@
  *       },
  *     ], // end clips
  *
- *     plugins: [
+ *     plugins: [ // PluginInstance[]
  *       {
- *         name: 'Podolski.64',
+ *         name: 'Podolski',
  *         type: 'VST',
  *         automation: {
  *           "VCF0: Cutoff":    { points: [ { startTime: 0, explicitValue: 0.4 } ] },
  *           "VCF0: Resonance": { points: [ { startTime: 0, normalizedValue: 0.5, curve: -0.5 } ] },
+ *         },
+ *         params: {
+ *           "VCF0: Cutoff":   { normalizedValue: 0.5 },
+ *           "VCF0: Resonance" { normalizedValue: 0.6 },
  *         },
  *       },
  *     ], // end plugins
@@ -128,6 +118,8 @@
  * @param {Clip[]} clips
  * @param {PluginInstance[]} plugins
  * @param {string} name The Track name
+ * @param {number} gain postFx track gain in dbfs
+ * @param {number} pan postFx track pan (-1 to 1)
  * @param {number} [duration]  // Charles: do all Track objects have a duration?
  * @param {number} [startTime] // Charles: do all Track objects have a startTime?
  * @param {Object.<string, Automation>} automation this contains automation
@@ -142,13 +134,14 @@
  * @property {Event[]} fileEvents
  * @property {number} duration duration in whole notes
  * @property {number} [startTime] start time in whole notes
- * @property {eventMapper[]} score.parse temporarly puts events mappers into clips
+ * @property {eventMapper[]} [eventMappers] score.parse temporarily puts event
+ *    mappers into clips
  */
 
 /**
  * @typedef {Object} PluginInstance
  * @property {string} name
- * @property {string} [type] VST, VST3, AudioUnit, fluid
+ * @property {string} [type] VST2, VST3, AudioUnit
  * @property {Object.<string, Automation>} automation
  */
 
@@ -168,7 +161,7 @@
 
 /**
  * Represents a performance marking such as "forte" or "piano". In practice,
- * this specifies a MIDI velocity, or a dBFS gain value.
+ * this specifies a MIDI velocity, or a dBFS gain value, or 0-1 'intensity'.
  *
  * These can be found in a `dLibrary`, or in the `.d` field of a `ScoreEvent`.
  * @typedef {Object} Dynamic

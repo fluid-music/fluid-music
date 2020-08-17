@@ -28,7 +28,7 @@ const firstWord = (word) => {
 const restWord = (word) => {
   if (word.length === 1) return word.toUpperCase();
   word = isUpperCase(word) ? word.toLowerCase() : word;
-  // We have a lower or mixed case word. Decide based o nthe second letter.
+  // We have a lower or mixed case word. Decide based on the second letter.
   word = isUpperCase(word[1]) ? word.toLowerCase() : word;
   return upperFirstLetter(word);
 }
