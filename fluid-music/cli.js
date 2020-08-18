@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const path = require('path');
 const fs = require('fs');
-const fluid = require('./src/index.js');
+const fluid = require('.');
 const argv = process.argv.slice(2);
 
 let docs = 'usage: fluid [flags] command arg\n\n';

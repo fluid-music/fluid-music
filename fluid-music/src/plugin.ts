@@ -75,7 +75,7 @@ interface PluginParameterLibrary {
  * a method for normalizing `value`, then the automation event will result in
  * a PluginParameterState with a `.normalizedValue` property.
  */
-interface PluginAutomationEvent {
+interface PluginAutomationEvent extends AutomationPoint {
   readonly type : string;
   plugin: PluginSelector;
   param: PluginParameter;
@@ -102,7 +102,7 @@ interface PluginParameterValues {
 }
 
 /**
- * Plugin should have helpers for making automation points
+ * Plugins should have helpers for making automation events
  */
 interface AutoMaker {
   (value: any): PluginAutomationEvent;
@@ -111,12 +111,30 @@ interface AutoMakerLibrary {
   [key: string]: AutoMaker;
 }
 
+/**
+ * AutomationPoint object exist in an automation lane, Note that this is different
+ * from an AutomationEvent, which are can be found in NoteLibraries and Clips.
+ */
+interface AutomationPoint {
+  startTime : number;
+  curve: number;
+  value?: number;
+}
+
+interface Automation {
+  [key: string] : AutomationPoint[];
+}
+
 class FluidPlugin {
   readonly parameter : PluginParameterValues = {};
   readonly parameterLibrary : PluginParameterLibrary = {};
-  readonly auto : AutoMakerLibrary = {};
+  readonly automation : Automation = {};
+  readonly makeAutomation : AutoMakerLibrary = {};
 
-  constructor (public readonly pluginName : string, public readonly pluginType : PluginType) {}
+  constructor (
+    public readonly pluginName : string,
+    public readonly pluginType : PluginType,
+  ) { }
 
   /**
    * Get as much information as possible about the state of a parameter.
@@ -143,13 +161,16 @@ class FluidPlugin {
 
   /**
    * There are two ways to identify a plugin parameter
-   * 1. The javascript friendly "key" (ex. `lfo1Speed`)
-   * 2. JUCE's parameter name (ex. `LFO 1: Speed`)
+   * 1. The javascript friendly "key" (ex: `lfo1Speed`)
+   * 2. JUCE's parameter name (ex: `LFO 1: Speed`)
    *
    * This function attempts to get JUCE's name from the key. If the key is not
    * registered on the plugin, just return the `key` argument directly. This
-   * behavior is designed to make it possible to use and configure plugins even
-   * if there is no adapter available.
+   * behavior is designed to make it possible to use and configure plugins with
+   * the FludPlugin base class even when there is no adapter available.
+   * 
+   * When there is no adapter available, you can just set a parameter directly:
+   * `pluginInstance.parameter["Wet Level"] = 0.8;
    *
    * @param key the JavaScript friendly parameter identifier
    */

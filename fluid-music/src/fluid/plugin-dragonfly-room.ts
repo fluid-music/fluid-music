@@ -2,6 +2,10 @@
 const plugin = require('./plugin');
 const fluid = { plugin };
 
+const linearLocal  = (min, max) => (v) => (v - min) / (max - min);
+const mapLocal     = (v, min, max) => linearLocal(min, max)(v);
+const percentLocal = linearLocal(0, 100);
+
 /*
 dryLevelPercent
 wetLevelPercent
@@ -46,7 +50,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setDryLevelPercent(p, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Dry Level', percent(p), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Dry Level', percentLocal(p), timeInWholeNotes, curve);
   },
 
   /**
@@ -60,7 +64,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setEarlyLevelPercent(p, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Early Level', percent(p), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Early Level', percentLocal(p), timeInWholeNotes, curve);
   },
 
   /**
@@ -74,7 +78,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setEarlySendPercent(p, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Early Send', percent(p), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Early Send', percentLocal(p), timeInWholeNotes, curve);
   },
 
   /**
@@ -88,7 +92,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setLateLevelPercent(p, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Late Level', percent(p), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Late Level', percentLocal(p), timeInWholeNotes, curve);
   },
 
   /**
@@ -102,7 +106,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setSizeMeters(m, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Size', map(m, 8, 32), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Size', mapLocal(m, 8, 32), timeInWholeNotes, curve);
   },
 
   /**
@@ -116,7 +120,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setWidthPercent(p, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Width', map(p, 50, 150), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Width', mapLocal(p, 50, 150), timeInWholeNotes, curve);
   },
 
   /**
@@ -130,7 +134,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setPredelayMs(ms, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Predelay', map(ms, 0, 100), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Predelay', mapLocal(ms, 0, 100), timeInWholeNotes, curve);
   },
 
   /**
@@ -144,7 +148,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setDecaySeconds(seconds, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Decay', map(seconds, 0.1, 10), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Decay', mapLocal(seconds, 0.1, 10), timeInWholeNotes, curve);
   },
 
   /**
@@ -158,7 +162,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setDiffusePercent(p, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Diffuse', percent(p), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Diffuse', percentLocal(p), timeInWholeNotes, curve);
   },
 
   /**
@@ -172,7 +176,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setSpinHz(hz, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Spin', map(hz, 0, 5), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Spin', mapLocal(hz, 0, 5), timeInWholeNotes, curve);
   },
 
   /**
@@ -186,7 +190,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setWanderPercent(p, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Wander', percent(p), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Wander', percentLocal(p), timeInWholeNotes, curve);
   },
 
   /**
@@ -200,7 +204,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setHighCutHz(hz, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('High Cut', map(hz, 1000, 16000), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('High Cut', mapLocal(hz, 1000, 16000), timeInWholeNotes, curve);
   },
 
   /**
@@ -214,7 +218,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setEarlyDampHz(hz, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Early Damp', map(hz, 1000, 16000), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Early Damp', mapLocal(hz, 1000, 16000), timeInWholeNotes, curve);
   },
 
   /**
@@ -228,7 +232,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setLateDampHz(hz, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Late Damp', map(hz, 1000, 16000), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Late Damp', mapLocal(hz, 1000, 16000), timeInWholeNotes, curve);
   },
 
   /**
@@ -242,7 +246,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setLowBoostPercent(p, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Low Boost', percent(p), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Low Boost', percentLocal(p), timeInWholeNotes, curve);
   },
 
   /**
@@ -256,7 +260,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setLowBoostHz(hz, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Boost Freq', map(hz, 50, 1050), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Boost Freq', mapLocal(hz, 50, 1050), timeInWholeNotes, curve);
   },
 
   /**
@@ -270,7 +274,7 @@ const dragonflyRoom = module.exports = {
    *    quickly, and decelerates.
    */
   setLowCutHz(hz, timeInWholeNotes, curve) {
-    return fluid.plugin.setExternalParamHelper('Low Cut', map(hz, 0, 200), timeInWholeNotes, curve);
+    return fluid.plugin.setExternalParamHelper('Low Cut', mapLocal(hz, 0, 200), timeInWholeNotes, curve);
   },
 
   presets: {

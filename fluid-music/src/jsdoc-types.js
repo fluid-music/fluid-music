@@ -146,13 +146,13 @@
  */
 
 /**
- * @typedef {Object} Automation
- * @property {AutomationPoint[]} points
+ * @typedef {Object} AutomationJSDOC
+ * @property {AutomationPointJSDOC[]} points
  */
 
  /**
   * AutomationPoints must have either an explicitValue or a normalizedValue
-  * @typedef {Object} AutomationPoint
+  * @typedef {Object} AutomationPointJSDOC
   * @property {number} startTime the time in beats
   * @property {number} [curve=0]
   * @property {number} [explicitValue]
