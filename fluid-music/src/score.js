@@ -11,7 +11,7 @@ const reservedKeys = tab.reservedKeys;
  *
  * Typically called with two arguments (other args are for internal use only)
  * - A ScoreObject array
- * - A config object with (at minimum) a `.nLibrary` and `.r`hythm
+ * - A config object with (at minimum) a `.nLibrary` and `.r` rhythm
  *
  * @param {ScoreObject|String} scoreObject The Score Object to parse
  * @param {Object} [config]

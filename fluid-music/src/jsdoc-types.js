@@ -96,7 +96,7 @@
  *           "VCF0: Cutoff":    { points: [ { startTime: 0, explicitValue: 0.4 } ] },
  *           "VCF0: Resonance": { points: [ { startTime: 0, normalizedValue: 0.5, curve: -0.5 } ] },
  *         },
- *         params: {
+ *         parameters: {
  *           "VCF0: Cutoff":   { normalizedValue: 0.5 },
  *           "VCF0: Resonance" { normalizedValue: 0.6 },
  *         },
@@ -129,9 +129,9 @@
 
 /**
  * @typedef {Object} Clip
- * @property {Event[]} events
- * @property {Event[]} midiEvents
- * @property {Event[]} fileEvents
+ * @property {FluidEvent[]} events
+ * @property {FluidEvent[]} midiEvents
+ * @property {FluidEvent[]} fileEvents
  * @property {number} duration duration in whole notes
  * @property {number} [startTime] start time in whole notes
  * @property {eventMapper[]} [eventMappers] score.parse temporarily puts event
@@ -139,7 +139,7 @@
  */
 
 /**
- * @typedef {Object} PluginInstance
+ * @typedef {Object} PluginInstanceJSDOC
  * @property {string} name
  * @property {string} [type] VST2, VST3, AudioUnit
  * @property {Object.<string, Automation>} automation
@@ -163,7 +163,7 @@
  * Represents a performance marking such as "forte" or "piano". In practice,
  * this specifies a MIDI velocity, or a dBFS gain value, or 0-1 'intensity'.
  *
- * These can be found in a `dLibrary`, or in the `.d` field of a `ScoreEvent`.
+ * These can be found in a `dLibrary`, or in the `.d` field of a `FluidEvent`.
  * @typedef {Object} Dynamic
  * @property {number} [v=64] optional midi velocity
  * @property {number} [dbfs] sample gain
@@ -183,11 +183,11 @@
   * ```
   *
   * These can be found in an `nLibrary`, or in a Clip
-  * @typedef {Object} Event
+  * @typedef {Object} FluidEvent
   * @property {string} type String indicating the type of event:
   *   'file' indicates an audio sample, which should have a `.path`.
   *   'iLayers' indicates the presence of a `.iLayers` field, which contains an
-  *    array of EventObjects with `.type === 'file'`. Files in the `.iLayers`
+  *    array of `FluidEvent`s with `.type === 'file'`. Files in the `.iLayers`
   *    array should be arranged in order of increasing performance intensity.
   * @property {string} [path] file objects must include a path string
   * @property {number} [fadeOutSeconds] fade out in seconds (file objects)

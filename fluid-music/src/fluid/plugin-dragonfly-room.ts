@@ -2,9 +2,26 @@
 const plugin = require('./plugin');
 const fluid = { plugin };
 
-const linear = (min, max) => (v) => (v - min) / (max - min);
-const map = (v, min, max) => linear(min, max)(v);
-const percent = linear(0, 100);
+/*
+dryLevelPercent
+wetLevelPercent
+earlyLevelPercent
+earlySendPercent
+lateLevelPercent
+sizeMeters
+widthPercent
+predelayMs
+decaySeconds
+diffusePercent
+spinHz
+wanderPercent
+highCutHz
+earlyDampHz
+lateDampHz
+lowBoostPercent
+lowBoostHz
+lowCutHz
+*/
 
 const dragonflyRoom = module.exports = {
   type: 'VST2',
@@ -259,117 +276,26 @@ const dragonflyRoom = module.exports = {
   presets: {
     smallVocalRoom() {
       return [
-        dragonflyRoom.setDryLevelPercent(0),
-        dragonflyRoom.setEarlyLevelPercent(100),
-        dragonflyRoom.setEarlySendPercent(20),
-        dragonflyRoom.setLateLevelPercent(100),
-        dragonflyRoom.setSizeMeters(8),
-        dragonflyRoom.setWidthPercent(90),
-        dragonflyRoom.setPredelayMs(0),
-        dragonflyRoom.setDecaySeconds(0.3),
-        dragonflyRoom.setDiffusePercent(86),
-        dragonflyRoom.setSpinHz(2.4),
-        dragonflyRoom.setWanderPercent(12),
-        dragonflyRoom.setHighCutHz(16000),
-        dragonflyRoom.setEarlyDampHz(7600),
-        dragonflyRoom.setLateDampHz(6400),
-        dragonflyRoom.setLowCutHz(4),
-        dragonflyRoom.setLowBoostPercent(20),
-        dragonflyRoom.setLowBoostHz(400),
+        dragonflyRoom.setDryLevelPercent(0, undefined, undefined),
+        dragonflyRoom.setEarlyLevelPercent(100, undefined, undefined),
+        dragonflyRoom.setEarlySendPercent(20, undefined, undefined),
+        dragonflyRoom.setLateLevelPercent(100, undefined, undefined),
+        dragonflyRoom.setSizeMeters(8, undefined, undefined),
+        dragonflyRoom.setWidthPercent(90, undefined, undefined),
+        dragonflyRoom.setPredelayMs(0, undefined, undefined),
+        dragonflyRoom.setDecaySeconds(0.3, undefined, undefined),
+        dragonflyRoom.setDiffusePercent(86, undefined, undefined),
+        dragonflyRoom.setSpinHz(2.4, undefined, undefined),
+        dragonflyRoom.setWanderPercent(12, undefined, undefined),
+        dragonflyRoom.setHighCutHz(16000, undefined, undefined),
+        dragonflyRoom.setEarlyDampHz(7600, undefined, undefined),
+        dragonflyRoom.setLateDampHz(6400, undefined, undefined),
+        dragonflyRoom.setLowCutHz(4, undefined, undefined),
+        dragonflyRoom.setLowBoostPercent(20, undefined, undefined),
+        dragonflyRoom.setLowBoostHz(400, undefined, undefined),
       ];
     },
   },
 
-  params: {
-    dryLevelPercent: {
-      name: 'Dry Level',
-      units: 'percent',
-      normalize: percent,
-    },
-    wetLevelPercent: {
-      name: 'Wet Level',
-      units: 'percent',
-      normalize: percent,
-    },
-    earlyLevelPercent: {
-      name: 'Early Level',
-      units: 'percent',
-      normalize: percent,
-    },
-    earlySendPercent: {
-      name: 'Early Send',
-      units: 'percent',
-      normalize: percent,
-    },
-    lateLevelPercent: {
-      name: 'Late Level',
-      units: 'percent',
-      normalize: percent,
-    },
-    sizeMeters: {
-      name: 'Size',
-      units: 'meters',
-      normalize: linear(8, 32),
-    },
-    widthPercent: {
-      name: 'Width',
-      units: 'percent',
-      normalize: linear(50, 150),
-    },
-    predelayMs: {
-      name: 'Predelay',
-      units: 'milliseconds',
-      normalize: linear(0, 100),
-    },
-    decaySeconds: {
-      name: 'Decay',
-      units: 'seconds',
-      normalize: linear(0.1, 10),
-    },
-    diffusePercent: {
-      name: 'Diffuse',
-      units: 'percent',
-      normalize: percent,
-    },
-    spinHz: {
-      name: 'Spin',
-      units: 'hz',
-      normalize: linear(0, 5),
-    },
-    wanderPercent: {
-      name: 'Wander',
-      units: 'percent',
-      normalize: percent,
-    },
-    highCutHz: {
-      name: 'High Cut',
-      units: 'hz',
-      normalize: linear(1000, 16000),
-    },
-    earlyDampHz: {
-      name: 'Early Damp',
-      units: 'hz',
-      normalize: linear(1000, 16000),
-    },
-    lateDampHz: {
-      name: 'Late Damp',
-      units: 'hz',
-      normalize: linear(1000, 16000),
-    },
-    lowBoostPercent: {
-      name: 'Low Boost',
-      units: 'percent',
-      normalize: percent,
-    },
-    lowBoostHz: { // renamed from boostFreq
-      name: 'Boost Freq',
-      units: 'hz',
-      normalize: linear(50, 1050),
-    },
-    lowCutHz: {
-      name: 'Low Cut',
-      units: 'hz',
-      normalize: linear(50, 200),
-    },
-  },
+  
 };
