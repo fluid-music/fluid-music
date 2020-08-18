@@ -1,4 +1,7 @@
-export interface DragonflyRoomState {
+const pluginName = 'DragonflyRoomReverb-vst';
+const pluginType = PluginType.VST2;
+
+export interface DragonflyRoomParameters {
   dryLevelPercent? : number;
   wetLevelPercent? : number;
   earlyLevelPercent? : number;
@@ -24,7 +27,7 @@ export interface DragonflyRoomState {
  * checking could be implemented for parameter values.
  * @ignore
  */
-class DragonflyRoomStateRangeChecks implements DragonflyRoomState {
+class DragonflyRoomStateRangeChecks implements DragonflyRoomParameters {
   _data : any = {};
 
   set dryLevelPercent(value : number) {
@@ -134,7 +137,7 @@ const auto : AutoMakerLibrary = {
   dryLevelPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName, pluginType },
       param: parameterLibrary.dryLevelPercent,
       startTime: 0,
       duration: 0,
@@ -146,7 +149,7 @@ const auto : AutoMakerLibrary = {
   wetLevelPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName, pluginType },
       param: parameterLibrary.wetLevelPercent,
       startTime: 0,
       duration: 0,
@@ -158,7 +161,7 @@ const auto : AutoMakerLibrary = {
   earlyLevelPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName, pluginType },
       param: parameterLibrary.earlyLevelPercent,
       startTime: 0,
       duration: 0,
@@ -170,7 +173,7 @@ const auto : AutoMakerLibrary = {
   earlySendPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName, pluginType },
       param: parameterLibrary.earlySendPercent,
       startTime: 0,
       duration: 0,
@@ -182,7 +185,7 @@ const auto : AutoMakerLibrary = {
   lateLevelPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName, pluginType },
       param: parameterLibrary.lateLevelPercent,
       startTime: 0,
       duration: 0,
@@ -194,7 +197,7 @@ const auto : AutoMakerLibrary = {
   sizeMeters(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName, pluginType },
       param: parameterLibrary.sizeMeters,
       startTime: 0,
       duration: 0,
@@ -206,7 +209,7 @@ const auto : AutoMakerLibrary = {
   widthPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName, pluginType },
       param: parameterLibrary.widthPercent,
       startTime: 0,
       duration: 0,
@@ -218,7 +221,7 @@ const auto : AutoMakerLibrary = {
   predelayMs(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName, pluginType },
       param: parameterLibrary.predelayMs,
       startTime: 0,
       duration: 0,
@@ -230,7 +233,7 @@ const auto : AutoMakerLibrary = {
   decaySeconds(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName, pluginType },
       param: parameterLibrary.decaySeconds,
       startTime: 0,
       duration: 0,
@@ -242,7 +245,7 @@ const auto : AutoMakerLibrary = {
   diffusePercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName, pluginType },
       param: parameterLibrary.diffusePercent,
       startTime: 0,
       duration: 0,
@@ -254,7 +257,7 @@ const auto : AutoMakerLibrary = {
   spinHz(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName,  pluginType },
       param: parameterLibrary.spinHz,
       startTime: 0,
       duration: 0,
@@ -266,7 +269,7 @@ const auto : AutoMakerLibrary = {
   wanderPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName,  pluginType },
       param: parameterLibrary.wanderPercent,
       startTime: 0,
       duration: 0,
@@ -278,7 +281,7 @@ const auto : AutoMakerLibrary = {
   highCutHz(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName,  pluginType },
       param: parameterLibrary.highCutHz,
       startTime: 0,
       duration: 0,
@@ -290,7 +293,7 @@ const auto : AutoMakerLibrary = {
   earlyDampHz(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName,  pluginType },
       param: parameterLibrary.earlyDampHz,
       startTime: 0,
       duration: 0,
@@ -302,7 +305,7 @@ const auto : AutoMakerLibrary = {
   lateDampHz(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName,  pluginType },
       param: parameterLibrary.lateDampHz,
       startTime: 0,
       duration: 0,
@@ -314,7 +317,7 @@ const auto : AutoMakerLibrary = {
   lowBoostPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName,  pluginType },
       param: parameterLibrary.lowBoostPercent,
       startTime: 0,
       duration: 0,
@@ -326,7 +329,7 @@ const auto : AutoMakerLibrary = {
   lowBoostHz(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName,  pluginType },
       param: parameterLibrary.lowBoostHz,
       startTime: 0,
       duration: 0,
@@ -338,7 +341,7 @@ const auto : AutoMakerLibrary = {
   lowCutHz(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName: 'Podolski',  pluginType: PluginType.VST2 },
+      plugin: { pluginName, pluginType },
       param: parameterLibrary.lowCutHz,
       startTime: 0,
       duration: 0,
@@ -351,13 +354,12 @@ const auto : AutoMakerLibrary = {
 
 export class DragonflyRoom extends FluidPlugin {
   constructor(
-    public readonly parameter : DragonflyRoomState = {},
-  ) { super() }
+    public readonly parameter : DragonflyRoomParameters = {},
+  ) { super('DragonflyRoomReverb-vst', PluginType.VST2) }
 
-  readonly pluginName = 'DragonflyRoomReverb-vst';
-  readonly pluginType = PluginType.VST2;
   readonly parameterLibrary = DragonflyRoom.parameterLibrary;
 
+  // Static members
   static readonly parameterLibrary = parameterLibrary;
   static readonly auto = auto;
 }

@@ -112,11 +112,11 @@ interface AutoMakerLibrary {
 }
 
 class FluidPlugin {
-  readonly pluginName : string;
-  readonly pluginType : PluginType;
   readonly parameter : PluginParameterValues = {};
   readonly parameterLibrary : PluginParameterLibrary = {};
   readonly auto : AutoMakerLibrary = {};
+
+  constructor (public readonly pluginName : string, public readonly pluginType : PluginType) {}
 
   /**
    * Get as much information as possible about the state of a parameter.
