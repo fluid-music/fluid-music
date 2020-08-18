@@ -94,17 +94,68 @@ interface PluginParameterState {
 }
 
 /**
- * A partial set storing the state of plugin parameters
+ * An collection of the plugin's explicit parameter values. It might only hold
+ * a subset of the plugin's parameters.
  */
-interface PluginParameterState {
+interface PluginParameterValues {
   [key : string]: any;
 }
 
 /**
- * @param
+ * Plugin should have helpers for making automation points
  */
-interface PluginInstance {
-  readonly pluginName: string,
-  readonly pluginType: PluginType,
-  readonly parameters: PluginParameterState,
+interface AutoMaker {
+  (value: any): PluginAutomationEvent;
+}
+interface AutoMakerLibrary {
+  [key: string]: AutoMaker;
+}
+
+class FluidPlugin {
+  readonly pluginName : string;
+  readonly pluginType : PluginType;
+  readonly parameter : PluginParameterValues = {};
+  readonly parameterLibrary : PluginParameterLibrary = {};
+  readonly auto : AutoMakerLibrary = {};
+
+  /**
+   * Get as much information as possible about the state of a parameter.
+   *
+   * @param key the JavaScript friendly parameter identifier.
+   */
+  getParameterState(key : string) : PluginParameterState {
+    const state : PluginParameterState = {};
+
+    if (!this.parameter.hasOwnProperty(key))
+      return state;
+
+    state.explicitValue = this.parameter[key];
+
+    if (this.parameterLibrary.hasOwnProperty(key)) {
+      const param = this.parameterLibrary[key];
+      if (param.normalize) {
+        state.normalizedValue = param.normalize(state.explicitValue);
+      }
+    }
+
+    return state;
+  }
+
+  /**
+   * There are two ways to identify a plugin parameter
+   * 1. The javascript friendly "key" (ex. `lfo1Speed`)
+   * 2. JUCE's parameter name (ex. `LFO 1: Speed`)
+   *
+   * This function attempts to get JUCE's name from the key. If the key is not
+   * registered on the plugin, just return the `key` argument directly. This
+   * behavior is designed to make it possible to use and configure plugins even
+   * if there is no adapter available.
+   *
+   * @param key the JavaScript friendly parameter identifier
+   */
+  getParameterName(key : string) : string {
+    return (this.parameterLibrary.hasOwnProperty(key))
+      ? this.parameterLibrary[key].name
+      : key;
+  }
 }

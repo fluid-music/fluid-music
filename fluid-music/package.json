@@ -2,7 +2,7 @@
   "name": "fluid-music",
   "version": "0.3.1",
   "description": "Basic cybr client examples",
-  "main": "src/index.js",
+  "main": "built/src/index.js",
   "scripts": {
     "watch": "nodemon -e .js,.mjs,.json,.yaml,.yml src/index.js",
     "test": "mocha",
