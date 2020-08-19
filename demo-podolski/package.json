@@ -9,7 +9,7 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
-    "@fluid-music/kit": "^1.0.1",
+    "@fluid-music/kit": "^2.0.0",
     "ramda": "^0.27.0"
   }
 }

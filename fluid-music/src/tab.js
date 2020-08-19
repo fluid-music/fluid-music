@@ -92,7 +92,7 @@ const parseTab = function(rhythm, nPattern, nLibrary) {
 
       let event = Object.assign({}, note);
       event.startTime = start;
-      event.length = end - start;
+      event.duration = end - start;
 
       clip.events.push(event);
     }

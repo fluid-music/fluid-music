@@ -44,7 +44,7 @@ const clip = {
    */
   length(durationInWholeNotes, trimStart=false) {
     if (typeof durationInWholeNotes !== 'number')
-      throw new Error('clip.length requires a duration in quarter notes');
+      throw new Error('clip.length requires a duration in whole notes');
 
     return {
       address: '/clip/set/length',
