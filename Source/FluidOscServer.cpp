@@ -998,6 +998,7 @@ OSCMessage FluidOscServer::getPluginParamReport(const juce::OSCMessage& message)
         array.add(*v);
 
         object->setProperty("name", param->paramName);
+        object->setProperty("defaultValue", param->getDefaultValue());
         object->setProperty("currentExplicitValue", param->getCurrentExplicitValue());
         object->setProperty("currentNormalizedValue", param->getCurrentNormalisedValue());
         object->setProperty("currentValue", param->getCurrentValue());

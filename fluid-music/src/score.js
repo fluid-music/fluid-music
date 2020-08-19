@@ -371,7 +371,7 @@ function midiEventsToFluidMessage(midiEvents, context) {
         : (typeof event.v === 'number')
           ? event.v
           : undefined;
-      msg.push(fluid.midiclip.note(event.n, event.startTime, event.length, velocity));
+      msg.push(fluid.midiclip.note(event.n, event.startTime, event.duration, velocity));
     }
   }
 
@@ -410,7 +410,7 @@ function fileEventsToFluidMessage(fileEvents, context) {
 
     // adjust the clip length, unless the event is a .oneShot
     if (!event.oneShot)
-      msg.push(fluid.clip.length(event.length));
+      msg.push(fluid.clip.length(event.duration));
 
     // apply fade in/out times (if specified)
     if (typeof event.fadeOutSeconds === 'number' || typeof event.fadeInSeconds === 'number')
