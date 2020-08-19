@@ -61,7 +61,7 @@ const rpp = fluid.tracksToReaperProject(session.tracks, 96);
 
 // const client = new fluid.Client();
 // client.send([
-//   fluid.msg.clear(),
+//   fluid.content.clear(),
 //   fluid.transport.loop(0, session.duration),
 //   msg,
 // ]);
