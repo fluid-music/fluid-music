@@ -67,5 +67,5 @@ const session = fluid.score.parse(score, {nLibrary, dLibrary, eventMappers: drum
 
 // console.dir(session.tracks, {depth: null})
 
-const content = fluid.trackToReaperProject(session.tracks, 96)
+const content = fluid.tracksToReaperProject(session.tracks, 96)
 console.log(content.dump())
