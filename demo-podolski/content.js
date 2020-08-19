@@ -56,13 +56,15 @@ const score = {
 };
 
 const session = fluid.score.parse(score, {eventMappers: drums.eventMappers}, undefined, template);
-const content = fluid.score.tracksToFluidMessage(session.tracks)
+const msg = fluid.score.tracksToFluidMessage(session.tracks);
+const rpp = fluid.tracksToReaperProject(session.tracks, 96);
 
-const client = new fluid.Client();
-client.send([
-  fluid.content.clear(),
-  fluid.transport.loop(0, session.duration),
-  content,
-]);
+// const client = new fluid.Client();
+// client.send([
+//   fluid.msg.clear(),
+//   fluid.transport.loop(0, session.duration),
+//   msg,
+// ]);
 
-// console.dir(session.tracks, {depth: null})
+// console.log(session.tracks.snare.clips[0].fileEvents);
+console.log(rpp.dump())

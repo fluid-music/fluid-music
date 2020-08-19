@@ -63,6 +63,8 @@ juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
     DynamicObject::Ptr object = new DynamicObject();
     object->setProperty("shortName10", selectedPlugin->getShortName(10));
     object->setProperty("name",selectedPlugin->getName());
+    object->setProperty("vendor", selectedPlugin->getVendor());
+    object->setProperty("isSynth", selectedPlugin->isSynth());
     object->setProperty("idString", selectedPlugin->getIdentifierString());
     object->setProperty("automatableParamsCount", selectedPlugin->getNumAutomatableParameters());
     object->setProperty("pluginType", selectedPlugin->getPluginType());

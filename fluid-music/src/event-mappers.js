@@ -26,6 +26,8 @@ const random     = require('./random');
  * currently being processed, including the track and clip that contain the
  * note.
  * @typedef {Object} ClipEventContext
+ * @property {number} bpm the bpm of the clip, this is needed in 
+ *    tracksToReaperProject.
  * @property {Clip} clip the Clip that contains the current event
  * @property {Track} track the Track that contains the current event
  * @property {TracksObject} tracks
@@ -63,10 +65,10 @@ function mapVelocityNumbersToDynamic(event, context) {
 
 /**
  * Copy the basic, generic properties from the source to the target. This
- * includes the `.d`ynamic (if it exists), `.startTime` and `.length`.
+ * includes the `.d`ynamic (if it exists), `.startTime` and `.duration`.
  * 
  * This is useful when an eventMapper function returns a different event than
- * the one that was passed in, but needs the same .startTime, .length, and
+ * the one that was passed in, but needs the same .startTime, .duration, and
  * .d as the input note.
  * @param {Event} source
  * @param {Event} target
@@ -74,7 +76,7 @@ function mapVelocityNumbersToDynamic(event, context) {
  */
 function copyBasicEventProperties(source, target) {
   target.startTime = source.startTime;
-  target.length = source.length;
+  target.duration = source.duration;
   if (source.hasOwnProperty('d')) target.d = source.d;
   return target;
 }
@@ -198,7 +200,7 @@ function mapIntensityLayers(event, context) {
   // NOTE: file1 example { type: 'file', path: 'media/kick.wav' }
   // {
   //   startTime: 0,
-  //   length: 0.25,
+  //   duration: 0.25,
   //   type: 'iLayers',
   //   iLayers: [file1, file2],
   //   d: { dbfs: -2, intensity: 0.7, v: 64 },
