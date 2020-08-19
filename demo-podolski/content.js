@@ -55,7 +55,6 @@ const dLibrary = {
 };
 
 const session = fluid.score.parse(score, {nLibrary, dLibrary, eventMappers: drums.eventMappers}, undefined, template);
-session.tracks.bpm = 96;
 // const content = fluid.score.tracksToFluidMessage(session.tracks)
 // console.log(content)
 
@@ -68,5 +67,5 @@ session.tracks.bpm = 96;
 
 // console.dir(session.tracks, {depth: null})
 
-const content = fluid.trackToReaperProject(session.tracks)
+const content = fluid.trackToReaperProject(session.tracks, 96)
 console.log(content.dump())
