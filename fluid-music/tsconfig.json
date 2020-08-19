@@ -2,9 +2,14 @@
   "compilerOptions": {
     "outDir": "./built",
     "allowJs": true,
-    "target": "es6"
+    "target": "es6",
+    "module": "CommonJS",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "declaration": true,
+    "noImplicitAny": false
   },
-  "include": ["./src/**/*"],  
+  "include": ["./src/**/*"],
   "watchOptions": {
     "watchFile": "useFsEvents",
     "watchDirectory": "useFsEvents",

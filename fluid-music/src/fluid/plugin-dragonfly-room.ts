@@ -1,6 +1,6 @@
 
-const plugin = require('./plugin');
-const fluid = { plugin };
+import plugin from './plugin';
+const fluid = { plugin: plugin };
 
 const linearLocal  = (min, max) => (v) => (v - min) / (max - min);
 const mapLocal     = (v, min, max) => linearLocal(min, max)(v);
@@ -26,8 +26,7 @@ lowBoostPercent
 lowBoostHz
 lowCutHz
 */
-
-const dragonflyRoom = module.exports = {
+const dragonflyRoom = {
   type: 'VST2',
   name: 'DragonflyRoomReverb-vst',
   /**
@@ -300,6 +299,6 @@ const dragonflyRoom = module.exports = {
       ];
     },
   },
-
-  
 };
+
+export default dragonflyRoom;

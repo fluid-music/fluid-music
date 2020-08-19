@@ -1,5 +1,5 @@
 const R      = require('ramda');
-const fluid  = require('../fluid-music')
+const fluid  = require('../fluid-music');
 const drums  = require('@fluid-music/kit');
 const chords = require('./chords');
 

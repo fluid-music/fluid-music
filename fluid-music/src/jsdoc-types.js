@@ -116,7 +116,7 @@
 /**
  * @typedef {Object} Track
  * @param {Clip[]} clips
- * @param {FluidPlugin[]} plugins
+ * @param {FluidPluginJSDOC[]} plugins
  * @param {string} name The Track name
  * @param {number} gain postFx track gain in dbfs
  * @param {number} pan postFx track pan (-1 to 1)

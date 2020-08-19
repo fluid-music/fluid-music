@@ -1,8 +1,8 @@
-const linear = (min, max) => (v) => (v - min) / (max - min);
-const map = (v, min, max) => linear(min, max)(v);
-const percent = linear(0, 100);
+export const linear = (min : number, max: number) => (v: number) => (v - min) / (max - min);
+export const map = (v: number, min: number, max : number) => linear(min, max)(v);
+export const percent = linear(0, 100);
 
-enum PluginType {
+export enum PluginType {
   unknown = 'unknown',
   VST2 = 'VST2',
   VST3 = 'VST3',
@@ -17,7 +17,7 @@ enum PluginType {
  *    so the 1 will refer to the second instance of the plugin, and 2 will refer
  *    to the third instance.
  */
-interface PluginSelector {
+export interface PluginSelector {
   readonly pluginName : string;
   readonly pluginType : PluginType;
   nth? : bigint;
@@ -37,7 +37,7 @@ interface PluginSelector {
  * @param units Examples: 'hz', 'percent', or 'db'
  * @param normalize a function to convert a value in the specified units to (0-1)
  */
-interface PluginParameter {
+export interface PluginParameter {
   readonly name: string;
   readonly units?: string;
   normalize?(input : number) : number;
@@ -61,7 +61,7 @@ interface PluginParameter {
  * }
  * ```
  */
-interface PluginParameterLibrary {
+export interface PluginParameterLibrary {
   [key : string]: PluginParameter;
 }
 
@@ -75,7 +75,7 @@ interface PluginParameterLibrary {
  * a method for normalizing `value`, then the automation event will result in
  * a PluginParameterState with a `.normalizedValue` property.
  */
-interface PluginAutomationEvent extends AutomationPoint {
+export interface PluginAutomationEvent extends AutomationPoint {
   readonly type : string;
   plugin: PluginSelector;
   param: PluginParameter;
@@ -88,7 +88,7 @@ interface PluginAutomationEvent extends AutomationPoint {
 /**
  * Found in plugin instances
  */
-interface PluginParameterState {
+export interface PluginParameterState {
   normalizedValue? : number;
   explicitValue? : number;
 }
@@ -97,17 +97,17 @@ interface PluginParameterState {
  * An collection of the plugin's explicit parameter values. It might only hold
  * a subset of the plugin's parameters.
  */
-interface PluginParameterValues {
+export interface PluginParameterValues {
   [key : string]: any;
 }
 
 /**
  * Plugins should have helpers for making automation events
  */
-interface AutoMaker {
+export interface AutoMaker {
   (value: any): PluginAutomationEvent;
 }
-interface AutoMakerLibrary {
+export interface AutoMakerLibrary {
   [key: string]: AutoMaker;
 }
 
@@ -115,7 +115,7 @@ interface AutoMakerLibrary {
  * AutomationPoint object exist in an automation lane, Note that this is different
  * from an AutomationEvent, which are can be found in NoteLibraries and Clips.
  */
-interface AutomationPoint {
+export interface AutomationPoint {
   startTime : number;
   curve: number;
   value?: number;
@@ -125,7 +125,8 @@ interface Automation {
   [key: string] : AutomationPoint[];
 }
 
-class FluidPlugin {
+export class FluidPlugin {
+  static readonly PluginType = PluginType;
   readonly parameter : PluginParameterValues = {};
   readonly parameterLibrary : PluginParameterLibrary = {};
   readonly automation : Automation = {};
@@ -151,7 +152,7 @@ class FluidPlugin {
 
     if (this.parameterLibrary.hasOwnProperty(key)) {
       const param = this.parameterLibrary[key];
-      if (param.normalize) {
+      if (param.normalize && typeof state.explicitValue === 'number') {
         state.normalizedValue = param.normalize(state.explicitValue);
       }
     }
@@ -168,7 +169,7 @@ class FluidPlugin {
    * registered on the plugin, just return the `key` argument directly. This
    * behavior is designed to make it possible to use and configure plugins with
    * the FludPlugin base class even when there is no adapter available.
-   * 
+   *
    * When there is no adapter available, you can just set a parameter directly:
    * `pluginInstance.parameter["Wet Level"] = 0.8;
    *

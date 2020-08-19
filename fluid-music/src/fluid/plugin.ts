@@ -1,8 +1,5 @@
-const fs = require('fs');
+import fs = require('fs');
 
-/**
- * @namespace plugin
- */
 const plugin = {
   /**
    * Creates an object that looks like this:
@@ -258,7 +255,7 @@ const plugin = {
 
     if (typeof file === 'string') {
       buffer = fs.readFileSync(file);
-      if (!buffer) throw new Error('plugin.loadTrkpreset failed to load file: ' + filename);
+      if (!buffer) throw new Error('plugin.loadTrkpreset failed to load file: ' + file);
     } else if (Buffer.isBuffer(file)) {
       buffer = file;
     } else {
@@ -338,4 +335,4 @@ const plugin = {
   }
 };
 
-module.exports = plugin;
+export default plugin;

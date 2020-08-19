@@ -1,3 +1,5 @@
+import { PluginType, FluidPlugin, percent, linear, PluginAutomationEvent } from './plugin';
+
 const pluginName = 'DragonflyRoomReverb-vst';
 const pluginType = PluginType.VST2;
 
@@ -40,7 +42,7 @@ class DragonflyRoomStateRangeChecks implements DragonflyRoomParameters {
   get dryLevelPercent() { return this._data.dryLevelPercent; }
 }
 
-const parameterLibrary : PluginParameterLibrary = {
+const parameterLibrary = {
   dryLevelPercent: {
     name: 'Dry Level',
     units: 'percent',
@@ -133,7 +135,7 @@ const parameterLibrary : PluginParameterLibrary = {
   },
 };
 
-const auto : AutoMakerLibrary = {
+const makeAutomation = {
   dryLevelPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
@@ -357,9 +359,10 @@ export class DragonflyRoom extends FluidPlugin {
     public readonly parameter : DragonflyRoomParameters = {},
   ) { super('DragonflyRoomReverb-vst', PluginType.VST2) }
 
-  readonly parameterLibrary = DragonflyRoom.parameterLibrary;
+  readonly parameterLibrary = parameterLibrary;
+  readonly makeAutomation = makeAutomation;
 
   // Static members
   static readonly parameterLibrary = parameterLibrary;
-  static readonly auto = auto;
+  static readonly makeAutomation = makeAutomation;
 }

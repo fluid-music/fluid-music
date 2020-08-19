@@ -1,6 +1,10 @@
+// New Style Plugins
+import { DragonflyRoom } from './plugin-dradonfly-room';
+import { FluidPlugin, PluginType } from './plugin';
+
 // OSC Message Helpers
-const plugin = require('./fluid/plugin');
-const pluginDragonflyRoomReverb = require('./fluid/plugin-dragonfly-room');
+import plugin from './fluid/plugin';
+import pluginDragonflyRoomReverb from './fluid/plugin-dragonfly-room';
 const pluginPodolski = require('./fluid/plugin-podolski');
 const pluginTCompressor = require('./fluid/plugin-tcompressor-vst');
 const pluginTEqualiser = require('./fluid/plugin-tequaliser');
@@ -20,6 +24,7 @@ const clip = require('./fluid/clip');
 const content = require('./fluid/content');
 const tempo = require('./fluid/tempo');
 
+
 // Other Stuff
 const noteLibrary = require('./note-library');
 const noteTypes = require('./note-types');
@@ -37,7 +42,7 @@ const random = require('./random');
 // JSDoc
 const jsDocTypes = require('./jsdoc-types');
 
-module.exports = {
+export = {
   audioclip,
   audiofile,
   audiotrack,
@@ -71,4 +76,7 @@ module.exports = {
   trackAutomation,
   transport,
   groove,
+  FluidPlugin,
+  PluginType,
+  DragonflyRoom,
 };

@@ -3,6 +3,7 @@
   "version": "0.3.1",
   "description": "Basic cybr client examples",
   "main": "built/src/index.js",
+  "types": "built/src/index.d.ts",
   "scripts": {
     "watch": "nodemon -e .js,.mjs,.json,.yaml,.yml src/index.js",
     "test": "mocha",
