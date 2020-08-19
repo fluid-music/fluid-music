@@ -26,6 +26,8 @@ const random     = require('./random');
  * currently being processed, including the track and clip that contain the
  * note.
  * @typedef {Object} ClipEventContext
+ * @property {number} bpm the bpm of the clip, this is needed in 
+ *    tracksToReaperProject.
  * @property {Clip} clip the Clip that contains the current event
  * @property {Track} track the Track that contains the current event
  * @property {TracksObject} tracks
