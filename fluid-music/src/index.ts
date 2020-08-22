@@ -2,6 +2,7 @@
 import { DragonflyRoom } from './plugin-dradonfly-room';
 import { FluidPlugin, PluginType } from './plugin';
 import { tracksToFluidMessage } from './tracksToFluidMessage';
+import { FluidSession } from './FluidSession';
 
 // OSC Message Helpers
 import plugin from './fluid/plugin';
@@ -87,4 +88,6 @@ export = {
   FluidPlugin,
   PluginType,
   DragonflyRoom,
+
+  FluidSession,
 };

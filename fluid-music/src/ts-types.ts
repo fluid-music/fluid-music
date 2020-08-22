@@ -51,14 +51,13 @@ export interface ScoreConfig {
   nLibrary?: xLibrary;
   dLibrary?: xLibrary;
   eventMappers?: any[];
-  r?: string,
-  d?: string,
+  r?: string;
+  d?: string;
 }
 
 export interface ScoreObject {
   [key : string] : any;
   [key : number] : any;
-
 };
 
 /**
@@ -67,7 +66,7 @@ export interface ScoreObject {
  * @member duration? length measured in whole notes
  * @member automation? 
  */
-export interface Track extends ScoreConfig {
+export interface Track {
   name: string;
   gain: number;
   pan: number;
@@ -82,12 +81,7 @@ export interface TracksObject {
   [name: string] : Track;
 }
 
-export interface Session {
-  tracks: TracksObject;
-  regions: Session;
-  startTime: number;
-  duration: number;
-}
+
 
 /**
  * Score.parse passes ClipContext objects as the second argument to
@@ -113,7 +107,6 @@ export interface Session {
 export interface ClipEventContext {
   clip: Clip;
   track: Track;
-  tracks: TracksObject;
   clipIndex: number;
   data: object;
   bpm?: number;

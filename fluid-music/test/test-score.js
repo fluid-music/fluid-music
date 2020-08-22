@@ -369,9 +369,9 @@ describe('score', () => {
       });
     }); // describe "with eventMappers"
 
-    describe.skip('score.parse with automation points', () => {
+    describe('score.parse with automation points', () => {
       const p1 = { name: 'cutoff'  };
-      const p2 = { name: 'send lvl', units: '%', normalize: v => v * 0.01 };
+      const p2 = { name: 'send lvl' };
 
       const nLibrary = {
         a: {
@@ -414,19 +414,10 @@ describe('score', () => {
       });
 
       it('should add a plugin to the data', () => {
-        s1.tracks.bass.plugins.length.should.equal(1);
-        s1.tracks.bass.plugins[0].name.should.equal('examplePlugin');
+        s1.tracks.bass.plugins[0].pluginName.should.equal('examplePlugin');
         s1.tracks.bass.plugins[0].automation.should.containDeep({
-          'cutoff':   { points: [ { startTime: 0,   explicitValue: 0.5 } ] },
-          'send lvl': { points: [ { startTime: 0.5, normalizedValue: 0.5 } ] },
-        });
-      });
-
-      it('should add many plugins if they are needed', () => {
-        const s2 = score.parse({ bass: ['', 'n']}, config);
-        s2.tracks.bass.plugins.length.should.equal(nLibrary.n.plugin.nth + 1);
-        s2.tracks.bass.plugins[nLibrary.n.plugin.nth].automation.should.deepEqual({
-          'cutoff': { points: [ {startTime: 1, explicitValue: .25 }] },
+          'cutoff':   { points: [ { startTime: 0,   value: 0.5, curve: 0 } ] },
+          'send lvl': { points: [ { startTime: 0.5, value: 50, curve: 0 } ] },
         });
       });
 
@@ -434,7 +425,7 @@ describe('score', () => {
         const s2 = score.parse({ bass: '..p.'}, config);
         s2.tracks.bass.plugins.should.be.empty();
         s2.tracks.bass.automation.should.deepEqual({
-          'pan': { points: [{startTime: 0.5, explicitValue: -0.5}]},
+          'pan': { points: [{startTime: 0.5, value: -0.5, curve: 0}]},
         });
       });
 
@@ -501,14 +492,14 @@ describe('score', () => {
     describe('tracksToFluidMessage with automation', () => {
       const param1 = { name: 'cutoff' };
       const param2 = { name: 'send lvl', units: '%', normalize: v => v * 0.01 };
-      const plug1  = { name: 'examplePlugin' }
+      const plug1  = { pluginName: 'examplePlugin', type: 'unknown' }
       const nLibrary = {
         a: { plugin: plug1, param: param1, value: .5, type: 'pluginAuto' },
         b: { plugin: plug1, param: param2, value: 50, type: 'pluginAuto' },
       };
 
       it('should add fluid messages for automation points', () => {
-        const s1   = score.parse({bass: '.a.b', r: '1234', nLibrary});
+        const s1   = score.parse({bass: '.a.b', r: '1234', nLibrary}, );
         const msg  = score.tracksToFluidMessage(s1.tracks);
         const flat = flatten(msg);
   

@@ -1,0 +1,15 @@
+{
+  "name": "demo-typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Charles Holbrow",
+  "license": "ISC",
+  "dependencies": {
+    "@fluid-music/kit": "^2.0.0",
+    "ramda": "^0.27.1"
+  }
+}

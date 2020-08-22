@@ -31,7 +31,6 @@ import { mapAutomation }  from './event-mappers-ts';
  *    tracksToReaperProject.
  * @property {Clip} clip the Clip that contains the current event
  * @property {Track} track the Track that contains the current event
- * @property {TracksObject} tracks
  * @property {number} clipIndex index of the clip within the track
  * @property {number} [eventIndex] index of the event within the clip.
  *    score.parse updates this automatically before each eventMapper

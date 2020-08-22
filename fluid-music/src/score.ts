@@ -5,8 +5,9 @@ const mappers = require('./event-mappers');
 
 const reservedKeys = tab.reservedKeys;
 
-import { Session, Clip, ScoreObject, TracksObject, Track, ClipEventContext } from './ts-types';
-import { FluidPlugin } from './plugin';
+import { ScoreObject, TracksObject, Track, ClipEventContext } from './ts-types';
+import { FluidSession } from './FluidSession'
+import { FluidTrack } from './FluidTrack';
 
 
 /**
@@ -25,22 +26,20 @@ import { FluidPlugin } from './plugin';
  *   `.r` property.
  * @param {string} [config.trackKey] name of the track being parsed
  * @param {string} [config.d] optional dynamicLibrary
- * @param {NoteLibrary} [config.dLibrary]
- * @param {NoteLibrary} [config.nLibrary] (see tab.parseTab for details about
- *   `NoteLibrary`). If not specified, `scoreObject` must have a `.nLibrary` property.
- * @param {Session} [session] Only used in recursion. Consuming code should not
- *    supply this argument.
- * @returns {Session} representation of the score.
- */
-function parse(scoreObject, config, session, tracks: TracksObject = {}) {
-  const isOutermost = (session === undefined);
-  if (isOutermost) session = {};
 
+ */
+function parse(scoreObject, config,
+    session : FluidSession = new FluidSession({}),
+    previousResults)
+  {
+
+  const isOutermost = !previousResults;
+  if (!previousResults) previousResults = { duration: 0};
   if (!config) config = {};
   else config = Object.assign({}, config); // Shallow copy should be ok
-  //                                                                               ensure that we do note modify the n/dLibrary, as it may be reused later
-  if (scoreObject.hasOwnProperty('nLibrary'))     config.nLibrary = Object.assign((config.nLibrary && Object.assign({}, config.nLibrary))|| {}, scoreObject.nLibrary);
-  if (scoreObject.hasOwnProperty('dLibrary'))     config.dLibrary = Object.assign((config.dLibrary && Object.assign({}, config.dLibrary))|| {}, scoreObject.dLibrary);
+  //                                                                               ensure that we do not modify the n/dLibrary, as it may be reused later
+  if (scoreObject.hasOwnProperty('nLibrary'))     config.nLibrary = Object.assign((config.nLibrary && Object.assign({}, config.nLibrary)) || {}, scoreObject.nLibrary);
+  if (scoreObject.hasOwnProperty('dLibrary'))     config.dLibrary = Object.assign((config.dLibrary && Object.assign({}, config.dLibrary)) || {}, scoreObject.dLibrary);
   if (scoreObject.hasOwnProperty('r'))            config.r = scoreObject.r;
   if (scoreObject.hasOwnProperty('d'))            config.d = scoreObject.d;
   if (scoreObject.hasOwnProperty('eventMappers')) config.eventMappers = scoreObject.eventMappers
@@ -67,60 +66,44 @@ function parse(scoreObject, config, session, tracks: TracksObject = {}) {
   // The object handler must:
   // - return a TracksObject representation of the ScoreObject input
 
-  let returnValue : any = {
-    startTime: config.startTime,
-    duration: 0,
-  };
-  if (isOutermost) {
-    returnValue.tracks = tracks;
-  }
-
   // create the track if it does not exist
-  if (config.trackKey) {
-    if (!tracks.hasOwnProperty(config.trackKey)) tracks[config.trackKey] = {
-      name: config.trackKey,
-      gain: 0,
-      pan: 0,
-      automation: {},
-      plugins: [],
-      clips: [],
-    }; // Create Track instance
-  }
+  config.trackKey && session.getOrCreateTrackByName(config.trackKey);
 
   if (Array.isArray(scoreObject)) {
     let arrayStartTime = config.startTime;
-    returnValue.regions = [];
+    let arrayDuration = 0;
+    let info = { duration: 0 };
     for (let o of scoreObject) {
-      config.startTime = arrayStartTime + returnValue.duration;
-      let result = parse(o, config, session, tracks);
-      returnValue.regions.push(result);
-      returnValue.duration += result.duration;
+      config.startTime = arrayStartTime + arrayDuration;
+      parse(o, config, session, info);
+      arrayDuration += info.duration;
     }
+    previousResults.duration = arrayDuration;
   } else if (typeof scoreObject === 'string') {
     // We have a string that can be parsed with parseTab
     if (typeof config.trackKey !== 'string')
       throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a track name`);
-    const track = tracks[config.trackKey];
+    const track = session.getOrCreateTrackByName(config.trackKey);
 
     // Get the dynamic and rhythm strings
-    const d = config.d || track.d || tracks.d; // may be undefined
-    const r = config.r || track.r || tracks.r; // must be defined
+    const d = config.d || track.scoreConfig.d || session.scoreConfig.d; // may be undefined
+    const r = config.r || track.scoreConfig.r || session.scoreConfig.r; // must be defined
     if (r === undefined)
       throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a rhythm`);
 
     // Make the nLibrary and dLibrary
     const nLibrary = {};
-    if (tracks.nLibrary) Object.assign(nLibrary, tracks.nLibrary);
-    if (track.nLibrary) Object.assign(nLibrary, track.nLibrary);
+    if (session.scoreConfig.nLibrary) Object.assign(nLibrary, session.scoreConfig.nLibrary);
+    if (track.scoreConfig.nLibrary) Object.assign(nLibrary, track.scoreConfig.nLibrary);
     if (config.nLibrary) Object.assign(nLibrary, config.nLibrary);
     const dLibrary = {};
-    if (tracks.dLibrary) Object.assign(dLibrary, tracks.dLibrary);
-    if (track.dLibrary) Object.assign(dLibrary, track.dLibrary);
+    if (session.scoreConfig.dLibrary) Object.assign(dLibrary, session.scoreConfig.dLibrary);
+    if (track.scoreConfig.dLibrary) Object.assign(dLibrary, track.scoreConfig.dLibrary);
     if (config.dLibrary) Object.assign(dLibrary, config.dLibrary);
 
     // create the clip
     const rhythmObject = tab.parseRhythm(r);
-    const resultClip = tab.parseTab(rhythmObject, scoreObject, nLibrary, d, dLibrary);
+    const resultClip = tab.parseTab(rhythmObject, scoreObject, nLibrary);
     resultClip.startTime = config.startTime;
     if (config.eventMappers) resultClip.eventMappers = config.eventMappers;
     // add dynamics
@@ -128,21 +111,27 @@ function parse(scoreObject, config, session, tracks: TracksObject = {}) {
       const getDynamic = tab.createDynamicGetter(rhythmObject, d, dLibrary);
       for (const event of resultClip.events) event.d = getDynamic(event.startTime);
     }
-    tracks[config.trackKey].clips.push(resultClip);
-    returnValue = resultClip;
+    track.clips.push(resultClip);
+    previousResults.duration = resultClip.duration;
   } else {
     // Assume we have a JavaScript Object
     for (let [key, val] of Object.entries(scoreObject)) {
       if (reservedKeys.hasOwnProperty(key) && key !== 'clips') continue;
       if (key !== 'clips') config.trackKey = key; // if key='clips' use parent key
-      let result = parse(val, config, session, tracks);
-      if (result.duration > returnValue.duration) returnValue.duration = result.duration;
-      returnValue[config.trackKey] = result;
+      let info = { duration: 0 };
+      parse(val, config, session, info);
+      if (info.duration > previousResults.duration) previousResults.duration = info.duration;
+      // returnValue[config.trackKey] = result; // Charles: I don't think this is helpful, and it is defintiely complicated
     }
   }
 
-  if (isOutermost) applyEventMappers(returnValue)
-  return returnValue;
+  if (isOutermost) {
+    session.duration = previousResults.duration;
+    applyEventMappers(session);
+    return session;
+  };
+
+  return null;
 };
 
 /**
@@ -151,22 +140,21 @@ function parse(scoreObject, config, session, tracks: TracksObject = {}) {
  *    collection of mappers that are needed for proper parsing. To override
  *    the default mappers, specify null or an empty array.
  */
-function applyEventMappers(session : Session, ubiquitousMappers=mappers.default) {
+function applyEventMappers(session : FluidSession, ubiquitousMappers=mappers.default) {
 
-  for (const [trackName, track] of Object.entries(session.tracks)) {
-    if (tab.reservedKeys.hasOwnProperty(trackName)) {
+  for (const track of session.tracks) {
+    if (tab.reservedKeys.hasOwnProperty(track.name)) {
       continue;
     }
 
     if (!track.clips || !track.clips.length) {
-      console.log(`applyEventMappers: skipping ${trackName}, because it has no .clips`);
+      console.warn(`applyEventMappers: skipping ${track.name}, because it has no .clips`);
       continue;
     }
 
     track.clips.forEach((clip, clipIndex) => {
       const context : ClipEventContext = {
         track,
-        tracks: session.tracks,
         clip,
         clipIndex,
         data: {},
