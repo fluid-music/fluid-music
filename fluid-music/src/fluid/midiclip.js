@@ -68,7 +68,7 @@ const midiclip = {
    *    Be careful that all note.n properties are numbers.
    */
   create(clipName, startTimeInWholeNotes, durationInWholeNotes, notes) {
-    elements = [
+    const elements = [
       midiclip.select(clipName, startTimeInWholeNotes, durationInWholeNotes),
       midiclip.clear(),
     ];

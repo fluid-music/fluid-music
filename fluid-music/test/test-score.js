@@ -1,9 +1,11 @@
 const R = require('ramda');
 const should = require('should');
 const mocha = require('mocha');
-const score = require('../src/score');
-const audiotrack = require('../src/fluid/audiotrack');
-const fluid = require('../src/fluid');
+
+const fluid = require('..');
+const { FluidPlugin } = require('../built/src/plugin');
+const score = fluid.score
+const audiotrack = fluid.audiotrack;
 
 converters = require('./../src/converters');
 fluid.trackAutomation = require('../src/track-automation');
@@ -367,26 +369,26 @@ describe('score', () => {
       });
     }); // describe "with eventMappers"
 
-    describe('score.parse with automation points', () => {
+    describe.skip('score.parse with automation points', () => {
       const p1 = { name: 'cutoff'  };
       const p2 = { name: 'send lvl', units: '%', normalize: v => v * 0.01 };
 
       const nLibrary = {
         a: {
           type: 'pluginAuto',
-          plugin: { name: 'examplePlugin' }, // name only
+          plugin: { pluginName: 'examplePlugin', pluginType: 'unknown'}, // pluginName only
           param: p1,
           value: 0.5
         },
         b: {
           type: 'pluginAuto',
-          plugin: { name: 'examplePlugin' },
+          plugin: { pluginName: 'examplePlugin', pluginType: 'unknown' },
           param: p2,
           value: 50,
         },
         n: {
           type: 'pluginAuto',
-          plugin: { name: 'manyPlugin', nth: 2 },
+          plugin: { pluginName: 'manyPlugin', pluginType: 'unknown', nth: 2 },
           param: p1,
           value: .25,
         },
@@ -398,7 +400,18 @@ describe('score', () => {
       }
 
       const config = { nLibrary, r: '1234' };
-      const s1 = score.parse({bass: 'a.b.'}, config);
+      const s1 = score.parse({bass: 'a.b.'}, config, undefined, {
+        bass:{
+          plugins: [
+            new FluidPlugin('examplePlugin', 'unknown'),
+            new FluidPlugin('manyPlugin', 'unknown'),
+            new FluidPlugin('manyPlugin', 'unknown'),
+            new FluidPlugin('manyPlugin', 'unknown'),
+          ],
+          clips: [],
+          gain: 0, pan: 0, automation: {}, name: 'bass',
+        }
+      });
 
       it('should add a plugin to the data', () => {
         s1.tracks.bass.plugins.length.should.equal(1);
@@ -494,16 +507,16 @@ describe('score', () => {
         b: { plugin: plug1, param: param2, value: 50, type: 'pluginAuto' },
       };
 
-      const s1   = score.parse({bass: '.a.b', r: '1234', nLibrary});
-      const msg  = score.tracksToFluidMessage(s1.tracks);
-      const flat = flatten(msg);
-
-      const expected = [
-        fluid.plugin.setParamExplicitAt('cutoff', 0.5, 0.25, 0),
-        fluid.plugin.setParamNormalizedAt('send lvl', 0.5, 0.75, 0),
-      ];
-
       it('should add fluid messages for automation points', () => {
+        const s1   = score.parse({bass: '.a.b', r: '1234', nLibrary});
+        const msg  = score.tracksToFluidMessage(s1.tracks);
+        const flat = flatten(msg);
+  
+        const expected = [
+          fluid.plugin.setParamExplicitAt('cutoff', 0.5, 0.25, 0),
+          fluid.plugin.setParamNormalizedAt('send lvl', 0.5, 0.75, 0),
+        ];
+  
         const result = flat.filter(m => m.address === '/plugin/param/set/at');
         result.should.deepEqual(expected);
       });

@@ -1,6 +1,6 @@
 const should = require('should');
 const mocha = require('mocha');
-const fluid = require('../src/index');
+const fluid = require('..');
 const net = require('net')
 const osc = require('osc-min')
 const onConnection = require('./server-stub').onConnection;

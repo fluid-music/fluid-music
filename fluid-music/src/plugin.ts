@@ -121,13 +121,17 @@ export interface AutomationPoint {
   value?: number;
 }
 
-interface Automation {
-  [key: string] : AutomationPoint[];
+export interface AutomationLane {
+  points : AutomationPoint[];
+}
+
+export interface Automation {
+  [key: string] : AutomationLane;
 }
 
 export class FluidPlugin {
   static readonly PluginType = PluginType;
-  readonly parameter : PluginParameterValues = {};
+  readonly parameters : PluginParameterValues = {};
   readonly parameterLibrary : PluginParameterLibrary = {};
   readonly automation : Automation = {};
   readonly makeAutomation : AutoMakerLibrary = {};
@@ -145,10 +149,10 @@ export class FluidPlugin {
   getParameterState(key : string) : PluginParameterState {
     const state : PluginParameterState = {};
 
-    if (!this.parameter.hasOwnProperty(key))
+    if (!this.parameters.hasOwnProperty(key))
       return state;
 
-    state.explicitValue = this.parameter[key];
+    state.explicitValue = this.parameters[key];
 
     if (this.parameterLibrary.hasOwnProperty(key)) {
       const param = this.parameterLibrary[key];
@@ -171,7 +175,7 @@ export class FluidPlugin {
    * the FludPlugin base class even when there is no adapter available.
    *
    * When there is no adapter available, you can just set a parameter directly:
-   * `pluginInstance.parameter["Wet Level"] = 0.8;
+   * `pluginInstance.parameters["Wet Level"] = 0.8;
    *
    * @param key the JavaScript friendly parameter identifier
    */

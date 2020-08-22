@@ -1,12 +1,9 @@
 const fs = require('fs');
-const YAML = require('yaml');
 const should = require('should');
 const mocha = require('mocha');
 
-const converters = require('../src/converters');
-const fluid = require('../src/index');
-const file = fs.readFileSync('./test/test-content.yaml', 'utf8');
-const content = YAML.parse(file);
+const fluid = require('..');
+const converters = fluid.converters;
 
 describe('valueToWholeNotes', () => {
   it('should handle strings in the format "1/4"', () => {

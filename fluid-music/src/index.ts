@@ -1,6 +1,7 @@
 // New Style Plugins
 import { DragonflyRoom } from './plugin-dradonfly-room';
 import { FluidPlugin, PluginType } from './plugin';
+import { tracksToFluidMessage } from './tracksToFluidMessage';
 
 // OSC Message Helpers
 import plugin from './fluid/plugin';
@@ -38,10 +39,14 @@ const IpcClient = require('./FluidIpcClient');
 const converters = require('./converters');
 const m = require('./m');
 const random = require('./random');
-const tracksToReaperProject = require('./tracksToReaperProject')
+const tracksToReaperProject = require('./tracksToReaperProject');
 
 // JSDoc
 const jsDocTypes = require('./jsdoc-types');
+
+// Charles: this is for backwards compatibility, but should probably be removed
+// before v1.0.0
+score.tracksToFluidMessage = tracksToFluidMessage;
 
 export = {
   audioclip,
@@ -76,6 +81,7 @@ export = {
   tempo,
   trackAutomation,
   tracksToReaperProject,
+  tracksToFluidMessage,
   transport,
   groove,
   FluidPlugin,

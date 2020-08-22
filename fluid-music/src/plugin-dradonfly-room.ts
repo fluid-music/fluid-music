@@ -356,7 +356,7 @@ const makeAutomation = {
 
 export class DragonflyRoom extends FluidPlugin {
   constructor(
-    public readonly parameter : DragonflyRoomParameters = {},
+    public readonly parameters : DragonflyRoomParameters = {},
   ) { super('DragonflyRoomReverb-vst', PluginType.VST2) }
 
   readonly parameterLibrary = parameterLibrary;

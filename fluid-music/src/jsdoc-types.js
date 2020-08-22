@@ -1,7 +1,7 @@
 
 /**
  * A structured musical score encoded with `fluid.tab` notation
- * @typedef {Object.<string,ScoreObject>|Array<ScoreObject>} ScoreObject
+ * @typedef {Object.<string,ScoreObject>|Array<ScoreObject>} ScoreObjectJSDOC
  */
 
 /**
@@ -51,7 +51,7 @@
  * }
  * ```
  *
- * @typedef {Object.<string, Session>} Session
+ * @typedef {Object.<string, Session>} SessionJSDOC
  * @property {number} startTime
  * @property {number} duration
  * @property {Session[]} [regions] (Only on sessions created from an array)
@@ -110,11 +110,11 @@
  *   },
  * }
  * ```
- * @typedef {Object.<string, Track>} TracksObject
+ * @typedef {Object.<string, Track>} TracksObjectJSDOC
  */
 
 /**
- * @typedef {Object} Track
+ * @typedef {Object} TrackJSDOC
  * @param {Clip[]} clips
  * @param {FluidPluginJSDOC[]} plugins
  * @param {string} name The Track name
@@ -128,7 +128,7 @@
  */
 
 /**
- * @typedef {Object} Clip
+ * @typedef {Object} ClipJSDOC
  * @property {FluidEvent[]} events
  * @property {FluidEvent[]} midiEvents
  * @property {FluidEvent[]} fileEvents
