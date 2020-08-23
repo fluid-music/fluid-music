@@ -61,8 +61,8 @@ function tracksToReaperProject(tracksObject, bpm) {
 
     // Handle track specific automation.
     for (const [name, automation] of Object.entries(track.automation)) {
-      let autoObject;
-      let normalize = (v) => v;
+      let autoObject = null;
+      let normalize  = (v) => v;
 
       if (name === 'gain') {
         autoObject = new rppp.objects.ReaperVolumeAutomation();
