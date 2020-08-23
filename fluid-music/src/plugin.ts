@@ -77,8 +77,8 @@ export interface PluginParameterLibrary {
  */
 export interface PluginAutomationEvent extends AutomationPoint {
   readonly type : string;
-  plugin: PluginSelector;
-  param: PluginParameter;
+  pluginSelector: PluginSelector;
+  paramKey: string;
   startTime: number;
   duration: number;
   curve: number;
@@ -162,6 +162,16 @@ export class FluidPlugin {
     }
 
     return state;
+  }
+
+  getNormalizedValue(paramKey : string, value: number) {
+    if (this.parameterLibrary.hasOwnProperty(paramKey)) {
+      const param = this.parameterLibrary[paramKey];
+      if (param.normalize) {
+        return param.normalize(value);
+      }
+    }
+    return null;
   }
 
   /**

@@ -1,138 +1,10 @@
-import R from 'ramda';
 const tab     = require('./tab');
-const fluid   = require('./fluid/index');
 const mappers = require('./event-mappers');
 
 const reservedKeys = tab.reservedKeys;
 
-import { ScoreObject, TracksObject, Track, ClipEventContext } from './ts-types';
+import { ClipEventContext } from './ts-types';
 import { FluidSession } from './FluidSession'
-import { FluidTrack } from './FluidTrack';
-
-
-/**
- * score.parse is somewhat similar to tab.parse, except that it expects a
- * different input format, and outputs a `Session` instead of an array of notes.
- *
- * Typically called with two arguments (other args are for internal use only)
- * - A ScoreObject array
- * - A config object with (at minimum) a `.nLibrary` and `.r` rhythm
- *
- * @param {ScoreObject|String} scoreObject The Score Object to parse
- * @param {Object} [config]
- * @param {number} [config.startTime=0]
- * @param {string} [config.r] default rhythm string, which may be
- *    overridden by values in `scoreObject`. If not specified, `scoreObject` must have a
- *   `.r` property.
- * @param {string} [config.trackKey] name of the track being parsed
- * @param {string} [config.d] optional dynamicLibrary
-
- */
-function parse(scoreObject, config,
-    session : FluidSession = new FluidSession({}),
-    previousResults)
-  {
-
-  const isOutermost = !previousResults;
-  if (!previousResults) previousResults = { duration: 0};
-  if (!config) config = {};
-  else config = Object.assign({}, config); // Shallow copy should be ok
-  //                                                                               ensure that we do not modify the n/dLibrary, as it may be reused later
-  if (scoreObject.hasOwnProperty('nLibrary'))     config.nLibrary = Object.assign((config.nLibrary && Object.assign({}, config.nLibrary)) || {}, scoreObject.nLibrary);
-  if (scoreObject.hasOwnProperty('dLibrary'))     config.dLibrary = Object.assign((config.dLibrary && Object.assign({}, config.dLibrary)) || {}, scoreObject.dLibrary);
-  if (scoreObject.hasOwnProperty('r'))            config.r = scoreObject.r;
-  if (scoreObject.hasOwnProperty('d'))            config.d = scoreObject.d;
-  if (scoreObject.hasOwnProperty('eventMappers')) config.eventMappers = scoreObject.eventMappers
-  // Note that we cannot specify a .startTime in a score like we can for rhythms
-  if (typeof config.startTime !== 'number') config.startTime = 0;
-
-  // Internally, there are three handlers for (1)arrays (2)strings (3)objects
-  //
-  // All three handlers must:
-  // - return an object that has a .duration property. Duration are interpreted
-  //   differently for Arrays, Objects, and Strings found in the input object.
-  //   - Array:  sum of the duration of the array's elements
-  //   - Object: duration of the longest child
-  //   - string: duration of the associated rhythm string
-  //
-  // The array and object handlers must:
-  // - create an appropriate `config` object for each child
-  // - call score.parse on each child
-  //
-  // The string handler must:
-  // - create clips with a .startTime and .duration
-  // - add those clips to the sessions[trackKey].clips array
-  //
-  // The object handler must:
-  // - return a TracksObject representation of the ScoreObject input
-
-  // create the track if it does not exist
-  config.trackKey && session.getOrCreateTrackByName(config.trackKey);
-
-  if (Array.isArray(scoreObject)) {
-    let arrayStartTime = config.startTime;
-    let arrayDuration = 0;
-    let info = { duration: 0 };
-    for (let o of scoreObject) {
-      config.startTime = arrayStartTime + arrayDuration;
-      parse(o, config, session, info);
-      arrayDuration += info.duration;
-    }
-    previousResults.duration = arrayDuration;
-  } else if (typeof scoreObject === 'string') {
-    // We have a string that can be parsed with parseTab
-    if (typeof config.trackKey !== 'string')
-      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a track name`);
-    const track = session.getOrCreateTrackByName(config.trackKey);
-
-    // Get the dynamic and rhythm strings
-    const d = config.d || track.scoreConfig.d || session.scoreConfig.d; // may be undefined
-    const r = config.r || track.scoreConfig.r || session.scoreConfig.r; // must be defined
-    if (r === undefined)
-      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a rhythm`);
-
-    // Make the nLibrary and dLibrary
-    const nLibrary = {};
-    if (session.scoreConfig.nLibrary) Object.assign(nLibrary, session.scoreConfig.nLibrary);
-    if (track.scoreConfig.nLibrary) Object.assign(nLibrary, track.scoreConfig.nLibrary);
-    if (config.nLibrary) Object.assign(nLibrary, config.nLibrary);
-    const dLibrary = {};
-    if (session.scoreConfig.dLibrary) Object.assign(dLibrary, session.scoreConfig.dLibrary);
-    if (track.scoreConfig.dLibrary) Object.assign(dLibrary, track.scoreConfig.dLibrary);
-    if (config.dLibrary) Object.assign(dLibrary, config.dLibrary);
-
-    // create the clip
-    const rhythmObject = tab.parseRhythm(r);
-    const resultClip = tab.parseTab(rhythmObject, scoreObject, nLibrary);
-    resultClip.startTime = config.startTime;
-    if (config.eventMappers) resultClip.eventMappers = config.eventMappers;
-    // add dynamics
-    if (d) {
-      const getDynamic = tab.createDynamicGetter(rhythmObject, d, dLibrary);
-      for (const event of resultClip.events) event.d = getDynamic(event.startTime);
-    }
-    track.clips.push(resultClip);
-    previousResults.duration = resultClip.duration;
-  } else {
-    // Assume we have a JavaScript Object
-    for (let [key, val] of Object.entries(scoreObject)) {
-      if (reservedKeys.hasOwnProperty(key) && key !== 'clips') continue;
-      if (key !== 'clips') config.trackKey = key; // if key='clips' use parent key
-      let info = { duration: 0 };
-      parse(val, config, session, info);
-      if (info.duration > previousResults.duration) previousResults.duration = info.duration;
-      // returnValue[config.trackKey] = result; // Charles: I don't think this is helpful, and it is defintiely complicated
-    }
-  }
-
-  if (isOutermost) {
-    session.duration = previousResults.duration;
-    applyEventMappers(session);
-    return session;
-  };
-
-  return null;
-};
 
 /**
  * @param {Session} session
@@ -202,5 +74,4 @@ function applyEventMappers(session : FluidSession, ubiquitousMappers=mappers.def
 
 module.exports = {
   applyEventMappers,
-  parse,
 }

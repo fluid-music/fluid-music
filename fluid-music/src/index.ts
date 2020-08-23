@@ -5,8 +5,8 @@ import { tracksToFluidMessage } from './tracksToFluidMessage';
 import { FluidSession } from './FluidSession';
 
 // OSC Message Helpers
-import plugin from './fluid/plugin';
-import pluginDragonflyRoomReverb from './fluid/plugin-dragonfly-room';
+const plugin = require('./fluid/plugin');
+const pluginDragonflyRoomReverb = require('./fluid/plugin-dragonfly-room');
 const pluginPodolski = require('./fluid/plugin-podolski');
 const pluginTCompressor = require('./fluid/plugin-tcompressor-vst');
 const pluginTEqualiser = require('./fluid/plugin-tequaliser');
@@ -31,7 +31,6 @@ const tempo = require('./fluid/tempo');
 const noteLibrary = require('./note-library');
 const noteTypes = require('./note-types');
 const eventMappers = require('./event-mappers');
-const score = require('./score');
 const tab = require('./tab');
 const trackAutomation = require('./track-automation');
 const groove = require('./groove')
@@ -44,10 +43,6 @@ const tracksToReaperProject = require('./tracksToReaperProject');
 
 // JSDoc
 const jsDocTypes = require('./jsdoc-types');
-
-// Charles: this is for backwards compatibility, but should probably be removed
-// before v1.0.0
-score.tracksToFluidMessage = tracksToFluidMessage;
 
 export = {
   audioclip,
@@ -77,7 +72,6 @@ export = {
   pluginDexedVst,
   random,
   sampler,
-  score,
   tab,
   tempo,
   trackAutomation,

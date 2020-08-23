@@ -1,5 +1,5 @@
 
-import plugin from './plugin';
+const plugin = require('./plugin');
 const fluid = { plugin: plugin };
 
 const linearLocal  = (min, max) => (v) => (v - min) / (max - min);

@@ -32,13 +32,6 @@ function tracksToReaperProject(tracksObject, bpm) {
       continue;
     }
 
-    if (!track.clips || !track.clips.length) {
-      if (!tracksObject.plugins.length) {
-        console.log(`tracksToFluidMessage: skipping ${trackName}, because it has no .clips and no .plugins`);
-        continue;
-      }
-    }
-
     // Create a sub-message for each track
     let newTrack = new rppp.objects.ReaperTrack();
     newTrack.getOrCreateStructByToken('NAME').params[0] = trackName;

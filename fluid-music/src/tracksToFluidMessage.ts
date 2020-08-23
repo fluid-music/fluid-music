@@ -1,9 +1,9 @@
-const fluid = require('./fluid/index');
-const tab   = require('./tab');
-
-import { FluidPlugin } from './plugin';
+import { FluidPlugin, PluginType } from './plugin';
 import { FluidTrack } from './FluidTrack';
-import { TracksObject, ClipEventContext } from './ts-types';
+import { ClipEventContext } from './ts-types';
+
+const cybr = require('./fluid/index');
+const tab  = require('./tab');
 
 /**
  * Create a `FluidMessage` from a `TracksObject`
@@ -11,7 +11,7 @@ import { TracksObject, ClipEventContext } from './ts-types';
  * ```javascript
  * const session = fluid.score.parse(myScore, myConfig);
  * const message = fluid.score.tracksToFluidMessage(session.tracks);
- * const client = new fluid.Client();
+ * const client = new cybr.Client();
  * client.send(message);
  * ```
  *
@@ -43,7 +43,7 @@ export function tracksToFluidMessage(tracks : FluidTrack[]) {
 
     // Create a sub-message for each track
     let trackMessages : any[] = [];
-    trackMessages.push(fluid.audiotrack.select(track.name));
+    trackMessages.push(cybr.audiotrack.select(track.name));
     sessionMessages.push(trackMessages);
 
     track.clips.forEach((clip, clipIndex) => {
@@ -77,19 +77,19 @@ export function tracksToFluidMessage(tracks : FluidTrack[]) {
     for (const [name, automation] of Object.entries(track.automation)) {
       let trackAutoMsg : any[] = [];
       trackMessages.push(trackAutoMsg);
-      if (name === 'volume' || name === 'pan') {
-        // fluid.audiotrack.gain should always adjust the last volume plugin on
+      if (name === 'gain' || name === 'pan') {
+        // cybr.audiotrack.gain should always adjust the last volume plugin on
         // the track. That means that we want to apply automation on an earlier
         // volume plugin. First, ensure that we have at least two volume plugins
-        trackAutoMsg.push(fluid.plugin.select('volume', 'tracktion', 1));
+        trackAutoMsg.push(cybr.plugin.select('volume', 'tracktion', 1));
         // ...then select the first volume plugin which will be automated
-        trackAutoMsg.push(fluid.plugin.select('volume', 'tracktion', 0));
+        trackAutoMsg.push(cybr.plugin.select('volume', 'tracktion', 0));
 
         // Iterate over the automation points. If we are just dealing with
         // volume and pan, then the autoPoint should usable unedited. When
         // dealing with sends, this might need to be more complicated.
         for (const autoPoint of automation.points) {
-          trackAutoMsg.push(createFluidMessageForAutomationPoint(name, autoPoint));
+          // Charles: ADD THIS. 
         }
 
       } else {
@@ -101,14 +101,39 @@ export function tracksToFluidMessage(tracks : FluidTrack[]) {
     const count : any = {};
     const nth = (plugin : FluidPlugin) => {
       const str = plugin.pluginName + '|' + plugin.pluginType;
-      if (count.hasOwnProperty(str)) return count[str] = -1;
+      if (!count.hasOwnProperty(str)) count[str] = 0;
       return count[str]++;
     }
     for (const plugin of track.plugins) {
-      trackMessages.push(fluid.plugin.select(plugin.pluginName, plugin.pluginType, nth(plugin)));
-      for (const [paramName, automation] of Object.entries(plugin.automation)) {
+      const cybrType = (plugin.pluginType === PluginType.unknown) ? undefined : plugin.pluginType;
+      const pluginName = plugin.pluginName;
+      trackMessages.push(cybr.plugin.select(pluginName, cybrType, nth(plugin)));
+
+      // Automation
+      for (const [paramKey, automation] of Object.entries(plugin.automation)) {
+        const paramName = plugin.getParameterName(paramKey); // JUCE style name
+        // iterate over points. Ex { startTime: 0, value: 0.5, curve: 0 }
         for (const autoPoint of automation.points) {
-          trackMessages.push(createFluidMessageForAutomationPoint(paramName, autoPoint));
+          if (typeof autoPoint.value === 'number') {
+            // - paramName is the JUCE style parameter name we need
+            // - value is an explicit value. look for a normalizer
+            const explicitValue   = autoPoint.value;
+            const normalizedValue = plugin.getNormalizedValue(paramKey, explicitValue);
+
+            if (typeof normalizedValue === 'number') {
+              trackMessages.push(cybr.plugin.setParamNormalizedAt(
+                paramName,
+                Math.max(Math.min(normalizedValue, 1), 0),
+                autoPoint.startTime,
+                autoPoint.curve));
+            } else {
+              trackMessages.push(cybr.plugin.setParamExplicitAt(
+                paramName,
+                explicitValue,
+                autoPoint.startTime,
+                autoPoint.curve));
+            }
+          }
         } // for (autoPoint of automation.points)
       }   // for (paramName, automation of plugin.automation)
     }     // for (plugin of track.plugins)
@@ -116,38 +141,6 @@ export function tracksToFluidMessage(tracks : FluidTrack[]) {
 
   return sessionMessages;
 };
-
-/**
- * FluidMessage objects are guaranteed to have either a .normalizedValue or a
- * .explicitValue -- this just checks which one the AutomationPoint has, and
- * returns an appropriate FluidMessage.
- *
- * Throws if the AutomationPoint does not have either type of value.
- *
- * This function is only used inside of tracksToFluidMessage, and should not be
- * exported.
- *
- * @param {string} paramName
- * @param {AutomationPoint} autoPoint
- * @returns {FluidMessage}
- */
-const createFluidMessageForAutomationPoint = (paramName, autoPoint) => {
-  if (typeof autoPoint.explicitValue === 'number') {
-    return fluid.plugin.setParamExplicitAt(
-      paramName,
-      autoPoint.explicitValue,
-      autoPoint.startTime,
-      autoPoint.curve);
-  } else if (typeof autoPoint.normalizedValue === 'number') {
-    return fluid.plugin.setParamNormalizedAt(
-      paramName,
-      autoPoint.normalizedValue,
-      autoPoint.startTime,
-      autoPoint.curve);
-  } else {
-    throw new Error(`AutomationPoint has neither of .explicitValue/.normalizedValue: ${JSON.stringify(autoPoint)}`);
-  }
-}
 
 
 /**
@@ -162,7 +155,7 @@ function midiEventsToFluidMessage(midiEvents, context) {
   const clipName  = `${context.track.name} ${context.clipIndex}`
   const startTime = context.clip.startTime;
   const duration  = context.clip.duration;
-  const clipMsg   = fluid.midiclip.select(clipName, startTime, duration)
+  const clipMsg   = cybr.midiclip.select(clipName, startTime, duration)
   msg.push(clipMsg);
 
   for (const event of midiEvents) {
@@ -172,7 +165,7 @@ function midiEventsToFluidMessage(midiEvents, context) {
         : (typeof event.v === 'number')
           ? event.v
           : undefined;
-      msg.push(fluid.midiclip.note(event.n, event.startTime, event.duration, velocity));
+      msg.push(cybr.midiclip.note(event.n, event.startTime, event.duration, velocity));
     }
   }
 
@@ -204,22 +197,22 @@ function fileEventsToFluidMessage(fileEvents, context) {
     };
 
     const clipName = `s${context.clipIndex}.${eventIndex}`;
-    const msg = [fluid.audiotrack.insertWav(clipName, startTime, event.path)];
+    const msg = [cybr.audiotrack.insertWav(clipName, startTime, event.path)];
 
     if (event.startInSourceSeconds)
-      msg.push(fluid.clip.setSourceOffsetSeconds(event.startInSourceSeconds));
+      msg.push(cybr.clip.setSourceOffsetSeconds(event.startInSourceSeconds));
 
     // adjust the clip length, unless the event is a .oneShot
     if (!event.oneShot)
-      msg.push(fluid.clip.length(event.duration));
+      msg.push(cybr.clip.length(event.duration));
 
     // apply fade in/out times (if specified)
     if (typeof event.fadeOutSeconds === 'number' || typeof event.fadeInSeconds === 'number')
-      msg.push(fluid.audioclip.fadeInOutSeconds(event.fadeInSeconds, event.fadeOutSeconds));
+      msg.push(cybr.audioclip.fadeInOutSeconds(event.fadeInSeconds, event.fadeOutSeconds));
 
     // If there is a dynamics object, look for a dbfs property and apply gain.
     if (event.d && typeof(event.d.dbfs) === 'number')
-      msg.push(fluid.audioclip.gain(event.d.dbfs));
+      msg.push(cybr.audioclip.gain(event.d.dbfs));
 
     return msg;
   });

@@ -139,8 +139,8 @@ const makeAutomation = {
   dryLevelPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName, pluginType },
-      param: parameterLibrary.dryLevelPercent,
+      pluginSelector: { pluginName, pluginType },
+      paramKey: 'dryLevelPercent',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -151,8 +151,8 @@ const makeAutomation = {
   wetLevelPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName, pluginType },
-      param: parameterLibrary.wetLevelPercent,
+      pluginSelector: { pluginName, pluginType },
+      paramKey: 'wetLevelPercent',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -163,8 +163,8 @@ const makeAutomation = {
   earlyLevelPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName, pluginType },
-      param: parameterLibrary.earlyLevelPercent,
+      pluginSelector: { pluginName, pluginType },
+      paramKey: 'earlyLevelPercent',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -175,8 +175,8 @@ const makeAutomation = {
   earlySendPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName, pluginType },
-      param: parameterLibrary.earlySendPercent,
+      pluginSelector: { pluginName, pluginType },
+      paramKey: 'earlySendPercent',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -187,8 +187,8 @@ const makeAutomation = {
   lateLevelPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName, pluginType },
-      param: parameterLibrary.lateLevelPercent,
+      pluginSelector: { pluginName, pluginType },
+      paramKey: 'lateLevelPercent',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -199,8 +199,8 @@ const makeAutomation = {
   sizeMeters(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName, pluginType },
-      param: parameterLibrary.sizeMeters,
+      pluginSelector: { pluginName, pluginType },
+      paramKey: 'sizeMeters',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -211,8 +211,8 @@ const makeAutomation = {
   widthPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName, pluginType },
-      param: parameterLibrary.widthPercent,
+      pluginSelector: { pluginName, pluginType },
+      paramKey: 'widthPercent',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -223,8 +223,8 @@ const makeAutomation = {
   predelayMs(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName, pluginType },
-      param: parameterLibrary.predelayMs,
+      pluginSelector: { pluginName, pluginType },
+      paramKey: 'predelayMs',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -235,8 +235,8 @@ const makeAutomation = {
   decaySeconds(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName, pluginType },
-      param: parameterLibrary.decaySeconds,
+      pluginSelector: { pluginName, pluginType },
+      paramKey: 'decaySeconds',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -247,8 +247,8 @@ const makeAutomation = {
   diffusePercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName, pluginType },
-      param: parameterLibrary.diffusePercent,
+      pluginSelector: { pluginName, pluginType },
+      paramKey: 'diffusePercent',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -259,8 +259,8 @@ const makeAutomation = {
   spinHz(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName,  pluginType },
-      param: parameterLibrary.spinHz,
+      pluginSelector: { pluginName,  pluginType },
+      paramKey: 'spinHz',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -271,8 +271,8 @@ const makeAutomation = {
   wanderPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName,  pluginType },
-      param: parameterLibrary.wanderPercent,
+      pluginSelector: { pluginName,  pluginType },
+      paramKey: 'wanderPercent',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -283,8 +283,8 @@ const makeAutomation = {
   highCutHz(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName,  pluginType },
-      param: parameterLibrary.highCutHz,
+      pluginSelector: { pluginName,  pluginType },
+      paramKey: 'highCutHz',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -295,8 +295,8 @@ const makeAutomation = {
   earlyDampHz(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName,  pluginType },
-      param: parameterLibrary.earlyDampHz,
+      pluginSelector: { pluginName,  pluginType },
+      paramKey: 'earlyDampHz',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -307,8 +307,8 @@ const makeAutomation = {
   lateDampHz(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName,  pluginType },
-      param: parameterLibrary.lateDampHz,
+      pluginSelector: { pluginName,  pluginType },
+      paramKey: 'lateDampHz',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -319,8 +319,8 @@ const makeAutomation = {
   lowBoostPercent(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName,  pluginType },
-      param: parameterLibrary.lowBoostPercent,
+      pluginSelector: { pluginName,  pluginType },
+      paramKey: 'lowBoostPercent',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -331,8 +331,8 @@ const makeAutomation = {
   lowBoostHz(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName,  pluginType },
-      param: parameterLibrary.lowBoostHz,
+      pluginSelector: { pluginName,  pluginType },
+      paramKey: 'lowBoostHz',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -343,8 +343,8 @@ const makeAutomation = {
   lowCutHz(value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
-      plugin: { pluginName, pluginType },
-      param: parameterLibrary.lowCutHz,
+      pluginSelector: { pluginName, pluginType },
+      paramKey: 'lowCutHz',
       startTime: 0,
       duration: 0,
       curve: 0,

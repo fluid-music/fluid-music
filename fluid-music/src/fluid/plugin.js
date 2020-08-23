@@ -1,4 +1,4 @@
-import fs = require('fs');
+const fs = require('fs');
 
 const plugin = {
   /**
@@ -335,4 +335,4 @@ const plugin = {
   }
 };
 
-export default plugin;
+module.exports = plugin;
