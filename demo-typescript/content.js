@@ -65,16 +65,16 @@ session.insertScore({
   revb:  'p      q    trsu',
 }, {eventMappers: drums.eventMappers});
 
-// const templateMessage = fluid.sessionToTemplateFluidMessage(session);
-// const contentMessage = fluid.tracksToFluidMessage(session.tracks);
-// const client = new fluid.Client();
-// client.send([
-//   fluid.global.activate(path.join(__dirname, 'session.tracktionedit'), true),
-//   fluid.transport.loop(0, session.duration),
-//   templateMessage,
-//   contentMessage,
-//   fluid.global.save(null, 'd'),
-// ]);
+const templateMessage = fluid.sessionToTemplateFluidMessage(session);
+const contentMessage = fluid.tracksToFluidMessage(session.tracks);
+const client = new fluid.Client();
+client.send([
+  fluid.global.activate(path.join(__dirname, 'session.tracktionedit'), true),
+  fluid.transport.loop(0, session.duration),
+  templateMessage,
+  contentMessage,
+  fluid.global.save(null, 'd'),
+]);
 
-const rpp = fluid.tracksToReaperProject(session.tracks, 96);
-console.log(rpp.dump())
+// const rpp = fluid.tracksToReaperProject(session.tracks, 96);
+// console.log(rpp.dump())
