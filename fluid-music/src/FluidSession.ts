@@ -109,10 +109,9 @@ export function parse(
 
   if (Array.isArray(scoreObject)) {
     let arrayStartTime = config.startTime;
-    let arrayDuration = 0;
 
     for (let o of scoreObject) {
-      config.startTime = arrayStartTime + arrayDuration;
+      config.startTime = arrayStartTime + result.duration;
       let r = parse(o, session, config);
       result.duration += r.duration;
     }

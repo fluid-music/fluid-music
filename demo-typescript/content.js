@@ -57,8 +57,6 @@ session.insertScore({
   revb:  'p      q        ',
 }, {eventMappers: drums.eventMappers});
 
-console.dir(session, {depth: null});
-
 const msg = fluid.tracksToFluidMessage(session.tracks);
 const rpp = fluid.tracksToReaperProject(session.tracks, 96);
 
@@ -69,4 +67,4 @@ client.send([
   msg,
 ]);
 
-// console.log(rpp.dump())
+console.log(rpp.dump())
