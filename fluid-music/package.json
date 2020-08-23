@@ -7,7 +7,7 @@
   "scripts": {
     "watch": "nodemon -e .js,.mjs,.json,.yaml,.yml src/index.js",
     "test": "mocha",
-    "test-score": "mocha test/test-score.js",
+    "test-sess": "mocha test/test-session.js",
     "test-tab": "mocha test/test-tab.js",
     "test-gen": "mocha test/test-code-generators.js",
     "test-debug": "mocha --reporter spec --inspect-brk",
