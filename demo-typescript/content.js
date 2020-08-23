@@ -16,6 +16,10 @@ const f = {
 const p = DragonflyRoom.makeAutomation.sizeMeters(9);
 const q = DragonflyRoom.makeAutomation.sizeMeters(30);
 
+const r = { type: 'trackAuto', paramKey: 'pan', value: -.5 };
+const s = { type: 'trackAuto', paramKey: 'pan', value:  .5 };
+const t = { type: 'trackAuto', paramKey: 'gain', value: -6 };
+
 // Create a derivative drum library, modified for this score.
 const nLibrary = Object.assign({}, drums.nLibrary);
 nLibrary.c = {
@@ -45,7 +49,7 @@ let session = new fluid.FluidSession({
   chrd:  { nLibrary: chords.nLibrary },
   bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p } },
   tamb:  { },
-  revb:  { plugins: [ new fluid.DragonflyRoom({decaySeconds: 2.4})], nLibrary: {p, q} },
+  revb:  { plugins: [ new fluid.DragonflyRoom({decaySeconds: 2.4})], nLibrary: {p, q, r, s, t} },
 })
 
 session.insertScore({
@@ -54,17 +58,19 @@ session.insertScore({
   tamb:  'c s c s c s c s ',
   bass:  '       ab-      ',
   chrd:  'a-  .  ab---    ',
-  revb:  'p      q        ',
+  revb:  'p      q     rst',
 }, {eventMappers: drums.eventMappers});
 
-const msg = fluid.tracksToFluidMessage(session.tracks);
-const rpp = fluid.tracksToReaperProject(session.tracks, 96);
 
+const msg = fluid.tracksToFluidMessage(session.tracks);
 const client = new fluid.Client();
 client.send([
   fluid.global.activate(path.join(__dirname, 'session.tracktionedit'), true),
   fluid.transport.loop(0, session.duration),
   msg,
+  fluid.global.save(null, 'd'),
 ]);
 
-console.log(rpp.dump())
+
+// const rpp = fluid.tracksToReaperProject(session.tracks, 96);
+// console.log(rpp.dump())

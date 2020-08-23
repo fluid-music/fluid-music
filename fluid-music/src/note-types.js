@@ -60,8 +60,8 @@ module.exports = {
      * Unlike `pluginAuto`, it does not specify a `.plugin`.
      * Like   `pluginAuto`, it specifies a `.param.name` string and a value.
      */
-    { type: 'trackAuto', paramKey: 'gain', value: -6 },
-    { type: 'trackAuto', paramKey: 'pan',  value:  1 },
+    { type: 'trackAuto', paramKey: 'gain', value: -6, curve: 0 },
+    { type: 'trackAuto', paramKey: 'pan',  value:  1, curve: 0 },
 
     /**
      * The `random` type notes get are replaced with one of the types in the

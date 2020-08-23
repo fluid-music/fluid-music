@@ -49,7 +49,7 @@ export function mapAutomation(event: FluidEvent, context : ClipEventContext) {
   }
 
   const startTime = (context.clip.startTime as number) + (event.startTime as number);
-  const point : AutomationPoint= {
+  const point : AutomationPoint = {
     startTime,
     value: (event.value as number),
     curve: 0,

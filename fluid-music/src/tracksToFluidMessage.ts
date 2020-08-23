@@ -85,11 +85,18 @@ export function tracksToFluidMessage(tracks : FluidTrack[]) {
         // ...then select the first volume plugin which will be automated
         trackAutoMsg.push(cybr.plugin.select('volume', 'tracktion', 0));
 
-        // Iterate over the automation points. If we are just dealing with
-        // volume and pan, then the autoPoint should usable unedited. When
-        // dealing with sends, this might need to be more complicated.
+        // Iterate over the automation points.
         for (const autoPoint of automation.points) {
-          // Charles: ADD THIS. 
+          if (typeof autoPoint.value === 'number') {
+            // This seemingly arbitrary conversion is hard-coded in Tracktion
+            const value = Math.exp((autoPoint.value-6) * (1/20));
+            trackAutoMsg.push(cybr.plugin.setParamExplicitAt(
+              (name === 'gain') ? 'volume' : name,
+              Math.max(Math.min(value, 1), 0),
+              autoPoint.startTime,
+              autoPoint.curve,
+            ));
+          }
         }
 
       } else {
