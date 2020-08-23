@@ -1,9 +1,0 @@
-{
-    "editor.quickSuggestions": {
-        "other": true,
-        "comments": false,
-        "strings": false
-    },
-    "editor.quickSuggestionsDelay": 100,
-    "editor.snippetSuggestions": "bottom"
-}
