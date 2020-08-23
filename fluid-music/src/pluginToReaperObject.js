@@ -1,5 +1,5 @@
 const rppp = require('rppp')
-const fluid = require('./fluid/index');
+const cybr = require('./cybr/index');
 
 /**
  * Create a `ReaperVst` object from an existing plugin on the cybr instance.
@@ -14,9 +14,9 @@ const fluid = require('./fluid/index');
  */
 async function vst2ToReaperObject(client, trackName, pluginName, pluginType, pluginId) {
   const msg = [
-    fluid.audiotrack.select(trackName),
-    fluid.plugin.select(pluginName, pluginType, pluginId),
-    fluid.plugin.getReport(),
+    cybr.audiotrack.select(trackName),
+    cybr.plugin.select(pluginName, pluginType, pluginId),
+    cybr.plugin.getReport(),
   ]
 
   const retObj = await client.send(msg).then(retObj => { return retObj; });

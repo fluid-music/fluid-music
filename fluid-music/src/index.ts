@@ -5,26 +5,26 @@ import { tracksToFluidMessage, sessionToTemplateFluidMessage } from './tracksToF
 import { FluidSession } from './FluidSession';
 
 // OSC Message Helpers
-const plugin = require('./fluid/plugin');
-const pluginDragonflyRoomReverb = require('./fluid/plugin-dragonfly-room');
-const pluginPodolski = require('./fluid/plugin-podolski');
-const pluginTCompressor = require('./fluid/plugin-tcompressor-vst');
-const pluginTEqualiser = require('./fluid/plugin-tequaliser');
-const pluginTReverber8 = require('./fluid/plugin-treverber8');
-const pluginTStereoDelay = require('./fluid/plugin-tstereodelay');
-const pluginZebra2Vst2 = require('./fluid/plugin-zebra2-vst2');
-const pluginHelm = require('./fluid/plugin-helm');
-const pluginDexedVst = require('./fluid/plugin-dexed-vst');
-const sampler = require('./fluid/sampler');
-const audiofile = require('./fluid/audiofile');
-const audiotrack = require('./fluid/audiotrack');
-const midiclip = require('./fluid/midiclip');
-const transport = require('./fluid/transport');
-const global = require('./fluid/global');
-const audioclip = require('./fluid/audioclip');
-const clip = require('./fluid/clip');
-const content = require('./fluid/content');
-const tempo = require('./fluid/tempo');
+const plugin = require('./cybr/plugin');
+const pluginDragonflyRoomReverb = require('./cybr/plugin-dragonfly-room');
+const pluginPodolski = require('./cybr/plugin-podolski');
+const pluginTCompressor = require('./cybr/plugin-tcompressor-vst');
+const pluginTEqualiser = require('./cybr/plugin-tequaliser');
+const pluginTReverber8 = require('./cybr/plugin-treverber8');
+const pluginTStereoDelay = require('./cybr/plugin-tstereodelay');
+const pluginZebra2Vst2 = require('./cybr/plugin-zebra2-vst2');
+const pluginHelm = require('./cybr/plugin-helm');
+const pluginDexedVst = require('./cybr/plugin-dexed-vst');
+const sampler = require('./cybr/sampler');
+const audiofile = require('./cybr/audiofile');
+const audiotrack = require('./cybr/audiotrack');
+const midiclip = require('./cybr/midiclip');
+const transport = require('./cybr/transport');
+const global = require('./cybr/global');
+const audioclip = require('./cybr/audioclip');
+const clip = require('./cybr/clip');
+const content = require('./cybr/content');
+const tempo = require('./cybr/tempo');
 
 
 // Other Stuff
