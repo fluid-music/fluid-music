@@ -8,15 +8,16 @@ defined in one file, and extended in another file.
 TLDR: When adding a new module to the fluid folder, it should be imported
 in this file, AND the root level index.js file. */
 
+import * as audioclip from './audioclip';
+import * as clip from './clip';
+
 const plugin = require('./plugin');
 const sampler = require('./sampler');
-const audioclip = require('./audioclip');
 const audiofile = require('./audiofile');
 const audiotrack = require('./audiotrack');
 const midiclip = require('./midiclip');
 const transport = require('./transport');
 const global = require('./global');
-const clip = require('./clip');
 const tempo = require('./tempo');
 const pluginPodolski = require('./plugin-podolski');
 const pluginTCompressor = require('./plugin-tcompressor-vst');

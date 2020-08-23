@@ -6,6 +6,7 @@ import { FluidSession } from './FluidSession';
 
 // OSC Message Helpers
 const plugin = require('./cybr/plugin');
+
 const pluginDragonflyRoomReverb = require('./cybr/plugin-dragonfly-room');
 const pluginPodolski = require('./cybr/plugin-podolski');
 const pluginTCompressor = require('./cybr/plugin-tcompressor-vst');
@@ -15,14 +16,15 @@ const pluginTStereoDelay = require('./cybr/plugin-tstereodelay');
 const pluginZebra2Vst2 = require('./cybr/plugin-zebra2-vst2');
 const pluginHelm = require('./cybr/plugin-helm');
 const pluginDexedVst = require('./cybr/plugin-dexed-vst');
+
 const sampler = require('./cybr/sampler');
 const audiofile = require('./cybr/audiofile');
 const audiotrack = require('./cybr/audiotrack');
 const midiclip = require('./cybr/midiclip');
 const transport = require('./cybr/transport');
 const global = require('./cybr/global');
-const audioclip = require('./cybr/audioclip');
-const clip = require('./cybr/clip');
+import * as audioclip from './cybr/audioclip';
+import * as clip from './cybr/clip';
 const content = require('./cybr/content');
 const tempo = require('./cybr/tempo');
 
