@@ -49,7 +49,7 @@ module.exports = {
                         // name on a particular track.
       },
       paramKey: 'sizeMeters',
-      value: 80, // param.units indicates value's unit type
+      value: 80, // plugin.parameters[paramKey].units indicates the unit type
       curve: 0,  // optional curvature from this point to the next. 0=linear.
     },
 

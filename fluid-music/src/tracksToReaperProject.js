@@ -1,8 +1,9 @@
 const rppp = require('rppp')
 const tab = require('./tab')
 
-// Requires a bpm
-
+// Reaper appears to store gain as a simple numeric multiplier. I am choosing a
+// max value of 12 db.
+const db2Amp = (db) => Math.pow(10, Math.min(db, 12) / 20);
 
 /**
  * Create a `ReaperProject` from a `TracksObject`
@@ -18,23 +19,22 @@ const tab = require('./tab')
 function tracksToReaperProject(tracksObject, bpm) {
   if (!bpm) throw new TypeError('tracksToReaperProject requires a bpm parameter')
 
-  let i = 0;
   const reaperProject = new rppp.objects.ReaperProject();
   reaperProject.getOrCreateStructByToken('TEMPO').params = [bpm, 4, 4];
 
   // // example tracks object
-  // const tracks = {
-  //   bass: { clips: [ clip1, clip2... ] },
-  //   kick: { clips: [ clip1, clip2... ] },
-  // };
-  for (const [trackName, track] of Object.entries(tracksObject)) {
-    if (tab.reservedKeys.hasOwnProperty(trackName)) {
+  // const tracks = [
+  //   { name: 'bass', clips: [ clip1, clip2... ] },
+  //   { name: 'kick', clips: [ clip1, clip2... ] },
+  // ];
+  for (const track of tracksObject) {
+    if (tab.reservedKeys.hasOwnProperty(track.name)) {
       continue;
     }
 
-    // Create a sub-message for each track
-    let newTrack = new rppp.objects.ReaperTrack();
-    newTrack.getOrCreateStructByToken('NAME').params[0] = trackName;
+    const newTrack = new rppp.objects.ReaperTrack();
+    newTrack.getOrCreateStructByToken('NAME').params[0] = track.name;
+    reaperProject.addTrack(newTrack);
 
     track.clips.forEach((clip, clipIndex) => {
 
@@ -46,7 +46,7 @@ function tracksToReaperProject(tracksObject, bpm) {
         clipIndex,
         trackObj: newTrack,
         tracks: tracksObject,
-        trackName,
+        trackName: track.name,
         data: {},
       };
 
@@ -57,40 +57,29 @@ function tracksToReaperProject(tracksObject, bpm) {
       if (clip.fileEvents && clip.fileEvents.length) {
         newTrack.contents = newTrack.contents.concat(fileEventsToReaperObject(clip.fileEvents, context));
       }
-      
-      reaperProject.addTrack(newTrack);
     }); // track.clips.forEach
 
     // Handle track specific automation.
     for (const [name, automation] of Object.entries(track.automation)) {
-      if (name === 'volume' || name === 'pan') {
-        var autoObject;
-        if (name === 'volume') autoObject = new rppp.objects.ReaperVolumeAutomation();
-        else autoObject = new rppp.objects.ReaperPanAutomation();
+      let autoObject;
+      let normalize = (v) => v;
 
-        for (const autoPoint of automation.points) {
-          let val = 0;
-          let curve = 0;
-
-          if (typeof autoPoint.explicitValue === 'number') 
-            val = autoPoint.explicitValue;
-          else if (typeof autoPoint.normalizedValue === 'number') 
-            val = autoPoint.normalizedValue;
-          else 
-            throw new Error(`AutomationPoint has neither of .explicitValue/.normalizedValue: ${JSON.stringify(autoPoint)}`);
-
-          if (typeof autoPoint.curve === 'number'){
-            if (autoPoint.curve < 0) curve = 3;
-            else if (autoPoint.curve > 0) curve = 4;
-          }
-
-          autoObject.addPoint(autoPoint.startTime * 4 * 60 / bpm, val, curve);
-        }
-        newTrack.add(autoObject);
-      } 
-      else {
-        throw new Error(`Fluid Track Automation found unsupported parameter: "${name}"`);
+      if (name === 'gain') {
+        autoObject = new rppp.objects.ReaperVolumeAutomation();
+        normalize = db2Amp;
+      } else if (name === 'pan') {
+        autoObject = new rppp.objects.ReaperPanAutomation();
       }
+
+      if (!autoObject) {
+        throw new Error(`Unsupported reaper track automation lane: "${name}"`);
+      }
+
+      for (const autoPoint of automation.points) {
+        autoObject.addBezierPoint(autoPoint.startTime * 4 * 60 / bpm, normalize(autoPoint.value), autoPoint.curve)
+      }
+
+      newTrack.add(autoObject);
     } // for [name, automation] of track.automation
   }
 
@@ -175,7 +164,7 @@ function fileEventsToReaperObject(fileEvents, context) {
 
     // If there is a dynamics object, look for a dbfs property and apply gain.
     if (event.d && typeof(event.d.dbfs) === 'number')
-      audioItem.getOrCreateStructByToken('VOLPAN').params = [1, 0, Math.pow(1.1227, event.d.dbfs), -1]
+      audioItem.getOrCreateStructByToken('VOLPAN').params = [1, 0, db2Amp(event.d.dbfs), -1]
 
     return audioItem;
   });

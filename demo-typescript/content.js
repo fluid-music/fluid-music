@@ -16,9 +16,11 @@ const f = {
 const p = DragonflyRoom.makeAutomation.sizeMeters(9);
 const q = DragonflyRoom.makeAutomation.sizeMeters(30);
 
-const r = { type: 'trackAuto', paramKey: 'pan', value: -.5 };
+const r = { type: 'trackAuto', paramKey: 'pan', value: -.5, curve: -1 };
 const s = { type: 'trackAuto', paramKey: 'pan', value:  .5 };
-const t = { type: 'trackAuto', paramKey: 'gain', value: -6 };
+const t = { type: 'trackAuto', paramKey: 'gain', value: -6, curve: 0.8 };
+const u = { type: 'trackAuto', paramKey: 'gain', value: -32.9 };
+
 
 // Create a derivative drum library, modified for this score.
 const nLibrary = Object.assign({}, drums.nLibrary);
@@ -51,7 +53,7 @@ let session = new fluid.FluidSession({
   chrd:  { nLibrary: chords.nLibrary, pan: -.75 },
   bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p } },
   tamb:  { pan: .25 },
-  revb:  { plugins: [ new fluid.DragonflyRoom({decaySeconds: 2.4, predelayMs: 49 })], nLibrary: {p, q, r, s, t} },
+  revb:  { plugins: [ new fluid.DragonflyRoom({decaySeconds: 2.4, predelayMs: 49 })], nLibrary: {p, q, r, s, t, u } },
 });
 
 session.insertScore({
@@ -60,19 +62,19 @@ session.insertScore({
   tamb: ['c s c s c s c s ', {r: '1....234..', tamb: 'scscs..sss', d: 'p'} ],
   bass:  '       ab-      ',
   chrd:  'a-  .  ab---    ',
-  revb:  'p      q     rst',
+  revb:  'p      q    trsu',
 }, {eventMappers: drums.eventMappers});
 
-const templateMessage = fluid.sessionToTemplateFluidMessage(session);
-const contentMessage = fluid.tracksToFluidMessage(session.tracks);
-const client = new fluid.Client();
-client.send([
-  fluid.global.activate(path.join(__dirname, 'session.tracktionedit'), true),
-  fluid.transport.loop(0, session.duration),
-  templateMessage,
-  contentMessage,
-  fluid.global.save(null, 'd'),
-]);
+// const templateMessage = fluid.sessionToTemplateFluidMessage(session);
+// const contentMessage = fluid.tracksToFluidMessage(session.tracks);
+// const client = new fluid.Client();
+// client.send([
+//   fluid.global.activate(path.join(__dirname, 'session.tracktionedit'), true),
+//   fluid.transport.loop(0, session.duration),
+//   templateMessage,
+//   contentMessage,
+//   fluid.global.save(null, 'd'),
+// ]);
 
-// const rpp = fluid.tracksToReaperProject(session.tracks, 96);
-// console.log(rpp.dump())
+const rpp = fluid.tracksToReaperProject(session.tracks, 96);
+console.log(rpp.dump())

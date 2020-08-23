@@ -6,7 +6,7 @@ import { FluidSession } from './FluidSession';
 const cybr = require('./fluid/index');
 const tab  = require('./tab');
 
-// This seemingly arbitrary conversion is hard-coded in Tracktion
+// This amplification conversion is hard-coded in Tracktion
 const normalizeTracktionGain = (db) => {
   const normalized = Math.exp((db-6) * (1/20));
   return Math.max(Math.min(normalized, 1), 0);
