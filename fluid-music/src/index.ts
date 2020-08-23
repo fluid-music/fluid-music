@@ -32,7 +32,6 @@ const noteLibrary = require('./note-library');
 const noteTypes = require('./note-types');
 const eventMappers = require('./event-mappers');
 const tab = require('./tab');
-const trackAutomation = require('./track-automation');
 const groove = require('./groove')
 const UdpClient = require('./FluidUdpClient');
 const IpcClient = require('./FluidIpcClient');
@@ -74,7 +73,6 @@ export = {
   sampler,
   tab,
   tempo,
-  trackAutomation,
   sessionToTemplateFluidMessage,
   tracksToFluidMessage,
   tracksToReaperProject,
