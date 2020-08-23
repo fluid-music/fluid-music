@@ -1,7 +1,7 @@
 // New Style Plugins
 import { DragonflyRoom } from './plugin-dradonfly-room';
 import { FluidPlugin, PluginType } from './plugin';
-import { tracksToFluidMessage } from './tracksToFluidMessage';
+import { tracksToFluidMessage, sessionToTemplateFluidMessage } from './tracksToFluidMessage';
 import { FluidSession } from './FluidSession';
 
 // OSC Message Helpers
@@ -75,8 +75,9 @@ export = {
   tab,
   tempo,
   trackAutomation,
-  tracksToReaperProject,
+  sessionToTemplateFluidMessage,
   tracksToFluidMessage,
+  tracksToReaperProject,
   transport,
   groove,
   FluidPlugin,

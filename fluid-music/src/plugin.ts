@@ -72,8 +72,8 @@ export interface PluginParameterLibrary {
  *
  * @param value The exact type of this `value` depends on the `.param`. It is
  * assumed that value is an explicit value. If the `.param` contains specifies
- * a method for normalizing `value`, then the automation event will result in
- * a PluginParameterState with a `.normalizedValue` property.
+ * a method for normalizing `value`, then the automation event should result in
+ * a normalized value.
  */
 export interface PluginAutomationEvent extends AutomationPoint {
   readonly type : string;
@@ -83,14 +83,6 @@ export interface PluginAutomationEvent extends AutomationPoint {
   duration: number;
   curve: number;
   value?: number;
-}
-
-/**
- * Found in plugin instances
- */
-export interface PluginParameterState {
-  normalizedValue? : number;
-  explicitValue? : number;
 }
 
 /**
@@ -142,28 +134,9 @@ export class FluidPlugin {
   ) { }
 
   /**
-   * Get as much information as possible about the state of a parameter.
-   *
-   * @param key the JavaScript friendly parameter identifier.
+   * If paramKey identifies a plugin parameter, and that parameter has a
+   * normalizer, return the normalized value. Otherwise return null.
    */
-  getParameterState(key : string) : PluginParameterState {
-    const state : PluginParameterState = {};
-
-    if (!this.parameters.hasOwnProperty(key))
-      return state;
-
-    state.explicitValue = this.parameters[key];
-
-    if (this.parameterLibrary.hasOwnProperty(key)) {
-      const param = this.parameterLibrary[key];
-      if (param.normalize && typeof state.explicitValue === 'number') {
-        state.normalizedValue = param.normalize(state.explicitValue);
-      }
-    }
-
-    return state;
-  }
-
   getNormalizedValue(paramKey : string, value: number) {
     if (this.parameterLibrary.hasOwnProperty(paramKey)) {
       const param = this.parameterLibrary[paramKey];

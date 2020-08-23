@@ -61,6 +61,7 @@ public:
     juce::OSCMessage handleSamplerMessage(const juce::OSCMessage& message);
     juce::OSCMessage handleTransportMessage(const juce::OSCMessage& message);
     juce::OSCMessage setTrackGain(const juce::OSCMessage& message);
+    juce::OSCMessage setTrackPan(const juce::OSCMessage& message);
     juce::OSCMessage renderRegion(const juce::OSCMessage& message);
     juce::OSCMessage renderClip(const juce::OSCMessage& message);
     juce::OSCMessage setClipLength(const juce::OSCMessage& message);

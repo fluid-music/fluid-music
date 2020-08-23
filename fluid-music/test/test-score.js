@@ -499,7 +499,7 @@ describe('score', () => {
       };
 
       it('should add fluid messages for automation points', () => {
-        const s1   = score.parse({bass: '.a.b', r: '1234', nLibrary}, );
+        const s1   = score.parse( {bass: '.a.b', r: '1234', nLibrary}, );
         const msg  = score.tracksToFluidMessage(s1.tracks);
         const flat = flatten(msg);
   

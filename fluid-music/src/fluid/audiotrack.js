@@ -110,6 +110,17 @@ const audiotrack = {
     };
   },
 
+  pan(bipolar) {
+    if (typeof bipolar !== 'number')
+      throw new Error('audiotrack.pan requires a number');
+
+    const panPosition = Math.max(Math.min(bipolar, 1), -1)
+    return {
+      address: '/audiotrack/set/pan',
+      args: [{ type: 'float', value: panPosition }],
+    };
+  },
+
   /**
    * Render a region of the track to an audio file. If no time range is
    * supplied, the engine should use the loop time range.

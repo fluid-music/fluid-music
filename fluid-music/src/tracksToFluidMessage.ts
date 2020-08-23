@@ -1,9 +1,72 @@
 import { FluidPlugin, PluginType } from './plugin';
 import { FluidTrack } from './FluidTrack';
 import { ClipEventContext } from './ts-types';
+import { FluidSession } from './FluidSession';
 
 const cybr = require('./fluid/index');
 const tab  = require('./tab');
+
+// This seemingly arbitrary conversion is hard-coded in Tracktion
+const normalizeTracktionGain = (db) => {
+  const normalized = Math.exp((db-6) * (1/20));
+  return Math.max(Math.min(normalized, 1), 0);
+}
+
+/**
+ * Create a fluid message that constructs the template of the project without
+ * any content. This includes Tracks (with pan and gain) plugins (with state)
+ * but no clips or automation.
+ * @param session
+ */
+export function sessionToTemplateFluidMessage(session : FluidSession) {
+  const sessionMessages : any[] = [
+    cybr.tempo.set(session.bpm),
+  ];
+
+  for (const track of session.tracks) {
+    if (tab.reservedKeys.hasOwnProperty(track.name)) {
+      continue;
+    }
+
+    // Create a sub-message for each track
+    let trackMessages : any[] = [
+      cybr.audiotrack.select(track.name),
+      cybr.audiotrack.gain(track.gain), // normalization not needed with .gain
+      cybr.audiotrack.pan(track.pan),
+    ];
+    sessionMessages.push(trackMessages);
+
+    // Handle plugins. This deals with plugin state (not automation)
+    const count : any = {};
+    const nth = (plugin : FluidPlugin) => {
+      const str = plugin.pluginName + '|' + plugin.pluginType;
+      if (!count.hasOwnProperty(str)) count[str] = 0;
+      return count[str]++;
+    }
+    const pluginMessages : any[] = [];
+    trackMessages.push(pluginMessages)
+    for (const plugin of track.plugins) {
+      const cybrType = plugin.pluginType === PluginType.unknown ? null : plugin.pluginType;
+      pluginMessages.push(cybr.plugin.select(plugin.pluginName, cybrType, nth(plugin)));
+
+      for (const [paramKey, explicitValue] of Object.entries(plugin.parameters)) {
+        const paramName = plugin.getParameterName(paramKey);
+        if (typeof explicitValue === 'number') {
+          const normalizedValue = plugin.getNormalizedValue(paramKey, explicitValue);
+          if (typeof normalizedValue === 'number') {
+            pluginMessages.push(cybr.plugin.setParamNormalized(paramName, normalizedValue));
+          } else {
+            pluginMessages.push(cybr.plugin.setParamExplicit(paramName, explicitValue));
+          }
+        } else {
+          console.warn(`found non-number parameter value in ${plugin.pluginName} - ${paramKey}: ${explicitValue}`);
+        }
+      }
+    }
+  }
+
+  return sessionMessages;
+}
 
 /**
  * Create a `FluidMessage` from a `TracksObject`
@@ -20,26 +83,11 @@ const tab  = require('./tab');
  */
 export function tracksToFluidMessage(tracks : FluidTrack[]) {
   const sessionMessages : any[] = [];
-  let i = 0;
 
-  // // example tracks object
-  // const tracks = {
-  //   bass: { clips: [ clip1, clip2... ] },
-  //   kick: { clips: [ clip1, clip2... ] },
-  // };
   for (const track of tracks) {
     if (tab.reservedKeys.hasOwnProperty(track.name)) {
       continue;
     }
-
-    // Charles: This was buggy, and probably undesirable. After the typescript
-    // refactor remove it altogether.
-    // if (!track.clips || !track.clips.length) {
-    //   if (!tracksObject.plugins.length) {
-    //     console.log(`tracksToFluidMessage: skipping ${trackName}, because it has no .clips and no .plugins`);
-    //     continue;
-    //   }
-    // }
 
     // Create a sub-message for each track
     let trackMessages : any[] = [];
@@ -88,11 +136,9 @@ export function tracksToFluidMessage(tracks : FluidTrack[]) {
         // Iterate over the automation points.
         for (const autoPoint of automation.points) {
           if (typeof autoPoint.value === 'number') {
-            // This seemingly arbitrary conversion is hard-coded in Tracktion
-            const value = Math.exp((autoPoint.value-6) * (1/20));
-            trackAutoMsg.push(cybr.plugin.setParamExplicitAt(
+            trackAutoMsg.push(cybr.plugin.setParamNormalizedAt(
               (name === 'gain') ? 'volume' : name,
-              Math.max(Math.min(value, 1), 0),
+              normalizeTracktionGain(autoPoint.value),
               autoPoint.startTime,
               autoPoint.curve,
             ));
@@ -124,6 +170,9 @@ export function tracksToFluidMessage(tracks : FluidTrack[]) {
           if (typeof autoPoint.value === 'number') {
             // - paramName is the JUCE style parameter name we need
             // - value is an explicit value. look for a normalizer
+            // Notice how paramKey and paramName are used in the code below, and
+            // be careful not to mix them up. They may (or may not) be identical
+            // so mixing them up could lead to hard-to-find bugs.
             const explicitValue   = autoPoint.value;
             const normalizedValue = plugin.getNormalizedValue(paramKey, explicitValue);
 

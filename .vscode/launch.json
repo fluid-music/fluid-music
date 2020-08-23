@@ -5,6 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch demo-typescript",
+            "program": "${workspaceFolder}/demo-typescript/content.js",
+            "cwd": "${workspaceFolder}/demo-typescript/",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
             "name": "(gdb) Launch --device-out=PulseAudio Sound Server",
             "type": "cppdbg",
             "request": "launch",

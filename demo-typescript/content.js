@@ -35,42 +35,44 @@ nLibrary.s.choices = nLibrary.c.choices.map(choice => Object.assign({}, choice))
 nLibrary.s.choices.forEach(f =>  { f.startInSourceSeconds=0.02; f.fadeInSeconds=0.003; });
 
 const dLibrary = {
+  p: { dbfs: -6, intensity: 1/2 },
   f: { dbfs: 0, intensity: 1.0 },
   m: { dbfs: -2.6, intensity: 3/4 },
 };
 
 let session = new fluid.FluidSession({
+  bpm: 96,
   r: '1 + 2 + 3 + 4 + ',
   dLibrary, // default for kick and snare
   nLibrary, // default for kick and snare
 }, {
-  kick:  { d: '.   . mf      ' },
+  kick:  { d: '.   . mf      ', gain: -6 },
   snare: { d: 'm   f   m   f ' },
-  chrd:  { nLibrary: chords.nLibrary },
+  chrd:  { nLibrary: chords.nLibrary, pan: -.75 },
   bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p } },
-  tamb:  { },
-  revb:  { plugins: [ new fluid.DragonflyRoom({decaySeconds: 2.4})], nLibrary: {p, q, r, s, t} },
-})
+  tamb:  { pan: .25 },
+  revb:  { plugins: [ new fluid.DragonflyRoom({decaySeconds: 2.4, predelayMs: 49 })], nLibrary: {p, q, r, s, t} },
+});
 
 session.insertScore({
-  kick:  ['.   . dd dD .D  ', 'd   d   d   d  '],
-  snare: 'r---k-  .   k-  ',
-  tamb:  'c s c s c s c s ',
+  kick: ['.   . dd dD .D  ', 'd   d   d   d   '],
+  snare:['r---k-  .   k-  ', '              '],
+  tamb: ['c s c s c s c s ', {r: '1....234..', tamb: 'scscs..sss', d: 'p'} ],
   bass:  '       ab-      ',
   chrd:  'a-  .  ab---    ',
   revb:  'p      q     rst',
 }, {eventMappers: drums.eventMappers});
 
-
-const msg = fluid.tracksToFluidMessage(session.tracks);
+const templateMessage = fluid.sessionToTemplateFluidMessage(session);
+const contentMessage = fluid.tracksToFluidMessage(session.tracks);
 const client = new fluid.Client();
 client.send([
   fluid.global.activate(path.join(__dirname, 'session.tracktionedit'), true),
   fluid.transport.loop(0, session.duration),
-  msg,
+  templateMessage,
+  contentMessage,
   fluid.global.save(null, 'd'),
 ]);
-
 
 // const rpp = fluid.tracksToReaperProject(session.tracks, 96);
 // console.log(rpp.dump())

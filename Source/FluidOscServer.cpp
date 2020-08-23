@@ -100,6 +100,7 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/select/return"})) return selectReturnTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/set/db"})) return setTrackGain(message);
+    if (msgAddressPattern.matches({"/audiotrack/set/pan"})) return setTrackPan(message);
     if (msgAddressPattern.matches({"/audiotrack/send/set/db"})) return ensureSend(message);
     if (msgAddressPattern.matches({"/audiotrack/remove/clips"})) return removeAudioTrackClips(message);
     if (msgAddressPattern.matches({"/audiotrack/remove/automation"})) return removeAudioTrackAutomation(message);
@@ -1262,7 +1263,7 @@ OSCMessage FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     }
 
     if(message.size() < 3){
-        String errorString = "Cannot insert wave file: only recieved " + String(message.size()) + "arguments.";
+        String errorString = "Cannot insert wave file: only received " + String(message.size()) + "arguments.";
         constructReply(reply, 1, errorString);
         return reply;
     }
@@ -1340,6 +1341,32 @@ OSCMessage FluidOscServer::setTrackGain(const OSCMessage& message) {
 
     if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
         volumePlugin->setVolumeDb(message[0].getFloat32());
+        reply.addInt32(0);
+    } else {
+        String errorString = "Cannot set track gain: Track is missing volume plugin.";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    return reply;
+}
+
+OSCMessage FluidOscServer::setTrackPan(const OSCMessage& message) {
+    OSCMessage reply("/audiotrack/set/pan/reply");
+    if (!selectedAudioTrack) {
+        String errorString = "Cannot set track pan: No track selected.";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    if (!message.size() || !message[0].isFloat32()) {
+        String errorString = "Cannot set track pan: Missing arguments.";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
+        volumePlugin->setPan(message[0].getFloat32());
         reply.addInt32(0);
     } else {
         String errorString = "Cannot set track gain: Track is missing volume plugin.";
