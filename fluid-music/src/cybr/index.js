@@ -12,6 +12,7 @@ import * as audioclip from './audioclip';
 import * as clip from './clip';
 import * as audiofile from './audiofile';
 import * as plugin from './plugin';
+import * as content from './content';
 
 const sampler = require('./sampler');
 const audiotrack = require('./audiotrack');

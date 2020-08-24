@@ -25,7 +25,7 @@ const global = require('./cybr/global');
 import * as clip from './cybr/clip';
 import * as audioclip from './cybr/audioclip';
 import * as audiofile from './cybr/audiofile';
-const content = require('./cybr/content');
+import * as content  from './cybr/content';
 const tempo = require('./cybr/tempo');
 
 
