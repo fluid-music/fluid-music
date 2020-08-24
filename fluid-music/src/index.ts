@@ -5,7 +5,7 @@ import { tracksToFluidMessage, sessionToTemplateFluidMessage } from './tracksToF
 import { FluidSession } from './FluidSession';
 
 // OSC Message Helpers
-const plugin = require('./cybr/plugin');
+import * as plugin from './cybr/plugin';
 
 const pluginDragonflyRoomReverb = require('./cybr/plugin-dragonfly-room');
 const pluginPodolski = require('./cybr/plugin-podolski');
@@ -83,6 +83,5 @@ export = {
   FluidPlugin,
   PluginType,
   DragonflyRoom,
-
   FluidSession,
 };

@@ -11,8 +11,8 @@ in this file, AND the root level index.js file. */
 import * as audioclip from './audioclip';
 import * as clip from './clip';
 import * as audiofile from './audiofile';
+import * as plugin from './plugin';
 
-const plugin = require('./plugin');
 const sampler = require('./sampler');
 const audiotrack = require('./audiotrack');
 const midiclip = require('./midiclip');
