@@ -825,7 +825,7 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
 
             param->parameterChangeGestureBegin();
             if (isNormalized) param->setNormalisedParameter(paramValue, NotificationType::sendNotification);
-            else param->setParameter(paramValue, NotificationType::sendNotification);
+            else param->setParameter(paramValue, NotificationType::sendNotificationSync);
             param->parameterChangeGestureEnd();
 
             String replyString = "set " + paramName
@@ -981,49 +981,10 @@ OSCMessage FluidOscServer::getPluginParamReport(const juce::OSCMessage& message)
         constructReply(reply, 1, errorString);
         return reply;
     }
-
-    // We have to allocate vars dynamically. Store them in this array so the vars will be
-    // cleaned with it goes out of scope. The standard Array is needed for creating JSON.
-    OwnedArray<var> toDelete;
-    Array<var> array;
-
-    for (auto param : selectedPlugin->getAutomatableParameters()) {
-        // var works like a Smart Pointer. It deletes reference counted objects in its
-        // destructor. Jules describes this behavior here:
-        // https://forum.juce.com/t/way-to-init-a-var-with-a-dynamicobject/12037
-        DynamicObject* object = new DynamicObject();
-
-        // All our var objects created with 'new' should be added to (and deleted by)
-        // the toDelete OwnedArray.
-        var* v = new var(object); toDelete.add(v);
-        array.add(*v);
-
-        object->setProperty("name", param->paramName);
-        object->setProperty("defaultValue", param->getDefaultValue());
-        object->setProperty("currentExplicitValue", param->getCurrentExplicitValue());
-        object->setProperty("currentNormalizedValue", param->getCurrentNormalisedValue());
-        object->setProperty("currentValue", param->getCurrentValue());
-        object->setProperty("currentValueAsStringWithLabel", param->getCurrentValueAsStringWithLabel());
-        object->setProperty("currentValueAsString", param->getCurrentValueAsString());
-        object->setProperty("currentBaseValue", param->getCurrentBaseValue());
-        object->setProperty("isDiscrete", param->isDiscrete());
-        object->setProperty("isAutomationActive", param->isAutomationActive());
-        object->setProperty("isActive", param->isParameterActive()); // external plugin params seem to always be active
-        object->setProperty("hasAutomationPoints", param->hasAutomationPoints());
-        object->setProperty("hasLabels", param->hasLabels());
-        object->setProperty("currentLabel", param->getLabel());
-
-        // I believe that anything we put in a var will get cleaned up correctly as
-        // if the var is cleaned up correctly itself. It might be worth veryifying.
-        var* valueRange = new var(); toDelete.add(valueRange);
-        valueRange->append(param->getValueRange().getStart());
-        valueRange->append(param->getValueRange().getEnd());
-        // setProperty passes by reference, but I think that the underlying Var object
-        // still get copied. If that var object is an Array<var> then the contents of
-        // that array get copied as well. We have to .setProperty AFTER adding values.
-        object->setProperty("valueRange", *valueRange);
-    }
-
+    
+    bool getFullReport = message.size() && message[0].isInt32() && message[0].getInt32();
+    auto array = getPluginParamReportObject(selectedPlugin, getFullReport);
+    
     // Create JSON of the results
     String jsonString = JSON::toString(array, true);
 

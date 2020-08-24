@@ -1,14 +1,16 @@
 const fluid = require('../');
+const cybr = fluid.cybr;
 
-const client = new fluid.Client(9999);
+const client = new cybr.Client(9999);
+
 
 const m1 = [
-  fluid.global.activate("deleteme.tracktionedit", true),
-  fluid.audiotrack.select('hi'),
-  fluid.pluginTStereoDelay.select(),
-  // fluid.plugin.select('Podolski'),
-  fluid.plugin.getParamReport(),
-  fluid.plugin.getReport(),
+  cybr.global.activate("deleteme.tracktionedit", true),
+  cybr.audiotrack.select('hi'),
+  cybr.pluginTStereoDelay.select(),
+  // cybr.plugin.select('Podolski'),
+  cybr.plugin.getParamReport(true),
+  // cybr.plugin.getReport(),
 ];
 
 client.send(m1).then((data) => {

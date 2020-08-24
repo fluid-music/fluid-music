@@ -315,6 +315,43 @@ export function getReport() { return { address: '/plugin/report' }; }
 /**
  * getParamReport asks the server for the state of all the automatable
  * parameters on the selected plugin. The results will be returned in a
- * JSONified array.
+ * string containing a JSON array.
+ *
+ * @param full Set full=true to get additional information about the plugin's
+ * parameters. By default, getParamReport just reports the state of the plugin
+ * parameters. However, when creating adapters is useful to get information
+ * about the range of the parameters. Note that setting this to true may change
+ * the plugin state, so it probably should be avoided when it is not needed.
+ * 
+ * Note that some plugins (like Podolski) correctly report the label like this:
+ * ```javascript
+ * {
+ *    currentLabel: '%',
+ *    inputValueRange: [ 0, 1 ],
+ *    outputValueRangeAsString: [ '0.00', '100.00' ],
+ *    outputValueRangeAsStringWithLabel: [ '0.00 %', '100.00 %' ]
+ * },
+ * ```
+ * 
+ * While other plugins (like #TStereo Delay) always report the unit label:
+ * ```javascript
+ * {
+ *    currentLabel: 'Hz',
+ *    inputValueRange: [ 0, 1 ],
+ *    outputValueRangeAsString: [ '20 Hz', '20000 Hz' ],
+ *    outputValueRangeAsStringWithLabel: [ '20 Hz', '20000 Hz' ]
+ * }
+ * ```
+ * 
+ * Another thing to look out for is parameters that may represent a
+ * continuous function, but look like this:
+ * ```
+ * outputValueRangeAsString: [ '-INF dB', '+18.00 dB' ]
+ * ```
  */
-export function getParamReport() { return { address: '/plugin/param/report' }; }
+export function getParamReport(full=false) {
+  return {
+    address: '/plugin/param/report',
+    args: [{ type: 'integer', value: full ? 1 : 0 }]
+  };
+}

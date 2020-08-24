@@ -261,3 +261,69 @@ juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
     
     return object;
 }
+
+juce::var getPluginParamReportObject(te::Plugin* selectedPlugin, bool getFullReport) {
+    
+    Array<var> tempVar;
+    var report = tempVar;
+
+    for (auto param : selectedPlugin->getAutomatableParameters()) {
+
+        // I believe appending a new DynamicObject to a var is memory safe. My understanding:
+        // var works like a Smart Pointer. It deletes reference counted objects in its
+        // destructor. Jules describes this behavior here:
+        // https://forum.juce.com/t/way-to-init-a-var-with-a-dynamicobject/12037
+
+        report.append(new DynamicObject());
+        DynamicObject* object = report.getArray()->getLast().getDynamicObject();
+
+        object->setProperty("name", param->paramName);
+        object->setProperty("defaultValue", param->getDefaultValue());
+        object->setProperty("currentExplicitValue", param->getCurrentExplicitValue());
+        object->setProperty("currentNormalizedValue", param->getCurrentNormalisedValue());
+        object->setProperty("currentValue", param->getCurrentValue());
+        object->setProperty("currentValueAsStringWithLabel", param->getCurrentValueAsStringWithLabel());
+        object->setProperty("currentValueAsString", param->getCurrentValueAsString());
+        object->setProperty("currentBaseValue", param->getCurrentBaseValue());
+        object->setProperty("isDiscrete", param->isDiscrete());
+        object->setProperty("isAutomationActive", param->isAutomationActive());
+        object->setProperty("isActive", param->isParameterActive()); // external plugin params seem to always be active
+        object->setProperty("hasAutomationPoints", param->hasAutomationPoints());
+        object->setProperty("hasLabels", param->hasLabels());
+        object->setProperty("currentLabel", param->getLabel());
+
+        auto start = param->getValueRange().getStart();
+        auto end   = param->getValueRange().getEnd();
+        // I believe that anything we put in a var will get cleaned up correctly as
+        // if the var is cleaned up correctly itself. It might be worth veryifying.
+        var valueRange;
+        valueRange = tempVar;
+        valueRange.append(start);
+        valueRange.append(end);
+        // setProperty passes by reference, but I think that the underlying Var object
+        // still get copied. If that var object is an Array<var> then the contents of
+        // that array get copied as well. We have to .setProperty AFTER adding values.
+        object->setProperty("inputValueRange", valueRange);
+        
+        if (getFullReport) {
+            auto currentValue = param->getCurrentValue();
+
+            var rangeAsString = tempVar;
+            var rangeAsStringWithLabel = tempVar;
+
+            param->setParameter(start, NotificationType::sendNotificationSync);
+            rangeAsString.append(param->getCurrentValueAsString());
+            rangeAsStringWithLabel.append(param->getCurrentValueAsStringWithLabel());
+
+            param->setParameter(end, NotificationType::sendNotification);
+            rangeAsString.append(param->getCurrentValueAsString());
+            rangeAsStringWithLabel.append(param->getCurrentValueAsStringWithLabel());
+
+            object->setProperty("outputValueRangeAsString", rangeAsString);
+            object->setProperty("outputValueRangeAsStringWithLabel", rangeAsStringWithLabel);
+            
+            param->setParameter(currentValue, juce::NotificationType::sendNotificationSync);
+        }
+    }
+    return report;
+}
