@@ -2,8 +2,11 @@ const rppp = require('rppp')
 const tab = require('./tab')
 
 // Reaper appears to store gain as a simple numeric multiplier. I am choosing a
-// max value of 12 db.
-const db2Amp = (db) => Math.pow(10, Math.min(db, 12) / 20);
+// max value of 12 db. Remember that this is equivalent to voltage gain, so we
+// use 20 for the denominator in the equation below. This means that 6.02 db of
+// gain is approximately equal to a gain factor of 2. Remember Power=Voltage^2
+// which is how the 20 ends up in the db equation instead of 10.
+const db2Gain = (db) => Math.pow(10, Math.min(db, 12) / 20);
 
 /**
  * Create a `ReaperProject` from a `TracksObject`
@@ -66,7 +69,7 @@ function tracksToReaperProject(tracksObject, bpm) {
 
       if (name === 'gain') {
         autoObject = new rppp.objects.ReaperVolumeAutomation();
-        normalize = db2Amp;
+        normalize = db2Gain;
       } else if (name === 'pan') {
         autoObject = new rppp.objects.ReaperPanAutomation();
       }
@@ -164,7 +167,7 @@ function fileEventsToReaperObject(fileEvents, context) {
 
     // If there is a dynamics object, look for a dbfs property and apply gain.
     if (event.d && typeof(event.d.dbfs) === 'number')
-      audioItem.getOrCreateStructByToken('VOLPAN').params = [1, 0, db2Amp(event.d.dbfs), -1]
+      audioItem.getOrCreateStructByToken('VOLPAN').params = [1, 0, db2Gain(event.d.dbfs), -1]
 
     return audioItem;
   });
