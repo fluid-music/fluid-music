@@ -18,13 +18,13 @@ const pluginHelm = require('./cybr/plugin-helm');
 const pluginDexedVst = require('./cybr/plugin-dexed-vst');
 
 const sampler = require('./cybr/sampler');
-const audiofile = require('./cybr/audiofile');
 const audiotrack = require('./cybr/audiotrack');
 const midiclip = require('./cybr/midiclip');
 const transport = require('./cybr/transport');
 const global = require('./cybr/global');
-import * as audioclip from './cybr/audioclip';
 import * as clip from './cybr/clip';
+import * as audioclip from './cybr/audioclip';
+import * as audiofile from './cybr/audiofile';
 const content = require('./cybr/content');
 const tempo = require('./cybr/tempo');
 
