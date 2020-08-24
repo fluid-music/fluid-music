@@ -71,15 +71,15 @@ export function create(clipName, startTimeInWholeNotes, durationInWholeNotes, no
     clear(),
   ];
 
-  notes.forEach((note) => {
-    if (typeof note.n !== 'number' ||
-        typeof note.s !== 'number' ||
-        typeof note.l !== 'number')
-        throw new Error('Got bad note: ' + JSON.stringify(note));
+  notes.forEach((noteObject) => {
+    if (typeof noteObject.n !== 'number' ||
+        typeof noteObject.s !== 'number' ||
+        typeof noteObject.l !== 'number')
+        throw new Error('Got bad note: ' + JSON.stringify(noteObject));
 
-    const length = converters.valueToWholeNotes(note.l);
-    const start = converters.valueToWholeNotes(note.s);
-    const noteMsg = note(note.n, start, length, note.v);
+    const length = converters.valueToWholeNotes(noteObject.l);
+    const start = converters.valueToWholeNotes(noteObject.s);
+    const noteMsg = note(noteObject.n, start, length, noteObject.v);
     elements.push(noteMsg);
   });
 
