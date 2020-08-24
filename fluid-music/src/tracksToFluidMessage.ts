@@ -3,7 +3,8 @@ import { FluidTrack } from './FluidTrack';
 import { ClipEventContext } from './ts-types';
 import { FluidSession } from './FluidSession';
 
-const cybr = require('./cybr/index');
+import * as cybr from './cybr/index';
+
 const tab  = require('./tab');
 
 // This amplification conversion is hard-coded in Tracktion

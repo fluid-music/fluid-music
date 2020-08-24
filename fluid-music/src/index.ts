@@ -5,16 +5,7 @@ import { tracksToFluidMessage, sessionToTemplateFluidMessage } from './tracksToF
 import { FluidSession } from './FluidSession';
 
 // OSC Message Helpers
-const pluginDragonflyRoomReverb = require('./cybr/plugin-dragonfly-room');
-const pluginPodolski = require('./cybr/plugin-podolski');
-const pluginTCompressor = require('./cybr/plugin-tcompressor-vst');
-const pluginTEqualiser = require('./cybr/plugin-tequaliser');
-const pluginTReverber8 = require('./cybr/plugin-treverber8');
-const pluginTStereoDelay = require('./cybr/plugin-tstereodelay');
-const pluginZebra2Vst2 = require('./cybr/plugin-zebra2-vst2');
-const pluginHelm = require('./cybr/plugin-helm');
-const pluginDexedVst = require('./cybr/plugin-dexed-vst');
-
+import * as cybr from './cybr/index';
 import * as audioclip from './cybr/audioclip';
 import * as audiofile from './cybr/audiofile';
 import * as audiotrack from './cybr/audiotrack';
@@ -26,6 +17,16 @@ import * as plugin from './cybr/plugin';
 import * as sampler from './cybr/sampler';
 import * as tempo from './cybr/tempo';
 import * as transport from './cybr/transport';
+
+const pluginDragonflyRoomReverb = require('./cybr/plugin-dragonfly-room');
+const pluginPodolski = require('./cybr/plugin-podolski');
+const pluginTCompressor = require('./cybr/plugin-tcompressor-vst');
+const pluginTEqualiser = require('./cybr/plugin-tequaliser');
+const pluginTReverber8 = require('./cybr/plugin-treverber8');
+const pluginTStereoDelay = require('./cybr/plugin-tstereodelay');
+const pluginZebra2Vst2 = require('./cybr/plugin-zebra2-vst2');
+const pluginHelm = require('./cybr/plugin-helm');
+const pluginDexedVst = require('./cybr/plugin-dexed-vst');
 
 // Other Stuff
 const noteLibrary = require('./note-library');
@@ -44,6 +45,7 @@ const tracksToReaperProject = require('./tracksToReaperProject');
 const jsDocTypes = require('./jsdoc-types');
 
 export = {
+  cybr,
   audioclip,
   audiofile,
   audiotrack,
