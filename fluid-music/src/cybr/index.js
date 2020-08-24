@@ -9,10 +9,11 @@ TLDR: When adding a new module to the fluid folder, it should be imported
 in this file, AND the root level index.js file. */
 
 import * as audioclip from './audioclip';
-import * as clip from './clip';
 import * as audiofile from './audiofile';
-import * as plugin from './plugin';
+import * as clip from './clip';
 import * as content from './content';
+import * as plugin from './plugin';
+import * as tempo from './tempo';
 
 const sampler = require('./sampler');
 const audiotrack = require('./audiotrack');

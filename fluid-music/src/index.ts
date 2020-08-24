@@ -26,7 +26,7 @@ import * as clip from './cybr/clip';
 import * as audioclip from './cybr/audioclip';
 import * as audiofile from './cybr/audiofile';
 import * as content  from './cybr/content';
-const tempo = require('./cybr/tempo');
+import * as tempo from './cybr/tempo';
 
 
 // Other Stuff
