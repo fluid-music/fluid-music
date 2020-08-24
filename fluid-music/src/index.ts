@@ -17,7 +17,6 @@ const pluginZebra2Vst2 = require('./cybr/plugin-zebra2-vst2');
 const pluginHelm = require('./cybr/plugin-helm');
 const pluginDexedVst = require('./cybr/plugin-dexed-vst');
 
-const sampler = require('./cybr/sampler');
 const audiotrack = require('./cybr/audiotrack');
 const midiclip = require('./cybr/midiclip');
 const transport = require('./cybr/transport');
@@ -26,8 +25,8 @@ import * as clip from './cybr/clip';
 import * as audioclip from './cybr/audioclip';
 import * as audiofile from './cybr/audiofile';
 import * as content  from './cybr/content';
+import * as sampler from './cybr/sampler';
 import * as tempo from './cybr/tempo';
-
 
 // Other Stuff
 const noteLibrary = require('./note-library');

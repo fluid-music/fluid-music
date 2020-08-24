@@ -14,8 +14,8 @@ import * as clip from './clip';
 import * as content from './content';
 import * as plugin from './plugin';
 import * as tempo from './tempo';
+import * as sampler from './sampler';
 
-const sampler = require('./sampler');
 const audiotrack = require('./audiotrack');
 const midiclip = require('./midiclip');
 const transport = require('./transport');
