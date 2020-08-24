@@ -1,4 +1,4 @@
-import plugin from './plugin';
+const plugin = require('./plugin');
 const fluid = { plugin };
 
 // These helpers convert "useful" units like DBfs and milliseconds to the

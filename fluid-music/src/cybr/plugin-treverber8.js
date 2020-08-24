@@ -1,4 +1,4 @@
-import plugin from './plugin';
+const plugin = require('./plugin');
 const fluid = { plugin };
 
 const db2Level = v => Math.exp(v/8.6864); // For "Wet" and "Dry" params

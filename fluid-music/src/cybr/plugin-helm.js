@@ -1,4 +1,4 @@
-import plugin from './plugin';
+const plugin = require('./plugin');
 const fluid = { plugin };
 module.exports = {
   type: 'VST2',
