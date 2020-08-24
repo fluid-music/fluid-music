@@ -28,14 +28,16 @@ const pluginZebra2Vst2 = require('./cybr/plugin-zebra2-vst2');
 const pluginHelm = require('./cybr/plugin-helm');
 const pluginDexedVst = require('./cybr/plugin-dexed-vst');
 
+const UdpClient = require('./cybr/UdpClient');
+const IpcClient = require('./cybr/IpcClient');
+
 // Other Stuff
 const noteLibrary = require('./note-library');
 const noteTypes = require('./note-types');
 const eventMappers = require('./event-mappers');
 const tab = require('./tab');
 const groove = require('./groove')
-const UdpClient = require('./FluidUdpClient');
-const IpcClient = require('./FluidIpcClient');
+
 const converters = require('./converters');
 const m = require('./m');
 const random = require('./random');
@@ -49,8 +51,6 @@ export = {
   audioclip,
   audiofile,
   audiotrack,
-  UdpClient,
-  IpcClient,
   Client: IpcClient,
   clip,
   converters,

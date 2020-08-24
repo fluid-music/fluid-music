@@ -1,6 +1,7 @@
 const path   = require('path');
 const R      = require('ramda');
 const fluid  = require('../fluid-music');
+const cybr   = fluid.cybr;
 const drums  = require('@fluid-music/kit');
 const chords = require('./chords');
 const { DragonflyRoom } = require('../fluid-music');
@@ -20,7 +21,6 @@ const r = { type: 'trackAuto', paramKey: 'pan', value: -.5, curve: -1 };
 const s = { type: 'trackAuto', paramKey: 'pan', value:  .5 };
 const t = { type: 'trackAuto', paramKey: 'gain', value: -6, curve: 0.8 };
 const u = { type: 'trackAuto', paramKey: 'gain', value: -32.9 };
-
 
 // Create a derivative drum library, modified for this score.
 const nLibrary = Object.assign({}, drums.nLibrary);
@@ -67,13 +67,13 @@ session.insertScore({
 
 const templateMessage = fluid.sessionToTemplateFluidMessage(session);
 const contentMessage = fluid.tracksToFluidMessage(session.tracks);
-const client = new fluid.Client();
+const client = new cybr.Client();
 client.send([
-  fluid.global.activate(path.join(__dirname, 'session.tracktionedit'), true),
-  fluid.transport.loop(0, session.duration),
+  cybr.global.activate(path.join(__dirname, 'session.tracktionedit'), true),
+  cybr.transport.loop(0, session.duration),
   templateMessage,
   contentMessage,
-  fluid.global.save(null, 'd'),
+  cybr.global.save(null, 'd'),
 ]);
 
 // const rpp = fluid.tracksToReaperProject(session.tracks, 96);

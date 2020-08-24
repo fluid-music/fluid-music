@@ -2,6 +2,7 @@
 const path = require('path');
 const fs = require('fs');
 const fluid = require('.');
+const cybr = fluid.cybr;
 const argv = process.argv.slice(2);
 
 let docs = 'usage: fluid [flags] command arg\n\n';
@@ -65,19 +66,19 @@ for (let i = 0; i < argv.length; i++) {
   }
 }
 
-const client = new fluid.Client(parsedArgs["-p"]);
+const client = new cybr.Client(parsedArgs["-p"]);
 const commands = {};
 
 addDocstring('play', 'Playback the active edit');
 commands.play = function(){
   console.log('play!');
-  client.send(fluid.transport.play());
+  client.send(cybr.transport.play());
 };
 
 addDocstring('stop', 'Stop playback of the active edit');
 commands.stop = function(){
   console.log('stop!');
-  client.send(fluid.transport.stop());
+  client.send(cybr.transport.stop());
 };
 
 addDocstring('to <wholeNotes>', 'Move the transport to a time in whole notes');
@@ -85,7 +86,7 @@ commands.to = function(){
   if (typeof parsedArgs.to !== 'number' || isNaN(parsedArgs.to))
     console.error('ERROR: "to" command must have a numeric argument');
   else
-    client.send(fluid.transport.to(parsedArgs.to));
+    client.send(cybr.transport.to(parsedArgs.to));
 };
 
 addDocstring('create <filename>', 'Create a tracktionedit file, overwriting if needed');
@@ -94,7 +95,7 @@ commands.create = function(){
   const filename = parseFilename(parsedArgs.create);
   const exists = fs.existsSync(filename);
   console.log(`create${exists ? '' : ' (overwrite)'}:`, filename);
-  client.send(fluid.global.activate(filename, true));
+  client.send(cybr.global.activate(filename, true));
 };
 
 addDocstring('open <filename>', 'Open a tracktionedit file, creating if needed');
@@ -102,12 +103,12 @@ commands.open = function(){
   const filename = parseFilename(parsedArgs.open);
   const exists = fs.existsSync(filename);
   console.log(`open${exists? '' : ' (create)'}:`, filename);
-  client.send(fluid.global.activate(filename, false));
+  client.send(cybr.global.activate(filename, false));
 };
 
 addDocstring('save', 'Save the active tracktionedit file');
 commands.save = function(){
-  client.send(fluid.global.save(null,'d'));
+  client.send(cybr.global.save(null,'d'));
   console.log('save: ***filename unchanged***');
   return;
 };
@@ -117,14 +118,14 @@ commands.saveas = function(){
   const filename = parseFilename(parsedArgs.saveas);
   const exists = fs.existsSync(filename);
   console.log(`save: ${exists? '(overwrite)' : '(create)'}:`, filename);
-  client.send(fluid.global.save(filename, 'd'));
+  client.send(cybr.global.save(filename, 'd'));
 };
 
 addDocstring('render <filename.wav>', 'Render the active edit in entirety');
 commands.render = function(){
   const filename = parseFilename(parsedArgs.render, '.wav');
   const exists = fs.existsSync(filename);
-  client.send(fluid.global.save(filename));
+  client.send(cybr.global.save(filename));
   console.log(`render${exists? ' (overwrite)': ''}:`, filename);
 };
 
@@ -135,7 +136,7 @@ commands.tempo = function() {
     console.error('ERROR: Invalid tempo value:', bpm);
     process.exit(1);
   }
-  client.send(fluid.tempo.set(bpm));
+  client.send(cybr.tempo.set(bpm));
 }
 
 addDocstring('audiofile <file.wav>', 'print a report about an audio file');
@@ -147,8 +148,8 @@ commands.audiofile = async function() {
   }
 
   const msg = [
-    fluid.global.activate('temp.tracktionedit'),
-    fluid.audiofile.report(filename),
+    cybr.global.activate('temp.tracktionedit'),
+    cybr.audiofile.report(filename),
   ];
   console.log('send:', msg);
 
