@@ -10,17 +10,16 @@ in this file, AND the root level index.js file. */
 
 import * as audioclip from './audioclip';
 import * as audiofile from './audiofile';
+import * as audiotrack from './audiotrack';
 import * as clip from './clip';
 import * as content from './content';
+import * as global from './global';
+import * as midiclip from './midiclip';
 import * as plugin from './plugin';
 import * as tempo from './tempo';
 import * as sampler from './sampler';
+import * as transport from './transport';
 
-const audiotrack = require('./audiotrack');
-const midiclip = require('./midiclip');
-const transport = require('./transport');
-const global = require('./global');
-const tempo = require('./tempo');
 const pluginPodolski = require('./plugin-podolski');
 const pluginTCompressor = require('./plugin-tcompressor-vst');
 const pluginTStereoDelay = require('./plugin-tstereodelay');
@@ -28,7 +27,6 @@ const pluginTReverber8 = require('./plugin-treverber8');
 const pluginTEqualiser = require('./plugin-tequaliser');
 const pluginZebra2Vst2 = require('./plugin-zebra2-vst2');
 const pluginHelm = require('./plugin-helm');
-const content = require('./content');
 const pluginDexedVst = require('./plugin-dexed-vst');
 const pluginDragonflyRoomReverb = require('./plugin-dragonfly-room');
 

@@ -5,8 +5,6 @@ import { tracksToFluidMessage, sessionToTemplateFluidMessage } from './tracksToF
 import { FluidSession } from './FluidSession';
 
 // OSC Message Helpers
-import * as plugin from './cybr/plugin';
-
 const pluginDragonflyRoomReverb = require('./cybr/plugin-dragonfly-room');
 const pluginPodolski = require('./cybr/plugin-podolski');
 const pluginTCompressor = require('./cybr/plugin-tcompressor-vst');
@@ -17,16 +15,17 @@ const pluginZebra2Vst2 = require('./cybr/plugin-zebra2-vst2');
 const pluginHelm = require('./cybr/plugin-helm');
 const pluginDexedVst = require('./cybr/plugin-dexed-vst');
 
-const audiotrack = require('./cybr/audiotrack');
-const midiclip = require('./cybr/midiclip');
-const transport = require('./cybr/transport');
-const global = require('./cybr/global');
-import * as clip from './cybr/clip';
 import * as audioclip from './cybr/audioclip';
 import * as audiofile from './cybr/audiofile';
+import * as audiotrack from './cybr/audiotrack';
+import * as clip from './cybr/clip';
 import * as content  from './cybr/content';
+import * as global from './cybr/global';
+import * as midiclip from './cybr/midiclip';
+import * as plugin from './cybr/plugin';
 import * as sampler from './cybr/sampler';
 import * as tempo from './cybr/tempo';
+import * as transport from './cybr/transport';
 
 // Other Stuff
 const noteLibrary = require('./note-library');
