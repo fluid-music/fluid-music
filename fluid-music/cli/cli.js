@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 const path = require('path');
 const fs = require('fs');
-const fluid = require('.');
+const fluid = require('..');
 const cybr = fluid.cybr;
+const utilPlugin = require('./util-plugin');
+
+
 const argv = process.argv.slice(2);
 
 let docs = 'usage: fluid [flags] command arg\n\n';
@@ -34,8 +37,10 @@ const parsedArgs = {
   "saveas": null,
   "render": null,
   "audiofile": null,
+  "vst2": null,
+  "vst2report": null,
+  "vst2params": null,
 };
-
 
 // For each value, if it has an entry in `parsedArgs`, augment the `parsedArgs`
 // object with the appropriate argument extracted from process.argv.
@@ -164,11 +169,35 @@ commands.audiofile = async function() {
   console.log(JSON.parse(result.args[1].value));
 }
 
+addDocstring('vst2report <pluginName>', 'print the raw vst2 plugin report');
+commands.vst2report = async () => {
+  const report = await utilPlugin.getParamReport(parsedArgs.vst2report, 'vst2', client);
+  console.log(report.plugin);
+}
+
+addDocstring('vst2params <pluginName>', 'print the raw vst2 parameter report');
+commands.vst2params = async () => {
+  const report = await utilPlugin.getParamReport(parsedArgs.vst2params, 'vst2', client);
+  console.log(report.params);
+}
+
+addDocstring('vst2 <pluginName>', 'print a commonjs module that exports { plugin: {}, params: [] }');
+commands.vst2 = async () => {
+  const moduleString = await utilPlugin.buildPluginModule(parsedArgs.vst2, 'vst2', client);
+  console.log(moduleString);
+};
+
 addDocstring('help', 'print this help information');
 commands.help = function() { console.log(docs); };
 commands['-h'] = commands.help;
 
-// Execute commands, and log unhandled
+
+
+/*
+NOTE: Add new commands go BEFORE this comment
+*/
+
+// Execute commands, and log unhandled.
 toHandle.forEach(value => {
   if (commands.hasOwnProperty(value)) commands[value]();
   else console.error('toHandle argument:', value);

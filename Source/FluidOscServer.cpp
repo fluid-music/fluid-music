@@ -981,10 +981,10 @@ OSCMessage FluidOscServer::getPluginParamReport(const juce::OSCMessage& message)
         constructReply(reply, 1, errorString);
         return reply;
     }
-    
-    bool getFullReport = message.size() && message[0].isInt32() && message[0].getInt32();
-    auto array = getPluginParamReportObject(selectedPlugin, getFullReport);
-    
+
+    int steps = (message.size() && message[0].isInt32()) ? message[0].getInt32() : 0;
+    auto array = getPluginParamReportObject(selectedPlugin, steps);
+
     // Create JSON of the results
     String jsonString = JSON::toString(array, true);
 

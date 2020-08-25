@@ -317,41 +317,83 @@ export function getReport() { return { address: '/plugin/report' }; }
  * parameters on the selected plugin. The results will be returned in a
  * string containing a JSON array.
  *
- * @param full Set full=true to get additional information about the plugin's
- * parameters. By default, getParamReport just reports the state of the plugin
- * parameters. However, when creating adapters is useful to get information
- * about the range of the parameters. Note that setting this to true may change
- * the plugin state, so it probably should be avoided when it is not needed.
+ * @param steps A non-zero value gets additional information about the plugin's
+ * parameters: `outputValueStepsAsStrings`, `outputValueRangeAsStrings`, and
+ * `outputValueRangeAsStringsWithLabels`. By default, getParamReport just
+ * reports the state of the plugin parameters. However, when creating adapters
+ * is useful to get information about the range of the parameters. Note that
+ * setting this to true may change the plugin state, so it probably should be
+ * avoided when it is not needed.
  * 
- * Note that some plugins (like Podolski) correctly report the label like this:
  * ```javascript
+ * // This object was created with steps=10.
  * {
+ *    name: 'Dly1: Feedback',
+ *    defaultValue: 0,
+ *    currentExplicitValue: 0,
+ *    currentNormalizedValue: 0,
+ *    currentValue: 0,
+ *    currentValueAsStringWithLabel: '0.00 %',
+ *    currentValueAsString: '0.00',
+ *    currentBaseValue: 0,
+ *    isDiscrete: false,
+ *    isAutomationActive: false,
+ *    isActive: true,
+ *    hasAutomationPoints: false,
+ *    hasLabels: false,
+ *    currentLabel: '%',
+ *    inputValueRange: [ 0, 1 ],
+ *    outputValueStepsAsStrings: [
+ *      '0.00',   '12.50',
+ *      '25.00',  '37.50',
+ *      '50.00',  '62.50',
+ *      '75.00',  '87.50',
+ *      '100.00'
+ *    ],
+ *    outputValueRangeAsStrings: [ '0.00', '100.00' ],
+ *    outputValueRangeAsStringsWithLabels: [ '0.00 %', '100.00 %' ]
+ * },
+ * 
+ * // Note that some plugins (like Podolski) correctly report
+ * // outputValueRangeAsString and outputValueRangeAsStringWithLabel
+ * {
+ *    hasLabels: false, // seems to always be false
  *    currentLabel: '%',
  *    inputValueRange: [ 0, 1 ],
  *    outputValueRangeAsString: [ '0.00', '100.00' ],
  *    outputValueRangeAsStringWithLabel: [ '0.00 %', '100.00 %' ]
- * },
- * ```
+ * }
  * 
- * While other plugins (like #TStereo Delay) always report the unit label:
- * ```javascript
+ * // While other plugins (like #TStereo Delay) always report the unit label:
  * {
  *    currentLabel: 'Hz',
  *    inputValueRange: [ 0, 1 ],
  *    outputValueRangeAsString: [ '20 Hz', '20000 Hz' ],
  *    outputValueRangeAsStringWithLabel: [ '20 Hz', '20000 Hz' ]
  * }
- * ```
  * 
- * Another thing to look out for is parameters that may represent a
- * continuous function, but look like this:
- * ```
- * outputValueRangeAsString: [ '-INF dB', '+18.00 dB' ]
+ * // Another thing to look out for is parameters that may represent a
+ * // continuous function, but look like this:
+ * {
+ *   outputValueRangeAsString: [ '-INF dB', '+18.00 dB' ]
+ * }
+ * 
+ * // currentLabel is sometimes empty like the podolski example below
+ * {
+ *   name: 'LFO1: FreqMod Dpt',
+ *   currentLabel: '',
+ *   inputValueRange: [ 0, 1 ],
+ *   outputValueRangeAsString: [ '-5.00', '5.00' ],
+ *   outputValueRangeAsStringWithLabel: [ '-5.00', '5.00' ]
+ * }
  * ```
  */
-export function getParamReport(full=false) {
+export function getParamReport(steps=0) {
+  if (typeof steps !== 'number')
+    throw new TypeError('cybr.plugin.getParamReport got invalid steps param');
+
   return {
     address: '/plugin/param/report',
-    args: [{ type: 'integer', value: full ? 1 : 0 }]
+    args: [{ type: 'integer', value: Math.round(steps) }]
   };
 }

@@ -36,7 +36,7 @@
     "sharp11": "^2.0.2"
   },
   "bin": {
-    "fluid": "./cli.js"
+    "fluid": "./cli/cli.js"
   },
   "repository": {
     "type": "git",

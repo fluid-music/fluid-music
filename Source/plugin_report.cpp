@@ -262,10 +262,10 @@ juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
     return object;
 }
 
-juce::var getPluginParamReportObject(te::Plugin* selectedPlugin, bool getFullReport) {
+juce::var getPluginParamReportObject(te::Plugin* selectedPlugin, int steps) {
     
-    Array<var> tempVar;
-    var report = tempVar;
+    Array<var> tempArray;
+    var report = tempArray;
 
     for (auto param : selectedPlugin->getAutomatableParameters()) {
 
@@ -273,7 +273,6 @@ juce::var getPluginParamReportObject(te::Plugin* selectedPlugin, bool getFullRep
         // var works like a Smart Pointer. It deletes reference counted objects in its
         // destructor. Jules describes this behavior here:
         // https://forum.juce.com/t/way-to-init-a-var-with-a-dynamicobject/12037
-
         report.append(new DynamicObject());
         DynamicObject* object = report.getArray()->getLast().getDynamicObject();
 
@@ -294,10 +293,9 @@ juce::var getPluginParamReportObject(te::Plugin* selectedPlugin, bool getFullRep
 
         auto start = param->getValueRange().getStart();
         auto end   = param->getValueRange().getEnd();
-        // I believe that anything we put in a var will get cleaned up correctly as
-        // if the var is cleaned up correctly itself. It might be worth veryifying.
-        var valueRange;
-        valueRange = tempVar;
+        // I believe that anything we put in a var will get cleaned up correctly if
+        // the var is cleaned up correctly itself. It might be worth veryifying.
+        var valueRange = tempArray;
         valueRange.append(start);
         valueRange.append(end);
         // setProperty passes by reference, but I think that the underlying Var object
@@ -305,23 +303,33 @@ juce::var getPluginParamReportObject(te::Plugin* selectedPlugin, bool getFullRep
         // that array get copied as well. We have to .setProperty AFTER adding values.
         object->setProperty("inputValueRange", valueRange);
         
-        if (getFullReport) {
+        if (steps) {
+            // stash the initial value so we can reset it later on
             auto currentValue = param->getCurrentValue();
 
-            var rangeAsString = tempVar;
-            var rangeAsStringWithLabel = tempVar;
+            var rangeAsString = tempArray;
+            var rangeAsStringWithLabel = tempArray;
+            var paramSteps = tempArray;
 
             param->setParameter(start, NotificationType::sendNotificationSync);
             rangeAsString.append(param->getCurrentValueAsString());
             rangeAsStringWithLabel.append(param->getCurrentValueAsStringWithLabel());
 
-            param->setParameter(end, NotificationType::sendNotification);
+            param->setParameter(end, NotificationType::sendNotificationSync);
             rangeAsString.append(param->getCurrentValueAsString());
             rangeAsStringWithLabel.append(param->getCurrentValueAsStringWithLabel());
-
-            object->setProperty("outputValueRangeAsString", rangeAsString);
-            object->setProperty("outputValueRangeAsStringWithLabel", rangeAsStringWithLabel);
             
+            float stepSize   = (steps == 1) ? 0.0 : 1.0 / (steps - 1);
+            float startValue = (steps == 1) ? 0.5 : 0.0;
+            for (int i = 0; i < steps; i++) {
+                param->setParameter(startValue + (i*stepSize), juce::NotificationType::sendNotificationSync);
+                paramSteps.append(param->getCurrentValueAsString());
+            }
+            object->setProperty("outputValueStepsAsStrings", paramSteps);
+            object->setProperty("outputValueRangeAsStrings", rangeAsString);
+            object->setProperty("outputValueRangeAsStringsWithLabels", rangeAsStringWithLabel);
+
+            // Reset to the initial value
             param->setParameter(currentValue, juce::NotificationType::sendNotificationSync);
         }
     }
