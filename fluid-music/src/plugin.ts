@@ -40,6 +40,7 @@ export interface PluginSelector {
 export interface PluginParameter {
   readonly name: string;
   readonly units?: string;
+  readonly index?: number;
   normalize?(input : number) : number;
 }
 
@@ -148,7 +149,7 @@ export class FluidPlugin {
   }
 
   /**
-   * There are two ways to identify a plugin parameter
+   * fluid-music has two ways of identifying a parameter with a string:
    * 1. The javascript friendly "key" (ex: `lfo1Speed`)
    * 2. JUCE's parameter name (ex: `LFO 1: Speed`)
    *
@@ -160,11 +161,27 @@ export class FluidPlugin {
    * When there is no adapter available, you can just set a parameter directly:
    * `pluginInstance.parameters["Wet Level"] = 0.8;
    *
-   * @param key the JavaScript friendly parameter identifier
+   * @param paramKey the JavaScript friendly parameter identifier
    */
-  getParameterName(key : string) : string {
-    return (this.parameterLibrary.hasOwnProperty(key))
-      ? this.parameterLibrary[key].name
-      : key;
+  getParameterName(paramKey : string) : string {
+    return (this.parameterLibrary.hasOwnProperty(paramKey))
+      ? this.parameterLibrary[paramKey].name
+      : paramKey;
+  }
+
+  /**
+   * VST2 parameters can also be identified by an index. This method returns the
+   * index, or returns null if the index is not available.
+   *
+   * @param paramKey the JavaScript friendly parameter identifier
+   */
+  getParameterIndex(paramKey : string) {
+    if (this.parameterLibrary.hasOwnProperty(paramKey)) {
+      const param = this.parameterLibrary[paramKey];
+      if (typeof param.index === 'number') {
+        return param.index;
+      }
+    }
+    return null;
   }
 }

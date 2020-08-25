@@ -5,7 +5,6 @@ const pluginType = PluginType.VST2;
 
 export interface DragonflyRoomParameters {
   dryLevelPercent? : number;
-  wetLevelPercent? : number;
   earlyLevelPercent? : number;
   earlySendPercent? : number;
   lateLevelPercent? : number;
@@ -42,96 +41,113 @@ class DragonflyRoomStateRangeChecks implements DragonflyRoomParameters {
   get dryLevelPercent() { return this._data.dryLevelPercent; }
 }
 
+// Tracktion adds 'Dry Level' and 'Wet Level' parameters, both of which are not
+// build into the actual plugin. Typically, this means that plugin adapters
+// should not have 'Dry Level' and 'Wet Level' parameters with indexes. However,
+// DragonFlyRoomRever-vst has its own 'Dry Level' parameter with index=0, so
+// the `dryLevelPercent` parameter below does have an index.
 const parameterLibrary = {
   dryLevelPercent: {
     name: 'Dry Level',
     units: 'percent',
     normalize: percent,
-  },
-  wetLevelPercent: {
-    name: 'Wet Level',
-    units: 'percent',
-    normalize: percent,
+    index: 0,
   },
   earlyLevelPercent: {
     name: 'Early Level',
     units: 'percent',
     normalize: percent,
+    index: 1,
   },
   earlySendPercent: {
     name: 'Early Send',
     units: 'percent',
     normalize: percent,
+    index: 2,
   },
   lateLevelPercent: {
     name: 'Late Level',
     units: 'percent',
     normalize: percent,
+    index: 3,
   },
   sizeMeters: {
     name: 'Size',
     units: 'meters',
     normalize: linear(8, 32),
+    index: 4,
   },
   widthPercent: {
     name: 'Width',
     units: 'percent',
     normalize: linear(50, 150),
+    index: 5,
   },
   predelayMs: {
     name: 'Predelay',
     units: 'milliseconds',
     normalize: linear(0, 100),
+    index: 6,
   },
   decaySeconds: {
     name: 'Decay',
     units: 'seconds',
     normalize: linear(0.1, 10),
+    index: 7,
   },
   diffusePercent: {
     name: 'Diffuse',
     units: 'percent',
     normalize: percent,
+    index: 8,
   },
   spinHz: {
     name: 'Spin',
     units: 'hz',
     normalize: linear(0, 5),
+    index: 9,
   },
   wanderPercent: {
     name: 'Wander',
     units: 'percent',
     normalize: percent,
+    index: 10,
   },
   highCutHz: {
     name: 'High Cut',
     units: 'hz',
     normalize: linear(1000, 16000),
+    index: 11,
   },
   earlyDampHz: {
     name: 'Early Damp',
     units: 'hz',
     normalize: linear(1000, 16000),
+    index: 12,
   },
   lateDampHz: {
     name: 'Late Damp',
     units: 'hz',
     normalize: linear(1000, 16000),
+    index: 13,
   },
   lowBoostPercent: {
     name: 'Low Boost',
     units: 'percent',
     normalize: percent,
+    index: 14,
   },
   lowBoostHz: { // renamed from boostFreq
     name: 'Boost Freq',
     units: 'hz',
     normalize: linear(50, 1050),
+    index: 15,
   },
   lowCutHz: {
     name: 'Low Cut',
     units: 'hz',
     normalize: linear(50, 200),
+    index: 16,
   },
 };
 
@@ -141,18 +157,6 @@ const makeAutomation = {
       type: 'pluginAuto',
       pluginSelector: { pluginName, pluginType },
       paramKey: 'dryLevelPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
-  },
-  wetLevelPercent(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
-      pluginSelector: { pluginName, pluginType },
-      paramKey: 'wetLevelPercent',
       startTime: 0,
       duration: 0,
       curve: 0,

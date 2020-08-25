@@ -277,6 +277,7 @@ juce::var getPluginParamReportObject(te::Plugin* selectedPlugin, int steps) {
         DynamicObject* object = report.getArray()->getLast().getDynamicObject();
 
         object->setProperty("name", param->paramName);
+        object->setProperty("tracktionIndex", selectedPlugin->indexOfAutomatableParameter(param));
         object->setProperty("defaultValue", param->getDefaultValue());
         object->setProperty("currentExplicitValue", param->getCurrentExplicitValue());
         object->setProperty("currentNormalizedValue", param->getCurrentNormalisedValue());
