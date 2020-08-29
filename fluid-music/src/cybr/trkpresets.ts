@@ -1,4 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+/**
+ * This is a .trkpreset in string format that contains a rack with a single
+ * continuous macro parameter named 'width. The width behaves as follows:
+ * - width = 0.0 // inverted left / right
+ * - width = 0.5 // mono
+ * - width = 1.0 // standard stereo
+ */
+export const stereoWidthRack = 
+`<?xml version="1.0" encoding="UTF-8"?>
 
 <PRESET name="stereo-width" tags="Rack" path="/Users/charles/Library/Application Support/Tracktion/Waveform/Presets"
         filename="stereo-width.trkpreset">
@@ -57,3 +65,4 @@
     <CONNECTION src="0" dst="1011" srcPin="2" dstPin="1"/>
   </RACK>
 </PRESET>
+`;
