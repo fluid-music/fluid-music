@@ -526,6 +526,65 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
     std::cout << "Save tracktion preset: " << file.getFullPathName() << std::endl;
 }
 
+void ensureWidthRack(te::AudioTrack& track) {
+
+    for (auto plugin : track.pluginList) {
+        if (plugin->state.hasProperty("cybr-width"))
+            return;
+    }
+
+    auto cybrRackType = track.edit.getRackList().addNewRack();
+    {
+        cybrRackType->rackName.setValue("width", nullptr);
+        auto plugin1 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
+        auto plugin2 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
+        auto volume1 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin1.get());
+        auto volume2 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin2.get());
+        volume1->setVolumeDb(-6.02); // TODO: calculate exactly
+        volume2->setVolumeDb(-6.02); // TODO: calculate exactly
+        // Note that we do not actually hard pan the two volume channels. This
+        // is accomplished with macros.
+
+        cybrRackType->addPlugin(plugin1, {0.25, 0.35}, false);
+        cybrRackType->addPlugin(plugin2, {0.25, 0.60}, true);
+
+        // Left input channel to volume1
+        cybrRackType->addConnection({}, 1, volume1->itemID, 1);
+        cybrRackType->addConnection({}, 1, volume1->itemID, 2);
+        // volume1 to Left output channel
+        cybrRackType->addConnection(volume1->itemID, 1, {}, 1);
+        cybrRackType->addConnection(volume1->itemID, 2, {}, 2);
+
+        // Right input channel to volume2
+        cybrRackType->addConnection({}, 2, volume2->itemID, 1);
+        cybrRackType->addConnection({}, 2, volume2->itemID, 2);
+        // volume2 to right output channel
+        cybrRackType->addConnection(volume2->itemID, 1, {}, 1);
+        cybrRackType->addConnection(volume2->itemID, 2, {}, 2);
+
+        // route midi directly
+        cybrRackType->addConnection({}, 0, {}, 0);
+
+        auto macro = cybrRackType->macroParameterList.createMacroParameter();
+        macro->macroName = "width";
+        macro->value = 1.0;
+        volume1->panParam->addModifier(*macro, -1,  0.5);
+        volume2->panParam->addModifier(*macro,  1, -0.5);
+    }
+
+    // find the last volume plugin in the track
+    int insertPoint = track.pluginList.size() - 1;
+    for (; insertPoint >= 0; insertPoint--) {
+        auto checkPlugin = track.pluginList[insertPoint];
+        if (auto x = dynamic_cast<te::VolumeAndPanPlugin*>(checkPlugin)) break;
+    }
+
+    auto pluginTree = te::RackInstance::create(*cybrRackType.get());  // <PLUGIN type="rack" rackType="1002"/>
+    pluginTree.setProperty("cybr-width", "T", nullptr);
+    te::Plugin::Ptr plugin = track.edit.getPluginCache().createNewPlugin(pluginTree);
+    track.pluginList.insertPlugin(plugin, insertPoint, nullptr);
+}
+
 void loadTracktionPreset(te::AudioTrack& audioTrack, ValueTree v) {
     bool loaded = false;
     for (ValueTree preset : v) {
@@ -633,13 +692,27 @@ void printOscMessage(const OSCMessage& message) {
 };
 
 te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name) {
+    te::AudioTrack* foundTrack = nullptr;
+
     for (auto* track : te::getAudioTracks(edit)) {
-        if (track->getName() == name) return track;
+        if (track->getName() != name) continue;
+        foundTrack = track;
+        break;
     }
-    te::TrackInsertPoint insertPoint(nullptr, te::getTopLevelTracks(edit).getLast()); // Does this work if there are no tracks?
-    te::AudioTrack* track = edit.insertNewAudioTrack(insertPoint, nullptr).get();
-    track->setName(name);
-    return track;
+
+    if (!foundTrack) {
+        te::TrackInsertPoint insertPoint(nullptr, te::getTopLevelTracks(edit).getLast());
+        foundTrack = edit.insertNewAudioTrack(insertPoint, nullptr).get();
+        foundTrack->setName(name);
+    }
+
+    if (foundTrack) {
+        ensureWidthRack(*foundTrack);
+    }
+
+    return foundTrack;
+
+
 }
 
 te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name) {

@@ -57,6 +57,7 @@ void renderTrackRegion(juce::File outputFile, te::Track& track, te::EditTimeRang
 
 te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const juce::String name);
 te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const juce::String name);
+void ensureWidthRack(te::AudioTrack& track);
 
 /** Add a plugin just before the VolumeAndPan plugin.
  `type` can be 'vst|vst3|tracktion|AudioUnit' or an empty string.
