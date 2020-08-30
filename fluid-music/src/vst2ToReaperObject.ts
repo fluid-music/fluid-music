@@ -2,7 +2,7 @@ import { FluidPlugin, PluginType } from './plugin';
 import FluidIpcClient = require('./cybr/IpcClient');
 
 const rppp = require('rppp')
-const fluid = require('./fluid/index');
+const fluid = require('./cybr/index');
 
 /**
  * Create a `ReaperVst` object from an existing plugin on the cybr instance.
@@ -15,7 +15,7 @@ const fluid = require('./fluid/index');
  * 
  * @returns {ReaperVst}
  */
-async function vst2ToReaperObject(client: FluidIpcClient, trackName: string, plugin: FluidPlugin, n: number, bpm: number) {
+export async function vst2ToReaperObject(client: FluidIpcClient, trackName: string, plugin: FluidPlugin, n: number, bpm: number) {
 
   const cybrType = (plugin.pluginType === PluginType.unknown) ? undefined : plugin.pluginType;
   const pluginName = plugin.pluginName;
@@ -26,7 +26,8 @@ async function vst2ToReaperObject(client: FluidIpcClient, trackName: string, plu
     fluid.plugin.getReport(),
   ]
 
-  const retObj = await client.send(msg).then(retObj => { return retObj; });
+  const retObj = await client.send(msg);
+
   const pluginObject = JSON.parse(retObj.elements[2].args[2].value);
   const vst2State = pluginObject.vst2State;
 
@@ -47,7 +48,10 @@ async function vst2ToReaperObject(client: FluidIpcClient, trackName: string, plu
 
   // Automation
   for (const [paramKey, automation] of Object.entries(plugin.automation)) {
-    const paramName = plugin.getParameterName(paramKey); // JUCE style name
+    const paramIndex = plugin.getParameterIndex(paramKey); // JUCE style name
+    const automationTrack = new rppp.objects.ReaperPluginAutomation();
+    automationTrack.params[0] = paramIndex;
+
     // iterate over points. Ex { startTime: 0, value: 0.5, curve: 0 }
     for (const autoPoint of automation.points) {
       if (typeof autoPoint.value === 'number') {
@@ -60,23 +64,20 @@ async function vst2ToReaperObject(client: FluidIpcClient, trackName: string, plu
         const normalizedValue = plugin.getNormalizedValue(paramKey, explicitValue);
 
         if (typeof normalizedValue === 'number') {
-          newVst.addBezierPoint(
+          automationTrack.addBezierPoint(
             autoPoint.startTime * 4 * 60 / bpm, 
             normalizedValue,
             autoPoint.curve
           );
-        } else {
-          trackMessages.push(cybr.plugin.setParamExplicitAt(
-            paramName,
-            explicitValue,
-            autoPoint.startTime,
-            autoPoint.curve));
+        } else { 
+          // If parameter does not have a normalized value, then ignore it.
+          console.warn('parameter does not have a normalized value and could not be set')
         }
       }
     } // for (autoPoint of automation.points)
+
+    newVst.add(automationTrack);
   }   // for (paramName, automation of plugin.automation)
 
   return newVst;
 }
-  
-module.exports = vst2ToReaperObject;

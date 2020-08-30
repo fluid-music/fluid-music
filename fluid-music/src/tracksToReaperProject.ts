@@ -1,5 +1,6 @@
 import { FluidPlugin, PluginType } from './plugin';
 import { FluidTrack } from './FluidTrack';
+import { vst2ToReaperObject } from './vst2ToReaperObject';
 import { ClipEventContext } from './ts-types';
 import { FluidSession } from './FluidSession';
 
@@ -110,14 +111,11 @@ async function tracksToReaperProject(tracksObject : FluidTrack[], bpm : number, 
       const FXChain = new rppp.objects.ReaperFXChain();
 
       for (const plugin of track.plugins) {
-        const cybrType = (plugin.pluginType === PluginType.unknown) ? undefined : plugin.pluginType;
-        const pluginName = plugin.pluginName;
-        
-  
-        trackMessages.push(cybr.plugin.select(pluginName, cybrType, nth(plugin)));
-  
-        
+        const vst2 = await vst2ToReaperObject(client, track.name, plugin, nth(plugin), bpm);
+        FXChain.add(vst2);
       }     // for (plugin of track.plugins)
+
+      newTrack.add(FXChain);
     }
   }       // for (track of tracks)
   return reaperProject;
@@ -139,7 +137,7 @@ function midiEventsToReaperObject(midiEvents, context) {
   midiItem.getOrCreateStructByToken('POSITION').params[0] = startTime * 4 * 60 / context.bpm;
   midiItem.getOrCreateStructByToken('LENGTH').params[0] = duration * 4 * 60 / context.bpm;
 
-  let midiArray = []
+  let midiArray : any[] = []
   for (const event of midiEvents) {
     if (event.type === 'midiNote') {
       let velocity = (event.d && typeof event.d.v === 'number')
@@ -147,7 +145,7 @@ function midiEventsToReaperObject(midiEvents, context) {
         : (typeof event.v === 'number')
           ? event.v
           : undefined;
-      midiArray.push({n: event.n, s: event.startTime, l: event.duration, v: velocity});
+      midiArray.push({ n: event.n, s: event.startTime, l: event.duration, v: velocity });
     }
   }
 
