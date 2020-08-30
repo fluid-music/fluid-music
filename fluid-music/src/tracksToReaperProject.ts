@@ -1,8 +1,6 @@
-import { FluidPlugin, PluginType } from './plugin';
+import { FluidPlugin } from './plugin';
 import { FluidTrack } from './FluidTrack';
 import { vst2ToReaperObject } from './vst2ToReaperObject';
-import { ClipEventContext } from './ts-types';
-import { FluidSession } from './FluidSession';
 
 import * as cybr from './cybr/index';
 import FluidIpcClient = require('./cybr/IpcClient');
@@ -57,9 +55,6 @@ async function tracksToReaperProject(tracksObject : FluidTrack[], bpm : number, 
         track,
         clip,
         clipIndex,
-        // trackObj: newTrack,
-        // tracks: tracksObject,
-        // trackName: track.name,
         data: {},
       };
 
