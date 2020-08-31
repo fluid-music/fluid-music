@@ -5,7 +5,10 @@ import * as cybr from './cybr/index';
 const rppp = require('rppp')
 
 /**
- * Create a `ReaperVst` object from an existing plugin on the cybr instance.
+ * Create a `ReaperVst` object from an existing plugin on the cybr instance. 
+ * This function changes the state of the currently-activated session on cybr, because it 
+ * has to select every plugin to get its state. This function will fail if 
+ * there is no activated session on cybr.
  *
  * @param {FluidIpcClient} client A FluidIpcClient that is connected to a cybr instance
  * @param {string} trackName - See documentation for cybr.audiotrack.select()
