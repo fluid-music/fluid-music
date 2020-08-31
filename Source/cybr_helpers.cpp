@@ -540,8 +540,8 @@ void ensureWidthRack(te::AudioTrack& track) {
         auto plugin2 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
         auto volume1 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin1.get());
         auto volume2 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin2.get());
-        volume1->setVolumeDb(-6.02); // TODO: calculate exactly
-        volume2->setVolumeDb(-6.02); // TODO: calculate exactly
+        volume1->setVolumeDb(-6.020599913279624);
+        volume2->setVolumeDb(-6.020599913279624);
         // Note that we do not actually hard pan the two volume channels. This
         // is accomplished with macros.
 

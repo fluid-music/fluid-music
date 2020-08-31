@@ -1,10 +1,8 @@
-const fs   = require('fs');
-const path = require('path');
-const fluid = require('../../');
-const cybr = fluid.cybr;
+const path  = require('path');
+const fluid = require('../');
+const cybr  = fluid.cybr;
 
-const presetFilename  = path.join(__dirname, 'CybrPan.trkpreset');
-const sessionFilename = path.join(__dirname, 'session.tracktionedit');
+const sessionFilename = path.join(__dirname, 'width.tracktionedit');
 
 const msg = [
   cybr.global.activate(sessionFilename, true),
