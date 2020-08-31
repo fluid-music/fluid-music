@@ -1,17 +1,17 @@
 import { FluidPlugin, PluginType } from './plugin';
 import FluidIpcClient = require('./cybr/IpcClient');
+import * as cybr from './cybr/index';
 
 const rppp = require('rppp')
-const fluid = require('./cybr/index');
 
 /**
  * Create a `ReaperVst` object from an existing plugin on the cybr instance.
  *
  * @param {FluidIpcClient} client A FluidIpcClient that is connected to a cybr instance
- * @param {string} trackName - See documentation for fluid.audiotrack.select()
- * @param {string} pluginName - See documentation for fluid.plugin.select()
- * @param {string} pluginType
- * @param {string} pluginId 
+ * @param {string} trackName - See documentation for cybr.audiotrack.select()
+ * @param {FluidPlugin} plugin - Plugin Object
+ * @param {number} n - nth plugin
+ * @param {number} bpm - Beats per minute
  * 
  * @returns {ReaperVst}
  */
@@ -21,9 +21,9 @@ export async function vst2ToReaperObject(client: FluidIpcClient, trackName: stri
   const pluginName = plugin.pluginName;
 
   const msg = [
-    fluid.audiotrack.select(trackName),
-    fluid.plugin.select(pluginName, cybrType, n),
-    fluid.plugin.getReport(),
+    cybr.audiotrack.select(trackName),
+    cybr.plugin.select(pluginName, cybrType, n),
+    cybr.plugin.getReport(),
   ]
 
   const retObj = await client.send(msg);
