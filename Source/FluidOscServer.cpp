@@ -101,6 +101,7 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/audiotrack/select/return"})) return selectReturnTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/set/db"})) return setTrackGain(message);
     if (msgAddressPattern.matches({"/audiotrack/set/pan"})) return setTrackPan(message);
+    if (msgAddressPattern.matches({"/audiotrack/set/width"})) return setTrackWidth(message);
     if (msgAddressPattern.matches({"/audiotrack/send/set/db"})) return ensureSend(message);
     if (msgAddressPattern.matches({"/audiotrack/remove/clips"})) return removeAudioTrackClips(message);
     if (msgAddressPattern.matches({"/audiotrack/remove/automation"})) return removeAudioTrackAutomation(message);
@@ -918,6 +919,34 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
     return reply;
 }
 
+juce::OSCMessage FluidOscServer::setTrackWidth(const juce::OSCMessage& message) {
+    OSCMessage reply("/audiotrack/set/width/reply");
+
+    if (!selectedAudioTrack) {
+        constructReply(reply, 1, "Cannot set track width: No audiotrack selected");
+        return reply;
+    }
+
+    if (!message.size() || !message[0].isFloat32()) {
+        constructReply(reply, 1, "Cannot set track width: missing float argument");
+        return reply;
+    }
+    float value = message[0].getFloat32();
+    auto plugin = getOrCreatePluginByName(*selectedAudioTrack, "cybr-width", "tracktion");
+    auto rack = dynamic_cast<te::RackInstance*>(plugin);
+    jassert(rack);
+
+    auto rackType = selectedAudioTrack->edit.getRackList().getRackTypeForID(rack->rackTypeID);
+
+    for (auto macro : rackType->macroParameterList.getMacroParameters()) {
+        if (macro->macroName == "width") {
+            macro->setParameter(value * 0.5 + 0.5, juce::NotificationType::sendNotificationSync);
+        }
+    }
+
+    reply.addInt32(0);
+    return reply;
+}
 
 OSCMessage FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
     OSCMessage reply("/plugin/sidechain/input/set/reply");

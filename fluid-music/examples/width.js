@@ -7,7 +7,9 @@ const sessionFilename = path.join(__dirname, 'width.tracktionedit');
 const msg = [
   cybr.global.activate(sessionFilename, true),
   cybr.audiotrack.select('boomchick'),
+  { address: '/audiotrack/set/width', args: [{type: 'float', value: 0}]},
   cybr.audiotrack.select('hithere'),
+  { address: '/audiotrack/set/width', args: [{type: 'float', value: -1}]},
   cybr.audiotrack.select('boomchick'),
   cybr.global.save(),
 ];

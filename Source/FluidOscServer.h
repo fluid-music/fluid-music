@@ -45,6 +45,8 @@ public:
     juce::OSCMessage selectPlugin(const juce::OSCMessage& message);
     juce::OSCMessage setPluginParam(const juce::OSCMessage& message);
     juce::OSCMessage setPluginParamAt(const juce::OSCMessage& message);
+    juce::OSCMessage setTrackWidth(const juce::OSCMessage& message);
+//    juce::OSCMessage setTrackWidthAt(const juce::OSCMessage& message); Charles: Decide if this is really needed or not
     juce::OSCMessage setPluginSideChainInput(const juce::OSCMessage& message);
     juce::OSCMessage getPluginReport(const juce::OSCMessage& message);
     juce::OSCMessage getPluginParamReport(const juce::OSCMessage& message);

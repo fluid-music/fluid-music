@@ -526,14 +526,14 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
     std::cout << "Save tracktion preset: " << file.getFullPathName() << std::endl;
 }
 
-void ensureWidthRack(te::AudioTrack& track) {
-
+te::RackType::Ptr ensureWidthRack(te::AudioTrack& track) {
     for (auto plugin : track.pluginList) {
-        if (plugin->state.hasProperty("cybr-width"))
-            return;
+        if (plugin->state.hasProperty("cybr-width")) {
+            return plugin->getOwnerRackType();
+        }
     }
 
-    auto cybrRackType = track.edit.getRackList().addNewRack();
+    te::RackType::Ptr cybrRackType = track.edit.getRackList().addNewRack();
     {
         cybrRackType->rackName.setValue("width", nullptr);
         auto plugin1 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
@@ -583,6 +583,8 @@ void ensureWidthRack(te::AudioTrack& track) {
     pluginTree.setProperty("cybr-width", "T", nullptr);
     te::Plugin::Ptr plugin = track.edit.getPluginCache().createNewPlugin(pluginTree);
     track.pluginList.insertPlugin(plugin, insertPoint, nullptr);
+
+    return cybrRackType;
 }
 
 void loadTracktionPreset(te::AudioTrack& audioTrack, ValueTree v) {
@@ -741,6 +743,17 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
     // External plugins like "zebra 2" look like this:
     // checkPlugin->getPluginType();   // "VST" or "VST3" of "AudioUnit"
     // checkPlugin->getName();         // "Zebra2"
+
+    // "width" is a special case, because the plugin is a Rack, and is not
+    // actually named "width". Note that indexing "width" is not supported.
+    if ((name == "width" || name == "cybr-width") && (type.isEmpty() || type.equalsIgnoreCase("tracktion"))) {
+        ensureWidthRack(track);
+        for (auto plugin : track.pluginList) {
+            if (plugin->state.hasProperty("cybr-width")) {
+                return plugin;
+            }
+        }
+    }
 
     // first, search for a plugin that matches the full name (case insensitive)
     for (PluginDescription desc : track.edit.engine.getPluginManager().knownPluginList.getTypes()) {
