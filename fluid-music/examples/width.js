@@ -11,6 +11,9 @@ const msg = [
   cybr.audiotrack.select('hithere'),
   { address: '/audiotrack/set/width', args: [{type: 'float', value: -1}]},
   cybr.audiotrack.select('boomchick'),
+  cybr.plugin.select('width', 'tracktion'),
+  cybr.plugin.setParamExplicitAt('width', 0.25, 1),
+  cybr.plugin.setParamExplicitAt('width', 0.75, 2),
   cybr.global.save(),
 ];
 

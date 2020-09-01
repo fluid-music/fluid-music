@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<EDIT appVersion="Waveform 11.1.0" projectID="876daf/a8486c" creationTime="1598829630795"
+      lastSignificantChange="1744600b50c" modifiedBy="Charles Holbrow">
+  <TRANSPORT position="0.0" scrubInterval="0.4301529606051145"/>
+  <MACROPARAMETERS id="1001"/>
+  <TEMPOSEQUENCE>
+    <TEMPO startBeat="0.0" bpm="120.0" curve="1.0"/>
+    <TIMESIG numerator="4" denominator="4" startBeat="0.0"/>
+  </TEMPOSEQUENCE>
+  <PITCHSEQUENCE>
+    <PITCH startBeat="0.0" pitch="60"/>
+  </PITCHSEQUENCE>
+  <VIDEO/>
+  <AUTOMAPXML/>
+  <CLICKTRACK level="0.6000000238418579"/>
+  <ID3VORBISMETADATA trackNumber="1" date="2020"/>
+  <MASTERVOLUME>
+    <PLUGIN type="volume" volume="0.6376281380653381" id="1003" enabled="1">
+      <MACROPARAMETERS id="1005"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+  </MASTERVOLUME>
+  <RACKS>
+    <RACK id="1046" name="width">
+      <MACROPARAMETERS id="1048">
+        <MACROPARAMETER id="1058" name="width" value="0.5010775923728943"/>
+        <MODIFIERASSIGNMENTS/>
+        <AUTOMATIONCURVE paramID="1058">
+          <POINT t="0.0" v="0.5010775923728943" c="0.0"/>
+          <POINT t="2.0" v="1.0" c="0.0"/>
+        </AUTOMATIONCURVE>
+      </MACROPARAMETERS>
+      <WINDOWSTATE windowPos="112 333 600 500" active="1" windowLocked="1"/>
+      <OUTPUT name="midi output"/>
+      <OUTPUT name="output 1 (left)"/>
+      <OUTPUT name="output 2 (right)"/>
+      <INPUT name="midi input"/>
+      <INPUT name="input 1 (left)"/>
+      <INPUT name="input 2 (right)"/>
+      <MODIFIERS/>
+      <PLUGININSTANCE x="0.25" y="0.3507109004739337">
+        <PLUGIN type="volume" windowLocked="1" id="1050" enabled="1" volume="0.5482630729675293"
+                pan="-0.002155184745788574" base64:parameters="8.vEla......."
+                windowX="192" windowY="413">
+          <MACROPARAMETERS id="1051"/>
+          <MODIFIERASSIGNMENTS>
+            <MACRO source="1058" paramID="pan" value="-1.0" offset="0.5"/>
+          </MODIFIERASSIGNMENTS>
+          <FACEPLATE width="8" height="4" autoSize="1">
+            <RESOURCES/>
+          </FACEPLATE>
+        </PLUGIN>
+      </PLUGININSTANCE>
+      <PLUGININSTANCE x="0.25" y="0.6018957345971564">
+        <PLUGIN type="volume" windowLocked="1" id="1052" enabled="1" volume="0.5482630729675293"
+                pan="0.002155184745788574" base64:parameters="8.vEla......."
+                windowX="192" windowY="413">
+          <MACROPARAMETERS id="1053"/>
+          <MODIFIERASSIGNMENTS>
+            <MACRO source="1058" paramID="pan" value="1.0" offset="-0.5"/>
+          </MODIFIERASSIGNMENTS>
+          <FACEPLATE width="8" height="4" autoSize="1">
+            <RESOURCES/>
+          </FACEPLATE>
+        </PLUGIN>
+      </PLUGININSTANCE>
+      <CONNECTION src="0" dst="1050" srcPin="1" dstPin="1"/>
+      <CONNECTION src="0" dst="1050" srcPin="1" dstPin="2"/>
+      <CONNECTION src="1050" dst="0" srcPin="1" dstPin="1"/>
+      <CONNECTION src="1050" dst="0" srcPin="2" dstPin="2"/>
+      <CONNECTION src="0" dst="1052" srcPin="2" dstPin="1"/>
+      <CONNECTION src="0" dst="1052" srcPin="2" dstPin="2"/>
+      <CONNECTION src="1052" dst="0" srcPin="1" dstPin="1"/>
+      <CONNECTION src="1052" dst="0" srcPin="2" dstPin="2"/>
+      <CONNECTION src="0" dst="0" srcPin="0" dstPin="0"/>
+      <FACEPLATE width="8" height="4" autoSize="1">
+        <RESOURCES/>
+      </FACEPLATE>
+    </RACK>
+    <RACK id="1077" name="width 2">
+      <MACROPARAMETERS id="1079">
+        <MACROPARAMETER id="1089" name="width" value="0.6509999632835388"/>
+        <MODIFIERASSIGNMENTS/>
+      </MACROPARAMETERS>
+      <WINDOWSTATE windowPos="712 333 600 500" active="1" windowLocked="1"/>
+      <OUTPUT name="midi output"/>
+      <OUTPUT name="output 1 (left)"/>
+      <OUTPUT name="output 2 (right)"/>
+      <INPUT name="midi input"/>
+      <INPUT name="input 1 (left)"/>
+      <INPUT name="input 2 (right)"/>
+      <MODIFIERS/>
+      <CONNECTION src="0" dst="0" srcPin="0" dstPin="0"/>
+      <FACEPLATE width="1.0" height="1.0" autoSize="1" stretch="0">
+        <RESOURCES/>
+        <BACKGROUND imageAlpha="1.0"/>
+        <PARAMETER bounds="1 1 1 1" parameterIDs="1089"/>
+      </FACEPLATE>
+      <CONNECTION src="0" dst="0" srcPin="2" dstPin="2"/>
+      <CONNECTION src="0" dst="0" srcPin="1" dstPin="1"/>
+    </RACK>
+  </RACKS>
+  <MASTERPLUGINS/>
+  <AUXBUSNAMES/>
+  <INPUTDEVICES>
+    <INPUTDEVICE name="IAC Driver Bus 1"/>
+    <INPUTDEVICE name="IAC Driver IAC MTC"/>
+  </INPUTDEVICES>
+  <TRACKCOMPS/>
+  <ARADOCUMENT/>
+  <CONTROLLERMAPPINGS/>
+  <CYBR/>
+  <ARRANGERTRACK name="Arranger" id="1025">
+    <MACROPARAMETERS id="1027"/>
+    <MODIFIERS/>
+  </ARRANGERTRACK>
+  <TEMPOTRACK name="Global" id="1030">
+    <MACROPARAMETERS id="1032"/>
+    <MODIFIERS/>
+  </TEMPOTRACK>
+  <MARKERTRACK id="1007">
+    <MACROPARAMETERS id="1009"/>
+    <MODIFIERS/>
+  </MARKERTRACK>
+  <CHORDTRACK name="Chords" id="1035">
+    <MACROPARAMETERS id="1037"/>
+    <MODIFIERS/>
+  </CHORDTRACK>
+  <TRACK id="1013" midiVProp="0.28125" midiVOffset="0.359375" name="boomchick">
+    <AUTOMATIONTRACK id="1028" colour="0" currentAutoParamPluginID="1048" currentAutoParamTag="1058"
+                     height="149.0">
+      <MACROPARAMETERS id="1034"/>
+      <MODIFIERS/>
+    </AUTOMATIONTRACK>
+    <MACROPARAMETERS id="1016"/>
+    <MODIFIERS/>
+    <AUDIOCLIP name="rowing" start="0.0" length="7.555374149659862" offset="0.0"
+               id="1012" source="876daf/2e53011" sync="0" elastiqueMode="0"
+               pan="0.0" colour="ffff0000">
+      <LOOPINFO rootNote="-1" numBeats="15.11074829931973" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <PLUGIN type="rack" rackType="1046" cybr-width="T" id="1060" enabled="1"
+            windowX="192" windowY="129" windowLocked="0">
+      <MACROPARAMETERS id="1061"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <PLUGIN type="volume" id="1023" enabled="1" remapOnTempoChange="1" volume="1.0">
+      <MACROPARAMETERS id="1024"/>
+      <MODIFIERASSIGNMENTS/>
+      <FACEPLATE width="8" height="4" autoSize="1">
+        <RESOURCES/>
+      </FACEPLATE>
+    </PLUGIN>
+    <PLUGIN type="level" id="1042" enabled="1">
+      <MACROPARAMETERS id="1043"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <OUTPUTDEVICES>
+      <DEVICE name="(default audio output)"/>
+    </OUTPUTDEVICES>
+  </TRACK>
+  <TRACK id="1064" midiVProp="0.28125" midiVOffset="0.359375" name="hithere"
+         mute="1">
+    <MACROPARAMETERS id="1066"/>
+    <MODIFIERS/>
+    <AUDIOCLIP name="rowing" start="0.0" length="7.555374149659862" offset="0.0"
+               id="1002" source="876daf/2e53011" sync="0" elastiqueMode="0"
+               pan="0.0" colour="ffff0000">
+      <LOOPINFO rootNote="-1" numBeats="15.11074829931973" oneShot="0" denominator="4"
+                numerator="4" bpm="0.0" inMarker="0" outMarker="-1"/>
+    </AUDIOCLIP>
+    <PLUGIN type="rack" rackType="1077" cybr-width="T" id="1091" enabled="1"
+            leftInDb="0.0" remapOnTempoChange="0" windowX="192" windowY="129"
+            windowLocked="0">
+      <MACROPARAMETERS id="1092"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <PLUGIN type="volume" id="1069" enabled="1" remapOnTempoChange="1" polarity="1"
+            volume="1.0" windowX="192" windowY="129" windowLocked="0">
+      <MACROPARAMETERS id="1070"/>
+      <MODIFIERASSIGNMENTS/>
+      <FACEPLATE width="8" height="4" autoSize="1">
+        <RESOURCES/>
+      </FACEPLATE>
+    </PLUGIN>
+    <PLUGIN type="level" id="1073" enabled="1">
+      <MACROPARAMETERS id="1074"/>
+      <MODIFIERASSIGNMENTS/>
+    </PLUGIN>
+    <OUTPUTDEVICES>
+      <DEVICE name="(default audio output)"/>
+    </OUTPUTDEVICES>
+  </TRACK>
+  <VIEWSTATE minimalTransportBar="0" hiddenClips="" lockedClips="" disabledSearchLibraries=""
+             enabledTrackTags="" currentSidePanel="Search" viewleft="-1.0"
+             viewright="20.50764803025573">
+    <TRACKEDITORS/>
+    <FACEPLATEVIEW editModeActive="0" quickAssign="1"/>
+  </VIEWSTATE>
+  <EDITMIXGROUPS/>
+  <AUDIOEDITING/>
+</EDIT>

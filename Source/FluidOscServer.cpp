@@ -815,6 +815,17 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
         }
     }
 
+    if (auto rack = dynamic_cast<te::RackInstance*>(selectedPlugin)) {
+        auto rackType = selectedAudioTrack->edit.getRackList().getRackTypeForID(rack->rackTypeID);
+        for (auto macro : rackType->macroParameterList.getMacroParameters()) {
+            if (macro->macroName == paramName) { // CAUTION: this is case sensitive, while below is insensitive
+                macro->setParameter(paramValue, juce::NotificationType::sendNotificationSync);
+                constructReply(reply, 0, "Set " + macro->macroName + " to " + macro->getCurrentValueAsString());
+                return reply;
+            }
+        }
+    }
+
     // Iterate over the parameter list in reverse. This is a slightly hacky way
     // to dodge the "Dry Level" and "Wet Level" parameters that tracktion adds
     // to all plugins. Some external plugins may have their own Dry/Wet level
@@ -835,9 +846,10 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
             + param->valueToString(param->getCurrentExplicitValue());
 
             constructReply(reply, 0, replyString);
-            break;
+            return reply;
         }
     }
+
     return reply;
 }
 
@@ -889,33 +901,52 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
          return reply;
     }
 
+    te::AutomatableParameter::Ptr foundParam;
+    if (auto rack = dynamic_cast<te::RackInstance*>(selectedPlugin)) {
+        auto rackType = selectedAudioTrack->edit.getRackList().getRackTypeForID(rack->rackTypeID);
+        for (auto macro : rackType->macroParameterList.getMacroParameters()) {
+            if (macro->macroName == paramName) { // CAUTION: this is case sensitive, while below is insensitive
+                foundParam = macro;
+                break;
+            }
+        }
+    }
+
     // Iterate over the parameter list in reverse. This is a slightly hacky way
     // to dodge the "Dry Level" and "Wet Level" parameters that tracktion adds
     // to all plugins. Some external plugins may have their own Dry/Wet level
     // params. Because the tracktion versions always come first, we only find
     // them if the plugin does not provide its own version.
-    for (int i = selectedPlugin->getNumAutomatableParameters() - 1; i >= 0; i--) {
-        te::AutomatableParameter::Ptr param = selectedPlugin->getAutomatableParameter(i);
-        if (param->paramName.equalsIgnoreCase(paramName)) {
-            if (isNormalized) paramValue = param->valueRange.convertFrom0to1(paramValue);
-            te::AutomationCurve curve = param->getCurve();
-            // If this is the first time changing the value of the parameter,
-            // set it to its default at time 0.
-            if(!param->hasAutomationPoints()) {
-                curve.addPoint(0, param->getCurrentValue(), 0);
+    if (!foundParam) {
+        for (int i = selectedPlugin->getNumAutomatableParameters() - 1; i >= 0; i--) {
+            te::AutomatableParameter::Ptr param = selectedPlugin->getAutomatableParameter(i);
+            if (param->paramName.equalsIgnoreCase(paramName)) {
+                foundParam = param;
+                break;
             }
-
-            curve.addPoint(changeTime, paramValue, curveValue);
-            curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
-
-
-            String replyString = "set " + paramName
-            + " to " + String(message[1].getFloat32()) + " explicit value: " + param->valueToString(paramValue)
-            + " at " + String(changeQuarterNote) + " Quarter Note(s).";
-            constructReply(reply, 0, replyString);
-            break;
         }
     }
+
+    if (foundParam) {
+        if (isNormalized) paramValue = foundParam->valueRange.convertFrom0to1(paramValue);
+        te::AutomationCurve curve = foundParam->getCurve();
+        // If this is the first time changing the value of the parameter,
+        // set it to its default at time 0.
+        if(!foundParam->hasAutomationPoints()) {
+            curve.addPoint(0, foundParam->getCurrentValue(), 0);
+        }
+
+        curve.addPoint(changeTime, paramValue, curveValue);
+        curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
+
+        String replyString = "set " + paramName
+        + " to " + String(message[1].getFloat32()) + " explicit value: " + foundParam->valueToString(paramValue)
+        + " at " + String(changeQuarterNote) + " Quarter Note(s).";
+        constructReply(reply, 0, replyString);
+        return reply;
+    }
+
+    constructReply(reply, 1, "Failed to find param named: " + paramName);
     return reply;
 }
 
