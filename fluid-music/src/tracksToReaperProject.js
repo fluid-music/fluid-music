@@ -72,6 +72,8 @@ function tracksToReaperProject(tracksObject, bpm) {
         normalize = db2Gain;
       } else if (name === 'pan') {
         autoObject = new rppp.objects.ReaperPanAutomation();
+      } else if (name === 'width') {
+        autoObject = new rppp.objects.ReaperWidthAutomation();
       }
 
       if (!autoObject) {
