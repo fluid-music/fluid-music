@@ -1376,15 +1376,39 @@ OSCMessage FluidOscServer::setTrackGain(const OSCMessage& message) {
         return reply;
     }
 
-    if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
-        volumePlugin->setVolumeDb(message[0].getFloat32());
+    float gainDb = message[0].getFloat32();
+    bool isAutomation = false;
+    float curveValue = 0;
+    double timeInWholeNotes = 0;
+    if (message.size() >= 2) {
+        isAutomation = true;
+        if (!message[1].isFloat32()) {
+            constructReply(reply, 1, "Cannot set track gain automation point: time value must be a float");
+            return reply;
+        }
+        timeInWholeNotes = (double)message[1].getFloat32();
+        if (message.size() >= 3 && message[2].isFloat32()) {
+            curveValue = message[2].getFloat32();
+        }
+    }
+
+    if (isAutomation) {
+        getOrCreatePluginByName(*selectedAudioTrack, "volume", "tracktion", 1);
+        auto plugin = getOrCreatePluginByName(*selectedAudioTrack, "volume", "tracktion", 0);
+        if (auto volumePlugin = dynamic_cast<te::VolumeAndPanPlugin*>(plugin)) {
+            float paramValue = te::decibelsToVolumeFaderPosition(gainDb);
+            setParamAutomationPoint(volumePlugin->volParam, paramValue, timeInWholeNotes, curveValue, false);
+            reply.addInt32(0);
+            return reply;
+        }
+    } else if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
+        volumePlugin->setVolumeDb(gainDb);
         reply.addInt32(0);
-    } else {
-        String errorString = "Cannot set track gain: Track is missing volume plugin.";
-        constructReply(reply, 1, errorString);
         return reply;
     }
 
+    String errorString = "Cannot set track gain: Track is missing volume plugin or cybr rack";
+    constructReply(reply, 1, errorString);
     return reply;
 }
 
@@ -1402,15 +1426,39 @@ OSCMessage FluidOscServer::setTrackPan(const OSCMessage& message) {
         return reply;
     }
 
-    if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
-        volumePlugin->setPan(message[0].getFloat32());
+    float panValue = message[0].getFloat32();
+    bool isAutomation = false;
+    float curveValue = 0;
+    double timeInWholeNotes = 0;
+    if (message.size() >= 2) {
+        isAutomation = true;
+        if (!message[1].isFloat32()) {
+            constructReply(reply, 1, "Cannot set track pan automation point: time value must be a float");
+            return reply;
+        }
+        timeInWholeNotes = (double)message[1].getFloat32();
+        if (message.size() >= 3 && message[2].isFloat32()) {
+            curveValue = message[2].getFloat32();
+        }
+    }
+
+    if (isAutomation) {
+        ensureWidthRack(*selectedAudioTrack);
+        for (auto macro : selectedAudioTrack->macroParameterList.getMacroParameters()) {
+            if (macro->macroName == "pan automation") {
+                setParamAutomationPoint(macro, panValue * 0.5 + 0.5, timeInWholeNotes, curveValue);
+                reply.addInt32(0);
+                return reply;
+            }
+        }
+    } else if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
+        volumePlugin->setPan(panValue);
         reply.addInt32(0);
-    } else {
-        String errorString = "Cannot set track gain: Track is missing volume plugin.";
-        constructReply(reply, 1, errorString);
         return reply;
     }
 
+    String errorString = "Cannot set track gain: Track is missing volume plugin or cybr rack.";
+    constructReply(reply, 1, errorString);
     return reply;
 }
 

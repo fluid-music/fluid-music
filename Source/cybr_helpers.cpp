@@ -528,22 +528,28 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
 
 te::RackType::Ptr ensureWidthRack(te::AudioTrack& track) {
     for (auto plugin : track.pluginList) {
-        if (plugin->state.hasProperty("cybr-width")) {
-            return plugin->getOwnerRackType();
+        if (auto rack = dynamic_cast<te::RackInstance*>(plugin)) {
+            if (rack->state.hasProperty("cybr-width")) {
+                return track.edit.getRackList().getRackTypeForID(rack->rackTypeID);
+            }
         }
     }
 
     te::RackType::Ptr cybrRackType = track.edit.getRackList().addNewRack();
     {
         cybrRackType->rackName.setValue("width", nullptr);
+        auto pluginMain = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
         auto plugin1 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
         auto plugin2 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
         auto plugin3 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
         auto plugin4 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
+
+        auto volumeMain = dynamic_cast<te::VolumeAndPanPlugin*>(pluginMain.get());
         auto volume1 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin1.get());
         auto volume2 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin2.get());
         auto volume3 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin3.get());
         auto volume4 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin4.get());
+
         volume1->setVolumeDb(-6.020599913279624);
         volume2->setVolumeDb(-6.020599913279624);
         volume3->setVolumeDb(-6.020599913279624);
@@ -552,10 +558,11 @@ te::RackType::Ptr ensureWidthRack(te::AudioTrack& track) {
         // Note that we do not actually hard pan the two volume channels. This
         // is accomplished with macros.
 
-        cybrRackType->addPlugin(plugin1, {0.25, 0.35}, false);
-        cybrRackType->addPlugin(plugin2, {0.25, 0.60}, false);
-        cybrRackType->addPlugin(plugin3, {0.75, 0.35}, false);
-        cybrRackType->addPlugin(plugin4, {0.75, 0.60}, false);
+        cybrRackType->addPlugin(pluginMain, {0.85, 0.5}, false);
+        cybrRackType->addPlugin(plugin1, {0.15, 0.35}, false);
+        cybrRackType->addPlugin(plugin2, {0.15, 0.60}, false);
+        cybrRackType->addPlugin(plugin3, {0.6, 0.35}, false);
+        cybrRackType->addPlugin(plugin4, {0.6, 0.60}, false);
 
         // Left input channel to volume1
         cybrRackType->addConnection({}, 1, volume1->itemID, 1);
@@ -575,11 +582,15 @@ te::RackType::Ptr ensureWidthRack(te::AudioTrack& track) {
         cybrRackType->addConnection(volume2->itemID, 2, volume4->itemID, 1);
         cybrRackType->addConnection(volume2->itemID, 2, volume4->itemID, 2);
 
-        // volume3,4 to Left,Right output channel
-        cybrRackType->addConnection(volume3->itemID, 1, {}, 1);
-        cybrRackType->addConnection(volume3->itemID, 2, {}, 2);
-        cybrRackType->addConnection(volume4->itemID, 1, {}, 1);
-        cybrRackType->addConnection(volume4->itemID, 2, {}, 2);
+        // volume 3,4 to final gain stage
+        cybrRackType->addConnection(volume3->itemID, 1, volumeMain->itemID, 1);
+        cybrRackType->addConnection(volume3->itemID, 2, volumeMain->itemID, 2);
+        cybrRackType->addConnection(volume4->itemID, 1, volumeMain->itemID, 1);
+        cybrRackType->addConnection(volume4->itemID, 2, volumeMain->itemID, 2);
+
+        // final gain stage to Rack output
+        cybrRackType->addConnection(volumeMain->itemID, 1, {}, 1);
+        cybrRackType->addConnection(volumeMain->itemID, 2, {}, 2);
 
         // route midi directly
         cybrRackType->addConnection({}, 0, {}, 0);
@@ -597,6 +608,12 @@ te::RackType::Ptr ensureWidthRack(te::AudioTrack& track) {
         autoMacro->value = 1.0;
         volume3->panParam->addModifier(*autoMacro, -1,  0.5);
         volume4->panParam->addModifier(*autoMacro,  1, -0.5);
+
+        // Make the pan automation macro while we're here
+        auto panMacro = track.macroParameterList.createMacroParameter();
+        panMacro->macroName = "pan automation";
+        panMacro->value = 0.5;
+        track.getVolumePlugin()->panParam->addModifier(*panMacro, 1, -0.5);
     }
 
     // find the last volume plugin in the track
