@@ -146,12 +146,9 @@ export function tracksToFluidMessage(tracks : FluidTrack[]) {
           }
         }
       } else if (name === 'width') {
-        trackAutoMsg.push(cybr.plugin.select('width', 'tracktion'));
         for (const autoPoint of automation.points) {
           if (typeof autoPoint.value === 'number') {
-            trackAutoMsg.push(cybr.plugin.setParamNormalizedAt(
-              'width', autoPoint.value * 0.5 + 0.5, autoPoint.startTime, autoPoint.curve
-            ))
+            trackAutoMsg.push(cybr.audiotrack.width(autoPoint.value, autoPoint.startTime, autoPoint.curve));
           }
         }
       } else {

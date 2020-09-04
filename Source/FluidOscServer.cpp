@@ -884,14 +884,13 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
         }
     }
 
-    double changeQuarterNote = (double)message[2].getFloat32() * 4.0;
-    if (changeQuarterNote < 0) {
+    double changeWholeNotes = (double)message[2].getFloat32();
+    if (changeWholeNotes < 0) {
         String errorString = "Setting parameter " + paramName
         + " failed. Time has to be a positive number.";
         constructReply(reply, 1, errorString);
         return reply;
     }
-    double changeTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(changeQuarterNote);
 
     float curveValue = message[3].getFloat32();
     if (curveValue > 1 || curveValue < -1) {
@@ -928,20 +927,10 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
     }
 
     if (foundParam) {
-        if (isNormalized) paramValue = foundParam->valueRange.convertFrom0to1(paramValue);
-        te::AutomationCurve curve = foundParam->getCurve();
-        // If this is the first time changing the value of the parameter,
-        // set it to its default at time 0.
-        if(!foundParam->hasAutomationPoints()) {
-            curve.addPoint(0, foundParam->getCurrentValue(), 0);
-        }
-
-        curve.addPoint(changeTime, paramValue, curveValue);
-        curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
-
+        setParamAutomationPoint(foundParam, paramValue, changeWholeNotes, curveValue, isNormalized);
         String replyString = "set " + paramName
         + " to " + String(message[1].getFloat32()) + " explicit value: " + foundParam->valueToString(paramValue)
-        + " at " + String(changeQuarterNote) + " Quarter Note(s).";
+        + " at " + String(changeWholeNotes) + " whole note(s).";
         constructReply(reply, 0, replyString);
         return reply;
     }
@@ -962,16 +951,43 @@ juce::OSCMessage FluidOscServer::setTrackWidth(const juce::OSCMessage& message) 
         constructReply(reply, 1, "Cannot set track width: missing float argument");
         return reply;
     }
-    float value = message[0].getFloat32();
+
+    bool isAutomation = false;
+    float curveValue = 0;
+    double timeInWholeNotes = 0;
+    if (message.size() >= 2) {
+        isAutomation = true;
+        if (!message[1].isFloat32()) {
+            constructReply(reply, 1, "Cannot set track width automation point: time value must be a float");
+            return reply;
+        }
+        timeInWholeNotes = (double)message[1].getFloat32();
+        if (message.size() >= 3 && message[2].isFloat32()) {
+            curveValue = message[2].getFloat32();
+        }
+    }
+
+    float paramValue = message[0].getFloat32() * 0.5 + 0.5;
     auto plugin = getOrCreatePluginByName(*selectedAudioTrack, "cybr-width", "tracktion");
     auto rack = dynamic_cast<te::RackInstance*>(plugin);
     jassert(rack);
 
-    auto rackType = selectedAudioTrack->edit.getRackList().getRackTypeForID(rack->rackTypeID);
-
-    for (auto macro : rackType->macroParameterList.getMacroParameters()) {
-        if (macro->macroName == "width") {
-            macro->setParameter(value * 0.5 + 0.5, juce::NotificationType::sendNotificationSync);
+    if (isAutomation) {
+        for (auto macro : selectedAudioTrack->macroParameterList.getMacroParameters()) {
+            if (macro->macroName == "width automation") {
+                // Charles: I'm a little confused about the "macro" data type.
+                // It seems like it is a regular pointer, while setParamAutomationPoint
+                // accepts a juce style smart pointer. Does this mean that it
+                // might automatically cast to a smart points, causeing it to be
+                // erroneously freed when the smart pointer gets deleted?
+                setParamAutomationPoint(macro, paramValue, timeInWholeNotes, curveValue);
+            }
+        }
+    } else  {
+        for (auto macro : selectedAudioTrack->macroParameterList.getMacroParameters()) {
+            if (macro->macroName == "width") {
+                macro->setParameter(paramValue, juce::NotificationType::sendNotificationSync);
+            }
         }
     }
 

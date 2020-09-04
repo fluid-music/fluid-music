@@ -67,6 +67,8 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track,
                                     const juce::String type = {},
                                     const int index = 0);
 
+void setParamAutomationPoint(te::AutomatableParameter::Ptr foundParam, float paramValue, double timeInWholeNotes, float curveValue = 0, bool isNormalized = true);
+
 class CybrEdit;
 /** Create a copy of a the cybrEdit, suitable for playback and editing.
  CAUTION: The returned CybrEdit should be stored in a unique_ptr to ensure

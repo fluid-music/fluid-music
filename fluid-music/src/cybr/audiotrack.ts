@@ -108,7 +108,7 @@ export function gain(dbfs) {
   };
 }
 
-export function pan(bipolar) {
+export function pan(bipolar : number) {
   if (typeof bipolar !== 'number')
     throw new Error('audiotrack.pan requires a number');
 
@@ -117,6 +117,17 @@ export function pan(bipolar) {
     address: '/audiotrack/set/pan',
     args: [{ type: 'float', value: panPosition }],
   };
+}
+
+export function width(bipolar : number, startTimeInWholeNotes? : number, curve? : number) {
+  const args = [ { type: 'float', value: bipolar} ];
+  if (typeof startTimeInWholeNotes === 'number') {
+    args.push({ type: 'float', value: startTimeInWholeNotes });
+    if (typeof curve === 'number') {
+      args.push({ type: 'float', value: curve });
+    }
+  }
+  return { address: '/audiotrack/set/width', args };
 }
 
 /**

@@ -7,13 +7,13 @@ const sessionFilename = path.join(__dirname, 'width.tracktionedit');
 const msg = [
   cybr.global.activate(sessionFilename, true),
   cybr.audiotrack.select('boomchick'),
-  { address: '/audiotrack/set/width', args: [{type: 'float', value: 0}]},
+  cybr.audiotrack.width(1),
   cybr.audiotrack.select('hithere'),
-  { address: '/audiotrack/set/width', args: [{type: 'float', value: -1}]},
+  cybr.audiotrack.width(-1),
   cybr.audiotrack.select('boomchick'),
-  cybr.plugin.select('width', 'tracktion'),
-  cybr.plugin.setParamExplicitAt('width', 0.25, 1),
-  cybr.plugin.setParamExplicitAt('width', 0.75, 2),
+  cybr.audiotrack.width(-1, 1, -0.5),
+  cybr.audiotrack.width(0, 2),
+  cybr.audiotrack.select('neutral'),
   cybr.global.save(),
 ];
 

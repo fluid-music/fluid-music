@@ -538,38 +538,65 @@ te::RackType::Ptr ensureWidthRack(te::AudioTrack& track) {
         cybrRackType->rackName.setValue("width", nullptr);
         auto plugin1 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
         auto plugin2 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
+        auto plugin3 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
+        auto plugin4 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
         auto volume1 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin1.get());
         auto volume2 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin2.get());
+        auto volume3 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin3.get());
+        auto volume4 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin4.get());
         volume1->setVolumeDb(-6.020599913279624);
         volume2->setVolumeDb(-6.020599913279624);
+        volume3->setVolumeDb(-6.020599913279624);
+        volume4->setVolumeDb(-6.020599913279624);
+
         // Note that we do not actually hard pan the two volume channels. This
         // is accomplished with macros.
 
         cybrRackType->addPlugin(plugin1, {0.25, 0.35}, false);
-        cybrRackType->addPlugin(plugin2, {0.25, 0.60}, true);
+        cybrRackType->addPlugin(plugin2, {0.25, 0.60}, false);
+        cybrRackType->addPlugin(plugin3, {0.75, 0.35}, false);
+        cybrRackType->addPlugin(plugin4, {0.75, 0.60}, false);
 
         // Left input channel to volume1
         cybrRackType->addConnection({}, 1, volume1->itemID, 1);
         cybrRackType->addConnection({}, 1, volume1->itemID, 2);
-        // volume1 to Left output channel
-        cybrRackType->addConnection(volume1->itemID, 1, {}, 1);
-        cybrRackType->addConnection(volume1->itemID, 2, {}, 2);
-
         // Right input channel to volume2
         cybrRackType->addConnection({}, 2, volume2->itemID, 1);
         cybrRackType->addConnection({}, 2, volume2->itemID, 2);
-        // volume2 to right output channel
-        cybrRackType->addConnection(volume2->itemID, 1, {}, 1);
-        cybrRackType->addConnection(volume2->itemID, 2, {}, 2);
+
+        // From 1 to 3, 4
+        cybrRackType->addConnection(volume1->itemID, 1, volume3->itemID, 1);
+        cybrRackType->addConnection(volume1->itemID, 1, volume3->itemID, 2);
+        cybrRackType->addConnection(volume1->itemID, 2, volume4->itemID, 1);
+        cybrRackType->addConnection(volume1->itemID, 2, volume4->itemID, 2);
+        // From 2 to 3, 4
+        cybrRackType->addConnection(volume2->itemID, 1, volume3->itemID, 1);
+        cybrRackType->addConnection(volume2->itemID, 1, volume3->itemID, 2);
+        cybrRackType->addConnection(volume2->itemID, 2, volume4->itemID, 1);
+        cybrRackType->addConnection(volume2->itemID, 2, volume4->itemID, 2);
+
+        // volume3,4 to Left,Right output channel
+        cybrRackType->addConnection(volume3->itemID, 1, {}, 1);
+        cybrRackType->addConnection(volume3->itemID, 2, {}, 2);
+        cybrRackType->addConnection(volume4->itemID, 1, {}, 1);
+        cybrRackType->addConnection(volume4->itemID, 2, {}, 2);
 
         // route midi directly
         cybrRackType->addConnection({}, 0, {}, 0);
 
-        auto macro = cybrRackType->macroParameterList.createMacroParameter();
-        macro->macroName = "width";
-        macro->value = 1.0;
-        volume1->panParam->addModifier(*macro, -1,  0.5);
-        volume2->panParam->addModifier(*macro,  1, -0.5);
+        // Create a macro in the rack
+        auto widthMacro = track.macroParameterList.createMacroParameter();
+        widthMacro->macroName = "width";
+        widthMacro->value = 1.0;
+        volume1->panParam->addModifier(*widthMacro, -1,  0.5);
+        volume2->panParam->addModifier(*widthMacro,  1, -0.5);
+
+        // Create a macro on the track
+        auto autoMacro = track.macroParameterList.createMacroParameter();
+        autoMacro->macroName = "width automation";
+        autoMacro->value = 1.0;
+        volume3->panParam->addModifier(*autoMacro, -1,  0.5);
+        volume4->panParam->addModifier(*autoMacro,  1, -0.5);
     }
 
     // find the last volume plugin in the track
@@ -923,4 +950,20 @@ void removeAllPluginAutomationFromTrack(te::ClipTrack& track) {
             }
         }
     }
+}
+
+
+void setParamAutomationPoint(te::AutomatableParameter::Ptr param, float paramValue, double timeInWholeNotes, float curveValue, bool isNormalized) {
+    if (isNormalized) paramValue = param->valueRange.convertFrom0to1(paramValue);
+    te::AutomationCurve curve = param->getCurve();
+    // If this is the first time changing the value of the parameter,
+    // set it to its default at time 0.
+    if(!param->hasAutomationPoints()) {
+        curve.addPoint(0, param->getCurrentValue(), 0);
+    }
+
+    double changeTime = param->getEdit().tempoSequence.beatsToTime(timeInWholeNotes * 4);
+
+    curve.addPoint(changeTime, paramValue, curveValue);
+    curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
 }
