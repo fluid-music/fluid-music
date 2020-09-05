@@ -77,11 +77,8 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/audiofile/report"})) return getAudioFileReport(message);
 
     if (!activeCybrEdit) {
-        std::cout << "NOTE: message failed, because there is no active CybrEdit: ";
-        printOscMessage(message);
-        OSCMessage error("/error");
-        constructReply(error, 1, "Cannot select audio track: no track name provided");
-        return error;
+        File file = File::getCurrentWorkingDirectory().getChildFile("empty.tracktionedit");
+        activateEditFile(file, true);
     }
 
     if (msgAddressPattern.matches({"/midiclip/insert/note"})) return insertMidiNote(message);

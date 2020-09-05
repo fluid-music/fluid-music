@@ -79,5 +79,10 @@ session.insertScore({
 //   cybr.global.save(null, 'd'),
 // ]);
 
-const rpp = fluid.tracksToReaperProject(session.tracks, 96);
-console.log(rpp.dump())
+async function run() {
+  const client = new cybr.Client();
+  const rpp = await fluid.tracksToReaperProject(session.tracks, 96, client);
+  console.log(rpp.dump())
+}
+
+run();
