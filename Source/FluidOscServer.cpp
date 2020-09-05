@@ -98,6 +98,7 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/audiotrack/select/return"})) return selectReturnTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/set/db"})) return setTrackGain(message);
     if (msgAddressPattern.matches({"/audiotrack/set/pan"})) return setTrackPan(message);
+    if (msgAddressPattern.matches({"/audiotrack/set/width"})) return setTrackWidth(message);
     if (msgAddressPattern.matches({"/audiotrack/send/set/db"})) return ensureSend(message);
     if (msgAddressPattern.matches({"/audiotrack/remove/clips"})) return removeAudioTrackClips(message);
     if (msgAddressPattern.matches({"/audiotrack/remove/automation"})) return removeAudioTrackAutomation(message);
@@ -811,6 +812,17 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
         }
     }
 
+    if (auto rack = dynamic_cast<te::RackInstance*>(selectedPlugin)) {
+        auto rackType = selectedAudioTrack->edit.getRackList().getRackTypeForID(rack->rackTypeID);
+        for (auto macro : rackType->macroParameterList.getMacroParameters()) {
+            if (macro->macroName == paramName) { // CAUTION: this is case sensitive, while below is insensitive
+                macro->setParameter(paramValue, juce::NotificationType::sendNotificationSync);
+                constructReply(reply, 0, "Set " + macro->macroName + " to " + macro->getCurrentValueAsString());
+                return reply;
+            }
+        }
+    }
+
     // Iterate over the parameter list in reverse. This is a slightly hacky way
     // to dodge the "Dry Level" and "Wet Level" parameters that tracktion adds
     // to all plugins. Some external plugins may have their own Dry/Wet level
@@ -831,9 +843,10 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
             + param->valueToString(param->getCurrentExplicitValue());
 
             constructReply(reply, 0, replyString);
-            break;
+            return reply;
         }
     }
+
     return reply;
 }
 
@@ -868,14 +881,13 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
         }
     }
 
-    double changeQuarterNote = (double)message[2].getFloat32() * 4.0;
-    if (changeQuarterNote < 0) {
+    double changeWholeNotes = (double)message[2].getFloat32();
+    if (changeWholeNotes < 0) {
         String errorString = "Setting parameter " + paramName
         + " failed. Time has to be a positive number.";
         constructReply(reply, 1, errorString);
         return reply;
     }
-    double changeTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(changeQuarterNote);
 
     float curveValue = message[3].getFloat32();
     if (curveValue > 1 || curveValue < -1) {
@@ -885,36 +897,100 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
          return reply;
     }
 
+    te::AutomatableParameter::Ptr foundParam;
+    if (auto rack = dynamic_cast<te::RackInstance*>(selectedPlugin)) {
+        auto rackType = selectedAudioTrack->edit.getRackList().getRackTypeForID(rack->rackTypeID);
+        for (auto macro : rackType->macroParameterList.getMacroParameters()) {
+            if (macro->macroName == paramName) { // CAUTION: this is case sensitive, while below is insensitive
+                foundParam = macro;
+                break;
+            }
+        }
+    }
+
     // Iterate over the parameter list in reverse. This is a slightly hacky way
     // to dodge the "Dry Level" and "Wet Level" parameters that tracktion adds
     // to all plugins. Some external plugins may have their own Dry/Wet level
     // params. Because the tracktion versions always come first, we only find
     // them if the plugin does not provide its own version.
-    for (int i = selectedPlugin->getNumAutomatableParameters() - 1; i >= 0; i--) {
-        te::AutomatableParameter::Ptr param = selectedPlugin->getAutomatableParameter(i);
-        if (param->paramName.equalsIgnoreCase(paramName)) {
-            if (isNormalized) paramValue = param->valueRange.convertFrom0to1(paramValue);
-            te::AutomationCurve curve = param->getCurve();
-            // If this is the first time changing the value of the parameter,
-            // set it to its default at time 0.
-            if(!param->hasAutomationPoints()) {
-                curve.addPoint(0, param->getCurrentValue(), 0);
+    if (!foundParam) {
+        for (int i = selectedPlugin->getNumAutomatableParameters() - 1; i >= 0; i--) {
+            te::AutomatableParameter::Ptr param = selectedPlugin->getAutomatableParameter(i);
+            if (param->paramName.equalsIgnoreCase(paramName)) {
+                foundParam = param;
+                break;
             }
-
-            curve.addPoint(changeTime, paramValue, curveValue);
-            curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
-
-
-            String replyString = "set " + paramName
-            + " to " + String(message[1].getFloat32()) + " explicit value: " + param->valueToString(paramValue)
-            + " at " + String(changeQuarterNote) + " Quarter Note(s).";
-            constructReply(reply, 0, replyString);
-            break;
         }
     }
+
+    if (foundParam) {
+        setParamAutomationPoint(foundParam, paramValue, changeWholeNotes, curveValue, isNormalized);
+        String replyString = "set " + paramName
+        + " to " + String(message[1].getFloat32()) + " explicit value: " + foundParam->valueToString(paramValue)
+        + " at " + String(changeWholeNotes) + " whole note(s).";
+        constructReply(reply, 0, replyString);
+        return reply;
+    }
+
+    constructReply(reply, 1, "Failed to find param named: " + paramName);
     return reply;
 }
 
+juce::OSCMessage FluidOscServer::setTrackWidth(const juce::OSCMessage& message) {
+    OSCMessage reply("/audiotrack/set/width/reply");
+
+    if (!selectedAudioTrack) {
+        constructReply(reply, 1, "Cannot set track width: No audiotrack selected");
+        return reply;
+    }
+
+    if (!message.size() || !message[0].isFloat32()) {
+        constructReply(reply, 1, "Cannot set track width: missing float argument");
+        return reply;
+    }
+
+    bool isAutomation = false;
+    float curveValue = 0;
+    double timeInWholeNotes = 0;
+    if (message.size() >= 2) {
+        isAutomation = true;
+        if (!message[1].isFloat32()) {
+            constructReply(reply, 1, "Cannot set track width automation point: time value must be a float");
+            return reply;
+        }
+        timeInWholeNotes = (double)message[1].getFloat32();
+        if (message.size() >= 3 && message[2].isFloat32()) {
+            curveValue = message[2].getFloat32();
+        }
+    }
+
+    float paramValue = message[0].getFloat32() * 0.5 + 0.5;
+    auto plugin = getOrCreatePluginByName(*selectedAudioTrack, "cybr-width", "tracktion");
+    auto rack = dynamic_cast<te::RackInstance*>(plugin);
+    jassert(rack);
+
+    if (isAutomation) {
+        for (auto macro : selectedAudioTrack->macroParameterList.getMacroParameters()) {
+            if (macro->macroName == "width automation") {
+                // Charles: I'm a little confused about the "macro" data type.
+                // It seems like it is a regular pointer, while setParamAutomationPoint
+                // accepts a juce style smart pointer. Does this mean that it
+                // might automatically cast to a smart points, causeing it to be
+                // erroneously freed when the smart pointer gets deleted?
+                setParamAutomationPoint(macro, paramValue, timeInWholeNotes, curveValue);
+            }
+        }
+    } else  {
+        for (auto macro : selectedAudioTrack->macroParameterList.getMacroParameters()) {
+            if (macro->macroName == "width") {
+                macro->setParameter(paramValue, juce::NotificationType::sendNotificationSync);
+            }
+        }
+    }
+
+    reply.addInt32(0);
+    return reply;
+}
 
 OSCMessage FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
     OSCMessage reply("/plugin/sidechain/input/set/reply");
@@ -1297,15 +1373,39 @@ OSCMessage FluidOscServer::setTrackGain(const OSCMessage& message) {
         return reply;
     }
 
-    if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
-        volumePlugin->setVolumeDb(message[0].getFloat32());
+    float gainDb = message[0].getFloat32();
+    bool isAutomation = false;
+    float curveValue = 0;
+    double timeInWholeNotes = 0;
+    if (message.size() >= 2) {
+        isAutomation = true;
+        if (!message[1].isFloat32()) {
+            constructReply(reply, 1, "Cannot set track gain automation point: time value must be a float");
+            return reply;
+        }
+        timeInWholeNotes = (double)message[1].getFloat32();
+        if (message.size() >= 3 && message[2].isFloat32()) {
+            curveValue = message[2].getFloat32();
+        }
+    }
+
+    if (isAutomation) {
+        getOrCreatePluginByName(*selectedAudioTrack, "volume", "tracktion", 1);
+        auto plugin = getOrCreatePluginByName(*selectedAudioTrack, "volume", "tracktion", 0);
+        if (auto volumePlugin = dynamic_cast<te::VolumeAndPanPlugin*>(plugin)) {
+            float paramValue = te::decibelsToVolumeFaderPosition(gainDb);
+            setParamAutomationPoint(volumePlugin->volParam, paramValue, timeInWholeNotes, curveValue, false);
+            reply.addInt32(0);
+            return reply;
+        }
+    } else if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
+        volumePlugin->setVolumeDb(gainDb);
         reply.addInt32(0);
-    } else {
-        String errorString = "Cannot set track gain: Track is missing volume plugin.";
-        constructReply(reply, 1, errorString);
         return reply;
     }
 
+    String errorString = "Cannot set track gain: Track is missing volume plugin or cybr rack";
+    constructReply(reply, 1, errorString);
     return reply;
 }
 
@@ -1323,15 +1423,39 @@ OSCMessage FluidOscServer::setTrackPan(const OSCMessage& message) {
         return reply;
     }
 
-    if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
-        volumePlugin->setPan(message[0].getFloat32());
+    float panValue = message[0].getFloat32();
+    bool isAutomation = false;
+    float curveValue = 0;
+    double timeInWholeNotes = 0;
+    if (message.size() >= 2) {
+        isAutomation = true;
+        if (!message[1].isFloat32()) {
+            constructReply(reply, 1, "Cannot set track pan automation point: time value must be a float");
+            return reply;
+        }
+        timeInWholeNotes = (double)message[1].getFloat32();
+        if (message.size() >= 3 && message[2].isFloat32()) {
+            curveValue = message[2].getFloat32();
+        }
+    }
+
+    if (isAutomation) {
+        ensureWidthRack(*selectedAudioTrack);
+        for (auto macro : selectedAudioTrack->macroParameterList.getMacroParameters()) {
+            if (macro->macroName == "pan automation") {
+                setParamAutomationPoint(macro, panValue * 0.5 + 0.5, timeInWholeNotes, curveValue);
+                reply.addInt32(0);
+                return reply;
+            }
+        }
+    } else if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
+        volumePlugin->setPan(panValue);
         reply.addInt32(0);
-    } else {
-        String errorString = "Cannot set track gain: Track is missing volume plugin.";
-        constructReply(reply, 1, errorString);
         return reply;
     }
 
+    String errorString = "Cannot set track gain: Track is missing volume plugin or cybr rack.";
+    constructReply(reply, 1, errorString);
     return reply;
 }
 

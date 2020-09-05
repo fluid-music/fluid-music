@@ -17,7 +17,7 @@ const f = {
 const p = DragonflyRoom.makeAutomation.sizeMeters(9);
 const q = DragonflyRoom.makeAutomation.sizeMeters(30);
 
-const r = { type: 'trackAuto', paramKey: 'pan', value: -.5, curve: -1 };
+const r = { type: 'trackAuto', paramKey: 'pan', value: -.5, curve: -0.5 };
 const s = { type: 'trackAuto', paramKey: 'pan', value:  .5 };
 const t = { type: 'trackAuto', paramKey: 'gain', value: -6, curve: 0.8 };
 const u = { type: 'trackAuto', paramKey: 'gain', value: -32.9 };

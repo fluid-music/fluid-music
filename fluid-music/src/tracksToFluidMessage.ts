@@ -126,28 +126,16 @@ export function tracksToFluidMessage(tracks : FluidTrack[]) {
     for (const [name, automation] of Object.entries(track.automation)) {
       let trackAutoMsg : any[] = [];
       trackMessages.push(trackAutoMsg);
-      if (name === 'gain' || name === 'pan') {
-        // cybr.audiotrack.gain should always adjust the last volume plugin on
-        // the track. That means that we want to apply automation on an earlier
-        // volume plugin. First, ensure that we have at least two volume plugins
-        trackAutoMsg.push(cybr.plugin.select('volume', 'tracktion', 1));
-        // ...then select the first volume plugin which will be automated
-        trackAutoMsg.push(cybr.plugin.select('volume', 'tracktion', 0));
 
-        // Iterate over the automation points.
-        for (const autoPoint of automation.points) {
-          if (typeof autoPoint.value === 'number') {
-            trackAutoMsg.push(cybr.plugin.setParamNormalizedAt(
-              (name === 'gain') ? 'volume' : name,
-              normalizeTracktionGain(autoPoint.value),
-              autoPoint.startTime,
-              autoPoint.curve,
-            ));
-          }
+      for (const autoPoint of automation.points) {
+        if (typeof autoPoint.value === 'number') {
+          let msg : any = null;
+          if      (name === 'pan')   msg = cybr.audiotrack.pan(autoPoint.value, autoPoint.startTime, autoPoint.curve);
+          else if (name === 'gain')  msg = cybr.audiotrack.gain(autoPoint.value, autoPoint.startTime, autoPoint.curve);
+          else if (name === 'width') msg = cybr.audiotrack.width(autoPoint.value, autoPoint.startTime, autoPoint.curve);
+          else throw new Error(`Fluid Track Automation found unsupported parameter: "${name}"`);
+          trackAutoMsg.push(msg);
         }
-
-      } else {
-        throw new Error(`Fluid Track Automation found unsupported parameter: "${name}"`);
       }
     } // for [name, automation] of track.automation
 

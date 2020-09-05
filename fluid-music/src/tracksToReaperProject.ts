@@ -77,7 +77,11 @@ async function tracksToReaperProject(tracksObject : FluidTrack[], bpm : number, 
         normalize = db2Gain;
       } else if (name === 'pan') {
         autoObject = new rppp.objects.ReaperPanAutomation();
-      } else {
+      } else if (name === 'width') {
+        autoObject = new rppp.objects.ReaperWidthAutomation();
+      }
+
+      if (!autoObject) {
         throw new Error(`Unsupported reaper track automation lane: "${name}"`);
       }
 
@@ -90,7 +94,6 @@ async function tracksToReaperProject(tracksObject : FluidTrack[], bpm : number, 
           );
         }
       }
-
       newTrack.add(autoObject);
     } // for [name, automation] of track.automation
 
