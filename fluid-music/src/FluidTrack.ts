@@ -1,6 +1,5 @@
 import { Track, Clip, ScoreConfig, xLibrary } from './ts-types';
 import { FluidPlugin, Automation } from './plugin';
-import { e } from './m';
 
 export interface TrackConfig extends ScoreConfig {
   name?: string;
