@@ -107,15 +107,14 @@ async function tracksToReaperProject(tracksObject : FluidTrack[], bpm : number, 
 
     if (track.plugins.length > 0) {
       const FXChain = new rppp.objects.ReaperFXChain();
+      newTrack.add(FXChain);
 
       for (const plugin of track.plugins) {
         const vst2 = await vst2ToReaperObject(client, track.name, plugin, nth(plugin), bpm);
         FXChain.add(vst2);
-      }     // for (plugin of track.plugins)
-
-      newTrack.add(FXChain);
+      } // for (plugin of track.plugins)
     }
-  }       // for (track of tracks)
+  }     // for (track of tracks)
   return reaperProject;
 };
 

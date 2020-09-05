@@ -7,31 +7,46 @@ const rppp = require('rppp')
 /**
  * Create a `ReaperVst` object from an existing plugin on the cybr instance. 
  * This function changes the state of the currently-activated session on cybr, because it 
- * has to select every plugin to get its state. This function will fail if 
- * there is no activated session on cybr.
+ * has to select every plugin to get its state.
  *
- * @param {FluidIpcClient} client A FluidIpcClient that is connected to a cybr instance
- * @param {string} trackName - See documentation for cybr.audiotrack.select()
- * @param {FluidPlugin} plugin - Plugin Object
- * @param {number} n - nth plugin
- * @param {number} bpm - Beats per minute
- * 
+ * @param client A FluidIpcClient that is connected to a cybr instance
+ * @param trackName See documentation for cybr.audiotrack.select()
+ * @param plugin Plugin Object
+ * @param n nth plugin
+ * @param bpm Beats per minute
+ *
  * @returns {ReaperVst}
  */
 export async function vst2ToReaperObject(client: FluidIpcClient, trackName: string, plugin: FluidPlugin, n: number, bpm: number) {
 
   const cybrType = (plugin.pluginType === PluginType.unknown) ? undefined : plugin.pluginType;
   const pluginName = plugin.pluginName;
+  
+  // Get the normalized value of all 
+  const paramSetters : any[] = [];
+  for (const [paramKey, explicitValue] of Object.entries(plugin.parameters)) {
+    const paramName = plugin.getParameterName(paramKey);
+    if (typeof explicitValue === 'number') {
+      const normalizedValue = plugin.getNormalizedValue(paramKey, explicitValue);
+      if (typeof normalizedValue === 'number') {
+        paramSetters.push(cybr.plugin.setParamNormalized(paramName, normalizedValue));
+      } else {
+        paramSetters.push(cybr.plugin.setParamExplicit(paramName, explicitValue));
+      }
+    } else {
+      console.warn(`found non-number parameter value in ${plugin.pluginName} - ${paramKey}: ${explicitValue}`);
+    }
+  }
 
   const msg = [
     cybr.audiotrack.select(trackName),
     cybr.plugin.select(pluginName, cybrType, n),
+    paramSetters,
     cybr.plugin.getReport(),
   ]
-
   const retObj = await client.send(msg);
 
-  const pluginObject = JSON.parse(retObj.elements[2].args[2].value);
+  const pluginObject = JSON.parse(retObj.elements[3].args[2].value);
   const vst2State = pluginObject.vst2State;
 
   let isI   = pluginObject.isSynth ? 'i' : '';
@@ -51,18 +66,17 @@ export async function vst2ToReaperObject(client: FluidIpcClient, trackName: stri
 
   // Automation
   for (const [paramKey, automation] of Object.entries(plugin.automation)) {
-    const paramIndex = plugin.getParameterIndex(paramKey); // JUCE style name
-    const automationTrack = new rppp.objects.ReaperPluginAutomation();
-    automationTrack.params[0] = paramIndex;
+    // Create an automation lane for each parameter with automation. Notice that
+    // reaper identifies parameters by a numerical index, so we must retrieve
+    // that index from the plugin adapter.
+    const automationTrack     = new rppp.objects.ReaperPluginAutomation();
+    automationTrack.params[0] = plugin.getParameterIndex(paramKey);
+    newVst.add(automationTrack);
 
     // iterate over points. Ex { startTime: 0, value: 0.5, curve: 0 }
     for (const autoPoint of automation.points) {
       if (typeof autoPoint.value === 'number') {
-        // - paramName is the JUCE style parameter name we need
-        // - value is an explicit value. look for a normalizer
-        // Notice how paramKey and paramName are used in the code below, and
-        // be careful not to mix them up. They may (or may not) be identical
-        // so mixing them up could lead to hard-to-find bugs.
+
         const explicitValue   = autoPoint.value;
         const normalizedValue = plugin.getNormalizedValue(paramKey, explicitValue);
 
@@ -74,12 +88,10 @@ export async function vst2ToReaperObject(client: FluidIpcClient, trackName: stri
           );
         } else { 
           // If parameter does not have a normalized value, then ignore it.
-          console.warn('parameter does not have a normalized value and could not be set')
+          console.warn(`${pluginName}: no normalizer found for ${paramKey} param. Automation skipped.`);
         }
       }
     } // for (autoPoint of automation.points)
-
-    newVst.add(automationTrack);
   }   // for (paramName, automation of plugin.automation)
 
   return newVst;
