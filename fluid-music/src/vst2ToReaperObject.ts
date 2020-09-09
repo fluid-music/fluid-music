@@ -5,8 +5,8 @@ import * as cybr from './cybr/index';
 const rppp = require('rppp')
 
 /**
- * Create a `ReaperVst` object from an existing plugin on the cybr instance. 
- * This function changes the state of the currently-activated session on cybr, because it 
+ * Create a `ReaperVst` object from an existing plugin on the cybr instance.
+ * This function changes the state of the currently-activated session on cybr, because it
  * has to select every plugin to get its state.
  *
  * @param client A FluidIpcClient that is connected to a cybr instance
@@ -21,8 +21,8 @@ export async function vst2ToReaperObject(client: FluidIpcClient, trackName: stri
 
   const cybrType = (plugin.pluginType === PluginType.unknown) ? undefined : plugin.pluginType;
   const pluginName = plugin.pluginName;
-  
-  // Get the normalized value of all 
+
+  // Get the normalized value of all
   const paramSetters : any[] = [];
   for (const [paramKey, explicitValue] of Object.entries(plugin.parameters)) {
     const paramName = plugin.getParameterName(paramKey);
@@ -46,23 +46,24 @@ export async function vst2ToReaperObject(client: FluidIpcClient, trackName: stri
   ]
   const retObj = await client.send(msg);
 
-  const pluginObject = JSON.parse(retObj.elements[3].args[2].value);
-  const vst2State = pluginObject.vst2State;
+  const pluginReport = JSON.parse(retObj.elements[3].args[2].value);
+  const vst2State = pluginReport.vst2State;
+  const numIn = pluginReport.numAudioInputChannels;
+  const numOut = pluginReport.numAudioOutputChannels;
 
-  let isI   = pluginObject.isSynth ? 'i' : '';
-  let name  = pluginObject.externalPluginFormat + isI + ': ' 
-            + pluginObject.name + ' (' + pluginObject.vendor + ')';
-  let id    = pluginObject.uidInt;
+  let isI   = pluginReport.isSynth ? 'i' : '';
+  let name  = pluginReport.externalPluginFormat + isI + ': '
+            + pluginReport.name + ' (' + pluginReport.vendor + ')';
+  let id    = pluginReport.uidInt;
 
   let newVst = new rppp.objects.ReaperVst();
   newVst.params[0] = name;
-  newVst.params[1] = pluginObject.name + '.' + pluginObject.pluginType;
+  newVst.params[1] = pluginReport.name + '.' + pluginReport.pluginType;
   newVst.params[2] = 0;
   newVst.params[3] = "";
   newVst.params[4] = id + '<>';
-  newVst.params[5] = "";
-  newVst.params[6] = vst2State;
-  newVst.params[7] = "";
+  newVst.initializeRouting(numIn, numOut)
+  newVst.setVst2State(vst2State)
 
   // Automation
   for (const [paramKey, automation] of Object.entries(plugin.automation)) {
@@ -82,11 +83,11 @@ export async function vst2ToReaperObject(client: FluidIpcClient, trackName: stri
 
         if (typeof normalizedValue === 'number') {
           automationTrack.addBezierPoint(
-            autoPoint.startTime * 4 * 60 / bpm, 
+            autoPoint.startTime * 4 * 60 / bpm,
             normalizedValue,
             autoPoint.curve
           );
-        } else { 
+        } else {
           // If parameter does not have a normalized value, then ignore it.
           console.warn(`${pluginName}: no normalizer found for ${paramKey} param. Automation skipped.`);
         }

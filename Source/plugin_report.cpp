@@ -54,6 +54,10 @@ JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wnon-virtual-dtor",
 #include <public.sdk/source/vst/vstpresetfile.h>
 #endif
 
+#if (JUCE_PLUGINHOST_VST)
+#include "pluginterfaces/vst2.x/aeffect.h" // Vst2.x
+#endif
+
 using namespace juce;
 
 juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
@@ -114,6 +118,8 @@ juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
         object->setProperty("currentProgramStateInfo", programStateInfo);
         object->setProperty("currentStateInfo", stateInfo);
 
+        object->setProperty("numAudioInputChannels", jucePlugin->getNumInputChannels());
+        object->setProperty("numAudioOutputChannels", jucePlugin->getNumOutputChannels());
         object->setProperty("numPrograms", jucePlugin->getNumPrograms());     // number of programs in the bank
         object->setProperty("currentProgramIndex", jucePlugin->getCurrentProgram()); // program number within (bank)
         object->setProperty("currentProgramName", jucePlugin->getProgramName(jucePlugin->getCurrentProgram()));
@@ -139,6 +145,8 @@ juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
             } else {
                 object->setProperty("vst2StateError", 1);
             }
+            AEffect* vst2 = static_cast<AEffect*>(jucePlugin->getPlatformSpecificData());
+            object->setProperty("vst2Flags", vst2->flags);
 #endif
         } else if (x->isVST3()) {
 #if (JUCE_PLUGINHOST_VST3)

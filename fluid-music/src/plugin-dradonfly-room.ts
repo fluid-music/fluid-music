@@ -365,6 +365,7 @@ export class DragonflyRoom extends FluidPlugin {
 
   readonly parameterLibrary = parameterLibrary;
   readonly makeAutomation = makeAutomation;
+  readonly vst2Id = Buffer.from('2rfd', 'ascii');
 
   // Static members
   static readonly parameterLibrary = parameterLibrary;

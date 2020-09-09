@@ -1,4 +1,4 @@
-const rppp = require('rppp')
+const rppp = require('rppp');
 const cybr = require('./cybr/index');
 
 /**

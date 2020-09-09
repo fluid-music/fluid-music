@@ -56,7 +56,7 @@ let session = new fluid.FluidSession({
   chrd:  { nLibrary: chords.nLibrary, pan: -.75 },
   bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p } },
   tamb:  { pan: .25 },
-  revb:  { plugins: [ new fluid.DragonflyRoom({decaySeconds: 2.4, predelayMs: 49 })], nLibrary: {p, q, r, s, t, u, x, y } },
+  revb:  { plugins: [ new fluid.DragonflyRoom({decaySeconds: 2.4, predelayMs: 49, dryLevelPercent: 0, earlyLevelPercent: 40, lateLevelPercent: 100 })], nLibrary: {p, q, r, s, t, u, x, y } },
 });
 
 session.insertScore({
