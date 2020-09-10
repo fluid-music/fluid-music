@@ -319,6 +319,7 @@ juce::var getPluginParamReportObject(te::Plugin* selectedPlugin, int steps) {
             rangeAsString.append(param->getCurrentValueAsString());
             rangeAsStringWithLabel.append(param->getCurrentValueAsStringWithLabel());
             
+            // NOTE: these assume a 0-1 range. I could use the range provided by the param
             float stepSize   = (steps == 1) ? 0.0 : 1.0 / (steps - 1);
             float startValue = (steps == 1) ? 0.5 : 0.0;
             for (int i = 0; i < steps; i++) {
