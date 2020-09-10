@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PRESET name="CybrPan" tags="Rack" description="Used by the Fluid Engine for width and volume automation"
+        path="/Users/charles/Library/Application Support/Tracktion/Waveform/Presets"
+        filename="CybrPan.trkpreset">
+  <RACK id="1131" name="CybrPan">
+    <MACROPARAMETERS id="1004">
+      <MACROPARAMETER id="1006" name="width" value="0.0"/>
+      <MODIFIERASSIGNMENTS/>
+      <MACROPARAMETER id="1008" name="volume-automation" value="0.5"/>
+    </MACROPARAMETERS>
+    <WINDOWSTATE windowPos="725 117 847 658" active="1" windowLocked="1"/>
+    <OUTPUT name="midi output"/>
+    <OUTPUT name="output 1 (left)"/>
+    <OUTPUT name="output 2 (right)"/>
+    <INPUT name="midi input"/>
+    <INPUT name="input 1 (left)"/>
+    <INPUT name="input 2 (right)"/>
+    <MODIFIERS/>
+    <FACEPLATE width="8.0" height="4.0" autoSize="1" stretch="1">
+      <RESOURCES/>
+    </FACEPLATE>
+    <PLUGININSTANCE x="0.2622222222222222" y="0.4986449864498645">
+      <PLUGIN id="1010" type="volume" windowLocked="1" enabled="1" pan="0.0"
+              windowX="607" windowY="205" volume="0.5488116145133972" base64:parameters="8.vEla.....9K">
+        <MACROPARAMETERS id="1011"/>
+        <MODIFIERASSIGNMENTS>
+          <MACRO source="1006" paramID="pan" value="-1.0" offset="0.5"/>
+        </MODIFIERASSIGNMENTS>
+        <FACEPLATE width="8.0" height="4.0" autoSize="1" assignEnabled="0">
+          <RESOURCES/>
+          <BACKGROUND imageAlpha="1.0"/>
+        </FACEPLATE>
+      </PLUGIN>
+    </PLUGININSTANCE>
+    <CONNECTION src="0" dst="1010" srcPin="1" dstPin="1"/>
+    <PLUGININSTANCE x="0.2622222222222222" y="0.7859078590785907">
+      <PLUGIN id="1013" type="volume" windowLocked="1" enabled="1" pan="0.0"
+              windowX="607" windowY="205" volume="0.5488116145133972" base64:parameters="8.vEla.....9C">
+        <MACROPARAMETERS id="1015"/>
+        <MODIFIERASSIGNMENTS>
+          <MACRO source="1006" paramID="pan" value="1.0" offset="-0.5"/>
+        </MODIFIERASSIGNMENTS>
+        <FACEPLATE width="8.0" height="4.0" autoSize="1">
+          <RESOURCES/>
+        </FACEPLATE>
+      </PLUGIN>
+    </PLUGININSTANCE>
+    <CONNECTION src="0" dst="1010" srcPin="1" dstPin="2"/>
+    <CONNECTION src="0" dst="1013" srcPin="2" dstPin="2"/>
+    <CONNECTION src="0" dst="1013" srcPin="2" dstPin="1"/>
+    <PLUGININSTANCE x="0.8022222222222222" y="0.6395663956639567">
+      <PLUGIN id="1016" type="volume" windowLocked="1" enabled="1" volume="0.740818202495575"
+              windowX="462" windowY="310">
+        <MACROPARAMETERS id="1019"/>
+        <MODIFIERASSIGNMENTS>
+          <MACRO source="1008" paramID="volume" value="1.0" offset="-0.5"/>
+        </MODIFIERASSIGNMENTS>
+        <FACEPLATE width="8.0" height="4.0" autoSize="1">
+          <RESOURCES/>
+        </FACEPLATE>
+      </PLUGIN>
+    </PLUGININSTANCE>
+    <CONNECTION src="1010" dst="1016" srcPin="1" dstPin="1"/>
+    <CONNECTION src="1013" dst="1016" srcPin="1" dstPin="1"/>
+    <CONNECTION src="1010" dst="1016" srcPin="2" dstPin="2"/>
+    <CONNECTION src="1013" dst="1016" srcPin="2" dstPin="2"/>
+    <CONNECTION src="1016" dst="0" srcPin="1" dstPin="1"/>
+    <CONNECTION src="1016" dst="0" srcPin="2" dstPin="2"/>
+    <CONNECTION src="0" dst="1016" srcPin="0" dstPin="0"/>
+    <CONNECTION src="1016" dst="0" srcPin="0" dstPin="0"/>
+  </RACK>
+</PRESET>

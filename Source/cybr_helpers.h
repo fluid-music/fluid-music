@@ -57,6 +57,7 @@ void renderTrackRegion(juce::File outputFile, te::Track& track, te::EditTimeRang
 
 te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const juce::String name);
 te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const juce::String name);
+te::RackType::Ptr ensureWidthRack(te::AudioTrack& track);
 
 /** Add a plugin just before the VolumeAndPan plugin.
  `type` can be 'vst|vst3|tracktion|AudioUnit' or an empty string.
@@ -65,6 +66,8 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track,
                                     const juce::String name,
                                     const juce::String type = {},
                                     const int index = 0);
+
+void setParamAutomationPoint(te::AutomatableParameter::Ptr foundParam, float paramValue, double timeInWholeNotes, float curveValue = 0, bool isNormalized = true);
 
 class CybrEdit;
 /** Create a copy of a the cybrEdit, suitable for playback and editing.

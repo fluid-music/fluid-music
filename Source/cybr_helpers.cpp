@@ -526,6 +526,111 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
     std::cout << "Save tracktion preset: " << file.getFullPathName() << std::endl;
 }
 
+te::RackType::Ptr ensureWidthRack(te::AudioTrack& track) {
+    for (auto plugin : track.pluginList) {
+        if (auto rack = dynamic_cast<te::RackInstance*>(plugin)) {
+            if (rack->state.hasProperty("cybr-width")) {
+                return track.edit.getRackList().getRackTypeForID(rack->rackTypeID);
+            }
+        }
+    }
+
+    te::RackType::Ptr cybrRackType = track.edit.getRackList().addNewRack();
+    {
+        cybrRackType->rackName.setValue("width", nullptr);
+        auto pluginMain = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
+        auto plugin1 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
+        auto plugin2 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
+        auto plugin3 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
+        auto plugin4 = track.edit.getPluginCache().createNewPlugin("volume", PluginDescription());
+
+        auto volumeMain = dynamic_cast<te::VolumeAndPanPlugin*>(pluginMain.get());
+        auto volume1 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin1.get());
+        auto volume2 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin2.get());
+        auto volume3 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin3.get());
+        auto volume4 = dynamic_cast<te::VolumeAndPanPlugin*>(plugin4.get());
+
+        volume1->setVolumeDb(-6.020599913279624);
+        volume2->setVolumeDb(-6.020599913279624);
+        volume3->setVolumeDb(-6.020599913279624);
+        volume4->setVolumeDb(-6.020599913279624);
+
+        // Note that we do not actually hard pan the two volume channels. This
+        // is accomplished with macros.
+
+        cybrRackType->addPlugin(pluginMain, {0.85, 0.5}, false);
+        cybrRackType->addPlugin(plugin1, {0.15, 0.35}, false);
+        cybrRackType->addPlugin(plugin2, {0.15, 0.60}, false);
+        cybrRackType->addPlugin(plugin3, {0.6, 0.35}, false);
+        cybrRackType->addPlugin(plugin4, {0.6, 0.60}, false);
+
+        // Left input channel to volume1
+        cybrRackType->addConnection({}, 1, volume1->itemID, 1);
+        cybrRackType->addConnection({}, 1, volume1->itemID, 2);
+        // Right input channel to volume2
+        cybrRackType->addConnection({}, 2, volume2->itemID, 1);
+        cybrRackType->addConnection({}, 2, volume2->itemID, 2);
+
+        // From 1 to 3, 4
+        cybrRackType->addConnection(volume1->itemID, 1, volume3->itemID, 1);
+        cybrRackType->addConnection(volume1->itemID, 1, volume3->itemID, 2);
+        cybrRackType->addConnection(volume1->itemID, 2, volume4->itemID, 1);
+        cybrRackType->addConnection(volume1->itemID, 2, volume4->itemID, 2);
+        // From 2 to 3, 4
+        cybrRackType->addConnection(volume2->itemID, 1, volume3->itemID, 1);
+        cybrRackType->addConnection(volume2->itemID, 1, volume3->itemID, 2);
+        cybrRackType->addConnection(volume2->itemID, 2, volume4->itemID, 1);
+        cybrRackType->addConnection(volume2->itemID, 2, volume4->itemID, 2);
+
+        // volume 3,4 to final gain stage
+        cybrRackType->addConnection(volume3->itemID, 1, volumeMain->itemID, 1);
+        cybrRackType->addConnection(volume3->itemID, 2, volumeMain->itemID, 2);
+        cybrRackType->addConnection(volume4->itemID, 1, volumeMain->itemID, 1);
+        cybrRackType->addConnection(volume4->itemID, 2, volumeMain->itemID, 2);
+
+        // final gain stage to Rack output
+        cybrRackType->addConnection(volumeMain->itemID, 1, {}, 1);
+        cybrRackType->addConnection(volumeMain->itemID, 2, {}, 2);
+
+        // route midi directly
+        cybrRackType->addConnection({}, 0, {}, 0);
+
+        // Create a macro in the rack
+        auto widthMacro = track.macroParameterList.createMacroParameter();
+        widthMacro->macroName = "width";
+        widthMacro->value = 1.0;
+        volume1->panParam->addModifier(*widthMacro, -1,  0.5);
+        volume2->panParam->addModifier(*widthMacro,  1, -0.5);
+
+        // Create a macro on the track
+        auto autoMacro = track.macroParameterList.createMacroParameter();
+        autoMacro->macroName = "width automation";
+        autoMacro->value = 1.0;
+        volume3->panParam->addModifier(*autoMacro, -1,  0.5);
+        volume4->panParam->addModifier(*autoMacro,  1, -0.5);
+
+        // Make the pan automation macro while we're here
+        auto panMacro = track.macroParameterList.createMacroParameter();
+        panMacro->macroName = "pan automation";
+        panMacro->value = 0.5;
+        track.getVolumePlugin()->panParam->addModifier(*panMacro, 1, -0.5);
+    }
+
+    // find the last volume plugin in the track
+    int insertPoint = track.pluginList.size() - 1;
+    for (; insertPoint >= 0; insertPoint--) {
+        auto checkPlugin = track.pluginList[insertPoint];
+        if (auto x = dynamic_cast<te::VolumeAndPanPlugin*>(checkPlugin)) break;
+    }
+
+    auto pluginTree = te::RackInstance::create(*cybrRackType.get());  // <PLUGIN type="rack" rackType="1002"/>
+    pluginTree.setProperty("cybr-width", "T", nullptr);
+    te::Plugin::Ptr plugin = track.edit.getPluginCache().createNewPlugin(pluginTree);
+    track.pluginList.insertPlugin(plugin, insertPoint, nullptr);
+
+    return cybrRackType;
+}
+
 void loadTracktionPreset(te::AudioTrack& audioTrack, ValueTree v) {
     bool loaded = false;
     for (ValueTree preset : v) {
@@ -633,13 +738,27 @@ void printOscMessage(const OSCMessage& message) {
 };
 
 te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name) {
+    te::AudioTrack* foundTrack = nullptr;
+
     for (auto* track : te::getAudioTracks(edit)) {
-        if (track->getName() == name) return track;
+        if (track->getName() != name) continue;
+        foundTrack = track;
+        break;
     }
-    te::TrackInsertPoint insertPoint(nullptr, te::getTopLevelTracks(edit).getLast()); // Does this work if there are no tracks?
-    te::AudioTrack* track = edit.insertNewAudioTrack(insertPoint, nullptr).get();
-    track->setName(name);
-    return track;
+
+    if (!foundTrack) {
+        te::TrackInsertPoint insertPoint(nullptr, te::getTopLevelTracks(edit).getLast());
+        foundTrack = edit.insertNewAudioTrack(insertPoint, nullptr).get();
+        foundTrack->setName(name);
+    }
+
+    if (foundTrack) {
+        ensureWidthRack(*foundTrack);
+    }
+
+    return foundTrack;
+
+
 }
 
 te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name) {
@@ -668,6 +787,17 @@ te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, co
     // External plugins like "zebra 2" look like this:
     // checkPlugin->getPluginType();   // "VST" or "VST3" of "AudioUnit"
     // checkPlugin->getName();         // "Zebra2"
+
+    // "width" is a special case, because the plugin is a Rack, and is not
+    // actually named "width". Note that indexing "width" is not supported.
+    if ((name == "width" || name == "cybr-width") && (type.isEmpty() || type.equalsIgnoreCase("tracktion"))) {
+        ensureWidthRack(track);
+        for (auto plugin : track.pluginList) {
+            if (plugin->state.hasProperty("cybr-width")) {
+                return plugin;
+            }
+        }
+    }
 
     // first, search for a plugin that matches the full name (case insensitive)
     for (PluginDescription desc : track.edit.engine.getPluginManager().knownPluginList.getTypes()) {
@@ -837,4 +967,20 @@ void removeAllPluginAutomationFromTrack(te::ClipTrack& track) {
             }
         }
     }
+}
+
+
+void setParamAutomationPoint(te::AutomatableParameter::Ptr param, float paramValue, double timeInWholeNotes, float curveValue, bool isNormalized) {
+    if (isNormalized) paramValue = param->valueRange.convertFrom0to1(paramValue);
+    te::AutomationCurve curve = param->getCurve();
+    // If this is the first time changing the value of the parameter,
+    // set it to its default at time 0.
+    if(!param->hasAutomationPoints()) {
+        curve.addPoint(0, param->getCurrentValue(), 0);
+    }
+
+    double changeTime = param->getEdit().tempoSequence.beatsToTime(timeInWholeNotes * 4);
+
+    curve.addPoint(changeTime, paramValue, curveValue);
+    curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
 }
