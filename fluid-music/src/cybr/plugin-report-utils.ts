@@ -43,3 +43,32 @@ export function guessParamUnits(paramInfo: any) {
   if (paramInfo.currentLabel.length) return paramInfo.currentLabel
   return null
 }
+
+export function guessIsContinuous(paramInfo: any) {
+  const [min, max]  = guessParamRange(paramInfo)
+  return (typeof min === 'number' && typeof max === 'number')
+}
+
+export function guessIsLinear(paramInfo: any) {
+  const pName = paramInfo.name;
+
+  const [min, max] = guessParamRange(paramInfo)
+  if (typeof min !== 'number' || typeof max !== 'number') return false
+
+  const span = Math.abs(max - min)
+
+  const numSteps = paramInfo.outputValueStepsAsStrings.length
+  if (numSteps % 2 === 0)
+    throw new Error(`guessIsLinear: paramInfo.outputValueStepsAsStrings must have an odd length  (${pName})`)
+
+  const linearMidpoint = min + (span/2)
+  const actualMidpoint = parseNumberString(paramInfo.outputValueStepsAsStrings[Math.floor(numSteps / 2)])
+
+  if (typeof actualMidpoint !== 'number')
+    throw new Error(`guessIsLinear: failed to get a midpoint number (${pName})`)
+
+  const difference = Math.abs(linearMidpoint - actualMidpoint)
+  // We only have access to a parameter value as a string, so "actualMidpoint"
+  // will be imprecise. Tolerate 1% inaccuracy.
+  return (difference / span) <= 0.01
+}
