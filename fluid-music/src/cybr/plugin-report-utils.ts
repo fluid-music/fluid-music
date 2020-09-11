@@ -29,13 +29,25 @@ export function guessParamRange(paramInfo: any) {
   return [ min, max ]
 }
 
-
+const unitStrings = {
+  "%": 'percent'
+}
 function extractUnits(str : string) {
   const parts = str.split(' ')
-  if (parts.length) return parts.slice(-1)[0]
+  if (parts.length) {
+    const lastPart = parts.slice(-1)[0]
+    const lowerStr = lastPart.toLowerCase().split(' ')[0]
+    if (unitStrings.hasOwnProperty(lowerStr)) return unitStrings[lowerStr]
+    return lowerStr;
+  }
   return null
 }
 
+/**
+ * Try to get a lower case string that describes the parameter units. Returns
+ * null if the unit type could not be identified.
+ * @param paramInfo the parameter object found in a plugin parameter report
+ */
 export function guessParamUnits(paramInfo: any) {
   // If the min and the max both have the same label, use it
   const [minLabel, maxLabel] = paramInfo.outputValueRangeAsStringsWithLabels.map(extractUnits)

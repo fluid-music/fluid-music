@@ -73,11 +73,11 @@ describe('test-plugin-report-utilities', function () {
 
   describe('guessParamUnits', function () {
     it('should handle the case when all the units are accurate', function () {
-      guessParamUnits(podolskiPercent).should.equal('%')
+      guessParamUnits(podolskiPercent).should.equal('percent')
     })
 
     it('should handle when there is no current label', function () {
-      guessParamUnits(negativeDbRange).should.equal('dB')
+      guessParamUnits(negativeDbRange).should.equal('db')
     })
   })
 
