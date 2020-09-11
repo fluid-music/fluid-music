@@ -1,5 +1,5 @@
-const should = require('should');
-const mocha = require('mocha');
+require('should');
+require('mocha');
 const fluid = require('..');
 
 describe.skip("groove", () => {

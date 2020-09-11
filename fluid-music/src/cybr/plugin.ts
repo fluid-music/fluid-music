@@ -326,65 +326,36 @@ export function getReport() { return { address: '/plugin/report' }; }
  * avoided when it is not needed.
  * 
  * ```javascript
- * // This object was created with steps=10.
+ * // This object was created with steps=15.
  * {
- *    name: 'Dly1: Feedback',
- *    defaultValue: 0,
- *    currentExplicitValue: 0,
- *    currentNormalizedValue: 0,
- *    currentValue: 0,
- *    currentValueAsStringWithLabel: '0.00 %',
- *    currentValueAsString: '0.00',
- *    currentBaseValue: 0,
- *    isDiscrete: false,
- *    isAutomationActive: false,
- *    isActive: true,
- *    hasAutomationPoints: false,
- *    hasLabels: false,
- *    currentLabel: '%',
- *    inputValueRange: [ 0, 1 ],
- *    outputValueStepsAsStrings: [
- *      '0.00',   '12.50',
- *      '25.00',  '37.50',
- *      '50.00',  '62.50',
- *      '75.00',  '87.50',
- *      '100.00'
- *    ],
- *    outputValueRangeAsStrings: [ '0.00', '100.00' ],
- *    outputValueRangeAsStringsWithLabels: [ '0.00 %', '100.00 %' ]
- * },
- * 
- * // Note that some plugins (like Podolski) correctly report
- * // outputValueRangeAsString and outputValueRangeAsStringWithLabel
- * {
- *    hasLabels: false, // seems to always be false
- *    currentLabel: '%',
- *    inputValueRange: [ 0, 1 ],
- *    outputValueRangeAsString: [ '0.00', '100.00' ],
- *    outputValueRangeAsStringWithLabel: [ '0.00 %', '100.00 %' ]
- * }
- * 
- * // While other plugins (like #TStereo Delay) always report the unit label:
- * {
- *    currentLabel: 'Hz',
- *    inputValueRange: [ 0, 1 ],
- *    outputValueRangeAsString: [ '20 Hz', '20000 Hz' ],
- *    outputValueRangeAsStringWithLabel: [ '20 Hz', '20000 Hz' ]
- * }
- * 
- * // Another thing to look out for is parameters that may represent a
- * // continuous function, but look like this:
- * {
- *   outputValueRangeAsString: [ '-INF dB', '+18.00 dB' ]
- * }
- * 
- * // currentLabel is sometimes empty like the podolski example below
- * {
- *   name: 'LFO1: FreqMod Dpt',
- *   currentLabel: '',
+ *   name: 'Lookahead',
+ *   tracktionIndex: 12,
+ *   defaultValue: 0,
+ *   currentExplicitValue: 0,
+ *   currentNormalizedValue: 0,
+ *   currentValue: 0,
+ *   currentValueAsStringWithLabel: '0.00 ms',
+ *   currentValueAsString: '0.00 ms',
+ *   currentBaseValue: 0,
+ *   isDiscrete: false,
+ *   isAutomationActive: false,
+ *   isActive: true,
+ *   hasAutomationPoints: false,
+ *   hasLabels: false,
+ *   currentLabel: 'ms',
  *   inputValueRange: [ 0, 1 ],
- *   outputValueRangeAsString: [ '-5.00', '5.00' ],
- *   outputValueRangeAsStringWithLabel: [ '-5.00', '5.00' ]
+ *   outputValueStepsAsStrings: [
+ *     '0.00 ms',  '0.71 ms',
+ *     '1.43 ms',  '2.14 ms',
+ *     '2.86 ms',  '3.57 ms',
+ *     '4.29 ms',  '5.00 ms',
+ *     '5.71 ms',  '6.43 ms',
+ *     '7.14 ms',  '7.86 ms',
+ *     '8.57 ms',  '9.29 ms',
+ *     '10.00 ms'
+ *   ],
+ *   outputValueRangeAsStrings: [ '0.00 ms', '10.00 ms' ],
+ *   outputValueRangeAsStringsWithLabels: [ '0.00 ms', '10.00 ms' ]
  * }
  * ```
  */

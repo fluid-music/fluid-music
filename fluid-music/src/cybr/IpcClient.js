@@ -101,8 +101,6 @@ module.exports = class FluidIpcClient {
     if (!this.connectionInitiated) await this.connect();
     if (!this.connected) await this.connectPromise;
 
-
-
     let pObj = {};
     this.queue.push(pObj);
 
