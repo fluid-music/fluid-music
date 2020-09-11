@@ -52,6 +52,8 @@ export = {
   audiofile,
   audiotrack,
   Client: IpcClient,
+  IpcClient,
+  UdpClient,
   clip,
   converters,
   content,
