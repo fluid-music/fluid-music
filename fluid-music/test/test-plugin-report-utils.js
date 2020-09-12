@@ -50,6 +50,12 @@ const tCompRatio = {"name":"Ratio","tracktionIndex":5,"defaultValue":0,"currentE
   "outputValueRangeAsStringsWithLabels":["1.00:1","100.00:1"]
 }
 
+const tCompType = {"name":"Type","tracktionIndex":22,"defaultValue":0,"currentExplicitValue":0,"currentNormalizedValue":0,"currentValue":0,"currentValueAsStringWithLabel":"0","currentValueAsString":"0","currentBaseValue":0,"isDiscrete":false,"isAutomationActive":false,"isActive":true,"hasAutomationPoints":false,"hasLabels":false,"currentLabel":"","inputValueRange":[0,1],
+"outputValueStepsAsStrings":["0","1","1","2","2","3","3","4","4","5","5","6","6","7","7"],
+"outputValueRangeAsStrings":["0","7"],
+"outputValueRangeAsStringsWithLabels":["0","7"]
+}
+
 describe('test-plugin-report-utilities', function () {
   describe('guessParamRange', function () {
     it('should handle a very simple case: ["-5.00", "5.00"]', function () {
@@ -84,6 +90,10 @@ describe('test-plugin-report-utilities', function () {
   describe('guessIsContinuous', function () {
     it('should identify parameters ranges with -Infinity as continuous', function () {
       guessIsContinuous(negativeDbRange).should.be.true()
+    })
+
+    it('should identify discrete numeric parameters as NOT continuous', function () {
+      guessIsContinuous(tCompType).should.be.false()
     })
   })
 

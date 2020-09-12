@@ -1,7 +1,7 @@
 const should = require('should');
 const mocha = require('mocha');
 
-const tools = require('../built/src/plugin-generator');
+const { camelCaseFromParamName } = require('../built/src/cybr/plugin-report-utils')
 
 describe('camelCaseFromParamName', () => {
   const correctExamples = {
@@ -53,7 +53,7 @@ describe('camelCaseFromParamName', () => {
 
   it('should convert names according to test examples', () => {
     for (let [paramName, camelCaseName] of Object.entries(correctExamples)) {
-      let result = tools.camelCaseFromParamName(paramName);
+      let result = camelCaseFromParamName(paramName);
       result.should.equal(camelCaseName,
         `For "${paramName}": got "${result}" wanted "${camelCaseName}"`);
     }
