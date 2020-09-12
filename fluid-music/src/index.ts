@@ -3,6 +3,7 @@ import { DragonflyRoom } from './plugin-dradonfly-room';
 import { FluidPlugin, PluginType } from './plugin';
 import { tracksToFluidMessage, sessionToTemplateFluidMessage } from './tracksToFluidMessage';
 import { FluidSession } from './FluidSession';
+import * as gen from './plugin-generator'
 
 // OSC Message Helpers
 import * as cybr from './cybr/index';
@@ -60,6 +61,7 @@ export = {
   noteLibrary,
   eventMappers,
   noteTypes,
+  gen,
   global,
   m,
   midiclip,

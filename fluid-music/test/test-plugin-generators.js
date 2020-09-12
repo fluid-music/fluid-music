@@ -46,6 +46,9 @@ describe('camelCaseFromParamName', () => {
     'OP1 MODE': 'op1Mode',
     'LFO DELAY': 'lfoDelay',
     'lfo DELAY': 'lfoDelay', // comparison
+
+    //TCompressor has two threshold parameters. The second shows up like this:
+    'Threshold (2)': 'threshold2'
   };
 
   it('should convert names according to test examples', () => {

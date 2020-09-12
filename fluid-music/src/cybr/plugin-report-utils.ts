@@ -29,8 +29,6 @@ export function guessParamRange(paramInfo: any) {
   return [ min, max ]
 }
 
-
-
 // All lower case static unit conversions
 const unitStrings = {
   "%": 'percent',
