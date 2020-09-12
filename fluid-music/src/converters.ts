@@ -8,7 +8,7 @@ const parser = new Parser();
  * @param {String|Number} value - input value can be 'quarter' or '1/4' or 0.25
  * @returns {Number} - A duration in whole notes
  */
-const valueToWholeNotes = function(value) {
+export const valueToWholeNotes = function(value : string | number) {
   let length;
   if (typeof value === 'number') length = value;
   else if (typeof value === 'string') {
@@ -21,11 +21,11 @@ const valueToWholeNotes = function(value) {
       length = s11.duration.asDuration(value).value() * 0.25;
     }
   }
-  else throw new Error('Cannot convert to number of whole notes:', JSON.stringify(value));
+  else throw new Error('Cannot convert to number of whole notes:' + JSON.stringify(value));
   return length;
 }
 
-const valueToMidiNoteNumber = function(value) {
+export const valueToMidiNoteNumber = function(value) {
   let noteNumber;
   if      (typeof value === 'number') noteNumber = value;
   else if (typeof value === 'string') {
@@ -48,7 +48,7 @@ const valueToMidiNoteNumber = function(value) {
  * @param {number} midiNoteNumber
  * @returns {number} fundamental frequency in hz
  */
-const m2f = (midiNote) => 440 * Math.pow(2, (midiNote-69)/12);
+export const m2f = (midiNote) => 440 * Math.pow(2, (midiNote-69)/12);
 
 /**
  * Convert a frequency to a midi note number, assuming 69=A5=440hz.
@@ -57,20 +57,11 @@ const m2f = (midiNote) => 440 * Math.pow(2, (midiNote-69)/12);
  * @param {number} hz frequency in hz
  * @returns {number} midi note number
  */
-const f2m = (hz) => 69 + 12 * Math.log2(hz/440);
+export const f2m = (hz) => 69 + 12 * Math.log2(hz/440);
 
-const numberToMidiNote = (n) => ({type: 'midiNote', n});
+export const numberToMidiNote = (n) => ({type: 'midiNote', n});
 
-function midiVelocityToDbfs(v, min = -60, max = 6) {
+export function midiVelocityToDbfs(v, min = -60, max = 6) {
   const range = max - min;
   return R.clamp(min, max, v / 127 * range + min);
-};
-
-module.exports = {
-  m2f,
-  f2m,
-  midiVelocityToDbfs,
-  valueToWholeNotes,
-  valueToMidiNoteNumber,
-  numberToMidiNote,
 };

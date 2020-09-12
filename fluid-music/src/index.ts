@@ -40,7 +40,6 @@ const noteTypes = require('./note-types');
 const eventMappers = require('./event-mappers');
 const tab = require('./tab');
 
-const converters = require('./converters');
 const m = require('./m');
 const random = require('./random');
 const tracksToReaperProject = require('./tracksToReaperProject');
@@ -57,7 +56,6 @@ export = {
   IpcClient,
   UdpClient,
   clip,
-  converters,
   content,
   noteLibrary,
   eventMappers,

@@ -48,7 +48,7 @@ class DragonflyRoomStateRangeChecks implements DragonflyRoomParameters {
 // Tracktion adds 'Dry Level' and 'Wet Level' parameters, both of which are not
 // built into the actual plugin. Typically, this means that plugin adapters
 // should not have 'Dry Level' and 'Wet Level' parameters with indexes. However,
-// DragonFlyRoomRever-vst has its own 'Dry Level' parameter with index=0, so
+// DragonFlyRoomReverb-vst has its own 'Dry Level' parameter with index=0, so
 // the `dryLevelPercent` parameter below does have an index.
 const parameterLibrary = {
   dryLevelPercent: {

@@ -3,7 +3,7 @@ const should = require('should');
 const mocha = require('mocha');
 
 const fluid = require('..');
-const converters = fluid.converters;
+const converters = require('../built/src/converters')
 
 describe('valueToWholeNotes', () => {
   it('should handle strings in the format "1/4"', () => {
@@ -99,7 +99,7 @@ describe('midiclip.create', () => {
     { n: 67, s: 1.0, l: 0.25 },
   ];
 
-  const arpMessage = fluid.midiclip.create('clip1', 1, 2, notes);
+  const arpMessage = fluid.cybr.midiclip.create('clip1', 1, 2, notes);
 
   it('should have /midiclip/select', () => {
     const clipSelect = arpMessage[0];
