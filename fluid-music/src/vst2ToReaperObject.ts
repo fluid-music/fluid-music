@@ -38,15 +38,20 @@ export async function vst2ToReaperObject(client: FluidIpcClient, trackName: stri
     }
   }
 
-  const msg = [
+  const msg1 = [
     cybr.audiotrack.select(trackName),
     cybr.plugin.select(pluginName, cybrType, n),
-    paramSetters,
+    paramSetters]
+  const msg2 = [
+    cybr.audiotrack.select(trackName),
+    cybr.plugin.select(pluginName, cybrType, n),
     cybr.plugin.getReport(),
   ]
-  const retObj = await client.send(msg);
+  await client.send(msg1);
+  await new Promise(resolve => setTimeout(resolve, 20)); // wait 20ms for params to register
+  const retObj = await client.send(msg2);
 
-  const pluginReport = JSON.parse(retObj.elements[3].args[2].value);
+  const pluginReport = JSON.parse(retObj.elements[2].args[2].value);
   const vst2State = pluginReport.vst2State;
   const numIn = pluginReport.numAudioInputChannels;
   const numOut = pluginReport.numAudioOutputChannels;
@@ -64,6 +69,7 @@ export async function vst2ToReaperObject(client: FluidIpcClient, trackName: stri
   newVst.params[4] = id + '<>';
   newVst.initializeRouting(numIn, numOut)
   newVst.setVst2State(vst2State)
+  newVst.setVst2IdNumber(id)
 
   // Automation
   for (const [paramKey, automation] of Object.entries(plugin.automation)) {

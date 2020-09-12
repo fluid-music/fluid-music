@@ -13,7 +13,6 @@ const f = {
   value: 0.5,
 };
 
-const tCompInstance = new fluid.TCompressor()
 
 const p = fluid.DragonflyRoom.makeAutomation.sizeMeters(9);
 const q = fluid.DragonflyRoom.makeAutomation.sizeMeters(30);
@@ -52,7 +51,7 @@ let session = new fluid.FluidSession({
   dLibrary, // default for kick and snare
   nLibrary, // default for kick and snare
 }, {
-  kick:  { d: '.   . mf      ', gain: -6, plugins: [ ]},
+  kick:  { d: '.   . mf      ', gain: -6, plugins: [ new fluid.TCompressor({thresholdDb: -8}) ]},
   snare: { d: 'm   f   m   f ' },
   chrd:  { nLibrary: chords.nLibrary, pan: -.75 },
   bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p } },
@@ -80,10 +79,14 @@ session.insertScore({
 //   cybr.global.save(null, 'd'),
 // ]);
 
+const client = new cybr.Client()
+
 async function run() {
-  const client = new cybr.Client();
+  await client.connect(true)
   const rpp = await fluid.tracksToReaperProject(session.tracks, 96, client);
   console.log(rpp.dump())
 }
 
-run();
+run()
+  .catch(e => { throw e })
+  .finally(() => { client.close() })
