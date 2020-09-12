@@ -20,6 +20,7 @@
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
   "devDependencies": {
+    "@types/ramda": "github:types/npm-ramda#dist",
     "jsdoc-to-markdown": "^5.0.3",
     "mocha": "^6.2.3",
     "nodemon": "^2.0.3",

@@ -1,4 +1,4 @@
-// All lower case
+// All lower case number conversions
 const numberStrings = {
   "inf": Number.POSITIVE_INFINITY,
   "infinity": Number.POSITIVE_INFINITY,
@@ -29,8 +29,12 @@ export function guessParamRange(paramInfo: any) {
   return [ min, max ]
 }
 
+
+
+// All lower case static unit conversions
 const unitStrings = {
-  "%": 'percent'
+  "%": 'percent',
+  "s": 'seconds'
 }
 function extractUnits(str : string) {
   const parts = str.split(' ')

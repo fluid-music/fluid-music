@@ -1,4 +1,4 @@
-import { PluginType, FluidPlugin, percent, linear, PluginAutomationEvent } from './plugin';
+import { PluginType, FluidPlugin, PluginAutomationEvent } from './plugin';
 
 const pluginName = 'DragonflyRoomReverb-vst';
 const pluginType = PluginType.VST2;

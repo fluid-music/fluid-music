@@ -1,7 +1,7 @@
 const should = require('should');
 const mocha = require('mocha');
 
-const tools = require('../code-generators/tools');
+const tools = require('../built/src/plugin-generator');
 
 describe('camelCaseFromParamName', () => {
   const correctExamples = {
