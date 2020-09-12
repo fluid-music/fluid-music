@@ -18,7 +18,7 @@ export interface TCompressorParameters {
   useSidechainTrigger? : number;
   monitorSidechain? : number;
   softClip? : number;
-  threshold2Db? : number;
+  softClipThresholdDb? : number;
   peakDetection? : number;
   useSumDetection? : number;
   auto? : number;
@@ -44,7 +44,7 @@ const parameterLibrary = {
   useSidechainTrigger: { name: 'Use Sidechain Trigger', index: 12, isLinear: false, range: [0, 1] as [number, number]},
   monitorSidechain: { name: 'Monitor Sidechain', index: 13, isLinear: false, range: [0, 1] as [number, number]},
   softClip: { name: 'Soft Clip', index: 14, isLinear: false},
-  threshold2Db: { name: 'Threshold (2)', index: 15, isLinear: true, range: [-60, 0] as [number, number], units: 'db'},
+  softClipThresholdDb: { name: 'Threshold (2)', index: 15, isLinear: true, range: [-60, 0] as [number, number], units: 'db'},
   peakDetection: { name: 'Peak Detection', index: 16, isLinear: false, range: [0, 1] as [number, number]},
   useSumDetection: { name: 'Use Sum Detection', index: 17, isLinear: false, range: [0, 1] as [number, number]},
   auto: { name: 'Auto', index: 18, isLinear: false},
@@ -235,11 +235,11 @@ const makeAutomation = {
     if (typeof value === 'number') event.value = value;
     return event;
   },
-  threshold2Db (value? : number) : PluginAutomationEvent {
+  softClipThresholdDb (value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
       pluginSelector: { pluginName, pluginType },
-      paramKey: 'threshold2Db',
+      paramKey: 'softClipThresholdDb',
       startTime: 0,
       duration: 0,
       curve: 0,
