@@ -1,9 +1,11 @@
-// New Style Plugins
-import { DragonflyRoom } from './plugin-dradonfly-room';
 import { FluidPlugin, PluginType } from './plugin';
 import { tracksToFluidMessage, sessionToTemplateFluidMessage } from './tracksToFluidMessage';
 import { FluidSession } from './FluidSession';
 import * as gen from './plugin-generator'
+
+// New Style Plugins
+import { DragonflyRoom } from './plugin-dradonfly-room';
+import { TCompressor } from './plugin-adapters/vst2-t-compressor'
 
 // OSC Message Helpers
 import * as cybr from './cybr/index';
@@ -87,5 +89,6 @@ export = {
   FluidPlugin,
   PluginType,
   DragonflyRoom,
+  TCompressor,
   FluidSession,
 };

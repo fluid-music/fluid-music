@@ -46,7 +46,7 @@ class DragonflyRoomStateRangeChecks implements DragonflyRoomParameters {
 }
 
 // Tracktion adds 'Dry Level' and 'Wet Level' parameters, both of which are not
-// build into the actual plugin. Typically, this means that plugin adapters
+// built into the actual plugin. Typically, this means that plugin adapters
 // should not have 'Dry Level' and 'Wet Level' parameters with indexes. However,
 // DragonFlyRoomRever-vst has its own 'Dry Level' parameter with index=0, so
 // the `dryLevelPercent` parameter below does have an index.
@@ -386,7 +386,6 @@ export class DragonflyRoom extends FluidPlugin {
 
   readonly parameterLibrary = parameterLibrary;
   readonly makeAutomation = makeAutomation;
-  readonly vst2Id = Buffer.from('2rfd', 'ascii');
 
   // Static members
   static readonly parameterLibrary = parameterLibrary;

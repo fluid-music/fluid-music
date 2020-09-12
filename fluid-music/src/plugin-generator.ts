@@ -22,9 +22,9 @@ export function generatePluginModule(report: any) {
   const className = makeVarName(pluginName)                 // DragonflyRoom
   const parametersInterfaceName = className + 'Parameters'; // DragonflyRoomParameters
 
-  let output = `import { PluginType, FluidPlugin, PluginAutomationEvent } from './plugin';
+  let output = `import { PluginType, FluidPlugin, PluginAutomationEvent } from '../plugin';
 const pluginName = '${pluginName}'
-const pluginType = '${pluginType}'
+const pluginType = ${pluginType}
 
 export interface ${parametersInterfaceName} {
 `
@@ -33,15 +33,45 @@ export interface ${parametersInterfaceName} {
     return `  ${paramInfo.key}? : number;`
   }).join('\n') + '\n}\n'
 
+  // Create the parameterLibrary
   output += 'const parameterLibrary = {\n'
   output += params.map(param => {
-
     let result = `  ${param.key}: { name: '${param.name}', index: ${param.index}, isLinear: ${!!param.guess.isLinear}`
     if (param.guess.range) result += `, range: [${param.guess.range[0]}, ${param.guess.range[1]}] as [number, number]`
-    if (param.guess.units) result += `, units: '${param.guess.units}`
-
+    if (param.guess.units) result += `, units: '${param.guess.units}'`
     return result + '}'
   }).join(',\n') + '\n}\n'
+
+  // makeAutomation includes the helpers for creating automation points
+  output += 'const makeAutomation = {\n'
+  output += params.map(paramInfo => {
+    return `  ${paramInfo.key} (value? : number) : PluginAutomationEvent {
+    const event : PluginAutomationEvent = {
+      type: 'pluginAuto',
+      pluginSelector: { pluginName, pluginType },
+      paramKey: '${paramInfo.key}',
+      startTime: 0,
+      duration: 0,
+      curve: 0,
+    };
+    if (typeof value === 'number') event.value = value;
+    return event;
+  }`
+  }).join(',\n') + '\n}\n'
+
+  // Finally create the class itself
+  output += `export class ${className} extends FluidPlugin {
+  constructor(
+    public readonly parameters : ${parametersInterfaceName} = {},
+  ) { super(pluginName, pluginType) }
+
+  readonly parameterLibrary = parameterLibrary;
+  readonly makeAutomation = makeAutomation;
+
+  // Static members
+  static readonly parameterLibrary = parameterLibrary;
+  static readonly makeAutomation = makeAutomation;
+}\n`
 
   return output
 }

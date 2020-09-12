@@ -4,7 +4,6 @@ const fluid  = require('../fluid-music');
 const cybr   = fluid.cybr;
 const drums  = require('@fluid-music/kit');
 const chords = require('./chords');
-const { DragonflyRoom } = require('../fluid-music');
 
 // experimental automation point
 const f = {
@@ -14,8 +13,10 @@ const f = {
   value: 0.5,
 };
 
-const p = DragonflyRoom.makeAutomation.sizeMeters(9);
-const q = DragonflyRoom.makeAutomation.sizeMeters(30);
+const tCompInstance = new fluid.TCompressor()
+
+const p = fluid.DragonflyRoom.makeAutomation.sizeMeters(9);
+const q = fluid.DragonflyRoom.makeAutomation.sizeMeters(30);
 
 const r = { type: 'trackAuto', paramKey: 'pan', value: -.5, curve: -0.5 };
 const s = { type: 'trackAuto', paramKey: 'pan', value:  .5 };
@@ -51,7 +52,7 @@ let session = new fluid.FluidSession({
   dLibrary, // default for kick and snare
   nLibrary, // default for kick and snare
 }, {
-  kick:  { d: '.   . mf      ', gain: -6 },
+  kick:  { d: '.   . mf      ', gain: -6, plugins: [ ]},
   snare: { d: 'm   f   m   f ' },
   chrd:  { nLibrary: chords.nLibrary, pan: -.75 },
   bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p } },
