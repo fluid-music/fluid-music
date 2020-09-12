@@ -84,3 +84,18 @@ export function guessIsLinear(paramInfo: any) {
   // will be imprecise. Tolerate 1% inaccuracy.
   return (difference / span) <= 0.01
 }
+
+/**
+ * Annotate the parameter object by adding a `.guess` object
+ * @param paramInfo the parameter object found in a plugin parameter report
+ */
+export function guess(paramInfo: any) {
+  paramInfo.guess = {
+    isContinuous: guessIsContinuous(paramInfo),
+    isLinear: guessIsLinear(paramInfo),
+    range: guessParamRange(paramInfo),
+    units: guessParamUnits(paramInfo),
+  }
+
+  return paramInfo.guess
+}

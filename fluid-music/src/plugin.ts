@@ -41,6 +41,8 @@ export interface PluginParameter {
   readonly name: string;
   readonly units?: string;
   readonly index?: number;
+  readonly range?: [number, number];
+  readonly isLinear?: boolean;
   normalize?(input : number) : number;
 }
 
@@ -141,10 +143,16 @@ export class FluidPlugin {
   getNormalizedValue(paramKey : string, value: number) {
     if (this.parameterLibrary.hasOwnProperty(paramKey)) {
       const param = this.parameterLibrary[paramKey];
+
+      if (param.isLinear && param.range) {
+        return map(value, param.range[0], param.range[1])
+      }
+
       if (param.normalize) {
         return param.normalize(value);
       }
     }
+
     return null;
   }
 

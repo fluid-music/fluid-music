@@ -32,9 +32,13 @@ class DragonflyRoomStateRangeChecks implements DragonflyRoomParameters {
   _data : any = {};
 
   set dryLevelPercent(value : number) {
-    if (parameterLibrary.dryLevelPercent.normalize) {
-      if (parameterLibrary.dryLevelPercent.normalize(value) < 0) throw new Error(`dryLevelPercent too low`);
-      if (parameterLibrary.dryLevelPercent.normalize(value) > 1) throw new Error(`dryLevelPercent too high`);
+    if (parameterLibrary.dryLevelPercent.range) {
+      const r1 = parameterLibrary.dryLevelPercent.range[0]
+      const r2 = parameterLibrary.dryLevelPercent.range[1]
+      const min = Math.min(r1, r2)
+      const max = Math.max(r1, r2)
+      if (value < min) throw new Error(`dryLevelPercent too low`);
+      if (value > max) throw new Error(`dryLevelPercent too high`);
     }
     this._data.dryLevelPercent = value;
   }
@@ -50,103 +54,120 @@ const parameterLibrary = {
   dryLevelPercent: {
     name: 'Dry Level',
     units: 'percent',
-    normalize: percent,
+    isLinear: true,
+    range: [0, 100] as [number, number],
     index: 0,
   },
   earlyLevelPercent: {
     name: 'Early Level',
     units: 'percent',
-    normalize: percent,
+    isLinear: true,
+    range: [0, 100] as [number, number],
     index: 1,
   },
   earlySendPercent: {
     name: 'Early Send',
     units: 'percent',
-    normalize: percent,
+    isLinear: true,
+    range: [0, 100] as [number, number],
     index: 2,
   },
   lateLevelPercent: {
     name: 'Late Level',
     units: 'percent',
-    normalize: percent,
+    isLinear: true,
+    range: [0, 100] as [number, number],
     index: 3,
   },
   sizeMeters: {
     name: 'Size',
     units: 'meters',
-    normalize: linear(8, 32),
+    isLinear: true,
+    range: [8, 32] as [number, number],
     index: 4,
   },
   widthPercent: {
     name: 'Width',
     units: 'percent',
-    normalize: linear(50, 150),
+    isLinear: true,
+    range: [50, 150] as [number, number],
     index: 5,
   },
   predelayMs: {
     name: 'Predelay',
     units: 'milliseconds',
-    normalize: linear(0, 100),
+    isLinear: true,
+    range: [0, 100] as [number, number],
     index: 6,
   },
   decaySeconds: {
     name: 'Decay',
     units: 'seconds',
-    normalize: linear(0.1, 10),
+    isLinear: true,
+    range: [0.1, 10] as [number, number],
     index: 7,
   },
   diffusePercent: {
     name: 'Diffuse',
     units: 'percent',
-    normalize: percent,
+    isLinear: true,
+    range: [0, 100] as [number, number],
     index: 8,
   },
   spinHz: {
     name: 'Spin',
     units: 'hz',
-    normalize: linear(0, 5),
+    isLinear: true,
+    range: [0, 5] as [number, number],
     index: 9,
   },
   wanderPercent: {
     name: 'Wander',
     units: 'percent',
-    normalize: percent,
+    isLinear: true,
+    range: [0, 100] as [number, number],
     index: 10,
   },
   highCutHz: {
     name: 'High Cut',
     units: 'hz',
-    normalize: linear(1000, 16000),
+    isLinear: true,
+    range: [1000, 16000] as [number, number],
     index: 11,
   },
   earlyDampHz: {
     name: 'Early Damp',
     units: 'hz',
-    normalize: linear(1000, 16000),
+    isLinear: true,
+    range: [1000, 16000] as [number, number],
     index: 12,
   },
   lateDampHz: {
     name: 'Late Damp',
     units: 'hz',
-    normalize: linear(1000, 16000),
+    isLinear: true,
+    range: [1000, 16000] as [number, number],
     index: 13,
   },
   lowBoostPercent: {
     name: 'Low Boost',
     units: 'percent',
-    normalize: percent,
+    isLinear: true,
+    range: [0, 100] as [number, number],
     index: 14,
   },
   lowBoostHz: { // renamed from boostFreq
     name: 'Boost Freq',
     units: 'hz',
-    normalize: linear(50, 1050),
+    isLinear: true,
+    range: [50, 1050] as [number, number],
     index: 15,
   },
   lowCutHz: {
     name: 'Low Cut',
     units: 'hz',
-    normalize: linear(50, 200),
+    isLinear: true,
+    range: [50, 200] as [number, number],
     index: 16,
   },
 };
