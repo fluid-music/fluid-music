@@ -39,7 +39,6 @@ const noteLibrary = require('./note-library');
 const noteTypes = require('./note-types');
 const eventMappers = require('./event-mappers');
 const tab = require('./tab');
-const groove = require('./groove')
 
 const converters = require('./converters');
 const m = require('./m');
@@ -85,7 +84,6 @@ export = {
   tracksToFluidMessage,
   tracksToReaperProject,
   transport,
-  groove,
   FluidPlugin,
   PluginType,
   DragonflyRoom,
