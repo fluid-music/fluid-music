@@ -10,7 +10,7 @@ const argv = process.argv.slice(2);
 
 let docs = 'usage: fluid [flags] command arg\n\n';
 function addDocstring(name, string) {
-  docs += `${name}\n    ${string}\n`;
+  docs += `${name.padEnd(22, ' ')}- ${string}\n`;
 };
 
 /** Put all args that are meant to have values here (as opposed to "flags" which
@@ -38,7 +38,7 @@ const parsedArgs = {
   "render": null,
   "audiofile": null,
   "vst2": null,
-  "vst2report": null,
+  "vst2plugin": null,
   "vst2params": null,
 };
 
@@ -169,19 +169,19 @@ commands.audiofile = async function() {
   console.log(JSON.parse(result.args[1].value));
 }
 
-addDocstring('vst2report <pluginName>', 'print the raw vst2 plugin report');
-commands.vst2report = async () => {
-  const report = await utilPlugin.getParamsReport(parsedArgs.vst2report, 'vst2', client);
+addDocstring('vst2plugin <plugName>', 'print the raw vst2 plugin report');
+commands.vst2plugin = async () => {
+  const report = await utilPlugin.getParamsReport(parsedArgs.vst2plugin, 'vst2', client);
   console.log(report.plugin);
 }
 
-addDocstring('vst2params <pluginName>', 'print the raw vst2 parameter report');
+addDocstring('vst2params <plugName>', 'print the raw vst2 parameter report');
 commands.vst2params = async () => {
   const report = await utilPlugin.getParamsReport(parsedArgs.vst2params, 'vst2', client);
   console.log(report.params);
 }
 
-addDocstring('vst2 <pluginName>', 'print a commonjs module that exports { plugin: {}, params: [] }');
+addDocstring('vst2 <plugName>', 'print a commonjs module that exports { plugin: {}, params: [] }');
 commands.vst2 = async () => {
   const moduleString = await utilPlugin.buildPluginModule(parsedArgs.vst2, 'vst2', client);
   console.log(moduleString);
