@@ -21,9 +21,9 @@ export interface TCompressorParameters {
   softClipThresholdDb? : number;
   peakDetection? : number;
   useSumDetection? : number;
-  auto? : number;
+  enableAutoMakeUpGain? : number;
   filter? : number;
-  type? : number;
+  filterType? : number;
   freqHz? : number;
   q? : number;
   gainDb? : number;
@@ -47,9 +47,9 @@ const parameterLibrary = {
   softClipThresholdDb: { name: 'Threshold (2)', index: 15, isLinear: true, range: [-60, 0] as [number, number], units: 'db'},
   peakDetection: { name: 'Peak Detection', index: 16, isLinear: false, range: [0, 1] as [number, number]},
   useSumDetection: { name: 'Use Sum Detection', index: 17, isLinear: false, range: [0, 1] as [number, number]},
-  auto: { name: 'Auto', index: 18, isLinear: false},
+  enableAutoMakeUpGain: { name: 'Auto', index: 18, isLinear: false},
   filter: { name: 'Filter', index: 19, isLinear: false},
-  type: { name: 'Type', index: 20, isLinear: false, range: [0, 7] as [number, number]},
+  filterType: { name: 'Type', index: 20, isLinear: false, range: [0, 7] as [number, number]},
   freqHz: { name: 'Freq', index: 21, isLinear: false, range: [10, 20000] as [number, number], units: 'hz'},
   q: { name: 'Q', index: 22, isLinear: false, range: [0.025, 40] as [number, number]},
   gainDb: { name: 'Gain', index: 23, isLinear: true, range: [-30, 30] as [number, number], units: 'db'}
@@ -271,11 +271,11 @@ const makeAutomation = {
     if (typeof value === 'number') event.value = value;
     return event;
   },
-  auto (value? : number) : PluginAutomationEvent {
+  enableAutoMakeUpGain (value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
       pluginSelector: { pluginName, pluginType },
-      paramKey: 'auto',
+      paramKey: 'enableAutoMakeUpGain',
       startTime: 0,
       duration: 0,
       curve: 0,
@@ -295,11 +295,11 @@ const makeAutomation = {
     if (typeof value === 'number') event.value = value;
     return event;
   },
-  type (value? : number) : PluginAutomationEvent {
+  filterType (value? : number) : PluginAutomationEvent {
     const event : PluginAutomationEvent = {
       type: 'pluginAuto',
       pluginSelector: { pluginName, pluginType },
-      paramKey: 'type',
+      paramKey: 'filterType',
       startTime: 0,
       duration: 0,
       curve: 0,

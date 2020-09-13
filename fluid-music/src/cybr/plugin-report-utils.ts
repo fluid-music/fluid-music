@@ -176,10 +176,13 @@ export function guessDiscreteChoices(paramInfo) {
 export function guess(paramInfo: any) {
   const units = guessParamUnits(paramInfo)
   const key = camelCaseFromParamName(paramInfo.name) + (units ? upperFirstLetter(units) : '')
+  const isContinuous = guessIsContinuous(paramInfo)
+  const choices = isContinuous ? null : guessDiscreteChoices(paramInfo)
   const guess = {
     key,
     units,
-    isContinuous: guessIsContinuous(paramInfo),
+    isContinuous,
+    choices,
     isLinear: guessIsLinear(paramInfo),
     range: guessParamRange(paramInfo),
   }

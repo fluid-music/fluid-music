@@ -1,4 +1,5 @@
 import { makeVarName, guess } from './cybr/plugin-report-utils'
+import { composeP } from 'ramda'
 
 /**
  * Create a plugin adapter Typescript module from a plugin report
@@ -9,8 +10,12 @@ export function generatePluginModule(report: any) {
   const params = report.params.slice(2)
   params.forEach(paramInfo => {
     if (!paramInfo.hasOwnProperty('guess')) paramInfo.guess = guess(paramInfo)
-    if (!paramInfo.hasOwnProperty('key')) paramInfo.key = paramInfo.guess.key
     if (!paramInfo.hasOwnProperty('index')) paramInfo.index = paramInfo.tracktionIndex - 2
+
+    // Assume guesses are correct iff the underlying object does not specify
+    for (const k of Object.keys(paramInfo.guess)) {
+      if (!paramInfo.hasOwnProperty(k)) paramInfo[k] = paramInfo.guess[k]
+    }
   })
 
   const pluginName = report.pluginName
@@ -36,9 +41,9 @@ export interface ${parametersInterfaceName} {
   // Create the parameterLibrary
   output += 'const parameterLibrary = {\n'
   output += params.map(param => {
-    let result = `  ${param.key}: { name: '${param.name}', index: ${param.index}, isLinear: ${!!param.guess.isLinear}`
-    if (param.guess.range) result += `, range: [${param.guess.range[0]}, ${param.guess.range[1]}] as [number, number]`
-    if (param.guess.units) result += `, units: '${param.guess.units}'`
+    let result = `  ${param.key}: { name: '${param.name}', index: ${param.index}, isLinear: ${!!param.isLinear}`
+    if (param.range) result += `, range: [${param.range[0]}, ${param.range[1]}] as [number, number]`
+    if (param.units) result += `, units: '${param.units}'`
     return result + '}'
   }).join(',\n') + '\n}\n'
 
