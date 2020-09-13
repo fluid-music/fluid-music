@@ -112,6 +112,15 @@ export function guessParamUnits(paramInfo: any) {
 }
 
 export function guessIsContinuous(paramInfo: any) {
+  // if every step is unique and can be parsed into a number, return true
+  const steps = paramInfo.outputValueStepsAsStrings
+  if (steps?.length) {
+    return (steps.every((str, i, all) => {
+      if (typeof parseNumberString(str) !== 'number') return false
+      return (i === 0) || (str !== all[i-1])
+    }))
+  }
+
   return !!guessParamRange(paramInfo)
 }
 
