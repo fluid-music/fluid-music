@@ -3,7 +3,7 @@ const should = require('should');
 const mocha = require('mocha');
 
 const fluid = require('..');
-const converters = require('../built/src/converters')
+const converters = require('../built/converters')
 
 describe('valueToWholeNotes', () => {
   it('should handle strings in the format "1/4"', () => {

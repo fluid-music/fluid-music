@@ -1,6 +1,6 @@
 const should = require('should');
 const mocha = require('mocha');
-const noteLibrary = require('../built/src/note-library');
+const noteLibrary = require('../built/note-library');
 
 describe('eventLibrary.merge', () => {
   const a1 = [0, 1];

@@ -2,7 +2,7 @@ require('mocha')
 require('should')
 
 const dragonflyRoomReport = require('./plugin-report-dragonfly-room')
-const { guessParamRange, guessParamUnits, guessIsLinear, guessIsContinuous } = require('../built/src/cybr/plugin-report-utils')
+const { guessParamRange, guessParamUnits, guessIsLinear, guessIsContinuous } = require('../built/cybr/plugin-report-utils')
 
 // Note that some plugins (like Podolski) correctly report
 // outputValueRangeAsString and outputValueRangeAsStringWithLabel

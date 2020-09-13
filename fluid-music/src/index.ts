@@ -1,7 +1,8 @@
 import { FluidPlugin, PluginType } from './plugin';
 import { tracksToFluidMessage, sessionToTemplateFluidMessage } from './tracksToFluidMessage';
 import { FluidSession } from './FluidSession';
-import * as gen from './plugin-generator'
+import * as gen from './plugin-generator';
+import * as converters from './converters';
 
 // New Style Plugins
 import { DragonflyRoom } from './plugin-dradonfly-room';
@@ -57,6 +58,7 @@ export = {
   UdpClient,
   clip,
   content,
+  converters,
   noteLibrary,
   eventMappers,
   noteTypes,
