@@ -112,20 +112,22 @@ export function guessParamUnits(paramInfo: any) {
 }
 
 export function guessIsContinuous(paramInfo: any) {
-  // if every step is unique and can be parsed into a number, return true
+
   const steps = paramInfo.outputValueStepsAsStrings
   if (steps?.length) {
-    return (steps.every((str, i, all) => {
-      if (typeof parseNumberString(str) !== 'number') return false
-      return (i === 0) || (str !== all[i-1])
-    }))
+    const floats = steps.map(parseNumberString)
+    const allNumbers = floats.every(f => typeof f === 'number')
+    if (!allNumbers) return false
+    const allIntegers = floats.every(f => f === Math.floor(f))
+    if (allIntegers) return false
+    else return true
   }
 
   return !!guessParamRange(paramInfo)
 }
 
 export function guessIsLinear(paramInfo: any) {
-  const pName = paramInfo.name;
+  const pName = paramInfo.name
 
   const range = guessParamRange(paramInfo)
   if (!range) return false
@@ -149,6 +151,22 @@ export function guessIsLinear(paramInfo: any) {
   // We only have access to a parameter value as a string, so "actualMidpoint"
   // will be imprecise. Tolerate 1% inaccuracy.
   return (difference / span) <= 0.01
+}
+
+interface s2n { [key: string]: number }
+export function guessDiscreteChoices(paramInfo) {
+  const choices : s2n = {}
+  const inputs = paramInfo.inputSteps as number[]
+  const steps = paramInfo.outputValueStepsAsStrings
+  steps.forEach((step, i) => choices[step] = inputs[i])
+
+  const keys = Object.keys(choices)
+  if (keys.length === 2) {
+    if (choices[keys[0]] === 1) choices[keys[1]] = 0; else
+    if (choices[keys[1]] === 1) choices[keys[0]] = 0
+  }
+
+  return choices
 }
 
 /**

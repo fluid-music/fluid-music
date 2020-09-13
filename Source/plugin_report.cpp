@@ -325,6 +325,7 @@ juce::var getSingleParameterReport(te::AutomatableParameter* param, int steps) {
         var rangeAsString = tempArray;
         var rangeAsStringWithLabel = tempArray;
         var paramSteps = tempArray;
+        var inputSteps = tempArray;
 
         param->setParameter(start, NotificationType::sendNotificationSync);
         rangeAsString.append(param->getCurrentValueAsString());
@@ -338,9 +339,12 @@ juce::var getSingleParameterReport(te::AutomatableParameter* param, int steps) {
         float stepSize   = (steps == 1) ? 0.0 : 1.0 / (steps - 1);
         float startValue = (steps == 1) ? 0.5 : 0.0;
         for (int i = 0; i < steps; i++) {
-            param->setParameter(startValue + (i*stepSize), juce::NotificationType::sendNotificationSync);
+            float inputValue = startValue + (i*stepSize);
+            param->setParameter(inputValue, juce::NotificationType::sendNotificationSync);
             paramSteps.append(param->getCurrentValueAsString());
+            inputSteps.append(inputValue);
         }
+        object->setProperty("inputSteps", inputSteps);
         object->setProperty("outputValueStepsAsStrings", paramSteps);
         object->setProperty("outputValueRangeAsStrings", rangeAsString);
         object->setProperty("outputValueRangeAsStringsWithLabels", rangeAsStringWithLabel);

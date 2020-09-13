@@ -2,7 +2,7 @@ require('mocha')
 require('should')
 
 const dragonflyRoomReport = require('./plugin-report-dragonfly-room')
-const { guessParamRange, guessParamUnits, guessIsLinear, guessIsContinuous } = require('../built/cybr/plugin-report-utils')
+const { guessParamRange, guessParamUnits, guessIsLinear, guessIsContinuous, guessDiscreteChoices } = require('../built/cybr/plugin-report-utils')
 
 // Note that some plugins (like Podolski) correctly report
 // outputValueRangeAsString and outputValueRangeAsStringWithLabel
@@ -39,21 +39,29 @@ const podolskiLfoExample = {
   outputValueRangeAsStringsWithLabels: [ '-5.00', '5.00' ]
 }
 
+const tAuto = {"name":"Auto","tracktionIndex":20,"defaultValue":0,"currentExplicitValue":0,"currentNormalizedValue":0,"currentValue":0,"currentValueAsStringWithLabel":"Off","currentValueAsString":"Off","currentBaseValue":0,"isDiscrete":false,"isAutomationActive":false,"isActive":true,"hasAutomationPoints":false,"hasLabels":false,"currentLabel":"","inputValueRange":[0,1],
+"inputSteps":[0,0.0714285746216774,0.1428571492433548,0.2142857313156128,0.2857142984867096,0.3571428656578064,0.4285714626312256,0.5,0.5714285969734192,0.6428571939468384,0.7142857313156128,0.785714328289032,0.8571429252624512,0.9285714626312256,1],
+"outputValueStepsAsStrings":["Off","Off","Off","Off","Off","Off","Off","On","On","On","On","On","On","On","On"],
+"outputValueRangeAsStrings":["Off","On"],
+"outputValueRangeAsStringsWithLabels":["Off","On"]}
+
 const tCompLookahead = {"name":"Lookahead","tracktionIndex":12,"defaultValue":0,"currentExplicitValue":0,"currentNormalizedValue":0,"currentValue":0,"currentValueAsStringWithLabel":"0.00 ms","currentValueAsString":"0.00 ms","currentBaseValue":0,"isDiscrete":false,"isAutomationActive":false,"isActive":true,"hasAutomationPoints":false,"hasLabels":false,"currentLabel":"ms","inputValueRange":[0,1],
+  "inputSteps":[0,0.0714285746216774,0.1428571492433548,0.2142857313156128,0.2857142984867096,0.3571428656578064,0.4285714626312256,0.5,0.5714285969734192,0.6428571939468384,0.7142857313156128,0.785714328289032,0.8571429252624512,0.9285714626312256,1],
   "outputValueStepsAsStrings":["0.00 ms","0.71 ms","1.43 ms","2.14 ms","2.86 ms","3.57 ms","4.29 ms","5.00 ms","5.71 ms","6.43 ms","7.14 ms","7.86 ms","8.57 ms","9.29 ms","10.00 ms"],
   "outputValueRangeAsStrings":["0.00 ms","10.00 ms"],
   "outputValueRangeAsStringsWithLabels":["0.00 ms","10.00 ms"]
 }
 const tCompRatio = {"name":"Ratio","tracktionIndex":5,"defaultValue":0,"currentExplicitValue":0.3989081978797913,"currentNormalizedValue":0.3989081978797913,"currentValue":0.3989081978797913,"currentValueAsStringWithLabel":"2.00:1","currentValueAsString":"2.00:1","currentBaseValue":0.3989081978797913,"isDiscrete":false,"isAutomationActive":false,"isActive":true,"hasAutomationPoints":false,"hasLabels":false,"currentLabel":"","inputValueRange":[0,1],
+  "inputSteps":[0,0.0714285746216774,0.1428571492433548,0.2142857313156128,0.2857142984867096,0.3571428656578064,0.4285714626312256,0.5,0.5714285969734192,0.6428571939468384,0.7142857313156128,0.785714328289032,0.8571429252624512,0.9285714626312256,1],
   "outputValueStepsAsStrings":["1.00:1","1.00:1","1.01:1","1.04:1","1.19:1","1.58:1","2.43:1","4.09:1","7.03:1","11.87:1","19.41:1","30.65:1","46.80:1","69.35:1","100.00:1"],
   "outputValueRangeAsStrings":["1.00:1","100.00:1"],
   "outputValueRangeAsStringsWithLabels":["1.00:1","100.00:1"]
 }
-
 const tCompType = {"name":"Type","tracktionIndex":22,"defaultValue":0,"currentExplicitValue":0,"currentNormalizedValue":0,"currentValue":0,"currentValueAsStringWithLabel":"0","currentValueAsString":"0","currentBaseValue":0,"isDiscrete":false,"isAutomationActive":false,"isActive":true,"hasAutomationPoints":false,"hasLabels":false,"currentLabel":"","inputValueRange":[0,1],
-"outputValueStepsAsStrings":["0","1","1","2","2","3","3","4","4","5","5","6","6","7","7"],
-"outputValueRangeAsStrings":["0","7"],
-"outputValueRangeAsStringsWithLabels":["0","7"]
+  "inputSteps":[0,0.0714285746216774,0.1428571492433548,0.2142857313156128,0.2857142984867096,0.3571428656578064,0.4285714626312256,0.5,0.5714285969734192,0.6428571939468384,0.7142857313156128,0.785714328289032,0.8571429252624512,0.9285714626312256,1],
+  "outputValueStepsAsStrings":["0","1","1","2","2","3","3","4","4","5","5","6","6","7","7"],
+  "outputValueRangeAsStrings":["0","7"],
+  "outputValueRangeAsStringsWithLabels":["0","7"]
 }
 
 describe('test-plugin-report-utilities', function () {
@@ -92,6 +100,10 @@ describe('test-plugin-report-utilities', function () {
       guessIsContinuous(negativeDbRange).should.be.true()
     })
 
+    it('should identify continuous parameters with low-precision values', function () {
+      guessIsContinuous(tCompRatio).should.be.true()
+    })
+
     it('should identify discrete numeric parameters as NOT continuous', function () {
       guessIsContinuous(tCompType).should.be.false()
     })
@@ -103,6 +115,19 @@ describe('test-plugin-report-utilities', function () {
     })
     it('should identify the #TCompressor Ratio parameter as non-linear', function () {
       guessIsLinear(tCompRatio).should.be.false()
+    })
+  })
+
+  describe('guessDiscreteChoices', function () {
+    it('should identify the 8 filter types in #TCompressor', function () {
+      const result = guessDiscreteChoices(tCompType)
+      Object.keys(result).length.should.equal(8)
+      for (let i = 0; i <= 7; i++) (typeof result[i]).should.equal('number')
+    })
+
+    it('should identify binary parameters', function () {
+      const result = guessDiscreteChoices(tAuto)
+      result.should.deepEqual({ Off: 0, On: 1 })
     })
   })
 
