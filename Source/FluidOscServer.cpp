@@ -92,7 +92,8 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/load/trkpreset"})) return loadPluginTrkpreset(message);
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
     if (msgAddressPattern.matches({"/plugin/report"})) return getPluginReport(message);
-    if (msgAddressPattern.matches({"/plugin/param/report"})) return getPluginParamReport(message);
+    if (msgAddressPattern.matches({"/plugin/param/report"})) return getPluginParameterReport(message);
+    if (msgAddressPattern.matches({"/plugin/params/report"})) return getPluginParametersReport(message);
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/select/return"})) return selectReturnTrack(message);
@@ -1046,8 +1047,8 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::getPluginParamReport(const juce::OSCMessage& message) {
-    OSCMessage reply("/plugin/param/report/reply");
+OSCMessage FluidOscServer::getPluginParametersReport(const juce::OSCMessage& message) {
+    OSCMessage reply("/plugin/params/report/reply");
 
     if (!selectedPlugin) {
         String errorString = "Cannot get plugin parameter report: No selected plugin";
@@ -1056,15 +1057,46 @@ OSCMessage FluidOscServer::getPluginParamReport(const juce::OSCMessage& message)
     }
 
     int steps = (message.size() && message[0].isInt32()) ? message[0].getInt32() : 0;
-    auto array = getPluginParamReportObject(selectedPlugin, steps);
+    auto array = getAllParametersReport(selectedPlugin, steps);
 
     // Create JSON of the results
     String jsonString = JSON::toString(array, true);
-
     reply.addInt32(0);
     reply.addString("Retrieved JSON report about plugin parameters");
     reply.addString(jsonString);
 
+    return reply;
+}
+
+OSCMessage FluidOscServer::getPluginParameterReport(const juce::OSCMessage& message) {
+    OSCMessage reply("/plugin/param/report/reply");
+
+    if (!selectedPlugin) {
+        constructReply(reply, 1, "Cannot get plugin single parameter report: No selected plugin");
+        return reply;
+    }
+
+    if (!message.size() || !message[0].isString()) {
+        constructReply(reply, 1, "Cannot get plugin single parameter report: Missing param name");
+        return reply;
+    }
+
+    String paramName = message[0].getString();
+    int steps = (message.size() >= 2 && message[1].isInt32()) ? message[1].getInt32() : 0;
+
+    for (int i = selectedPlugin->getNumAutomatableParameters() - 1; i >= 0; i--) {
+        auto param = selectedPlugin->getAutomatableParameter(i);
+        if (param->paramName.equalsIgnoreCase(paramName)) {
+            juce::var report = getSingleParameterReport(param.get(), steps);
+            String jsonString = JSON::toString(report, true);
+            reply.addInt32(0);
+            reply.addString("Retrieved JSON report about single plugin parameter");
+            reply.addString(jsonString);
+            return reply;
+        }
+    }
+
+    constructReply(reply, 1, "Cannot get plugin single parameter report: \"" + paramName + "\" Parameter not found");
     return reply;
 }
 
@@ -1641,12 +1673,12 @@ OSCMessage FluidOscServer::getAudioFileReport(const OSCMessage& message) {
         constructReply(reply, 1,  "Cannot get audio file report: missing argument");
         return reply;
     }
-    
+
     if (!message[0].isString()) {
         constructReply(reply, 1, "Cannot get audio file report: first argument must be a filename string");
         return reply;
     }
-    
+
     {
         const String filePath = message[0].getString();
         File file;
@@ -1659,7 +1691,7 @@ OSCMessage FluidOscServer::getAudioFileReport(const OSCMessage& message) {
             constructReply(reply, 1, "Cannot get audio file report: file not found");
             return reply;
         }
-        
+
         juce::DynamicObject::Ptr report = new DynamicObject();
         std::unique_ptr<juce::AudioFormatReader> reader;
         reader.reset(te::Engine::getInstance()

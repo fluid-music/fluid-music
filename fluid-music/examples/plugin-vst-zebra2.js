@@ -1,15 +1,17 @@
-const path   = require('path');
-const fluid  = require('../');
-const file   = path.join(__dirname, 'example.tracktionedit');
-const client = new fluid.Client(9999);
+const path   = require('path')
+const fluid  = require('../')
+const cybr   = fluid.cybr
+const file   = path.join(__dirname, 'example.tracktionedit')
+
+const client = new cybr.Client(9999)
 
 const elements = [
-  fluid.global.activate(file, true),
-  fluid.audiotrack.select('supersaw'),
-  fluid.plugin.select('zebra2', 'vst'),
-  fluid.plugin.setParamNormalized('ENV1: Attack', 1.0),
-  fluid.plugin.setParamNormalized('VCF1: Cutoff', 1.0),
-  fluid.plugin.setParamNormalized('VCF2: Cutoff', 1.0),
-  fluid.global.save(),
-];
+  cybr.global.activate(file, true),
+  cybr.audiotrack.select('supersaw'),
+  cybr.plugin.select('zebra2', 'vst'),
+  cybr.plugin.setParamNormalized('ENV1: Attack', 1.0),
+  cybr.plugin.setParamNormalized('VCF1: Cutoff', 1.0),
+  cybr.plugin.setParamNormalized('VCF2: Cutoff', 1.0),
+  cybr.global.save(),
+]
 client.send(elements);

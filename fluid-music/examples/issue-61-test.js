@@ -1,28 +1,29 @@
 const path  = require('path');
-const fluid = require('../');
+const fluid = require('..');
+const cybr  = fluid.cybr;
 
 const file   = path.join(__dirname, 'example.tracktionedit');
-const client1 = new fluid.Client(9999);
-const client2 = new fluid.Client(9999);
+const client1 = new cybr.Client(9999);
+const client2 = new cybr.Client(9999);
 
 
 
 const m1 = [
-  fluid.global.activate(file, true),
-  fluid.audiotrack.select('plugin-test'),
-  fluid.pluginTStereoDelay.select(),
-  fluid.pluginTStereoDelay.zero(),
+  cybr.global.activate(file, true),
+  cybr.audiotrack.select('plugin-test'),
+  cybr.pluginTStereoDelay.select(),
+  cybr.pluginTStereoDelay.zero(),
 ];
 
 const m2 = [
-  fluid.audiotrack.select('plugin-test'),
-  fluid.pluginTStereoDelay.select(),
-  fluid.pluginTStereoDelay.setLowPassFreqLeft(3000),
-  fluid.pluginTStereoDelay.setLowPassFreqRight(4000),
-  fluid.pluginTStereoDelay.setFeedbackLeft(-0.51),
-  fluid.pluginTStereoDelay.setDryDbfs(10),
-  fluid.pluginTStereoDelay.setPanWidth(-1),
-  fluid.global.save(),
+  cybr.audiotrack.select('plugin-test'),
+  cybr.pluginTStereoDelay.select(),
+  cybr.pluginTStereoDelay.setLowPassFreqLeft(3000),
+  cybr.pluginTStereoDelay.setLowPassFreqRight(4000),
+  cybr.pluginTStereoDelay.setFeedbackLeft(-0.51),
+  cybr.pluginTStereoDelay.setDryDbfs(10),
+  cybr.pluginTStereoDelay.setPanWidth(-1),
+  cybr.global.save(),
 ];
 
 const wait = (timeMs) => {

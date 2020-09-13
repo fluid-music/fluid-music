@@ -13,7 +13,7 @@ const tools = require('../code-generators/tools');
  * @param {string} pluginType ex VST2, VST3
  * @param {cybr.Client} client
  */
-async function getParamReport(pluginName, pluginType, client = new cybr.Client) {
+async function getParamsReport(pluginName, pluginType, client = new cybr.Client) {
 
   const msg = [
     cybr.global.activate("deleteme.tracktionedit", true),
@@ -30,7 +30,7 @@ async function getParamReport(pluginName, pluginType, client = new cybr.Client) 
     console.warn('Received:', oscMsg.address);
 
     let type = null;
-    if (oscMsg.address === '/plugin/param/report/reply') type = 'params';
+    if (oscMsg.address === '/plugin/params/report/reply') type = 'params';
     if (oscMsg.address === '/plugin/report/reply') type = 'plugin';
     if (type) {
       try {
@@ -49,7 +49,7 @@ async function getParamReport(pluginName, pluginType, client = new cybr.Client) 
 }
 
 async function buildPluginModule(pluginName, pluginType, client) {
-  const report = await getParamReport(pluginName, pluginType, client);
+  const report = await getParamsReport(pluginName, pluginType, client);
 
   let type = report.plugin.externalPluginFormat;
   if (type.toUpperCase() === 'VST') type = 'VST2';
@@ -75,6 +75,6 @@ ${params}
 }
 
 module.exports = {
-  getParamReport,
+  getParamsReport,
   buildPluginModule,
 };

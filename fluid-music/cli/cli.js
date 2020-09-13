@@ -171,13 +171,13 @@ commands.audiofile = async function() {
 
 addDocstring('vst2report <pluginName>', 'print the raw vst2 plugin report');
 commands.vst2report = async () => {
-  const report = await utilPlugin.getParamReport(parsedArgs.vst2report, 'vst2', client);
+  const report = await utilPlugin.getParamsReport(parsedArgs.vst2report, 'vst2', client);
   console.log(report.plugin);
 }
 
 addDocstring('vst2params <pluginName>', 'print the raw vst2 parameter report');
 commands.vst2params = async () => {
-  const report = await utilPlugin.getParamReport(parsedArgs.vst2params, 'vst2', client);
+  const report = await utilPlugin.getParamsReport(parsedArgs.vst2params, 'vst2', client);
   console.log(report.params);
 }
 

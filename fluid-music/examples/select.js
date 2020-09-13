@@ -1,12 +1,13 @@
 const fluid = require('../');
+const cybr  = fluid.cybr
 const file  = path.join(__dirname, 'example.tracktionedit');
 
-const client = new fluid.Client(9999);
+const client = new cybr.Client(9999);
 const m1 = [
-  fluid.global.activate(file, true),
-  fluid.audiotrack.select('hi'),
-  fluid.plugin.select('delay'),
-  fluid.global.save(),
+  cybr.global.activate(file, true),
+  cybr.audiotrack.select('hi'),
+  cybr.plugin.select('delay'),
+  cybr.global.save(),
 ];
 
 client.send(m1);

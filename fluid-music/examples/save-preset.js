@@ -2,17 +2,18 @@
 
 const path  = require('path');
 const fluid = require('../');
+const cybr  = fluid.cybr;
 const file  = path.join(__dirname, 'example.tracktionedit');
 
-const client = new fluid.Client(9999);
+const client = new cybr.Client(9999);
 client.send([
-  fluid.global.activate(file, true),
+  cybr.global.activate(file, true),
 
-  fluid.audiotrack.select('bass'),
-  fluid.plugin.select('Zebra2'),
-  fluid.plugin.save('zebra2.bass2osc'),
+  cybr.audiotrack.select('bass'),
+  cybr.plugin.select('Zebra2'),
+  cybr.plugin.save('zebra2.bass2osc'),
 
-  fluid.audiotrack.select('chords'),
-  fluid.plugin.select('4osc'),
-  fluid.plugin.save('4osc.supersaw'),
+  cybr.audiotrack.select('chords'),
+  cybr.plugin.select('4osc'),
+  cybr.plugin.save('4osc.supersaw'),
 ]);

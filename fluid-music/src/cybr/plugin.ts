@@ -359,12 +359,27 @@ export function getReport() { return { address: '/plugin/report' }; }
  * }
  * ```
  */
-export function getParamReport(steps=0) {
+export function getParamReport(steps = 0) {
   if (typeof steps !== 'number')
     throw new TypeError('cybr.plugin.getParamReport got invalid steps param');
 
   return {
-    address: '/plugin/param/report',
+    address: '/plugin/params/report',
     args: [{ type: 'integer', value: Math.round(steps) }]
+  };
+}
+
+export function getSingleParamReport(paramName : string, steps : number = 0) {
+  if (typeof paramName !== 'string')
+    throw new TypeError('cybr.plugin.getSingleParamReport needs a string param name');
+  if (typeof steps !== 'number')
+    throw new TypeError('cybr.plugin.getSingleParamReport needs a number param name');
+
+  return {
+    address: '/plugin/param/report',
+    args: [
+      { type: 'string', value: paramName },
+      { type: 'integer', value: Math.round(steps) }
+    ]
   };
 }

@@ -164,7 +164,7 @@ juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
                         auto* stream = presetFile.getStream();
                         MemoryBlock controllerState;
                         controllerState.ensureSize(entry->size);
-                        
+
                         if (stream->write(controllerState.getData(), entry->size)) {
                             object->setProperty("vst3ControllerState", controllerState);
                         }
@@ -175,7 +175,7 @@ juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
                 }
                 presetStream->release();
             }
-            
+
             // This code is modeled after a suggestion on the forum
             // https://forum.juce.com/t/fr-vst3pluginformat-loadfromvstpresetfile/24881/7
             // However, the code on the forum is for writing to plugin's state, while I want to
@@ -183,7 +183,7 @@ juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
             auto funknown = static_cast<Steinberg::FUnknown*> (jucePlugin->getPlatformSpecificData());
             Steinberg::Vst::IComponent* vstcomponent = nullptr;
             Steinberg::Vst::IAudioProcessor* vstprocessor = nullptr;
-            
+
             if (funknown->queryInterface(Steinberg::Vst::IAudioProcessor_iid, (void**) &vstprocessor) == Steinberg::kResultOk
                 && vstprocessor != nullptr)
             {
@@ -213,7 +213,7 @@ juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
 
                 // Get the long ClassID for the plugin. Send it to the client, Base64 encoded
                 {
-                    
+
                     Steinberg::TUID id;
                     // Charles: My understanding is that we can only get the ControllerClassID
                     // from with this .getControllerClassId method if this is a "split" aka
@@ -229,7 +229,7 @@ juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
                         fid.toString(strUID);
                         object->setProperty("vst3EditControllerId", String(strUID));
                     }
-                    
+
                 }
                 {
                     Steinberg::Vst::IEditController* vsteditcontroller = nullptr;
@@ -266,82 +266,88 @@ juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
 #endif
         }
     } // end isExternalPlugin block
-    
+
     return object;
 }
 
-juce::var getPluginParamReportObject(te::Plugin* selectedPlugin, int steps) {
-    
+juce::var getAllParametersReport(te::Plugin* selectedPlugin, int steps) {
+
     Array<var> tempArray;
     var report = tempArray;
 
     for (auto param : selectedPlugin->getAutomatableParameters()) {
-
-        // I believe appending a new DynamicObject to a var is memory safe. My understanding:
-        // var works like a Smart Pointer. It deletes reference counted objects in its
-        // destructor. Jules describes this behavior here:
-        // https://forum.juce.com/t/way-to-init-a-var-with-a-dynamicobject/12037
-        report.append(new DynamicObject());
-        DynamicObject* object = report.getArray()->getLast().getDynamicObject();
-
-        object->setProperty("name", param->paramName);
-        object->setProperty("tracktionIndex", selectedPlugin->indexOfAutomatableParameter(param));
-        object->setProperty("defaultValue", param->getDefaultValue());
-        object->setProperty("currentExplicitValue", param->getCurrentExplicitValue());
-        object->setProperty("currentNormalizedValue", param->getCurrentNormalisedValue());
-        object->setProperty("currentValue", param->getCurrentValue());
-        object->setProperty("currentValueAsStringWithLabel", param->getCurrentValueAsStringWithLabel());
-        object->setProperty("currentValueAsString", param->getCurrentValueAsString());
-        object->setProperty("currentBaseValue", param->getCurrentBaseValue());
-        object->setProperty("isDiscrete", param->isDiscrete());
-        object->setProperty("isAutomationActive", param->isAutomationActive());
-        object->setProperty("isActive", param->isParameterActive()); // external plugin params seem to always be active
-        object->setProperty("hasAutomationPoints", param->hasAutomationPoints());
-        object->setProperty("hasLabels", param->hasLabels());
-        object->setProperty("currentLabel", param->getLabel());
-
-        auto start = param->getValueRange().getStart();
-        auto end   = param->getValueRange().getEnd();
-        // I believe that anything we put in a var will get cleaned up correctly if
-        // the var is cleaned up correctly itself. It might be worth veryifying.
-        var valueRange = tempArray;
-        valueRange.append(start);
-        valueRange.append(end);
-        // setProperty passes by reference, but I think that the underlying Var object
-        // still get copied. If that var object is an Array<var> then the contents of
-        // that array get copied as well. We have to .setProperty AFTER adding values.
-        object->setProperty("inputValueRange", valueRange);
-        
-        if (steps) {
-            // stash the initial value so we can reset it later on
-            auto currentValue = param->getCurrentValue();
-
-            var rangeAsString = tempArray;
-            var rangeAsStringWithLabel = tempArray;
-            var paramSteps = tempArray;
-
-            param->setParameter(start, NotificationType::sendNotificationSync);
-            rangeAsString.append(param->getCurrentValueAsString());
-            rangeAsStringWithLabel.append(param->getCurrentValueAsStringWithLabel());
-
-            param->setParameter(end, NotificationType::sendNotificationSync);
-            rangeAsString.append(param->getCurrentValueAsString());
-            rangeAsStringWithLabel.append(param->getCurrentValueAsStringWithLabel());
-            
-            // NOTE: these assume a 0-1 range. I could use the range provided by the param
-            float stepSize   = (steps == 1) ? 0.0 : 1.0 / (steps - 1);
-            float startValue = (steps == 1) ? 0.5 : 0.0;
-            for (int i = 0; i < steps; i++) {
-                param->setParameter(startValue + (i*stepSize), juce::NotificationType::sendNotificationSync);
-                paramSteps.append(param->getCurrentValueAsString());
-            }
-            object->setProperty("outputValueStepsAsStrings", paramSteps);
-            object->setProperty("outputValueRangeAsStrings", rangeAsString);
-            object->setProperty("outputValueRangeAsStringsWithLabels", rangeAsStringWithLabel);
-
-            // Reset to the initial value
-            param->setParameter(currentValue, juce::NotificationType::sendNotificationSync);
-        }
+        report.append(getSingleParameterReport(param, steps));
     }
+    return report;
+}
+
+juce::var getSingleParameterReport(te::AutomatableParameter* param, int steps) {
+    // I believe appending a new DynamicObject to a var is memory safe. My understanding:
+    // var works like a Smart Pointer. It deletes reference counted objects in its
+    // destructor. Jules describes this behavior here:
+    // https://forum.juce.com/t/way-to-init-a-var-with-a-dynamicobject/12037
+    DynamicObject::Ptr object = new DynamicObject();
+    var report(object.getObject());
+
+    object->setProperty("name", param->paramName);
+    object->setProperty("tracktionIndex", param->getPlugin()->indexOfAutomatableParameter(param));
+    object->setProperty("defaultValue", param->getDefaultValue());
+    object->setProperty("currentExplicitValue", param->getCurrentExplicitValue());
+    object->setProperty("currentNormalizedValue", param->getCurrentNormalisedValue());
+    object->setProperty("currentValue", param->getCurrentValue());
+    object->setProperty("currentValueAsStringWithLabel", param->getCurrentValueAsStringWithLabel());
+    object->setProperty("currentValueAsString", param->getCurrentValueAsString());
+    object->setProperty("currentBaseValue", param->getCurrentBaseValue());
+    object->setProperty("isDiscrete", param->isDiscrete());
+    object->setProperty("isAutomationActive", param->isAutomationActive());
+    object->setProperty("isActive", param->isParameterActive()); // external plugin params seem to always be active
+    object->setProperty("hasAutomationPoints", param->hasAutomationPoints());
+    object->setProperty("hasLabels", param->hasLabels());
+    object->setProperty("currentLabel", param->getLabel());
+
+    auto start = param->getValueRange().getStart();
+    auto end   = param->getValueRange().getEnd();
+    // I believe that anything we put in a var will get cleaned up correctly if
+    // the var is cleaned up correctly itself. It might be worth verifying.
+    Array<var> tempArray;
+    var valueRange = tempArray;
+    valueRange.append(start);
+    valueRange.append(end);
+    // setProperty passes by reference, but I think that the underlying Var object
+    // still get copied. If that var object is an Array<var> then the contents of
+    // that array get copied as well. We have to .setProperty AFTER adding values.
+    object->setProperty("inputValueRange", valueRange);
+
+    if (steps) {
+        // stash the initial value so we can reset it later on
+        auto currentValue = param->getCurrentValue();
+
+        var rangeAsString = tempArray;
+        var rangeAsStringWithLabel = tempArray;
+        var paramSteps = tempArray;
+
+        param->setParameter(start, NotificationType::sendNotificationSync);
+        rangeAsString.append(param->getCurrentValueAsString());
+        rangeAsStringWithLabel.append(param->getCurrentValueAsStringWithLabel());
+
+        param->setParameter(end, NotificationType::sendNotificationSync);
+        rangeAsString.append(param->getCurrentValueAsString());
+        rangeAsStringWithLabel.append(param->getCurrentValueAsStringWithLabel());
+
+        // NOTE: these assume a 0-1 range. I could use the range provided by the param
+        float stepSize   = (steps == 1) ? 0.0 : 1.0 / (steps - 1);
+        float startValue = (steps == 1) ? 0.5 : 0.0;
+        for (int i = 0; i < steps; i++) {
+            param->setParameter(startValue + (i*stepSize), juce::NotificationType::sendNotificationSync);
+            paramSteps.append(param->getCurrentValueAsString());
+        }
+        object->setProperty("outputValueStepsAsStrings", paramSteps);
+        object->setProperty("outputValueRangeAsStrings", rangeAsString);
+        object->setProperty("outputValueRangeAsStringsWithLabels", rangeAsStringWithLabel);
+
+        // Reset to the initial value
+        param->setParameter(currentValue, juce::NotificationType::sendNotificationSync);
+    }
+
     return report;
 }

@@ -1,10 +1,11 @@
-const fluid = require('../');
+const fluid = require('..');
+const cybr  = fluid.cybr;
 
-const client = new fluid.Client(9999);
+const client = new cybr.Client(9999);
 
 const m1 = [
-  fluid.audiotrack.select('hi'),
-  fluid.plugin.select('delay'),
+  cybr.audiotrack.select('hi'),
+  cybr.plugin.select('delay'),
 ]
 
 client.send(m1)

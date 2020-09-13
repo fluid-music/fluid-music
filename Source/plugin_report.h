@@ -14,4 +14,5 @@
 namespace te = tracktion_engine;
 
 juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin);
-juce::var getPluginParamReportObject(te::Plugin* selectedPlugin, int steps);
+juce::var getSingleParameterReport(te::AutomatableParameter* param, int steps);
+juce::var getAllParametersReport(te::Plugin* selectedPlugin, int steps);
