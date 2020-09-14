@@ -43,6 +43,12 @@ export interface PluginParameter {
   readonly index?: number;
   readonly range?: [number, number];
   readonly isLinear?: boolean;
+  // If powerFuncB is present, it indicates that the parameter is mapped with a
+  // power function in the form  `ax^b` and this is the exponent. The range and
+  // exponent are enough to define and invert the power function. For a generic,
+  // parametric power function, see:
+  // https://www.desmos.com/calculator/8tnpzmrrgg
+  readonly powerFuncB? : number;
   normalize?(input : number) : number;
 }
 
@@ -146,6 +152,11 @@ export class FluidPlugin {
 
       if (param.isLinear && param.range) {
         return map(value, param.range[0], param.range[1])
+      }
+
+      if (typeof param.powerFuncB === 'number' && param.range) {
+        const [start, end] = param.range
+        return Math.pow((value - start)/(end - start), 1/param.powerFuncB)
       }
 
       if (param.normalize) {

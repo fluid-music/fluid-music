@@ -50,7 +50,7 @@ const parameterLibrary = {
   enableAutoMakeUpGain: { name: 'Auto', index: 18, isLinear: false},
   filter: { name: 'Filter', index: 19, isLinear: false},
   filterType: { name: 'Type', index: 20, isLinear: false, range: [0, 7] as [number, number]},
-  freqHz: { name: 'Freq', index: 21, isLinear: false, range: [10, 20000] as [number, number], units: 'hz'},
+  freqHz: { name: 'Freq', index: 21, isLinear: false, range: [10, 20000] as [number, number], units: 'hz', powerFuncB: 5},
   q: { name: 'Q', index: 22, isLinear: false, range: [0.025, 40] as [number, number]},
   gainDb: { name: 'Gain', index: 23, isLinear: true, range: [-30, 30] as [number, number], units: 'db'}
 }

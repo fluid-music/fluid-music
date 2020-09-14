@@ -44,6 +44,7 @@ export interface ${parametersInterfaceName} {
     let result = `  ${param.key}: { name: '${param.name}', index: ${param.index}, isLinear: ${!!param.isLinear}`
     if (param.range) result += `, range: [${param.range[0]}, ${param.range[1]}] as [number, number]`
     if (param.units) result += `, units: '${param.units}'`
+    if (typeof param.powerFuncB === 'number') result += `, powerFuncB: ${param.powerFuncB}`
     return result + '}'
   }).join(',\n') + '\n}\n'
 
