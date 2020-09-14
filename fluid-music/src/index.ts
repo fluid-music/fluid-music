@@ -8,6 +8,7 @@ import m from './m'
 // New Style Plugins
 import { DragonflyRoom } from './plugin-dradonfly-room';
 import { TCompressor } from './plugin-adapters/vst2-t-compressor'
+import { Podolski64 } from './plugin-adapters/vst2-podolski'
 
 // OSC Message Helpers
 import * as cybr from './cybr/index';
@@ -85,9 +86,10 @@ export = {
   tracksToFluidMessage,
   tracksToReaperProject,
   transport,
+  FluidSession,
   FluidPlugin,
   PluginType,
   DragonflyRoom,
+  Podolski64,
   TCompressor,
-  FluidSession,
 };
