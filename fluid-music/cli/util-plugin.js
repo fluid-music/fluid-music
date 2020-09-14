@@ -19,7 +19,7 @@ async function getParamsReport(pluginName, pluginType, client = new cybr.Client)
     cybr.global.activate("deleteme.tracktionedit", true),
     cybr.audiotrack.select('hi'),
     cybr.plugin.select(pluginName, pluginType),
-    cybr.plugin.getParamReport(15),
+    cybr.plugin.getParamReport(29),
     cybr.plugin.getReport(),
   ];
 

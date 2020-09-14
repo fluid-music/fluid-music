@@ -1,4 +1,4 @@
-const tCompReport = require('./reports/vst2-podolski')
+const tCompReport = require('./reports/podolski-vst2')
 const fluid = require('..')
 
 for (const paramInfo of tCompReport.params) {
