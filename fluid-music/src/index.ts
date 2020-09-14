@@ -4,6 +4,7 @@ import { FluidSession } from './FluidSession';
 import * as gen from './plugin-generator';
 import * as converters from './converters';
 import m from './m'
+import * as random from './random';
 
 // New Style Plugins
 import { DragonflyRoom } from './plugin-dradonfly-room';
@@ -44,7 +45,7 @@ const noteTypes = require('./note-types');
 const eventMappers = require('./event-mappers');
 const tab = require('./tab');
 
-const random = require('./random');
+
 const tracksToReaperProject = require('./tracksToReaperProject');
 
 // JSDoc
