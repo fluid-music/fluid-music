@@ -48,6 +48,9 @@ export interface PluginParameter {
   // parametric power function, see:
   // https://www.desmos.com/calculator/8tnpzmrrgg
   readonly powerFuncB? : number;
+
+  // Non-continuous parameters should have a choices object
+  readonly choices? : { [key:string] : number };
   normalize?(input : number) : number;
 }
 

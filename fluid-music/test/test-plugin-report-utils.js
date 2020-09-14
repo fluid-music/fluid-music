@@ -36,7 +36,8 @@ const podolskiLfoExample = {
   currentLabel: '',
   inputValueRange: [ 0, 1 ],
   outputValueRangeAsStrings: [ '-5.00', '5.00' ],
-  outputValueRangeAsStringsWithLabels: [ '-5.00', '5.00' ]
+  outputValueRangeAsStringsWithLabels: [ '-5.00', '5.00' ],
+  outputValueStepsAsStrings:["-5.00","-4.29","-3.57","-2.86","-2.14","-1.43","-0.71","0.00","0.71","1.43","2.14","2.86","3.57","4.29","5.00"]
 }
 
 const tAuto = {"name":"Auto","tracktionIndex":20,"defaultValue":0,"currentExplicitValue":0,"currentNormalizedValue":0,"currentValue":0,"currentValueAsStringWithLabel":"Off","currentValueAsString":"Off","currentBaseValue":0,"isDiscrete":false,"isAutomationActive":false,"isActive":true,"hasAutomationPoints":false,"hasLabels":false,"currentLabel":"","inputValueRange":[0,1],
@@ -57,17 +58,30 @@ const tCompRatio = {"name":"Ratio","tracktionIndex":5,"defaultValue":0,"currentE
   "outputValueRangeAsStrings":["1.00:1","100.00:1"],
   "outputValueRangeAsStringsWithLabels":["1.00:1","100.00:1"]
 }
-const tCompType = {"name":"Type","tracktionIndex":22,"defaultValue":0,"currentExplicitValue":0,"currentNormalizedValue":0,"currentValue":0,"currentValueAsStringWithLabel":"0","currentValueAsString":"0","currentBaseValue":0,"isDiscrete":false,"isAutomationActive":false,"isActive":true,"hasAutomationPoints":false,"hasLabels":false,"currentLabel":"","inputValueRange":[0,1],
+const tCompFilterType = {"name":"Type","tracktionIndex":22,"defaultValue":0,"currentExplicitValue":0,"currentNormalizedValue":0,"currentValue":0,"currentValueAsStringWithLabel":"0","currentValueAsString":"0","currentBaseValue":0,"isDiscrete":false,"isAutomationActive":false,"isActive":true,"hasAutomationPoints":false,"hasLabels":false,"currentLabel":"","inputValueRange":[0,1],
   "inputSteps":[0,0.0714285746216774,0.1428571492433548,0.2142857313156128,0.2857142984867096,0.3571428656578064,0.4285714626312256,0.5,0.5714285969734192,0.6428571939468384,0.7142857313156128,0.785714328289032,0.8571429252624512,0.9285714626312256,1],
   "outputValueStepsAsStrings":["0","1","1","2","2","3","3","4","4","5","5","6","6","7","7"],
   "outputValueRangeAsStrings":["0","7"],
   "outputValueRangeAsStringsWithLabels":["0","7"]
 }
 
+const podoDelaySync = {"name":"Dly1: Sync Right","tracktionIndex":68,"defaultValue":0,"currentExplicitValue":0.25,"currentNormalizedValue":0.25,"currentValue":0.25,"currentValueAsStringWithLabel":"1/4","currentValueAsString":"1/4","currentBaseValue":0.25,"isDiscrete":false,"isAutomationActive":false,"isActive":true,"hasAutomationPoints":false,"hasLabels":false,"currentLabel":"","inputValueRange":[0,1],"inputSteps":[0,0.0714285746216774,0.1428571492433548,0.2142857313156128,0.2857142984867096,0.3571428656578064,0.4285714626312256,0.5,0.5714285969734192,0.6428571939468384,0.7142857313156128,0.785714328289032,0.8571429252624512,0.9285714626312256,1],
+  "outputValueStepsAsStrings":["1/64","1/32","1/16","1/8","1/2","1/1","1/32 dot","1/16 dot","1/8 dot","1/4 dot","1/2 dot","1/8 trip","1/4 trip","1/2 trip","1/1 trip"],
+  "outputValueRangeAsStrings":["1/64","1/1 trip"],
+  "outputValueRangeAsStringsWithLabels":["1/64","1/1 trip"]
+}
+
+const podoLfoPhasePercent = {"name":"LFOG: Phase","tracktionIndex":7,"defaultValue":0,"currentExplicitValue":0,"currentNormalizedValue":0,"currentValue":0,"currentValueAsStringWithLabel":"0.00 %","currentValueAsString":"0.00","currentBaseValue":0,"isDiscrete":false,"isAutomationActive":false,"isActive":true,"hasAutomationPoints":false,"hasLabels":false,"currentLabel":"%","inputValueRange":[0,1],"inputSteps":[0,0.0714285746216774,0.1428571492433548,0.2142857313156128,0.2857142984867096,0.3571428656578064,0.4285714626312256,0.5,0.5714285969734192,0.6428571939468384,0.7142857313156128,0.785714328289032,0.8571429252624512,0.9285714626312256,1],
+  "outputValueStepsAsStrings":["0.00","7.14","14.29","21.43","28.57","35.71","42.86","50.00","57.14","64.29","71.43","78.57","85.71","92.86","100.00"],
+  "outputValueRangeAsStrings":["0.00","100.00"],
+  "outputValueRangeAsStringsWithLabels":["0.00 %","100.00 %"]
+}
+
 describe('test-plugin-report-utilities', function () {
   describe('guessParamRange', function () {
     it('should handle a very simple case: ["-5.00", "5.00"]', function () {
-      const [min, max] = guessParamRange(podolskiLfoExample)
+      const range = guessParamRange(podolskiLfoExample)
+      const [min, max] = range
       min.should.equal(-5)
       max.should.equal(5)
     })
@@ -83,6 +97,10 @@ describe('test-plugin-report-utilities', function () {
       min.should.equal(-Infinity)
       max.should.equal(Infinity)
     })
+
+    it('should identify discrete fractions as having no range', function () {
+      should(guessParamRange(tCompFilterType)).equal(null, 'discrete tComp filter has a range')
+    })
   })
 
   describe('guessParamUnits', function () {
@@ -90,8 +108,16 @@ describe('test-plugin-report-utilities', function () {
       guessParamUnits(podolskiPercent).should.equal('percent')
     })
 
+    it('should identify labels even when steps are available', function () {
+      guessParamUnits(podoLfoPhasePercent).should.equal('percent')
+    })
+
     it('should handle when there is no current label', function () {
       guessParamUnits(negativeDbRange).should.equal('db')
+    })
+
+    it('should assume there are no units when outputs have different units', function () {
+      should(guessParamUnits(podoDelaySync)).equal(null)
     })
   })
 
@@ -105,7 +131,11 @@ describe('test-plugin-report-utilities', function () {
     })
 
     it('should identify discrete numeric parameters as NOT continuous', function () {
-      guessIsContinuous(tCompType).should.be.false()
+      guessIsContinuous(tCompFilterType).should.be.false()
+    })
+
+    it('should identify discrete fractions as non-continuous', function () {
+      guessIsContinuous(podoDelaySync).should.be.false()
     })
   })
 
@@ -120,14 +150,14 @@ describe('test-plugin-report-utilities', function () {
 
   describe('guessDiscreteChoices', function () {
     it('should identify the 8 filter types in #TCompressor', function () {
-      const result = guessDiscreteChoices(tCompType)
+      const result = guessDiscreteChoices(tCompFilterType)
       Object.keys(result).length.should.equal(8)
       for (let i = 0; i <= 7; i++) (typeof result[i]).should.equal('number')
     })
 
     it('should identify binary parameters', function () {
       const result = guessDiscreteChoices(tAuto)
-      result.should.deepEqual({ Off: 0, On: 1 })
+      result.should.deepEqual({ off: 0, on: 1 })
     })
   })
 

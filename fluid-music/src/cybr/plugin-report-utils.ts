@@ -23,6 +23,8 @@ function parseNumberString(str : string) {
 }
 
 export function guessParamRange(paramInfo: any) {
+  if (!guessIsContinuous(paramInfo)) return null;
+
   let min = parseNumberString(paramInfo.outputValueRangeAsStrings[0])
   let max = parseNumberString(paramInfo.outputValueRangeAsStrings[1])
 
@@ -35,13 +37,16 @@ const unitStrings = {
   "%": 'percent',
   "s": 'seconds'
 }
+const checkForAltUnitName = (u: string) => {
+  u = u.toLowerCase()
+  return unitStrings.hasOwnProperty(u) ? unitStrings[u] : u
+}
 function extractUnits(str : string) {
   const parts = str.split(' ')
   if (parts.length) {
     const lastPart = parts.slice(-1)[0]
-    const lowerStr = lastPart.toLowerCase().split(' ')[0]
-    if (unitStrings.hasOwnProperty(lowerStr)) return unitStrings[lowerStr]
-    return lowerStr;
+    const unitStr = lastPart.split(' ')[0]
+    return checkForAltUnitName(unitStr)
   }
   return null
 }
@@ -53,14 +58,24 @@ function extractUnits(str : string) {
  */
 export function guessParamUnits(paramInfo: any) {
   // If the min and the max both have the same label, use it
-  const [minLabel, maxLabel] = paramInfo.outputValueRangeAsStringsWithLabels.map(extractUnits)
-  if (minLabel && minLabel === maxLabel) return minLabel;
-  if (paramInfo.currentLabel.length) return paramInfo.currentLabel
-  return null
+  const range = paramInfo.outputValueRangeAsStringsWithLabels
+  if (range?.length) {
+    const [minLabel, maxLabel] = range.map(extractUnits)
+    if (minLabel && minLabel === maxLabel) return minLabel
+    if (paramInfo.currentLabel?.length) return checkForAltUnitName(paramInfo.currentLabel)
+    return null
+  }
+
+  throw new Error('missing paramInfo (outputValueRangeAsStrings)')
 }
 
+/**
+ * Guess if the parameter is a continuous value. This will be a much stronger
+ * guess if the report was generates with a large number of steps.
+ * @param paramInfo a parameter report
+ */
 export function guessIsContinuous(paramInfo: any) {
-
+  // If every step is a floating value (and not an integer) assume continuous
   const steps = paramInfo.outputValueStepsAsStrings
   if (steps?.length) {
     const floats = steps.map(parseNumberString)
@@ -68,10 +83,20 @@ export function guessIsContinuous(paramInfo: any) {
     if (!allNumbers) return false
     const allIntegers = floats.every(f => f === Math.floor(f))
     if (allIntegers) return false
-    else return true
+    return true
   }
 
-  return !!guessParamRange(paramInfo)
+  // If the output steps are not available, just check if the range evaluates to
+  // numbers (returning the range even if both are integers)
+  const range = paramInfo.outputValueRangeAsStrings
+  if (range?.length) {
+    const floats = range.map(parseNumberString)
+    const allNumbers = floats.every(f => typeof f === 'number')
+    if (!allNumbers) return false
+    return true
+  }
+
+  throw new Error('missing paramInfo (outputValueStepsAsStrings || outputValueRangeAsStrings')
 }
 
 export function guessIsLinear(paramInfo: any) {
@@ -106,7 +131,7 @@ export function guessDiscreteChoices(paramInfo) {
   const choices : s2n = {}
   const inputs = paramInfo.inputSteps as number[]
   const steps = paramInfo.outputValueStepsAsStrings
-  steps.forEach((step, i) => choices[step] = inputs[i])
+  steps.forEach((step, i) => choices[step.toLowerCase()] = inputs[i])
 
   const keys = Object.keys(choices)
   if (keys.length === 2) {
@@ -124,7 +149,11 @@ export function guessDiscreteChoices(paramInfo) {
 export function guess(paramInfo: any) {
   const units = guessParamUnits(paramInfo)
   const isContinuous = guessIsContinuous(paramInfo)
-  const choices = isContinuous ? null : guessDiscreteChoices(paramInfo)
+  let choices = isContinuous ? null : guessDiscreteChoices(paramInfo)
+  if (choices && Object.keys(choices).length >= paramInfo.outputValueStepsAsStrings.length) {
+    console.warn(`Omiting .choices from "${paramInfo.name}" param because the step resolution may be too low`)
+    choices = null
+  }
   const guess = {
     units,
     isContinuous,

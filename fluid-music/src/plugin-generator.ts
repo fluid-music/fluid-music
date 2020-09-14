@@ -1,6 +1,5 @@
 import { guess } from './cybr/plugin-report-utils'
 import { makeVarName, camelCaseFromParamName, upperFirstLetter } from './plugin-generator-name-helpers'
-import { networkInterfaces } from 'os'
 
 /**
  * Create a plugin adapter Typescript module from a plugin report
@@ -54,7 +53,8 @@ export interface ${parametersInterfaceName} {
     if (param.range) result += `, range: [${param.range[0]}, ${param.range[1]}] as [number, number]`
     if (param.units) result += `, units: '${param.units}'`
     if (typeof param.powerFuncB === 'number') result += `, powerFuncB: ${param.powerFuncB}`
-    return result + '}'
+    if (param.choices) result += `, choices: ${JSON.stringify(param.choices)}`
+    return result + ' }'
   }).join(',\n') + '\n}\n'
 
   // makeAutomation includes the helpers for creating automation points

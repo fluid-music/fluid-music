@@ -47,4 +47,4 @@ export const camelCaseFromParamName = (paramName: string) => {
 }
 
 // Convert to an acceptable variable name
-export const makeVarName = (name: string) => name.replace(/[\(\):\# \_\-\\\/]+/g, '')
+export const makeVarName = (name: string) => name.replace(/[\.\(\):\# \_\-\\\/]+/g, '')
