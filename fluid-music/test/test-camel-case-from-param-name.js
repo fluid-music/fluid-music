@@ -1,7 +1,7 @@
 const should = require('should');
 const mocha = require('mocha');
 
-const { camelCaseFromParamName } = require('../built/cybr/plugin-report-utils')
+const { camelCaseFromParamName } = require('../built/plugin-generator-name-helpers')
 
 describe('camelCaseFromParamName', () => {
   const correctExamples = {

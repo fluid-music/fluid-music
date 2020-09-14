@@ -1,6 +1,5 @@
 export const linear = (min : number, max: number) => (v: number) => (v - min) / (max - min);
 export const map = (v: number, min: number, max : number) => linear(min, max)(v);
-export const percent = linear(0, 100);
 
 export enum PluginType {
   unknown = 'unknown',
@@ -158,6 +157,11 @@ export class FluidPlugin {
         const [start, end] = param.range
         return Math.pow((value - start)/(end - start), 1/param.powerFuncB)
       }
+
+      // NOTE: when adding normalization options, remember to update the plugin
+      // generator if needed. It can make better key names for parameters with
+      // known normalizers by adding the units: For example, "attackMS" instead
+      // "attack" or "gainDb" instead of "gain".
 
       if (param.normalize) {
         return param.normalize(value);
