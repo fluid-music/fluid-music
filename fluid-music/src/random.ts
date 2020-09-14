@@ -8,5 +8,5 @@ export function choice(input) {
   if (Array.isArray(input))
     return input[Math.floor(Math.random() * input.length)];
   else
-    return input[randomChoice(Object.keys(input))];
+    return input[choice(Object.keys(input))];
 }
