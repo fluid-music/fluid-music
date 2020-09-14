@@ -13,7 +13,6 @@ const f = {
   value: 0.5,
 };
 
-
 const p = fluid.DragonflyRoom.makeAutomation.sizeMeters(9);
 const q = fluid.DragonflyRoom.makeAutomation.sizeMeters(30);
 
@@ -51,10 +50,10 @@ let session = new fluid.FluidSession({
   dLibrary, // default for kick and snare
   nLibrary, // default for kick and snare
 }, {
-  kick:  { d: '.   . mf      ', gain: -6, plugins: [ new fluid.TCompressor({thresholdDb: -11, freqHz: 110, ratio: 11}) ]},
+  kick:  { d: '.   . mf      ', gain: -6, plugins: [ new fluid.TCompressorVst2({thresholdDb: -11, freqHz: 110, ratio: 11}) ]},
   snare: { d: 'm   f   m   f ' },
   chrd:  { nLibrary: chords.nLibrary, pan: -.75 },
-  bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p }, plugins: [ new fluid.Podolski64({vcf0Cutoff: 50}) ] },
+  bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p }, plugins: [ new fluid.PodolskiVst2({ vcf0Cutoff: 50 }) ] },
   tamb:  { pan: .25 },
   revb:  { plugins: [ new fluid.DragonflyRoom({decaySeconds: 2.4, predelayMs: 49, dryLevelPercent: 0, earlyLevelPercent: 40, lateLevelPercent: 100 })], nLibrary: {p, q, r, s, t, u, x, y } },
 });

@@ -2,85 +2,144 @@ import { PluginType, FluidPlugin, PluginAutomationEvent } from '../plugin';
 const pluginName = 'Podolski.64'
 const pluginType = PluginType.VST2
 
-export interface Podolski64Parameters {
+export interface PodolskiVst2Parameters {
+  /** value from 0 to 200 */
   mainOutput? : number;
   mainActiveLfog? : number;
   mainActiveChrs? : number;
   mainActiveDly1? : number;
+  /** value from 0.1 to 8 */
   lfogSync? : number;
+  /** percent value from 0 to 100 */
   lfogPhasePercent? : number;
   vccActiveLfo1? : number;
   vccVoices? : number;
   vccVoiceStack? : number;
   vccMode? : number;
+  /** percent value from 0 to 100 */
   vccGlidePercent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod1Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod2Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod3Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod4Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod5Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod6Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod7Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod8Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod9Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod10Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod11Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod12Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod13Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod14Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod15Percent? : number;
+  /** percent value from -100 to 100 */
   vccArpStepMod16Percent? : number;
+  /** percent value from 0 to 100 */
   env1AttackPercent? : number;
+  /** percent value from 0 to 100 */
   env1DecayPercent? : number;
+  /** percent value from 0 to 100 */
   env1SustainPercent? : number;
+  /** percent value from -100 to 100 */
   env1FallRisePercent? : number;
+  /** percent value from 0 to 100 */
   env1ReleasePercent? : number;
+  /** percent value from 0 to 100 */
   env1VelocityPercent? : number;
+  /** value from 0.1 to 8 */
   lfo1Sync? : number;
+  /** percent value from 0 to 100 */
   lfo1DelayPercent? : number;
+  /** value from -24 to 24 */
   osc1Tune? : number;
   osc1TuneModSrc? : number;
+  /** value from -24 to 24 */
   osc1TuneModDepth? : number;
+  /** percent value from 0 to 100 */
   osc1PhasePercent? : number;
   osc1PhaseModSrc? : number;
+  /** value from -50 to 50 */
   osc1PhaseModDepth? : number;
+  /** percent value from -100 to 100 */
   osc1InverseVolumePercent? : number;
+  /** percent value from 0 to 100 */
   osc1WaveWarpPercent? : number;
   osc1WarpModSrc? : number;
+  /** percent value from -100 to 100 */
   osc1WarpModDepthPercent? : number;
+  /** percent value from 0 to 100 */
   osc1VibratoPercent? : number;
   vcf0Type? : number;
+  /** value from 0 to 150 */
   vcf0Cutoff? : number;
+  /** percent value from 0 to 100 */
   vcf0ResonancePercent? : number;
+  /** percent value from 0 to 100 */
   vcf0DrivePercent? : number;
+  /** value from -150 to 150 */
   vcf0CutoffMod1? : number;
   vcf0Modsource1? : number;
+  /** value from -150 to 150 */
   vcf0CutoffMod2? : number;
   vcf0Modsource2? : number;
+  /** percent value from -100 to 100 */
   vcf0KeyFollowPercent? : number;
+  /** percent value from -100 to 100 */
   vcf0AutoFMPercent? : number;
+  /** percent value from 0 to 100 */
   vcf0ClickPercent? : number;
+  /** percent value from -100 to 100 */
   vca1PanPercent? : number;
+  /** percent value from 0 to 100 */
   vca1VolumePercent? : number;
+  /** percent value from -100 to 100 */
   vca1ModDepthPercent? : number;
+  /** percent value from 0 to 100 */
   chrsCenterPercent? : number;
+  /** percent value from 0 to 100 */
   chrsSpeedPercent? : number;
+  /** percent value from 0 to 100 */
   chrsDepthPercent? : number;
+  /** percent value from -100 to 100 */
   chrsFeedbackPercent? : number;
+  /** percent value from 0 to 100 */
   chrsMixPercent? : number;
   dly1SyncLeft? : number;
   dly1SyncRight? : number;
+  /** percent value from 0 to 100 */
   dly1FeedbackPercent? : number;
+  /** percent value from 0 to 100 */
   dly1CrossfeedPercent? : number;
+  /** percent value from 0 to 100 */
   dly1MixPercent? : number;
   lfogWaveform? : number;
   lfogPolarity? : number;
   lfo1Restart? : number;
   lfo1Waveform? : number;
+  /** percent value from 0 to 100 */
   lfo1PhasePercent? : number;
   lfo1Polarity? : number;
+  /** percent value from 0 to 100 */
   lfo1DepthModDpt1Percent? : number;
+  /** value from -5 to 5 */
   lfo1Rate? : number;
+  /** value from -5 to 5 */
   lfo1FreqModDpt? : number;
 }
 const parameterLibrary = {
@@ -1114,9 +1173,9 @@ const makeAutomation = {
     return event;
   }
 }
-export class Podolski64 extends FluidPlugin {
+export class PodolskiVst2 extends FluidPlugin {
   constructor(
-    public readonly parameters : Podolski64Parameters = {},
+    public readonly parameters : PodolskiVst2Parameters = {},
   ) { super(pluginName, pluginType) }
 
   readonly parameterLibrary = parameterLibrary;

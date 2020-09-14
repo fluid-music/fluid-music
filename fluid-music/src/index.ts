@@ -7,8 +7,8 @@ import m from './m'
 
 // New Style Plugins
 import { DragonflyRoom } from './plugin-dradonfly-room';
-import { TCompressor } from './plugin-adapters/vst2-t-compressor'
-import { Podolski64 } from './plugin-adapters/vst2-podolski'
+import { TCompressorVst2 } from './plugin-adapters/t-compressor-vst2'
+import { PodolskiVst2 } from './plugin-adapters/podolski-vst2'
 
 // OSC Message Helpers
 import * as cybr from './cybr/index';
@@ -90,6 +90,6 @@ export = {
   FluidPlugin,
   PluginType,
   DragonflyRoom,
-  Podolski64,
-  TCompressor,
+  PodolskiVst2,
+  TCompressorVst2,
 };

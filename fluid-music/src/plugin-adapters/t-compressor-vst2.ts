@@ -2,30 +2,43 @@ import { PluginType, FluidPlugin, PluginAutomationEvent } from '../plugin';
 const pluginName = '#TCompressor'
 const pluginType = PluginType.VST2
 
-export interface TCompressorParameters {
+export interface TCompressorVst2Parameters {
   enable? : number;
   mode? : number;
+  /** db value from -60 to 0 */
   thresholdDb? : number;
+  /** value from 1 to 100 */
   ratio? : number;
+  /** ms value from 0.1 to 100 */
   attackMs? : number;
+  /** ms value from 0 to 1000 */
   holdMs? : number;
+  /** ms value from 1 to 1000 */
   releaseMs? : number;
+  /** db value from -20 to 20 */
   inputDb? : number;
+  /** db value from -20 to 20 */
   makeUpDb? : number;
+  /** db value from 0 to 60 */
   softKneeDb? : number;
+  /** ms value from 0 to 10 */
   lookaheadMs? : number;
   limit? : number;
   useSidechainTrigger? : number;
   monitorSidechain? : number;
   softClip? : number;
+  /** db value from -60 to 0 */
   softClipThresholdDb? : number;
   peakDetection? : number;
   useSumDetection? : number;
   enableAutoMakeUpGain? : number;
   filter? : number;
   filterType? : number;
+  /** hz value from 10 to 20000 */
   freqHz? : number;
+  /** value from 0.025 to 40 */
   q? : number;
+  /** db value from -30 to 30 */
   gainDb? : number;
 }
 const parameterLibrary = {
@@ -344,9 +357,9 @@ const makeAutomation = {
     return event;
   }
 }
-export class TCompressor extends FluidPlugin {
+export class TCompressorVst2 extends FluidPlugin {
   constructor(
-    public readonly parameters : TCompressorParameters = {},
+    public readonly parameters : TCompressorVst2Parameters = {},
   ) { super(pluginName, pluginType) }
 
   readonly parameterLibrary = parameterLibrary;
