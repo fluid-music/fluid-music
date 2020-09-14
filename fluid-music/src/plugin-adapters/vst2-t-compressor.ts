@@ -32,7 +32,7 @@ const parameterLibrary = {
   enable: { name: 'Enable', index: 0, isLinear: false, range: [0, 1] as [number, number]},
   mode: { name: 'Mode', index: 1, isLinear: false, range: [0, 1] as [number, number]},
   thresholdDb: { name: 'Threshold', index: 2, isLinear: true, range: [-60, 0] as [number, number], units: 'db'},
-  ratio: { name: 'Ratio', index: 3, isLinear: false, range: [1, 100] as [number, number]},
+  ratio: { name: 'Ratio', index: 3, isLinear: false, range: [1, 100] as [number, number], powerFuncB: 5},
   attackMs: { name: 'Attack', index: 4, isLinear: true, range: [0.1, 100] as [number, number], units: 'ms'},
   holdMs: { name: 'Hold', index: 5, isLinear: true, range: [0, 1000] as [number, number], units: 'ms'},
   releaseMs: { name: 'Release', index: 6, isLinear: true, range: [1, 1000] as [number, number], units: 'ms'},
@@ -51,7 +51,7 @@ const parameterLibrary = {
   filter: { name: 'Filter', index: 19, isLinear: false},
   filterType: { name: 'Type', index: 20, isLinear: false, range: [0, 7] as [number, number]},
   freqHz: { name: 'Freq', index: 21, isLinear: false, range: [10, 20000] as [number, number], units: 'hz', powerFuncB: 5},
-  q: { name: 'Q', index: 22, isLinear: false, range: [0.025, 40] as [number, number]},
+  q: { name: 'Q', index: 22, isLinear: false, range: [0.025, 40] as [number, number], powerFuncB: 5},
   gainDb: { name: 'Gain', index: 23, isLinear: true, range: [-30, 30] as [number, number], units: 'db'}
 }
 const makeAutomation = {
