@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const R = require('ramda');
-const converters = require('../src/converters');
+const converters = require('../built/converters');
 
 const octave = (o) => {
   const c = 12 + 12 * o;
@@ -47,7 +47,7 @@ R.find((n) => n.name === 'e2', all).comment = 'Lowest note on guitar';
 R.find((n) => n.name === 'c2', all).comment = 'Lowest note on cello';
 R.find((n) => n.name === 'g3', all).comment = 'Lowest note on violin';
 
-const out = fs.createWriteStream(path.join(__dirname, '..', 'src', 'm.js'));
+const out = fs.createWriteStream(path.join(__dirname, '..', 'src', 'm.ts'));
 out.write(
 `/**
  * Map from note names with octaves to midi pitch numbers. Ex:
@@ -57,7 +57,7 @@ out.write(
  * a4: 69,
  * ...etc...
  */
-module.exports = {
+export const m = {
 `);
 
 all.forEach((n) => {
@@ -69,4 +69,7 @@ all.forEach((n) => {
   out.write('\n');
 });
 
-out.write('};\n');
+out.write(`};
+
+export default m;
+`);

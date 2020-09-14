@@ -3,6 +3,7 @@ import { tracksToFluidMessage, sessionToTemplateFluidMessage } from './tracksToF
 import { FluidSession } from './FluidSession';
 import * as gen from './plugin-generator';
 import * as converters from './converters';
+import m from './m'
 
 // New Style Plugins
 import { DragonflyRoom } from './plugin-dradonfly-room';
@@ -21,6 +22,7 @@ import * as plugin from './cybr/plugin';
 import * as sampler from './cybr/sampler';
 import * as tempo from './cybr/tempo';
 import * as transport from './cybr/transport';
+
 
 const pluginDragonflyRoomReverb = require('./cybr/plugin-dragonfly-room');
 const pluginPodolski = require('./cybr/plugin-podolski');
@@ -41,7 +43,6 @@ const noteTypes = require('./note-types');
 const eventMappers = require('./event-mappers');
 const tab = require('./tab');
 
-const m = require('./m');
 const random = require('./random');
 const tracksToReaperProject = require('./tracksToReaperProject');
 

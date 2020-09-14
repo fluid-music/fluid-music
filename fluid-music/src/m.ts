@@ -1,9 +1,12 @@
 /**
- * Map from note names with octaves to midi pitch numbers
+ * Map from note names with octaves to midi pitch numbers. Ex:
+ * c: 0,
+ * c1: 12,
  * c4: 60,
  * a4: 69,
+ * ...etc...
  */
-module.exports = {
+export const m = {
   c:   0, // 8.176 hz
   cs:  1, // 8.662 hz
   df:  1, // 8.662 hz
@@ -186,3 +189,5 @@ module.exports = {
   gf9: 126, // 11839.822 hz
   g9:  127, // 12543.854 hz
 };
+
+export default m;
