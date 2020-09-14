@@ -51,7 +51,7 @@ let session = new fluid.FluidSession({
   dLibrary, // default for kick and snare
   nLibrary, // default for kick and snare
 }, {
-  kick:  { d: '.   . mf      ', gain: -6, plugins: [ new fluid.TCompressor({thresholdDb: -8, freqHz: 500}) ]},
+  kick:  { d: '.   . mf      ', gain: -6, plugins: [ new fluid.TCompressor({thresholdDb: -11, freqHz: 110, ratio: 11}) ]},
   snare: { d: 'm   f   m   f ' },
   chrd:  { nLibrary: chords.nLibrary, pan: -.75 },
   bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p } },

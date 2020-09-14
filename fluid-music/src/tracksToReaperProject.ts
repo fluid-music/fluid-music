@@ -30,6 +30,8 @@ const db2Gain = (db) => Math.pow(10, Math.min(db, 12) / 20);
 async function tracksToReaperProject(tracksObject : FluidTrack[], bpm : number, client: FluidIpcClient) {
   if (!bpm) throw new TypeError('tracksToReaperProject requires a bpm parameter')
 
+  await client.send(cybr.global.activate('reaper-helper.tracktionedit', true))
+
   const reaperProject = new rppp.objects.ReaperProject();
   reaperProject.getOrCreateStructByToken('TEMPO').params = [bpm, 4, 4];
 
@@ -88,8 +90,8 @@ async function tracksToReaperProject(tracksObject : FluidTrack[], bpm : number, 
       for (const autoPoint of automation.points) {
         if (typeof autoPoint.value === 'number') {
           autoObject.addBezierPoint(
-            autoPoint.startTime * 4 * 60 / bpm, 
-            normalize(autoPoint.value), 
+            autoPoint.startTime * 4 * 60 / bpm,
+            normalize(autoPoint.value),
             autoPoint.curve
           );
         }
