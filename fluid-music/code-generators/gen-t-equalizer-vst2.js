@@ -1,5 +1,6 @@
 const tCompReport = require('./reports/t-equalizer-vst2')
-const fluid = require('..')
+const fluid = require('..');
+const tEqualizerVst2 = require('./reports/t-equalizer-vst2');
 
 for (const paramInfo of tCompReport.params) {
   if (paramInfo.name.endsWith(' Frequency')) paramInfo.powerFuncB = 5; else
@@ -35,5 +36,6 @@ function makeBandMethod (band) {
   }`}
 
 const extraMethods = [1, 2, 3, 4, 5, 6, 7, 8].map(makeBandMethod).join('\n') + '\n'
-const moduleString = fluid.gen.generatePluginModule(tCompReport, { extraMethods })
+const className = 'TEqualizerVst2' // I'm going to spell the class name correctly (even though they don't)
+const moduleString = fluid.gen.generatePluginModule(tCompReport, { className, extraMethods })
 process.stdout.write(moduleString)

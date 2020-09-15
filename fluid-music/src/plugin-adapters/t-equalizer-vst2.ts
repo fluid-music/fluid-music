@@ -2,7 +2,7 @@ import { PluginType, FluidPlugin, PluginAutomationEvent } from '../plugin';
 const pluginName = '#TEqualiser'
 const pluginType = PluginType.VST2
 
-export interface TEqualiserVst2Parameters {
+export interface TEqualizerVst2Parameters {
   band1State? : number;
   /** hz value from 10 to 30000 */
   band1FrequencyHz? : number;
@@ -664,9 +664,9 @@ const makeAutomation = {
     return event;
   }
 }
-export class TEqualiserVst2 extends FluidPlugin {
+export class TEqualizerVst2 extends FluidPlugin {
   constructor(
-    public readonly parameters : TEqualiserVst2Parameters = {},
+    public readonly parameters : TEqualizerVst2Parameters = {},
   ) { super(pluginName, pluginType) }
 
   readonly parameterLibrary = parameterLibrary;
