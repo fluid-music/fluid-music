@@ -675,4 +675,116 @@ export class TEqualiserVst2 extends FluidPlugin {
   // Static members
   static readonly parameterLibrary = parameterLibrary;
   static readonly makeAutomation = makeAutomation;
+
+  /**
+   * Configure EQ band 1 frequency, gain, and Q
+   * @param hz frequency in hertz
+   * @param gain band gain in dB (0 is unity gain)
+   * @param q band width (higher is narrower)
+   * @param active
+   */
+  setBand1(hz?: number, gain?: number, q?: number, active = true) {
+    if (typeof hz === 'number')      this.parameters.band1FrequencyHz = hz
+    if (typeof gain === 'number')    this.parameters.band1GainDb = gain
+    if (typeof q === 'number')       this.parameters.band1Q = q
+    if (typeof active === 'boolean') this.parameters.band1State = active ? 0.5 : 0
+  }
+
+  /**
+   * Configure EQ band 2 frequency, gain, and Q
+   * @param hz frequency in hertz
+   * @param gain band gain in dB (0 is unity gain)
+   * @param q band width (higher is narrower)
+   * @param active
+   */
+  setBand2(hz?: number, gain?: number, q?: number, active = true) {
+    if (typeof hz === 'number')      this.parameters.band2FrequencyHz = hz
+    if (typeof gain === 'number')    this.parameters.band2GainDb = gain
+    if (typeof q === 'number')       this.parameters.band2Q = q
+    if (typeof active === 'boolean') this.parameters.band2State = active ? 0.5 : 0
+  }
+
+  /**
+   * Configure EQ band 3 frequency, gain, and Q
+   * @param hz frequency in hertz
+   * @param gain band gain in dB (0 is unity gain)
+   * @param q band width (higher is narrower)
+   * @param active
+   */
+  setBand3(hz?: number, gain?: number, q?: number, active = true) {
+    if (typeof hz === 'number')      this.parameters.band3FrequencyHz = hz
+    if (typeof gain === 'number')    this.parameters.band3GainDb = gain
+    if (typeof q === 'number')       this.parameters.band3Q = q
+    if (typeof active === 'boolean') this.parameters.band3State = active ? 0.5 : 0
+  }
+
+  /**
+   * Configure EQ band 4 frequency, gain, and Q
+   * @param hz frequency in hertz
+   * @param gain band gain in dB (0 is unity gain)
+   * @param q band width (higher is narrower)
+   * @param active
+   */
+  setBand4(hz?: number, gain?: number, q?: number, active = true) {
+    if (typeof hz === 'number')      this.parameters.band4FrequencyHz = hz
+    if (typeof gain === 'number')    this.parameters.band4GainDb = gain
+    if (typeof q === 'number')       this.parameters.band4Q = q
+    if (typeof active === 'boolean') this.parameters.band4State = active ? 0.5 : 0
+  }
+
+  /**
+   * Configure EQ band 5 frequency, gain, and Q
+   * @param hz frequency in hertz
+   * @param gain band gain in dB (0 is unity gain)
+   * @param q band width (higher is narrower)
+   * @param active
+   */
+  setBand5(hz?: number, gain?: number, q?: number, active = true) {
+    if (typeof hz === 'number')      this.parameters.band5FrequencyHz = hz
+    if (typeof gain === 'number')    this.parameters.band5GainDb = gain
+    if (typeof q === 'number')       this.parameters.band5Q = q
+    if (typeof active === 'boolean') this.parameters.band5State = active ? 0.5 : 0
+  }
+
+  /**
+   * Configure EQ band 6 frequency, gain, and Q
+   * @param hz frequency in hertz
+   * @param gain band gain in dB (0 is unity gain)
+   * @param q band width (higher is narrower)
+   * @param active
+   */
+  setBand6(hz?: number, gain?: number, q?: number, active = true) {
+    if (typeof hz === 'number')      this.parameters.band6FrequencyHz = hz
+    if (typeof gain === 'number')    this.parameters.band6GainDb = gain
+    if (typeof q === 'number')       this.parameters.band6Q = q
+    if (typeof active === 'boolean') this.parameters.band6State = active ? 0.5 : 0
+  }
+
+  /**
+   * Configure EQ band 7 frequency, gain, and Q
+   * @param hz frequency in hertz
+   * @param gain band gain in dB (0 is unity gain)
+   * @param q band width (higher is narrower)
+   * @param active
+   */
+  setBand7(hz?: number, gain?: number, q?: number, active = true) {
+    if (typeof hz === 'number')      this.parameters.band7FrequencyHz = hz
+    if (typeof gain === 'number')    this.parameters.band7GainDb = gain
+    if (typeof q === 'number')       this.parameters.band7Q = q
+    if (typeof active === 'boolean') this.parameters.band7State = active ? 0.5 : 0
+  }
+
+  /**
+   * Configure EQ band 8 frequency, gain, and Q
+   * @param hz frequency in hertz
+   * @param gain band gain in dB (0 is unity gain)
+   * @param q band width (higher is narrower)
+   * @param active
+   */
+  setBand8(hz?: number, gain?: number, q?: number, active = true) {
+    if (typeof hz === 'number')      this.parameters.band8FrequencyHz = hz
+    if (typeof gain === 'number')    this.parameters.band8GainDb = gain
+    if (typeof q === 'number')       this.parameters.band8Q = q
+    if (typeof active === 'boolean') this.parameters.band8State = active ? 0.5 : 0
+  }
 }
