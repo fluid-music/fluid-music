@@ -9,7 +9,9 @@ import * as random from './random';
 // New Style Plugins
 import { DragonflyRoom } from './plugin-dradonfly-room';
 import { TCompressorVst2 } from './plugin-adapters/t-compressor-vst2'
+import { TEqualizerVst2 } from './plugin-adapters/t-equalizer-vst2'
 import { PodolskiVst2 } from './plugin-adapters/podolski-vst2'
+import { TyrellN6Vst2 } from './plugin-adapters/tyrell-n6-vst2'
 
 // OSC Message Helpers
 import * as cybr from './cybr/index';
@@ -33,7 +35,6 @@ const pluginTEqualiser = require('./cybr/plugin-tequaliser');
 const pluginTReverber8 = require('./cybr/plugin-treverber8');
 const pluginTStereoDelay = require('./cybr/plugin-tstereodelay');
 const pluginZebra2Vst2 = require('./cybr/plugin-zebra2-vst2');
-const pluginHelm = require('./cybr/plugin-helm');
 const pluginDexedVst = require('./cybr/plugin-dexed-vst');
 
 const UdpClient = require('./cybr/UdpClient');
@@ -71,7 +72,6 @@ export = {
   midiclip,
   plugin,
   pluginDragonflyRoomReverb,
-  pluginHelm,
   pluginPodolski,
   pluginTCompressor,
   pluginTEqualiser,
@@ -93,4 +93,6 @@ export = {
   DragonflyRoom,
   PodolskiVst2,
   TCompressorVst2,
+  TEqualizerVst2,
+  TyrellN6Vst2,
 };

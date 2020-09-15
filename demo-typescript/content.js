@@ -52,7 +52,7 @@ let session = new fluid.FluidSession({
 }, {
   kick:  { d: '.   . mf      ', gain: -6, plugins: [ new fluid.TCompressorVst2({thresholdDb: -11, freqHz: 110, ratio: 11}) ]},
   snare: { d: 'm   f   m   f ' },
-  chrd:  { nLibrary: chords.nLibrary, pan: -.75 },
+  chrd:  { nLibrary: chords.nLibrary, pan: -.75, plugins: [ new fluid.TyrellN6Vst2({env1Attack: 2, env1Decay: 77, env1Sustain: 69})] },
   bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p }, plugins: [ new fluid.PodolskiVst2({ vcf0Cutoff: 50 }) ] },
   tamb:  { pan: .25 },
   revb:  { plugins: [ new fluid.DragonflyRoom({decaySeconds: 2.4, predelayMs: 49, dryLevelPercent: 0, earlyLevelPercent: 40, lateLevelPercent: 100 })], nLibrary: {p, q, r, s, t, u, x, y } },

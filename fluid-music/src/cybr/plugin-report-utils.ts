@@ -151,7 +151,7 @@ export function guess(paramInfo: any) {
   const isContinuous = guessIsContinuous(paramInfo)
   let choices = isContinuous ? null : guessDiscreteChoices(paramInfo)
   if (choices && Object.keys(choices).length >= paramInfo.outputValueStepsAsStrings.length) {
-    console.warn(`Omiting .choices from "${paramInfo.name}" param because the step resolution may be too low`)
+    console.warn(`Guesser: Omitting .choices from "${paramInfo.name}" param because the report step resolution may be too low`)
     choices = null
   }
   const guess = {

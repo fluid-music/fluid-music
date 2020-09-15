@@ -77,6 +77,12 @@ const podoLfoPhasePercent = {"name":"LFOG: Phase","tracktionIndex":7,"defaultVal
   "outputValueRangeAsStringsWithLabels":["0.00 %","100.00 %"]
 }
 
+const tEqualizerFreq = {"name":"Band 1 Frequency","tracktionIndex":3,"defaultValue":0,"currentExplicitValue":0.4278567731380463,"currentNormalizedValue":0.4278567731380463,"currentValue":0.4278567731380463,"currentValueAsStringWithLabel":"440.000 Hz","currentValueAsString":"440.000 Hz","currentBaseValue":0.4278567731380463,"isDiscrete":false,"isAutomationActive":false,"isActive":true,"hasAutomationPoints":false,"hasLabels":false,"currentLabel":"Hz","inputValueRange":[0,1],"inputSteps":[0,0.0357142873108387,0.0714285746216774,0.1071428656578064,0.1428571492433548,0.1785714328289032,0.2142857313156128,0.25,0.2857142984867096,0.3214285969734192,0.3571428656578064,0.392857164144516,0.4285714626312256,0.4642857313156128,0.5,0.535714328289032,0.5714285969734192,0.6071428656578064,0.6428571939468384,0.6785714626312256,0.7142857313156128,0.7500000596046448,0.785714328289032,0.8214285969734192,0.8571429252624512,0.8928571939468384,0.9285714626312256,0.9642857313156128,1],
+"outputValueStepsAsStrings":["10.000 Hz","10.002 Hz","10.056 Hz","10.423 Hz","11.784 Hz","15.445 Hz","23.550 Hz","39.287 Hz","67.100 Hz","112.896 Hz","184.256 Hz","290.640 Hz","443.603 Hz","656.998 Hz","947.187 Hz","1333.253 Hz","1837.201 Hz","2484.178 Hz","3302.678 Hz","4324.738 Hz","5586.175 Hz","7126.771 Hz","8990.486 Hz","11225.681 Hz","13885.311 Hz","17027.137 Hz","20713.945 Hz","25013.752 Hz","30000.000 Hz"],
+"outputValueRangeAsStrings":["10.000 Hz","30000.000 Hz"],
+"outputValueRangeAsStringsWithLabels":["10.000 Hz","30000.000 Hz"]}
+
+
 describe('test-plugin-report-utilities', function () {
   describe('guessParamRange', function () {
     it('should handle a very simple case: ["-5.00", "5.00"]', function () {
@@ -118,6 +124,10 @@ describe('test-plugin-report-utilities', function () {
 
     it('should assume there are no units when outputs have different units', function () {
       should(guessParamUnits(podoDelaySync)).equal(null)
+    })
+
+    it('should get hz from #TEqualizer frequency param', function () {
+      guessParamUnits(tEqualizerFreq).should.equal('hz')
     })
   })
 

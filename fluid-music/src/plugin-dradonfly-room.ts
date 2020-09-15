@@ -1,6 +1,6 @@
 import { PluginType, FluidPlugin, PluginAutomationEvent } from './plugin';
 
-const pluginName = 'DragonflyRoomReverb-vst';
+const pluginName = 'DragonflyRoomReverb';
 const pluginType = PluginType.VST2;
 
 export interface DragonflyRoomParameters {
@@ -382,7 +382,7 @@ const makeAutomation = {
 export class DragonflyRoom extends FluidPlugin {
   constructor(
     public readonly parameters : DragonflyRoomParameters = {},
-  ) { super('DragonflyRoomReverb-vst', PluginType.VST2) }
+  ) { super(pluginName, PluginType.VST2) }
 
   readonly parameterLibrary = parameterLibrary;
   readonly makeAutomation = makeAutomation;

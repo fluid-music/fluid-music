@@ -99,7 +99,6 @@ The Fluid Engine aims to bridge the gap between DAWs and existing procedural aud
 - Not useful for
   - computational composition
   - daw integration
-  -
 
 ## Workflow
 
@@ -108,8 +107,8 @@ The engine strikes a balance between code based workflow and a GUI/DAW based wor
 1. Write **sound design recipes** using the language described in the `fluid-music` node module (recipes encapsulate sound design procedures that would traditionally be performed in a DAW.)
 2. Send a collection of recipes to the Fluid Engine server. Update the recipe parameters while auditioning the sonic output in realtime until results are satisfactory.
 3. Tweak the result in a DAW. Currently the engine can output:
-  - [Reaper](https://reaper.fm) `.RPP` files
-  - [Tracktion Waveform](https://www.tracktion.com/products/waveform) `.tracktionedit` files
+    - [Reaper](https://reaper.fm) `.RPP` files
+    - [Tracktion Waveform](https://www.tracktion.com/products/waveform) `.tracktionedit` files
 
 ...but much more complicated and flexible uses can be built on the tools in this repository.
 
