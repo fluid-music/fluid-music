@@ -63,6 +63,15 @@ const createFunctionString = (functionName, paramName) => {
 `;
 };
 
+/**
+ * This is for generating cybr adapters. It has been superseded by the
+ * typescript plugin-generator.
+ * @param {string} pluginName
+ * @param {string} paramNames[]
+ * @param {*} writableStream
+ * @param {*} includeParams
+ * @param {string} type
+ */
 const writePluginHelperFile = (pluginName, paramNames, writableStream, includeParams = true, type='VST2') => {
 
   const camelCaseNames = paramNames.map(camelCaseFromParamName);
@@ -112,56 +121,6 @@ module.exports = {
 
   writableStream.write('\n};\n');
 };
-
-/**
- * Take an individual param object from a plulgin parameter report, and convert
- * it to an object that will be useful for auto-generation of plugin modules.
- * The input looks like this as of August 24, 2020 (it may change):
- * ```javascript
- * {
- *   name: 'LFO1: FreqMod Dpt',
- *   defaultValue: 0,
- *   currentExplicitValue: 0.5,
- *   currentNormalizedValue: 0.5,
- *   currentValue: 0.5,
- *   currentValueAsStringWithLabel: '0.00',
- *   currentValueAsString: '0.00',
- *   currentBaseValue: 0.5,
- *   isDiscrete: false,
- *   isAutomationActive: false,
- *   isActive: true,
- *   hasAutomationPoints: false,
- *   hasLabels: false,
- *   currentLabel: '',
- *   inputValueRange: [ 0, 1 ],
- *   outputValueStepsAsString: [
- *     '-5.00', '-4.29', '-3.57',
- *     '-2.86', '-2.14', '-1.43',
- *     '-0.71', '0.00',  '0.71',
- *     '1.43',  '2.14',  '2.86',
- *     '3.57',  '4.29',  '5.00'
- *   ],
- *   outputValueRangeAsString: [ '-5.00', '5.00' ],
- *   outputValueRangeAsStringWithLabel: [ '-5.00', '5.00' ]
- * }
- * ```
- * @param {object} param 
- */
-function paramReportToModuleData(param) {
-
-  throw new Error('paramReportToModuleData is a work in progress');
-
-  let min = parseFloat(param.outputValueRangeAsString[0]);
-  let max = parseFloat(param.outputValueRangeAsString[1]);
-
-  return {
-    paramKey: tools.camelCaseFromParamName(param.name),
-    paramName: param.name,
-    min,
-    max,
-  }
-}
-
 
 module.exports = {
   camelCaseFromParamName,
