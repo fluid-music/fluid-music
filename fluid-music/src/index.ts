@@ -35,7 +35,6 @@ const pluginTEqualiser = require('./cybr/plugin-tequaliser');
 const pluginTReverber8 = require('./cybr/plugin-treverber8');
 const pluginTStereoDelay = require('./cybr/plugin-tstereodelay');
 const pluginZebra2Vst2 = require('./cybr/plugin-zebra2-vst2');
-const pluginHelm = require('./cybr/plugin-helm');
 const pluginDexedVst = require('./cybr/plugin-dexed-vst');
 
 const UdpClient = require('./cybr/UdpClient');
@@ -73,7 +72,6 @@ export = {
   midiclip,
   plugin,
   pluginDragonflyRoomReverb,
-  pluginHelm,
   pluginPodolski,
   pluginTCompressor,
   pluginTEqualiser,

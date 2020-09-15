@@ -16,7 +16,6 @@ export const pluginTStereoDelay = require('./plugin-tstereodelay');
 export const pluginTReverber8 = require('./plugin-treverber8');
 export const pluginTEqualiser = require('./plugin-tequaliser');
 export const pluginZebra2Vst2 = require('./plugin-zebra2-vst2');
-export const pluginHelm = require('./plugin-helm');
 export const pluginDexedVst = require('./plugin-dexed-vst');
 export const pluginDragonflyRoomReverb = require('./plugin-dragonfly-room');
 

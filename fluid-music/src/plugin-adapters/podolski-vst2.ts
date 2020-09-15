@@ -1,5 +1,5 @@
 import { PluginType, FluidPlugin, PluginAutomationEvent } from '../plugin';
-const pluginName = 'Podolski.64'
+const pluginName = 'Podolski'
 const pluginType = PluginType.VST2
 
 export interface PodolskiVst2Parameters {
