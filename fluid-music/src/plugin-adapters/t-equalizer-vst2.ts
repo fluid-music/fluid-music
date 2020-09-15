@@ -678,9 +678,9 @@ export class TEqualizerVst2 extends FluidPlugin {
 
   /**
    * Configure EQ band 1 frequency, gain, and Q
-   * @param hz frequency in hertz
-   * @param gain band gain in dB (0 is unity gain)
-   * @param q band width (higher is narrower)
+   * @param hz frequency in hertz (10 to 30000)
+   * @param gain band gain in dB (-30 to 30, 0 is unity gain)
+   * @param q band width (0.025 to 40, higher is narrower)
    * @param active
    */
   setBand1(hz?: number, gain?: number, q?: number, active = true) {
@@ -692,9 +692,9 @@ export class TEqualizerVst2 extends FluidPlugin {
 
   /**
    * Configure EQ band 2 frequency, gain, and Q
-   * @param hz frequency in hertz
-   * @param gain band gain in dB (0 is unity gain)
-   * @param q band width (higher is narrower)
+   * @param hz frequency in hertz (10 to 30000)
+   * @param gain band gain in dB (-30 to 30, 0 is unity gain)
+   * @param q band width (0.025 to 40, higher is narrower)
    * @param active
    */
   setBand2(hz?: number, gain?: number, q?: number, active = true) {
@@ -706,9 +706,9 @@ export class TEqualizerVst2 extends FluidPlugin {
 
   /**
    * Configure EQ band 3 frequency, gain, and Q
-   * @param hz frequency in hertz
-   * @param gain band gain in dB (0 is unity gain)
-   * @param q band width (higher is narrower)
+   * @param hz frequency in hertz (10 to 30000)
+   * @param gain band gain in dB (-30 to 30, 0 is unity gain)
+   * @param q band width (0.025 to 40, higher is narrower)
    * @param active
    */
   setBand3(hz?: number, gain?: number, q?: number, active = true) {
@@ -720,9 +720,9 @@ export class TEqualizerVst2 extends FluidPlugin {
 
   /**
    * Configure EQ band 4 frequency, gain, and Q
-   * @param hz frequency in hertz
-   * @param gain band gain in dB (0 is unity gain)
-   * @param q band width (higher is narrower)
+   * @param hz frequency in hertz (10 to 30000)
+   * @param gain band gain in dB (-30 to 30, 0 is unity gain)
+   * @param q band width (0.025 to 40, higher is narrower)
    * @param active
    */
   setBand4(hz?: number, gain?: number, q?: number, active = true) {
@@ -734,9 +734,9 @@ export class TEqualizerVst2 extends FluidPlugin {
 
   /**
    * Configure EQ band 5 frequency, gain, and Q
-   * @param hz frequency in hertz
-   * @param gain band gain in dB (0 is unity gain)
-   * @param q band width (higher is narrower)
+   * @param hz frequency in hertz (10 to 30000)
+   * @param gain band gain in dB (-30 to 30, 0 is unity gain)
+   * @param q band width (0.025 to 40, higher is narrower)
    * @param active
    */
   setBand5(hz?: number, gain?: number, q?: number, active = true) {
@@ -748,9 +748,9 @@ export class TEqualizerVst2 extends FluidPlugin {
 
   /**
    * Configure EQ band 6 frequency, gain, and Q
-   * @param hz frequency in hertz
-   * @param gain band gain in dB (0 is unity gain)
-   * @param q band width (higher is narrower)
+   * @param hz frequency in hertz (10 to 30000)
+   * @param gain band gain in dB (-30 to 30, 0 is unity gain)
+   * @param q band width (0.025 to 40, higher is narrower)
    * @param active
    */
   setBand6(hz?: number, gain?: number, q?: number, active = true) {
@@ -762,9 +762,9 @@ export class TEqualizerVst2 extends FluidPlugin {
 
   /**
    * Configure EQ band 7 frequency, gain, and Q
-   * @param hz frequency in hertz
-   * @param gain band gain in dB (0 is unity gain)
-   * @param q band width (higher is narrower)
+   * @param hz frequency in hertz (10 to 30000)
+   * @param gain band gain in dB (-30 to 30, 0 is unity gain)
+   * @param q band width (0.025 to 40, higher is narrower)
    * @param active
    */
   setBand7(hz?: number, gain?: number, q?: number, active = true) {
@@ -776,9 +776,9 @@ export class TEqualizerVst2 extends FluidPlugin {
 
   /**
    * Configure EQ band 8 frequency, gain, and Q
-   * @param hz frequency in hertz
-   * @param gain band gain in dB (0 is unity gain)
-   * @param q band width (higher is narrower)
+   * @param hz frequency in hertz (10 to 30000)
+   * @param gain band gain in dB (-30 to 30, 0 is unity gain)
+   * @param q band width (0.025 to 40, higher is narrower)
    * @param active
    */
   setBand8(hz?: number, gain?: number, q?: number, active = true) {

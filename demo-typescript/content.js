@@ -4,6 +4,7 @@ const fluid  = require('../fluid-music');
 const cybr   = fluid.cybr;
 const drums  = require('@fluid-music/kit');
 const chords = require('./chords');
+const { FluidPlugin } = require('../fluid-music');
 
 // experimental automation point
 const f = {
@@ -44,13 +45,20 @@ const dLibrary = {
   m: { dbfs: -2.6, intensity: 3/4 },
 };
 
+const eq = new fluid.TEqualizerVst2()
+eq.setBand2(330, -3)
+
+const comp = new fluid.TCompressorVst2()
+comp.parameters.thresholdDb = -8
+comp.parameters.ratio = 2.5
+
 let session = new fluid.FluidSession({
   bpm: 96,
   r: '1 + 2 + 3 + 4 + ',
   dLibrary, // default for kick and snare
   nLibrary, // default for kick and snare
 }, {
-  kick:  { d: '.   . mf      ', gain: -6, plugins: [ new fluid.TCompressorVst2({thresholdDb: -11, freqHz: 110, ratio: 11}) ]},
+  kick:  { d: '.   . mf      ', gain: -6, plugins: [ comp, eq ]},
   snare: { d: 'm   f   m   f ' },
   chrd:  { nLibrary: chords.nLibrary, pan: -.75, plugins: [ new fluid.TyrellN6Vst2({env1Attack: 2, env1Decay: 77, env1Sustain: 69})] },
   bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p }, plugins: [ new fluid.PodolskiVst2({ vcf0Cutoff: 50 }) ] },

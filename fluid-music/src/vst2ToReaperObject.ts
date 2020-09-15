@@ -50,10 +50,10 @@ export async function vst2ToReaperObject(client: FluidIpcClient, trackName: stri
   await client.send(msg1);
   // Wait a few millisecond before getting the state. Some plugins need this.
   // How long? on my Development machine, I found even with 50 milliseconds,
-  // sometimes that was not enough. I have yet to see 80 milliseconds fail.
+  // sometimes that was not enough. I have yet to see 120 milliseconds fail.
   // The #T plugins like #TCompressor need this delay.
   // Other plugins update immediately (no delay ok): Zebra2, Dragonfly Reverbs
-  await new Promise(resolve => setTimeout(resolve, 80));
+  await new Promise(resolve => setTimeout(resolve, 120));
   const retObj = await client.send(msg2);
 
   const pluginReport = JSON.parse(retObj.elements[2].args[2].value);

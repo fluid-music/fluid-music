@@ -23,9 +23,9 @@ function makeBandMethod (band) {
   return `
   /**
    * Configure EQ band ${band} frequency, gain, and Q
-   * @param hz frequency in hertz
-   * @param gain band gain in dB (0 is unity gain)
-   * @param q band width (higher is narrower)
+   * @param hz frequency in hertz (10 to 30000)
+   * @param gain band gain in dB (-30 to 30, 0 is unity gain)
+   * @param q band width (0.025 to 40, higher is narrower)
    * @param active
    */
   setBand${band}(hz?: number, gain?: number, q?: number, active = true) {
