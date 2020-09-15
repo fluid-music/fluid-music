@@ -45,25 +45,27 @@ env CONFIG=Release make  # build release binary
 
 The Fluid Engine aims to bridge the gap between DAWs and existing procedural audio languages by integrating computational code-based techniques directly into a conventional audio workstation. The following design choices show a balance between timeline-centric, GUI-based DAWs, and other systems for imperative computational sound design.
 
-**The Fluid Engine:**
-- Integrates with a conventional DAW GUI, which is necessary for:
+**The Fluid Engine can:**
+- Describe sound design documents in a format that is human readable and machine readable, allowing:
+  - an ecosystem of recipe sharing, akin to a package manager AND
+  - integration with procedural and ML workflows
+- Integrate with a conventional DAW GUI, which is necessary for:
   - precision timeline based editing
   - carefully inspecting the output of computational content and recipes
   - creating content that is competitive with music created professionally using the conventional DAW based workflow
-- Can render results in realtime, which is necessary for:
+- Host and configure VST2 plugins (if you have access to the VST2 sdk), which is important for:
+  - Inspecting and modifying output material in a DAW
+- Render results in realtime, which is necessary for:
   - playing the engine like an instrument
   - exploring recipe parameter space as a sound designer
   - mixing/matching/tweaking input recipes as a musician/composer
   - running in an dynamic audio streaming server
-- Can render offline. Necessary for:
+- Render offline. Necessary for:
   - offline personalized content systems
   - deploying in machine learning projects such as a GANs and reinforcement learning systems
   - efficient machine listening based recipes
-- Can run headless, which is necessary for:
+- Run headless, which is necessary for:
   - deploying to a web server
-- Can describe sound design documents in a format that is human readable and machine readable, allowing:
-  - an ecosystem of recipe sharing, akin to a package manager AND
-  - integration with procedural and ML workflows
 
 **Traditional DAWs**
 - Useful if you want:
@@ -90,6 +92,14 @@ The Fluid Engine aims to bridge the gap between DAWs and existing procedural aud
   - precise timeline-based editing/composing on a timeline (while Csound is built on the concept of a text based "score," it is very clumsy to work with when compared with a DAW)
   - support for pro quality plugins
   - precise audio editing support
+  - DAW integration
+
+**Music21 (symbolic music notation library)**
+- Useful for computational score analysis
+- Not useful for
+  - computational composition
+  - daw integration
+  -
 
 ## Workflow
 
@@ -97,7 +107,9 @@ The engine strikes a balance between code based workflow and a GUI/DAW based wor
 
 1. Write **sound design recipes** using the language described in the `fluid-music` node module (recipes encapsulate sound design procedures that would traditionally be performed in a DAW.)
 2. Send a collection of recipes to the Fluid Engine server. Update the recipe parameters while auditioning the sonic output in realtime until results are satisfactory.
-3. Tweak the result in a DAW. Currently, [Tracktion Waveform](https://www.tracktion.com/products/waveform) is supported. Support for other formats may be added.
+3. Tweak the result in a DAW. Currently the engine can output:
+  - [Reaper](https://reaper.fm) `.RPP` files
+  - [Tracktion Waveform](https://www.tracktion.com/products/waveform) `.tracktionedit` files
 
 ...but much more complicated and flexible uses can be built on the tools in this repository.
 
