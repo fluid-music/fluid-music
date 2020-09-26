@@ -32,7 +32,7 @@ export function mapAutomation(event: FluidEvent, context : ClipEventContext) {
 
     if (nth >= matches.length) {
       const needed = nth - matches.length + 1;
-      if (needed > 0) throw new Error(`${needed} missing ${event.plugin.pluginName} plugins of on ${context.track.name} track`);
+      if (needed > 0) throw new Error(`${needed} missing ${event.pluginSelector.pluginName} plugins of on ${context.track.name} track`);
       // Charles: This R.times code was from before the TypeScript refactor. It should be replaced.
       // R.times(() => {
       //   const plugin = { // Create PluginInstance object

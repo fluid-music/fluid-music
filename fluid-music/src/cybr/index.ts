@@ -9,6 +9,7 @@ export * as plugin from './plugin';
 export * as tempo from './tempo';
 export * as sampler from './sampler';
 export * as transport from './transport';
+export * as requests from './requests'
 
 export const pluginPodolski = require('./plugin-podolski');
 export const pluginTCompressor = require('./plugin-tcompressor-vst');

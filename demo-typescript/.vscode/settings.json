@@ -1,5 +1,8 @@
 {
   "cSpell.words": [
     "cybr"
-  ]
+  ],
+  "editor.suggestSelection": "first",
+  "editor.suggest.statusBar.visible": true,
+  "editor.suggest.showWords": false
 }

@@ -38,25 +38,7 @@ export async function vst2ToReaperObject(client: FluidIpcClient, trackName: stri
     }
   }
 
-  const msg1 = [
-    cybr.audiotrack.select(trackName),
-    cybr.plugin.select(pluginName, cybrType, n),
-    paramSetters]
-  const msg2 = [
-    cybr.audiotrack.select(trackName),
-    cybr.plugin.select(pluginName, cybrType, n),
-    cybr.plugin.getReport(),
-  ]
-  await client.send(msg1);
-  // Wait a few millisecond before getting the state. Some plugins need this.
-  // How long? on my Development machine, I found even with 50 milliseconds,
-  // sometimes that was not enough. I have yet to see 120 milliseconds fail.
-  // The #T plugins like #TCompressor need this delay.
-  // Other plugins update immediately (no delay ok): Zebra2, Dragonfly Reverbs
-  await new Promise(resolve => setTimeout(resolve, 120));
-  const retObj = await client.send(msg2);
-
-  const pluginReport = JSON.parse(retObj.elements[2].args[2].value);
+  const pluginReport = await cybr.requests.requestReport(pluginName, cybrType, trackName, n, paramSetters, client)
   const vst2State = pluginReport.vst2State;
   const numIn = pluginReport.numAudioInputChannels;
   const numOut = pluginReport.numAudioOutputChannels;

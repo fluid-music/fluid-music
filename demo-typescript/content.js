@@ -4,9 +4,31 @@ const fluid  = require('../fluid-music');
 const cybr   = fluid.cybr;
 const drums  = require('@fluid-music/kit');
 const chords = require('./chords');
-const { FluidPlugin } = require('../fluid-music');
 
-// experimental automation point
+
+////////////////////////////////////////////////////////////////
+// Configure some VSTs using the auto-generated VST adapters
+
+// Synth VSTs
+const pwmSynth = new fluid.TyrellN6Vst2({ env1Attack: 2, env1Decay: 77, env1Sustain: 69 })
+const bassSynth = new fluid.PodolskiVst2({ vcf0Cutoff: 50 })
+
+// reverb
+const verbPlugin = new fluid.DragonflyRoom({ decaySeconds: 2.4, predelayMs: 49, dryLevelPercent: 0, earlyLevelPercent: 40, lateLevelPercent: 100 })
+
+// #TCompressor VST
+const comp = new fluid.TCompressorVst2()
+comp.parameters.thresholdDb = -8
+comp.parameters.ratio = 2.5
+
+// #TEqualiser VST
+const eq = new fluid.TEqualizerVst2()
+eq.setBand2(330, -3)
+
+////////////////////////////////////////////////////////////////
+// Create score events (automation/midi/samples/etc)
+
+// Automation Point
 const f = {
   type: fluid.noteTypes.pluginAuto,
   plugin: { name: 'Podolski' },
@@ -45,25 +67,18 @@ const dLibrary = {
   m: { dbfs: -2.6, intensity: 3/4 },
 };
 
-const eq = new fluid.TEqualizerVst2()
-eq.setBand2(330, -3)
-
-const comp = new fluid.TCompressorVst2()
-comp.parameters.thresholdDb = -8
-comp.parameters.ratio = 2.5
-
 let session = new fluid.FluidSession({
   bpm: 96,
   r: '1 + 2 + 3 + 4 + ',
   dLibrary, // default for kick and snare
   nLibrary, // default for kick and snare
 }, {
-  kick:  { d: '.   . mf      ', gain: -6, plugins: [ comp, eq ]},
+  kick:  { d: '.   . mf      ', gain: -6, plugins: [comp, eq]},
   snare: { d: 'm   f   m   f ' },
-  chrd:  { nLibrary: chords.nLibrary, pan: -.75, plugins: [ new fluid.TyrellN6Vst2({env1Attack: 2, env1Decay: 77, env1Sustain: 69})] },
-  bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p }, plugins: [ new fluid.PodolskiVst2({ vcf0Cutoff: 50 }) ] },
+  chrd:  { nLibrary: chords.nLibrary, pan: -.75, plugins: [pwmSynth] },
+  bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p }, plugins: [bassSynth] },
   tamb:  { pan: .25 },
-  revb:  { plugins: [ new fluid.DragonflyRoom({decaySeconds: 2.4, predelayMs: 49, dryLevelPercent: 0, earlyLevelPercent: 40, lateLevelPercent: 100 })], nLibrary: {p, q, r, s, t, u, x, y } },
+  revb:  { plugins: [verbPlugin], nLibrary: { p, q, r, s, t, u, x, y } },
 });
 
 session.insertScore({
