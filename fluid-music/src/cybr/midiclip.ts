@@ -62,8 +62,7 @@ export function note(noteNum, startTimeInWholeNotes, durationInWholeNotes=0.25, 
  * @param { number } startTimeInWholeNotes clip start time in whole notes
  * @param { number} durationInWholeNotes clip length in whole notes
  * @param { Object[] } notes array of objects, which look like:
- *    `{ l: lengthWholeNotes, n: midiNoteNumber, s: startTimeWholeNotes }`
- *    Be careful that all note.n properties are numbers.
+ *    `{ length: lengthWholeNotes, n: midiNoteNumber, startTime: startTimeWholeNotes }`
  */
 export function create(clipName, startTimeInWholeNotes, durationInWholeNotes, notes) {
   const elements = [

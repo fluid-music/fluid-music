@@ -148,8 +148,9 @@ function midiEventsToReaperObject(midiEvents, context) {
     }
   }
 
-  const midiSource = new rppp.objects.ReaperMidiSource()
-  midiSource.contents = rppp.objects.ReaperMidiSource.getMidiMessage(midiArray)
+  const midiSource = new rppp.objects.ReaperSource()
+  midiSource.makeMidiSource()
+  midiSource.setMidiNotes(midiArray)
   midiItem.add(midiSource)
 
   return midiItem;
@@ -184,7 +185,8 @@ function fileEventsToReaperObject(fileEvents, context) {
     audioItem.getOrCreateStructByToken('NAME').params[0] = clipName;
     audioItem.getOrCreateStructByToken('POSITION').params[0] = startTime * 4 * 60 / context.bpm;;
 
-    const audioSource = new rppp.objects.ReaperAudioSource()
+    const audioSource = new rppp.objects.ReaperSource()
+    audioSource.makeWaveSource()
     audioSource.getOrCreateStructByToken('FILE').params = [event.path]
     audioItem.add(audioSource)
 
