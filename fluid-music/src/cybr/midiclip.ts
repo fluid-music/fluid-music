@@ -73,12 +73,12 @@ export function create(clipName, startTimeInWholeNotes, durationInWholeNotes, no
 
   notes.forEach((noteObject) => {
     if (typeof noteObject.n !== 'number' ||
-        typeof noteObject.s !== 'number' ||
-        typeof noteObject.l !== 'number')
+        typeof noteObject.startTime !== 'number' ||
+        typeof noteObject.length !== 'number')
         throw new Error('Got bad note: ' + JSON.stringify(noteObject));
 
-    const length = converters.valueToWholeNotes(noteObject.l);
-    const start = converters.valueToWholeNotes(noteObject.s);
+    const length = converters.valueToWholeNotes(noteObject.length);
+    const start = converters.valueToWholeNotes(noteObject.startTime);
     const noteMsg = note(noteObject.n, start, length, noteObject.v);
     elements.push(noteMsg);
   });

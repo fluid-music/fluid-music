@@ -126,7 +126,7 @@ function midiEventsToReaperObject(midiEvents, context) {
   if (typeof context.clip.startTime !== 'number')
     throw new Error('Clip is missing startTime');
 
-  const midiItem = new rppp.objects.ReaperMidiItem();
+  const midiItem = new rppp.objects.ReaperItem();
   const clipName  = `${context.track.name} ${context.clipIndex}`;
   const startTime = context.clip.startTime;
   const duration  = context.clip.duration;
@@ -146,7 +146,10 @@ function midiEventsToReaperObject(midiEvents, context) {
     }
   }
 
-  midiItem.getOrCreateStructByToken('SOURCE').contents = rppp.objects.ReaperMidiItem.getMidiMessage(midiArray);
+  const midiSource = new rppp.objects.ReaperMidiSource()
+  midiSource.contents = rppp.objects.ReaperMidiSource.getMidiMessage(midiArray)
+  midiItem.add(midiSource)
+
   return midiItem;
 };
 
@@ -174,11 +177,14 @@ function fileEventsToReaperObject(fileEvents, context) {
       throw new Error('tracksToFluidMessage: A file event found in the note library does not have a .path string');
     };
 
-    const audioItem = new rppp.objects.ReaperAudioItem();
+    const audioItem = new rppp.objects.ReaperItem();
     const clipName = `s${context.clipIndex}.${eventIndex}`;
     audioItem.getOrCreateStructByToken('NAME').params[0] = clipName;
     audioItem.getOrCreateStructByToken('POSITION').params[0] = startTime * 4 * 60 / context.bpm;;
-    audioItem.getOrCreateStructByToken('SOURCE').contents = [{token: 'FILE', params: [event.path]}];
+
+    const audioSource = new rppp.objects.ReaperAudioSource()
+    audioSource.getOrCreateStructByToken('FILE').params = [event.path]
+    audioItem.add(audioSource)
 
     if (event.startInSourceSeconds)
       audioItem.getOrCreateStructByToken('SOFFS').params[0] = event.startInSourceSeconds
