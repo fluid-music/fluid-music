@@ -1,3 +1,4 @@
+const path = require('path')
 const fluid = require('fluid-music')
 const cybr = fluid.cybr
 const nLibrary = require('./n-library')
@@ -36,15 +37,31 @@ const tyrellN6 = new fluid.TyrellN6Vst2({
   tyrellPwdepth: 50
 })
 
+function fadeInOut (event, context) {
+  const eventMapId = 'fadeInOutProcessed'
+  if (context.data[eventMapId]) return event
+  context.data[eventMapId] = true
+
+  const startTime = 0 // startTime is relative to the Clip
+  const endTime = startTime + context.clip.duration
+  const midTime = startTime + ((endTime - startTime) / 2)
+
+  const fadeIn = { type: 'trackAuto', paramKey: 'gain', startTime, value: -Infinity, curve: -0.5 }
+  const fadeOut = { type: 'trackAuto', paramKey: 'gain', startTime: midTime, value: 0, curve: 0.5 }
+  const end = { type: 'trackAuto', paramKey: 'gain', startTime: endTime, value: -Infinity }
+
+  return [event, fadeIn, fadeOut, end]
+}
+
 /**
  * @param {Type} event
  * @param  {fluid.ClipEventContext} context
  */
 const arp = function (event, context) {
   if (event.type !== 'midiChord') return event
-  console.warn('chord duration:', event.duration)
+  // fit two arpeggiated ramps inside every quarter note
   const stepSize = 1 / 4 / 2 / event.notes.length
-  const numSteps = Math.floor(event.duration / stepSize) // 16th notes
+  const numSteps = Math.floor(event.duration / stepSize)
   const result = []
 
   for (let i = 0; i < numSteps; i++) {
@@ -62,25 +79,35 @@ const session = new fluid.FluidSession({
   r: '12345',
   nLibrary
 }, {
-  chords1: { plugins: [tyrellN6], eventMappers: [arp] },
+  chords1: { plugins: [tyrellN6] },
   chords2: { plugins: [tyrellN6] },
   chords3: { plugins: [tyrellN6] }
 })
 
 session.insertScore({
   chords1: {
-    clips: ['abcba', 'aabbc'],
-    eventMappers: [arp]
+    clips: ['abcba', 'aabbc', 'a----', 'b----', 'c----', 'd----', 'e----'],
+    eventMappers: [arp, fadeInOut]
   },
-  chords2: ['abcba']
+  chords2: {
+    clips: ['abcba']
+  }
 })
 
 const client = new cybr.Client()
 client.connect(true)
 
 const run = async () => {
+  // create RPP
   const rpp = await fluid.tracksToReaperProject(session.tracks, 92, client)
   console.log(rpp.dump())
+
+  // send to CYBR
+  // const activateMsg = fluid.cybr.global.activate(path.join(__dirname, 'demo-shepherd.tracktionedit'), true)
+  // const tracksMsg = fluid.tracksToFluidMessage(session.tracks)
+  // const saveMsg = fluid.cybr.global.save()
+
+  // await client.send([activateMsg, tracksMsg, saveMsg])
 }
 
 run().finally(() => {
