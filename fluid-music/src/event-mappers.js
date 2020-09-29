@@ -114,6 +114,11 @@ function mapMidiChords(event, context) {
 function mapMidiNotes(event, context) {
   if (event.type !== noteTypes.midiNote) return event; // Arrays will still get returned
 
+  if (typeof event.n !== 'number' ||
+    typeof event.duration !== 'number' ||
+    typeof event.startTime !== 'number')
+    throw new Error('invalid midiNote event: ' + JSON.stringify(event))
+
   if (!context.clip.midiEvents) {
     context.clip.midiEvents = [];
   }

@@ -36,18 +36,43 @@ const tyrellN6 = new fluid.TyrellN6Vst2({
   tyrellPwdepth: 50
 })
 
+/**
+ * @param {Type} event
+ * @param  {fluid.ClipEventContext} context
+ */
+const arp = function (event, context) {
+  if (event.type !== 'midiChord') return event
+  console.warn('chord duration:', event.duration)
+  const stepSize = 1 / 4 / 2 / event.notes.length
+  const numSteps = Math.floor(event.duration / stepSize) // 16th notes
+  const result = []
+
+  for (let i = 0; i < numSteps; i++) {
+    const n = event.notes[i % event.notes.length]
+    const v = 80 - Math.round(60 * i / numSteps)
+    const startTime = stepSize * i + event.startTime
+    const duration = stepSize
+    result.push({ type: 'midiNote', startTime, duration, n, v })
+  }
+  return result
+}
+
 const session = new fluid.FluidSession({
   bpm: 92,
-  r: '1....2....3....',
+  r: '12345',
   nLibrary
 }, {
-  chords1: { plugins: [tyrellN6] },
+  chords1: { plugins: [tyrellN6], eventMappers: [arp] },
   chords2: { plugins: [tyrellN6] },
   chords3: { plugins: [tyrellN6] }
 })
 
 session.insertScore({
-  chords1: ['a--..b--..c--..']
+  chords1: {
+    clips: ['abcba', 'aabbc'],
+    eventMappers: [arp]
+  },
+  chords2: ['abcba']
 })
 
 const client = new cybr.Client()
