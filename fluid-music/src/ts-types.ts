@@ -103,6 +103,7 @@ export interface TracksObject {
  *    callbacks to store data if (for example) the event mapper needs to
  *    preserve information between callbacks. Like the EventContext, it is
  *    replaced for each Clip.
+ * @member messages only used in tracksToFluidMessage
  */
 export interface ClipEventContext {
   clip: Clip;
@@ -111,5 +112,5 @@ export interface ClipEventContext {
   data: object;
   bpm?: number;
   eventIndex?: number;
-  messages: any[];
+  messages?: any[];
 }

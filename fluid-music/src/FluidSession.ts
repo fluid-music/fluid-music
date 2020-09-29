@@ -186,7 +186,6 @@ export function applyEventMappers(session : FluidSession, ubiquitousMappers=mapp
         clip,
         clipIndex,
         data: {},
-        messages: [], // messages is needed in tracksToFluidMessage, but I'm not sure that it is needed in applyEventMappers
       };
 
       ubiquitousMappers = ubiquitousMappers || []; // null overrides default

@@ -4,6 +4,7 @@ import { vst2ToReaperObject } from './vst2ToReaperObject';
 
 import * as cybr from './cybr/index';
 import FluidIpcClient = require('./cybr/IpcClient');
+import { ClipEventContext } from './ts-types';
 
 const tab  = require('./tab');
 const rppp = require('rppp')
@@ -124,17 +125,20 @@ async function tracksToReaperProject(tracksObject : FluidTrack[], bpm : number, 
  * @param {ClipEvent[]} midiEvents
  * @param {ClipEventContext} context This will not have a .eventIndex
  */
-function midiEventsToReaperObject(midiEvents, context) {
+function midiEventsToReaperObject(midiEvents, context : ClipEventContext) {
   if (typeof context.clip.startTime !== 'number')
-    throw new Error('Clip is missing startTime');
+    throw new Error('Clip is missing startTime')
+  if (typeof context.bpm !== 'number')
+    throw new Error('midiEventsToReaperObject did not find a .bpm in the context')
 
-  const midiItem = new rppp.objects.ReaperItem();
-  const clipName  = `${context.track.name} ${context.clipIndex}`;
-  const startTime = context.clip.startTime;
-  const duration  = context.clip.duration;
-  midiItem.getOrCreateStructByToken('NAME').params[0] = clipName;
-  midiItem.getOrCreateStructByToken('POSITION').params[0] = startTime * 4 * 60 / context.bpm;
-  midiItem.getOrCreateStructByToken('LENGTH').params[0] = duration * 4 * 60 / context.bpm;
+  const midiItem = new rppp.objects.ReaperItem()
+  const clipName  = `${context.track.name} ${context.clipIndex}`
+  const startTime = context.clip.startTime
+  const duration  = context.clip.duration
+
+  midiItem.getOrCreateStructByToken('NAME').params[0] = clipName
+  midiItem.getOrCreateStructByToken('POSITION').params[0] = startTime * 4 * 60 / context.bpm
+  midiItem.getOrCreateStructByToken('LENGTH').params[0] = duration * 4 * 60 / context.bpm
 
   let midiArray : any[] = []
   for (const event of midiEvents) {
@@ -150,7 +154,7 @@ function midiEventsToReaperObject(midiEvents, context) {
 
   const midiSource = new rppp.objects.ReaperSource()
   midiSource.makeMidiSource()
-  midiSource.setMidiNotes(midiArray)
+  midiSource.setMidiNotes(midiArray, duration)
   midiItem.add(midiSource)
 
   return midiItem;
@@ -173,7 +177,7 @@ function fileEventsToReaperObject(fileEvents, context) {
   // };
 
   return fileEvents.map((event, eventIndex) => {
-    const startTime = context.clip.startTime + event.startTime;
+    const startTime = context.clip.startTime + event.startTime
 
     if (typeof event.path !== 'string') {
       console.error(event);
@@ -194,9 +198,9 @@ function fileEventsToReaperObject(fileEvents, context) {
       audioItem.getOrCreateStructByToken('SOFFS').params[0] = event.startInSourceSeconds
 
     if (event.oneShot && event.info)
-      audioItem.getOrCreateStructByToken('LENGTH').params[0] = event.info.duration - (event.startInSourceSeconds || 0);
+      audioItem.getOrCreateStructByToken('LENGTH').params[0] = event.info.duration - (event.startInSourceSeconds || 0)
     else
-      audioItem.getOrCreateStructByToken('LENGTH').params[0] = event.duration * 4 * 60 / context.bpm;
+      audioItem.getOrCreateStructByToken('LENGTH').params[0] = event.duration * 4 * 60 / context.bpm
 
     // apply fade in/out times (if specified)
     if (typeof event.fadeOutSeconds === 'number')
