@@ -151,7 +151,20 @@ export function tracksToFluidMessage(tracks : FluidTrack[]) {
       const pluginName = plugin.pluginName;
       trackMessages.push(cybr.plugin.select(pluginName, cybrType, nth(plugin)));
 
-      // Automation
+      // Plugin Parameters
+      for (const [paramKey, explicitValue] of Object.entries(plugin.parameters)) {
+        if (typeof explicitValue === 'number') {
+          const paramName = plugin.getParameterName(paramKey)
+          const normalizedValue = plugin.getNormalizedValue(paramKey, explicitValue)
+          if (typeof normalizedValue === 'number') {
+            trackMessages.push(cybr.plugin.setParamNormalized(paramName, normalizedValue))
+          } else {
+            trackMessages.push(cybr.plugin.setParamExplicit(paramName, explicitValue))
+          }
+        }
+      }
+
+      // Plugin Parameter Automation
       for (const [paramKey, automation] of Object.entries(plugin.automation)) {
         const paramName = plugin.getParameterName(paramKey); // JUCE style name
         // iterate over points. Ex { startTime: 0, value: 0.5, curve: 0 }
