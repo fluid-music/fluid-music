@@ -42,10 +42,16 @@ const tyrellN6 = new fluid.TyrellN6Vst2({
   // Osc Mod
   tyrellPwdepth: 15
 })
+tyrellN6.automation.tyrellTune2 = { points: [tyrellN6.makeAutomation.tyrellTune2(tyrellN6.parameters.tyrellTune2)] }
+tyrellN6.automation.tyrellCutoff = { points: [tyrellN6.makeAutomation.tyrellCutoff(tyrellN6.parameters.tyrellCutoff)] }
+
+const v = tyrellN6.makeAutomation.tyrellTune2(1)
+const V = tyrellN6.makeAutomation.tyrellCutoff(65)
+const w = [v, V]
 
 function fadeInOut (event, context) {
   const eventMapId = 'fadeInOutProcessed'
-  if (context.data[eventMapId]) return event
+  if (context.data[eventMapId] || event.type !== 'midiChord') return event
   context.data[eventMapId] = true
 
   const startTime = 0 // startTime is relative to the Clip
@@ -83,11 +89,11 @@ const arp = function (event, context) {
 const session = new fluid.FluidSession({
   bpm: 92,
   r: 'hhh',
-  nLibrary
+  nLibrary: Object.assign({ v, V, w }, nLibrary)
 }, {
   chords1: { plugins: [tyrellN6] },
-  chords2: { plugins: [tyrellN6] },
-  chords3: { plugins: [tyrellN6] }
+  chords2: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] },
+  chords3: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] }
 })
 
 const r3 = { r: '123', clips: ['...'] }
@@ -95,18 +101,18 @@ const rest6 = { r: 'hhh', clips: ['...'] }
 
 session.insertScore({
   chords1: {
-    clips: ['a--', r3, 'd--']
+    clips: ['a--', 'w', 'd--']
   },
   chords2: {
-    clips: [r3, 'b--', r3, 'e--']
+    clips: [r3, 'b--', 'w', 'e--']
   },
   chords3: {
     clips: [rest6, 'c--']
   },
-  eventMappers: [arp, fadeInOut]
+  eventMappers: [fadeInOut, arp]
 })
 
-const client = new cybr.Client()
+const client = new cybr.Client({ timeout: Math.pow(2, 31) - 1 })
 client.connect(true)
 
 const run = async () => {

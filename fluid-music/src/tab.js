@@ -86,15 +86,23 @@ const parseTab = function(rhythm, nPattern, nLibrary) {
       if (!nLibrary.hasOwnProperty(symbol))
         throw new Error(`noteLibrary has no note or chord for "${symbol}"`);
 
-      const note = nLibrary[symbol]; // get the Note from the NoteLibrary
+      // Get the event from the nLibrary. Allow nLibrary to contain a single
+      // event OR an array of simultaneous events
+      let notes = nLibrary[symbol];
+      if (!Array.isArray(notes)) notes = [notes]
+      // Calculate the event start and end times
       const start = (p === 0) ? 0 : rhythmObject.totals[p-1];
       const end = rhythmObject.totals[p+count-1];
+      const duration = end - start;
 
-      let event = Object.assign({}, note);
-      event.startTime = start;
-      event.duration = end - start;
+      for (const note of notes) {
+        // Copy the event (so we don't modify the nLibrary)
+        let event = Object.assign({}, note);
+        event.startTime = start;
+        event.duration = duration;
 
-      clip.events.push(event);
+        clip.events.push(event);
+      }
     }
     p += count;
   }
@@ -265,9 +273,6 @@ function arrayToSymbolsAndCounts(chars) {
   return results;
 }
 
-function parse(object, rhythm, noteLibrary, startTime, dPattern, dLibrary) {
-  throw new Error('tab.parse is deprecated in favor of score.parse');
-}
 
 /**
  * createDynamicGetter is part of an experiment with dynamics that work even
@@ -320,7 +325,6 @@ const reservedKeys = {
 
 module.exports = {
   createDynamicGetter,
-  parse,
   parseTab,
   parseRhythm,
   reservedKeys,

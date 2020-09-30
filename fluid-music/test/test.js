@@ -94,9 +94,9 @@ describe('createMidiNoteMessage', () => {
 
 describe('midiclip.create', () => {
   const notes = [
-    { n: 60, s: 0.0, l: 0.25 },
-    { n: 64, s: 0.5, l: 0.25 },
-    { n: 67, s: 1.0, l: 0.25 },
+    { n: 60, startTime: 0.0, duration: 0.25, type: 'midiNote' },
+    { n: 64, startTime: 0.5, duration: 0.25, type: 'midiNote' },
+    { n: 67, startTime: 1.0, duration: 0.25, type: 'midiNote' },
   ];
 
   const arpMessage = fluid.cybr.midiclip.create('clip1', 1, 2, notes);

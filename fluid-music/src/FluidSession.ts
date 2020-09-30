@@ -49,8 +49,10 @@ export class FluidSession {
 
   insertScore(score: any, config: any) {
     const r = parse(score, this, config);
+    // Charles: duration and startTime could be wrong if insert score is called more than once OR config specifies a non-zero start time
     this.duration = r.duration;
     this.startTime = r.startTime;
+    // Charles: applyEventMappers also breaks if insertScore is called more than once
     applyEventMappers(this);
   }
 }

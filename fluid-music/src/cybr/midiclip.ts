@@ -62,7 +62,7 @@ export function note(noteNum, startTimeInWholeNotes, durationInWholeNotes=0.25, 
  * @param { number } startTimeInWholeNotes clip start time in whole notes
  * @param { number} durationInWholeNotes clip length in whole notes
  * @param { Object[] } notes array of objects, which look like:
- *    `{ length: lengthWholeNotes, n: midiNoteNumber, startTime: startTimeWholeNotes }`
+ *    `{ duration: lengthWholeNotes, n: midiNoteNumber, startTime: startTimeWholeNotes }`
  */
 export function create(clipName, startTimeInWholeNotes, durationInWholeNotes, notes) {
   const elements = [
@@ -73,10 +73,10 @@ export function create(clipName, startTimeInWholeNotes, durationInWholeNotes, no
   notes.forEach((noteObject) => {
     if (typeof noteObject.n !== 'number' ||
         typeof noteObject.startTime !== 'number' ||
-        typeof noteObject.length !== 'number')
+        typeof noteObject.duration !== 'number')
         throw new Error('Got bad note: ' + JSON.stringify(noteObject));
 
-    const length = converters.valueToWholeNotes(noteObject.length);
+    const length = converters.valueToWholeNotes(noteObject.duration);
     const start = converters.valueToWholeNotes(noteObject.startTime);
     const noteMsg = note(noteObject.n, start, length, noteObject.v);
     elements.push(noteMsg);
