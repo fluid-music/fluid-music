@@ -4,11 +4,16 @@ const cybr = fluid.cybr
 const nLibrary = require('./n-library')
 
 const tyrellN6 = new fluid.TyrellN6Vst2({
+  // Osc Mod
+  tyrellSoftSync: 100,
+
+  // Envelope 1
   env1Attack: 0,
   env1Decay: 50,
   env1Sustain: 9.5,
   env1Release: 18,
 
+  // Envelope 2
   env2Attack: 0,
   env2Decay: 23.6,
   env2Sustain: 6,
@@ -18,7 +23,7 @@ const tyrellN6 = new fluid.TyrellN6Vst2({
   env2Velocity: 80,
 
   // LP/HP filter
-  tyrellCutoff: 75,
+  tyrellCutoff: 60,
   tyrellResonance: 34,
   tyrellKeyFollow: 100,
   tyrellFreqModDepth1: 120,
@@ -29,12 +34,13 @@ const tyrellN6 = new fluid.TyrellN6Vst2({
   tyrellOscVolume1: -30,
   tyrellOscVolume2: -78.5,
   tyrellSubVolume: -91,
+  tyrellTune2: 12,
 
   tyrellShape1: 2.35,
-  tyrellShape2: 1,
+  tyrellShape2: 1.7,
 
   // Osc Mod
-  tyrellPwdepth: 50
+  tyrellPwdepth: 15
 })
 
 function fadeInOut (event, context) {
@@ -76,7 +82,7 @@ const arp = function (event, context) {
 
 const session = new fluid.FluidSession({
   bpm: 92,
-  r: '12345',
+  r: 'hhh',
   nLibrary
 }, {
   chords1: { plugins: [tyrellN6] },
@@ -84,14 +90,20 @@ const session = new fluid.FluidSession({
   chords3: { plugins: [tyrellN6] }
 })
 
+const r3 = { r: '123', clips: ['...'] }
+const rest6 = { r: 'hhh', clips: ['...'] }
+
 session.insertScore({
   chords1: {
-    clips: ['abcba', 'aabbc', 'a----', 'b----', 'c----', 'd----', 'e----'],
-    eventMappers: [arp, fadeInOut]
+    clips: ['a--', r3, 'd--']
   },
   chords2: {
-    clips: ['abcba']
-  }
+    clips: [r3, 'b--', r3, 'e--']
+  },
+  chords3: {
+    clips: [rest6, 'c--']
+  },
+  eventMappers: [arp, fadeInOut]
 })
 
 const client = new cybr.Client()
