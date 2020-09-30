@@ -84,22 +84,21 @@ export interface TracksObject {
 
 
 /**
- * Score.parse passes ClipContext objects as the second argument to
- * eventMapper functions. Its fields specify the context of the NoteObject
+ * Score.parse passes ClipEventContext objects as the second argument to
+ * eventMapper functions. Its fields specify the context of the ClipEvent
  * currently being processed, including the track and clip that contain the
  * note.
- * @typedef {Object} ClipEventContext
- * @member {number} bpm the bpm of the clip, this is needed in 
+ * @member bpm the bpm of the clip, this is needed in 
  *    tracksToReaperProject.
- * @member {Clip} clip the Clip that contains the current event
- * @member {Track} track the Track that contains the current event
- * @member {TracksObject} tracks
- * @member {number} clipIndex index of the clip within the track
- * @member {number} [eventIndex] index of the event within the clip.
+ * @member clip the Clip that contains the current event
+ * @member track the Track that contains the current event
+ * @member tracks
+ * @member clipIndex index of the clip within the track
+ * @member [eventIndex] index of the event within the clip.
  *    score.parse updates this automatically before each eventMapper
  *    callback. Note available in (non-end-user) cases where a callback is
  *    passed an array of events, this will not be available.
- * @member {Object} data this is a convenient place for `eventMapper`
+ * @member data this is a convenient place for `eventMapper`
  *    callbacks to store data if (for example) the event mapper needs to
  *    preserve information between callbacks. Like the EventContext, it is
  *    replaced for each Clip.
@@ -109,7 +108,7 @@ export interface ClipEventContext {
   clip: Clip;
   track: Track;
   clipIndex: number;
-  data: object;
+  data: any;
   bpm?: number;
   eventIndex?: number;
   messages?: any[];

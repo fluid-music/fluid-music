@@ -2,6 +2,7 @@ const path = require('path')
 const fluid = require('fluid-music')
 const cybr = fluid.cybr
 const nLibrary = require('./n-library')
+const { clip, eventMappers } = require('fluid-music')
 
 const tyrellN6 = new fluid.TyrellN6Vst2({
   // Osc Mod
@@ -71,8 +72,7 @@ function fadeInOut (event, context) {
  */
 const arp = function (event, context) {
   if (event.type !== 'midiChord') return event
-  // fit two arpeggiated ramps inside every quarter note
-  const stepSize = 1 / 4 / 2 / event.notes.length
+  const stepSize = 1 / 4 / 8
   const numSteps = Math.floor(event.duration / stepSize)
   const result = []
 
@@ -101,16 +101,47 @@ const rest6 = { r: 'hhh', clips: ['...'] }
 
 session.insertScore({
   chords1: {
-    clips: ['a--', 'w', 'd--']
+    clips: ['a--', 'a--', 'd--'],
+    chords1: ['...', 'w'],
+    eventMappers: [arp]
   },
   chords2: {
-    clips: [r3, 'b--', 'w', 'e--']
+    clips: [r3, 'b--', 'w', 'e--'],
+    eventMappers: [fadeInOut, arp]
   },
   chords3: {
-    clips: [rest6, 'c--']
-  },
-  eventMappers: [fadeInOut, arp]
+    clips: [rest6, 'c--'],
+    eventMappers: [fadeInOut, arp]
+  }
 })
+
+// pseudo side-chain first track
+const clips2and3 = [
+  ...session.tracks.find(t => t.name === 'chords2').clips,
+  ...session.tracks.find(t => t.name === 'chords3').clips]
+  .filter(clip => clip.midiEvents && clip.midiEvents.length)
+const timesAndAmounts = clips2and3.map(c => [
+  { time: c.startTime, delta: 0 },
+  { time: c.startTime + c.duration / 2, delta: -8 },
+  { time: c.startTime + c.duration, delta: 8 }
+]).flat()
+let tds = []
+timesAndAmounts.forEach(td => {
+  const obj = tds.find(td2 => td2.time === td.time)
+  if (obj) {
+    obj.delta += td.delta
+  } else {
+    tds.push(td)
+  }
+})
+tds = tds.sort((a, b) => a.time - b.time)
+let sum = 0
+const gainAutomation = tds.map((td, i) => {
+  sum += td.delta
+  return { type: 'trackAuto', paramKey: 'gain', startTime: td.time, value: sum, curve: -0.5 }
+})
+session.tracks.find(track => track.name === 'chords1').automation.gain = { points: gainAutomation }
+console.warn(gainAutomation)
 
 const client = new cybr.Client({ timeout: Math.pow(2, 31) - 1 })
 client.connect(true)
