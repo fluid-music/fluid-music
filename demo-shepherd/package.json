@@ -12,7 +12,7 @@
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
   "dependencies": {
-    "fluid-music": "file:../fluid-music",
+    "ramda": "^0.27.1",
     "standard": "^14.3.4"
   }
 }

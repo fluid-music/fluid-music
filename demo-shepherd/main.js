@@ -1,8 +1,9 @@
 const path = require('path')
-const fluid = require('fluid-music')
+const fluid = require('../fluid-music')
 const cybr = fluid.cybr
 const nLibrary = require('./n-library')
-const { clip, eventMappers } = require('fluid-music')
+const nLib2 = require('./n-library-3')
+const R = require('ramda')
 
 const tyrellN6 = new fluid.TyrellN6Vst2({
   // Osc Mod
@@ -46,9 +47,15 @@ const tyrellN6 = new fluid.TyrellN6Vst2({
 tyrellN6.automation.tyrellTune2 = { points: [tyrellN6.makeAutomation.tyrellTune2(tyrellN6.parameters.tyrellTune2)] }
 tyrellN6.automation.tyrellCutoff = { points: [tyrellN6.makeAutomation.tyrellCutoff(tyrellN6.parameters.tyrellCutoff)] }
 
-const v = tyrellN6.makeAutomation.tyrellTune2(1)
-const V = tyrellN6.makeAutomation.tyrellCutoff(65)
-const w = [v, V]
+const w = [tyrellN6.makeAutomation.tyrellTune2(24), tyrellN6.makeAutomation.tyrellCutoff(65)]
+const x = [tyrellN6.makeAutomation.tyrellTune2(1), tyrellN6.makeAutomation.tyrellCutoff(60)]
+
+for (const [k, v] of Object.entries(nLib2)) {
+  if (v.type !== 'midiChord') continue
+  const b = Object.assign({}, v)
+  b.notes = b.notes.map(v => v + 5)
+  nLib2[k.toUpperCase()] = b
+}
 
 function fadeInOut (event, context) {
   const eventMapId = 'fadeInOutProcessed'
@@ -70,50 +77,61 @@ function fadeInOut (event, context) {
  * @param {Type} event
  * @param  {fluid.ClipEventContext} context
  */
-const arp = function (event, context) {
-  if (event.type !== 'midiChord') return event
-  const stepSize = 1 / 4 / 8
-  const numSteps = Math.floor(event.duration / stepSize)
-  const result = []
+const arp = function (stepsPerQuarter = 8) {
+  return function (event, context) {
+    if (event.type !== 'midiChord') return event
+    const stepSize = 1 / 4 / stepsPerQuarter
+    const numSteps = Math.floor(event.duration / stepSize)
+    const result = []
 
-  for (let i = 0; i < numSteps; i++) {
-    const n = event.notes[i % event.notes.length]
-    const v = 80 - Math.round(60 * i / numSteps)
-    const startTime = stepSize * i + event.startTime
-    const duration = stepSize
-    result.push({ type: 'midiNote', startTime, duration, n, v })
+    for (let i = 0; i < numSteps; i++) {
+      const n = event.notes[i % event.notes.length]
+      const v = 64 - Math.round(30 * i / numSteps)
+      const startTime = stepSize * i + event.startTime
+      const duration = stepSize
+      result.push({ type: 'midiNote', startTime, duration, n, v })
+    }
+    return result
   }
-  return result
 }
 
 const session = new fluid.FluidSession({
   bpm: 92,
-  r: 'hhh',
-  nLibrary: Object.assign({ v, V, w }, nLibrary)
+  r: 'whh',
+  nLibrary: Object.assign({ w, x }, nLib2)
 }, {
   chords1: { plugins: [tyrellN6] },
   chords2: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] },
-  chords3: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] }
+  chords3: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] },
+  chords4: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] }
 })
 
-const r3 = { r: '123', clips: ['...'] }
-const rest6 = { r: 'hhh', clips: ['...'] }
+session.tracks.find(t => t.name === 'chords2').pan = -0.2
+session.tracks.find(t => t.name === 'chords3').pan = 0.2
 
-session.insertScore({
+const r4 = { r: '1234', clips: ['....'] }
+
+session.insertScore([{
   chords1: {
-    clips: ['a--', 'a--', 'd--'],
-    chords1: ['...', 'w'],
-    eventMappers: [arp]
+    clips: ['a--', 'a--', 'd--', 'b-.'],
+    chords1: ['w', 'x', 'w', 'x', 'w', 'x'],
+    eventMappers: [arp()]
   },
   chords2: {
-    clips: [r3, 'b--', 'w', 'e--'],
-    eventMappers: [fadeInOut, arp]
+    clips: [r4, 'b--', 'w', 'e--'],
+    chords2: ['w', 'x', 'w', 'x', 'w', 'x'],
+    eventMappers: [fadeInOut, arp()]
   },
   chords3: {
-    clips: [rest6, 'c--'],
-    eventMappers: [fadeInOut, arp]
+    clips: [r4, r4, 'e-', 'w', 'g-'],
+    chords3: ['w', 'x', 'w', 'x', 'w', 'x'],
+    eventMappers: [fadeInOut, arp()]
+  },
+  chords4: {
+    clips: [r4, r4, r4, r4, r4],
+    eventMappers: [fadeInOut, arp(6)]
   }
-})
+}])
 
 // pseudo side-chain first track
 const clips2and3 = [
@@ -141,8 +159,8 @@ const gainAutomation = tds.map((td, i) => {
   return { type: 'trackAuto', paramKey: 'gain', startTime: td.time, value: sum, curve: -0.5 }
 })
 session.tracks.find(track => track.name === 'chords1').automation.gain = { points: gainAutomation }
-console.warn(gainAutomation)
 
+// Create DAW sessions
 const client = new cybr.Client({ timeout: Math.pow(2, 31) - 1 })
 client.connect(true)
 
@@ -152,11 +170,13 @@ const run = async () => {
   console.log(rpp.dump())
 
   // send to CYBR
-  // const activateMsg = fluid.cybr.global.activate(path.join(__dirname, 'demo-shepherd.tracktionedit'), true)
-  // const tracksMsg = fluid.tracksToFluidMessage(session.tracks)
-  // const saveMsg = fluid.cybr.global.save()
+  const play = [fluid.cybr.transport.play(), fluid.cybr.tempo.set(session.bpm)] // fluid.cybr.transport.loop(0, session.duration) ]
+  const activateMsg = fluid.cybr.global.activate(path.join(__dirname, 'demo-shepherd.tracktionedit'), true)
+  const templateMsg = fluid.sessionToTemplateFluidMessage(session)
+  const tracksMsg = fluid.tracksToFluidMessage(session.tracks)
+  const saveMsg = fluid.cybr.global.save()
 
-  // await client.send([activateMsg, tracksMsg, saveMsg])
+  await client.send([activateMsg, templateMsg, tracksMsg, saveMsg, play])
 }
 
 run().finally(() => {
