@@ -44,27 +44,6 @@ import { midiVelocityToDbfs, numberToMidiNote } from './converters';
  */
 
 /**
- * @param {Event} event
- * @param {ClipEventContextJSDOC} context
- */
-function mapVelocityNumbersToDynamic(event, context) {
-  if (!event.hasOwnProperty('d')) return event;
-
-  if (typeof event.d === 'number') {
-    event.d = {
-      v: event.d,
-      dbfs: midiVelocityToDbfs(event.d, -10, 10),
-      intensity: R.clamp(0, 1, Math.floor(event.d / 127)),
-    }
-  }
-
-  // As a convenience, add v directly to the event.
-  if (typeof event.d.v === 'number') event.v = event.d.v;
-
-  return event;
-}
-
-/**
  * Copy the basic, generic properties from the source to the target. This
  * includes the `.d` dynamic (if it exists), `.startTime` and `.duration`.
  * 
@@ -152,7 +131,7 @@ function mapIntensityLayers(event, context) {
   //   v: 64,
   // }
   let length = event.iLayers.length; // number of layers
-  let index = length - 1;              // default to last layer
+  let index = length - 1;            // default to last layer
 
   // Look for an intensity
   if (event.d && typeof(event.d.intensity) === 'number') {
@@ -179,7 +158,6 @@ function mapAudioFiles(event, context) {
 }
 
 module.exports = {
-  mapVelocityNumbersToDynamic,
   mapRandom,
   mapAutomation,
   mapMidiChords,
@@ -187,7 +165,6 @@ module.exports = {
   mapIntensityLayers,
   mapAudioFiles,
   default: [
-    mapVelocityNumbersToDynamic,
     mapRandom,
     mapMidiChords,
     mapAutomation,

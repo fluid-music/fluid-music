@@ -94,7 +94,7 @@ export interface TracksObject {
  * @member track the Track that contains the current event
  * @member tracks
  * @member clipIndex index of the clip within the track
- * @member [eventIndex] index of the event within the clip.
+ * @member eventIndex index of the event within the clip.
  *    score.parse updates this automatically before each eventMapper
  *    callback. Note available in (non-end-user) cases where a callback is
  *    passed an array of events, this will not be available.

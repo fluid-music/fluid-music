@@ -65,3 +65,15 @@ export function midiVelocityToDbfs(v, min = -60, max = 6) {
   const range = max - min;
   return R.clamp(min, max, v / 127 * range + min);
 };
+
+
+/**
+ * @param {number} velocity
+ */
+export function velocityNumberToDynamic(velocity) {
+  return {
+    v: velocity,
+    dbfs: midiVelocityToDbfs(velocity, -10, 10),
+    intensity: R.clamp(0, 1, Math.floor(velocity / 127)),
+  }
+}
