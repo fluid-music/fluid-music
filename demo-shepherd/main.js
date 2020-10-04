@@ -1,8 +1,10 @@
 const path = require('path')
 const fluid = require('fluid-music')
 const cybr = fluid.cybr
-const nLibrary = require('./n-library')
-const { clip, eventMappers } = require('fluid-music')
+const nLibrary = require('./n-library-4')
+for (const key of Object.keys(nLibrary)) {
+  nLibrary[key].notes = nLibrary[key].notes.map(n => n + 12)
+}
 
 const tyrellN6 = new fluid.TyrellN6Vst2({
   // Osc Mod
@@ -78,7 +80,7 @@ const arp = function (event, context) {
 
   for (let i = 0; i < numSteps; i++) {
     const n = event.notes[i % event.notes.length]
-    const v = 80 - Math.round(60 * i / numSteps)
+    const v = Math.min(127, Math.max(1, Math.round(80 * Math.pow(1.045, -i))))
     const startTime = stepSize * i + event.startTime
     const duration = stepSize
     result.push({ type: 'midiNote', startTime, duration, n, v })
@@ -97,11 +99,12 @@ const session = new fluid.FluidSession({
 })
 
 const r3 = { r: '123', clips: ['...'] }
+const r5 = { r: '12345', clips: ['.....'] }
 const rest6 = { r: 'hhh', clips: ['...'] }
 
 session.insertScore({
   chords1: {
-    clips: ['a--', 'a--', 'd--'],
+    clips: ['a--', 'd--', 'f--'],
     chords1: ['...', 'w'],
     eventMappers: [arp]
   },
@@ -110,7 +113,7 @@ session.insertScore({
     eventMappers: [fadeInOut, arp]
   },
   chords3: {
-    clips: [rest6, 'c--'],
+    clips: [r5, 'c--'],
     eventMappers: [fadeInOut, arp]
   }
 })
