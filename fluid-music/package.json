@@ -8,6 +8,7 @@
     "watch": "nodemon -e .js,.mjs,.json,.yaml,.yml src/index.js",
     "test": "mocha",
     "test-sess": "mocha test/test-session.js",
+    "test-events": "mocha test/test-events.js",
     "test-tab": "mocha test/test-tab.js",
     "test-gen": "mocha test/test-code-generators.js",
     "test-debug": "mocha --reporter spec --inspect-brk",

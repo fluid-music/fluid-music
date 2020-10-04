@@ -30,16 +30,12 @@ export interface Clip {
 * @member d
 */
 export interface FluidEvent {
-  type: string;
+  readonly type: string;
   startTime?: number;
   duration?: number;
   [key: string]: any;
 
   d: any; // Dynamic object
-  path?: string;
-  fadeOutSeconds?: number;
-  fadeInSeconds?: number;
-  oneShot: boolean;
 }
 
 

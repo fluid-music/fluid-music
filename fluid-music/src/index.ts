@@ -5,6 +5,7 @@ import * as gen from './plugin-generator';
 import * as converters from './converters';
 import m from './m'
 import * as random from './random';
+import * as events from './fluid-events'
 
 // New Style Plugins
 import { DragonflyRoom } from './plugin-dradonfly-room';
@@ -65,6 +66,7 @@ export = {
   converters,
   noteLibrary,
   eventMappers,
+  events,
   noteTypes,
   gen,
   global,
