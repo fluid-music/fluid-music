@@ -1,6 +1,6 @@
 import { ClipEventContext } from './ts-types'
 import { AutomationPoint } from './plugin'
-
+import * as random from './random'
 /**
 * @typedef {Object} FluidEvent
 * @member type String indicating the type of event
@@ -306,4 +306,83 @@ export class EventMidiChord extends EventBase {
 export interface EventMidiChordOptions extends EventBaseOptions {
   name? : string
   notes : number[]
+}
+
+
+/**
+ * For samples that have "Intensity Layers," meaning recordings that were
+ * sampled at successive increasing performance intensities
+ */
+export class EventILayers extends EventBase {
+  layers : FluidEvent[]
+
+  constructor(options : EventILayersOptions) {
+    super(options)
+    this.layers = options.layers
+  }
+
+  process(context : ClipEventContext) {
+    const changes : any = {
+      startTime: this.startTime,
+      duration: this.duration,
+    }
+    if (this.d) changes.d = this.d
+
+    let length = this.layers.length // number of layers
+    let index = length - 1          // default to last layer
+
+    // Look for an intensity
+    if (this.d && typeof(this.d.intensity) === 'number') {
+      index = Math.floor(this.d.intensity * length)
+    }
+    // If no intensity was found, look for a velocity
+    else if (this.d && typeof this.d.v === 'number') {
+      index = Math.floor(this.d.v / (127 / this.layers.length))
+    }
+
+    let newEvent = this.layers[EventILayers.clamp(0, length-1, index)]
+    if (newEvent instanceof EventBase) newEvent = newEvent.deepCopy(changes)
+    else {
+      newEvent = Object.assign({}, newEvent)
+      Object.assign(newEvent, changes)
+    }
+
+    return newEvent
+  }
+
+  static clamp(min: number, max: number, value: number) {
+    if (min > max) [min, max] = [max, min]
+    return Math.max(Math.min(value, max), min)
+  }
+}
+export interface EventILayersOptions extends EventBaseOptions {
+  layers : FluidEvent[]
+}
+
+/**
+ * Randomly chooses an Event from an array of choices
+ */
+export class EventRandom extends EventBase {
+  choices : FluidEvent[]
+  constructor (options : EventRandomOptions) {
+    super(options)
+    this.choices = options.choices
+  }
+
+  process(context : ClipEventContext) {
+    const changes : any = {
+      startTime: this.startTime,
+      duration: this.duration,
+    }
+    if (this.d) changes.d = this.d
+
+    let newEvent = random.choice(this.choices)
+    if (newEvent instanceof EventBase) return newEvent.deepCopy(changes)
+
+    newEvent = Object.assign({}, newEvent)
+    return Object.assign(newEvent, changes)
+  }
+}
+export interface EventRandomOptions extends EventBaseOptions {
+  choices : FluidEvent[]
 }
