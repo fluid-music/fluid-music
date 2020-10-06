@@ -57,8 +57,8 @@ module.exports = {
      * `trackAuto` represents an automation point for a track parameter such as
      * `'gain'` or `'pan'`.
      *
-     * Unlike `pluginAuto`, it does not specify a `.plugin`.
-     * Like   `pluginAuto`, it specifies a `.param.name` string and a value.
+     * Unlike `pluginAuto`, it does not specify a `.pluginSelector`.
+     * Like   `pluginAuto`, it specifies a `.paramKey` string and a value.
      */
     { type: 'trackAuto', paramKey: 'gain', value: -6, curve: 0 },
     { type: 'trackAuto', paramKey: 'pan',  value:  1, curve: 0 },

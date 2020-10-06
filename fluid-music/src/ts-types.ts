@@ -1,4 +1,5 @@
 import { FluidPlugin, Automation } from "./plugin";
+import { FluidEvent } from './fluid-events'
 
 /**
  * @member duration length measured in whole notes
@@ -12,32 +13,6 @@ export interface Clip {
   startTime? : number;
   eventMappers? : any[];
 }
-
-/**
-* @typedef {Object} FluidEvent
-* @member type String indicating the type of event:
-*   'file' indicates an audio sample, which should have a `.path`.
-*   'iLayers' indicates the presence of a `.iLayers` field, which contains an
-*    array of `FluidEvent`s with `.type === 'file'`. Files in the `.iLayers`
-*    array should be arranged in order of increasing performance intensity.
-* @member path file objects must include a path string
-* @member fadeOutSeconds fade out in seconds (file objects)
-* @member fadeInSeconds fade in in seconds (file objects)
-* @member oneShot if true, file objects will play until the end,
-*   ignoring the note's length
-* @member startTime
-* @member length
-* @member d
-*/
-export interface FluidEvent {
-  readonly type: string;
-  startTime?: number;
-  duration?: number;
-  [key: string]: any;
-
-  d: any; // Dynamic object
-}
-
 
 export interface xLibrary {
   [key: string]: FluidEvent;

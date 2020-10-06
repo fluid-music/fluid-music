@@ -1,4 +1,5 @@
-import { FluidEvent, ClipEventContext } from "./ts-types";
+import { ClipEventContext } from "./ts-types";
+import { FluidEvent } from './fluid-events'
 import { Automation, AutomationPoint, PluginAutomationEvent } from './plugin';
 
 /**
@@ -55,7 +56,7 @@ export function mapAutomation(event: FluidEvent, context : ClipEventContext) {
     curve: 0,
   };
   if (typeof event.curve === 'number')
-    point.curve = (event.curve as number)
+    point.curve = event.curve
 
   if (!automation.hasOwnProperty(event.paramKey))
     automation[event.paramKey] = { points: [] };

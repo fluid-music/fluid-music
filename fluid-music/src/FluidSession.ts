@@ -6,6 +6,7 @@ const reservedKeys = tab.reservedKeys;
 
 import { FluidTrack, TrackConfig } from './FluidTrack';
 import { ScoreConfig, ClipEventContext } from './ts-types';
+import { FluidEvent, EventBase, EventBaseOptions } from './fluid-events'
 
 export interface TracksConfig {
   [trackName: string] : TrackConfig | FluidTrack;
@@ -36,6 +37,7 @@ export class FluidSession {
   regions : any[] = [];
   startTime? : number;
   duration? : number;
+  readonly eventTypes : Map<string, {new(...options: any[]) : EventBase}> = new Map<string, {new(...options: any[]) : EventBase}>();
 
   getOrCreateTrackByName(name: string) : FluidTrack {
     for (const track of this.tracks)

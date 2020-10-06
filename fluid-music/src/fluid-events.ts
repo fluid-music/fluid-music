@@ -1,15 +1,32 @@
-/* Build in Event classes */
+import { ClipEventContext } from './ts-types'
+import { AutomationPoint } from './plugin'
 
-import { FluidEvent } from './ts-types'
+/**
+* @typedef {Object} FluidEvent
+* @member type String indicating the type of event
+* @member startTime
+* @member duration
+* @member d
+*/
+export interface FluidEvent {
+  readonly type : string;
+  startTime? : number;
+  duration? : number;
+  [key: string] : any;
+
+  d : any; // Dynamic object
+  process? : {(context : ClipEventContext) : null|FluidEvent|EventBase|any[]}
+}
+
 
 /**
  * Base class for internal event types.
  */
 export class EventBase implements FluidEvent {
-  // readonly type : string = 'base'
   startTime : number = 0
   duration : number = 0
   d : object = {}
+
   constructor(options : EventBaseOptions) {
     if (typeof options.startTime === 'number') this.startTime = options.startTime
     if (typeof options.duration === 'number') this.duration = options.duration
@@ -24,6 +41,14 @@ export class EventBase implements FluidEvent {
     const args = Object.assign({}, this)
     return new (this.constructor as any)(Object.assign(args, updates), ...rest) as E
   }
+
+  process(context : ClipEventContext) {
+    if (this.type === 'EventBase')
+      console.warn(`WARNING: Unhandled EventBase Event`)
+    else
+      console.warn(`WARNING: Custom event type (${this.type}) is missing an event.process(context) method`)
+    return null
+  }
 }
 
 export interface EventBaseOptions {
@@ -31,6 +56,7 @@ export interface EventBaseOptions {
   duration? : number
   d? : any
 }
+
 
 /**
  * An audio sample on a track
@@ -52,6 +78,12 @@ export class EventAudioFile extends EventBase {
     if (typeof options.fadeOutSeconds === 'number') this.fadeOutSeconds = options.fadeOutSeconds
     if (typeof options.oneShot === 'boolean') this.oneShot = options.oneShot
     if (options.info) this.info = options.info
+  }
+
+  process(context : ClipEventContext) {
+    if (!context.clip.fileEvents) context.clip.fileEvents = [];
+    context.clip.fileEvents.push(this);
+    return null;
   }
 }
 export interface EventAudioFileOptions extends EventBaseOptions {
@@ -77,6 +109,18 @@ export class EventMidiNote extends EventBase {
     super(options)
     this.note = options.note
     if (typeof options.velocity === 'number') this.velocity = options.velocity
+  }
+
+  process(context : ClipEventContext) {
+    if (typeof this.note !== 'number' ||
+    typeof this.duration !== 'number' ||
+    typeof this.startTime !== 'number')
+      throw new Error('invalid midiNote event: ' + JSON.stringify(this))
+
+    if (!context.clip.midiEvents) context.clip.midiEvents = []
+
+    context.clip.midiEvents.push(this);
+    return null;
   }
 }
 export interface EventMidiNoteOptions extends EventBaseOptions {
@@ -105,6 +149,36 @@ export class EventPluginAuto extends EventBase {
     if (typeof options.value === 'number') this.value = options.value
     if (typeof options.curve === 'number') this.curve = options.curve
   }
+
+  process(context : ClipEventContext) {
+    const startTime = (context.clip.startTime as number) + (this.startTime as number);
+    const point : AutomationPoint = {
+      startTime,
+      value: (this.value as number),
+      curve: 0,
+    };
+
+    if (typeof this.curve === 'number') point.curve = this.curve
+
+    const nth     = this.pluginSelector.nth || 0;
+    const matches = context.track.plugins.filter(plugin =>
+      plugin.pluginName === this.pluginSelector.pluginName &&
+      plugin.pluginType === this.pluginSelector.pluginType);
+
+    if (nth >= matches.length) {
+      const needed = nth - matches.length + 1;
+      if (needed > 0) throw new Error(`${needed} missing ${this.pluginSelector.pluginName} plugins of on ${context.track.name} track`);
+    }
+    const plugin = matches[nth];
+    const automation = plugin.automation;
+
+    if (!automation.hasOwnProperty(this.paramKey))
+      automation[this.paramKey] = { points: [] };
+
+    automation[this.paramKey].points.push(point);
+
+    return null
+  }
 }
 
 export interface EventPluginAutoOptions extends EventBaseOptions {
@@ -124,8 +198,8 @@ export interface EventPluginAutoOptions extends EventBaseOptions {
  *    particular track.
  */
 export interface PluginSelector {
-  name : string
-  type? : string
+  pluginName : string
+  pluginType : string
   nth? : number
 }
 
@@ -141,6 +215,26 @@ export class EventTrackAuto extends EventBase {
   constructor (options : EventTrackAutoOptions) {
     super(options)
     this.paramKey = options.paramKey
+  }
+
+  process(context : ClipEventContext) {
+    const startTime = (context.clip.startTime as number) + (this.startTime as number);
+    const point : AutomationPoint = {
+      startTime,
+      value: (this.value as number),
+      curve: 0,
+    };
+
+    if (typeof this.curve === 'number') point.curve = this.curve
+
+    const automation = context.track.automation
+
+    if (!automation.hasOwnProperty(this.paramKey))
+      automation[this.paramKey] = { points: [] };
+
+    automation[this.paramKey].points.push(point);
+
+    return null
   }
 }
 

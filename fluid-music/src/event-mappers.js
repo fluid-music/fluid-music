@@ -3,7 +3,7 @@ const noteTypes  = require('./note-types');
 const random     = require('./random');
 
 import { mapAutomation }  from './event-mappers-ts';
-import { midiVelocityToDbfs, numberToMidiNote } from './converters';
+import { numberToMidiNote } from './converters';
 
 /**
  * score.tracksToFluidMessage passes Events through a series of eventMapper
