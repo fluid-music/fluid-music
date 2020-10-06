@@ -18,6 +18,7 @@ export interface FluidEvent {
   process? : {(context : ClipEventContext) : null|FluidEvent|EventBase|any[]}
 }
 
+export interface EventClass { new(...options: any[]): EventBase }
 
 /**
  * Base class for internal event types.
@@ -27,7 +28,7 @@ export class EventBase implements FluidEvent {
   duration : number = 0
   d : object = {}
 
-  constructor(options : EventBaseOptions) {
+  constructor (options : EventBaseOptions) {
     if (typeof options.startTime === 'number') this.startTime = options.startTime
     if (typeof options.duration === 'number') this.duration = options.duration
     if (options.d) this.d = Object.assign({}, options.d)
@@ -37,12 +38,12 @@ export class EventBase implements FluidEvent {
     return this.constructor.name
   }
 
-  deepCopy<E extends EventBase>(updates : object = {}, ...rest) {
+  deepCopy<E extends EventBase> (updates : object = {}, ...rest) {
     const args = Object.assign({}, this)
     return new (this.constructor as any)(Object.assign(args, updates), ...rest) as E
   }
 
-  process(context : ClipEventContext) {
+  process (context : ClipEventContext) : null|FluidEvent|EventBase|any[] {
     if (this.type === 'EventBase')
       console.warn(`WARNING: Unhandled EventBase Event`)
     else
@@ -71,7 +72,7 @@ export class EventAudioFile extends EventBase {
   oneShot : boolean = false
   info : object = {}
 
-  constructor(options : EventAudioFileOptions) {
+  constructor (options : EventAudioFileOptions) {
     super(options)
     this.path = options.path
     if (typeof options.fadeInSeconds === 'number') this.fadeInSeconds = options.fadeInSeconds
@@ -80,7 +81,7 @@ export class EventAudioFile extends EventBase {
     if (options.info) this.info = options.info
   }
 
-  process(context : ClipEventContext) {
+  process (context : ClipEventContext) {
     if (!context.clip.fileEvents) context.clip.fileEvents = [];
     context.clip.fileEvents.push(this);
     return null;
@@ -107,11 +108,15 @@ export class EventMidiNote extends EventBase {
 
   constructor(options : EventMidiNoteOptions) {
     super(options)
+    // For backwards compatibility
+    if (typeof options.n === 'number' && typeof options.note !== 'number') options.note = options.n
+    if (typeof options.v === 'number' && typeof options.velocity !== 'number') options.velocity = options.v
+
     this.note = options.note
     if (typeof options.velocity === 'number') this.velocity = options.velocity
   }
 
-  process(context : ClipEventContext) {
+  process (context : ClipEventContext) {
     if (typeof this.note !== 'number' ||
     typeof this.duration !== 'number' ||
     typeof this.startTime !== 'number')
@@ -126,6 +131,8 @@ export class EventMidiNote extends EventBase {
 export interface EventMidiNoteOptions extends EventBaseOptions {
   note : number
   velocity? : number
+  n? : number
+  v? : number
 }
 
 
@@ -150,7 +157,7 @@ export class EventPluginAuto extends EventBase {
     if (typeof options.curve === 'number') this.curve = options.curve
   }
 
-  process(context : ClipEventContext) {
+  process (context : ClipEventContext) {
     const startTime = (context.clip.startTime as number) + (this.startTime as number);
     const point : AutomationPoint = {
       startTime,
@@ -169,6 +176,7 @@ export class EventPluginAuto extends EventBase {
       const needed = nth - matches.length + 1;
       if (needed > 0) throw new Error(`${needed} missing ${this.pluginSelector.pluginName} plugins of on ${context.track.name} track`);
     }
+
     const plugin = matches[nth];
     const automation = plugin.automation;
 
@@ -217,7 +225,7 @@ export class EventTrackAuto extends EventBase {
     this.paramKey = options.paramKey
   }
 
-  process(context : ClipEventContext) {
+  process (context : ClipEventContext) {
     const startTime = (context.clip.startTime as number) + (this.startTime as number);
     const point : AutomationPoint = {
       startTime,
@@ -254,14 +262,32 @@ export class EventChord extends EventBase {
     if (typeof options.name === 'string') this.name = options.name
   }
 
-  // Charles: here's how the .process method should work.
-  // For each event, if it is:
-  // 1) an Object, return the object, and the underlying session
-  //    will try to convert it to an Event
-  // 2) an EventBase, return a .deepCopy()
+  process (context : ClipEventContext) {
+    return this.events.map((event) : any => {
+      if (event instanceof EventBase) return event.deepCopy()
+      return event
+    })
+  }
 }
 
 export interface EventChordOptions extends EventBaseOptions {
   name? : string
   events : FluidEvent[]
+}
+
+
+export class EventMidiChord extends EventBase {
+  notes : number[]
+  name : string = 'midi chord'
+
+  constructor (options : EventMidiChordOptions) {
+    super(options)
+    this.notes = options.notes
+    if (typeof options.name === 'string') this.name = options.name
+  }
+}
+
+export interface EventMidiChordOptions extends EventBaseOptions {
+  name? : string
+  notes : number[]
 }

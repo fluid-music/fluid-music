@@ -6,20 +6,20 @@ const reservedKeys = tab.reservedKeys;
 
 import { FluidTrack, TrackConfig } from './FluidTrack';
 import { ScoreConfig, ClipEventContext } from './ts-types';
-import { FluidEvent, EventBase, EventBaseOptions } from './fluid-events'
+import { EventClass, EventAudioFile, EventMidiNote, EventTrackAuto, EventPluginAuto, EventMidiChord, EventChord } from './fluid-events'
 
 export interface TracksConfig {
-  [trackName: string] : TrackConfig | FluidTrack;
+  [trackName: string] : TrackConfig | FluidTrack
 }
 
 export interface SessionConfig extends ScoreConfig {
-  bpm?: number;
+  bpm?: number
 }
 
 export class FluidSession {
   constructor(config: SessionConfig, tracks: TracksConfig = {}) {
-    if (typeof config.bpm === 'number') this.bpm = config.bpm;
-    this.scoreConfig = config;
+    if (typeof config.bpm === 'number') this.bpm = config.bpm
+    this.scoreConfig = config
 
     for (const [name, track] of Object.entries(tracks)) {
       if (!track.name) track.name = name;
@@ -27,35 +27,97 @@ export class FluidSession {
         ? track
         : new FluidTrack(track);
 
-      this.tracks.push(newTrack);
+      this.tracks.push(newTrack)
     }
+
+    this.registerEventClass(EventAudioFile)
+    this.registerEventClass(EventMidiNote)
+    this.registerEventClass(EventTrackAuto)
+    this.registerEventClass(EventPluginAuto)
+    this.registerEventClass(EventMidiChord)
+    this.registerEventClass(EventChord)
+    this.eventTypes.set('midiNote', EventMidiNote)
+    this.eventTypes.set('file', EventAudioFile)
+    this.eventTypes.set('pluginAuto', EventPluginAuto)
+    this.eventTypes.set('trackAuto', EventTrackAuto)
+    this.eventTypes.set('midiChord', EventMidiChord)
   }
 
-  scoreConfig : ScoreConfig = {};
-  bpm : number = 120;
-  tracks : FluidTrack[] = [];
-  regions : any[] = [];
-  startTime? : number;
-  duration? : number;
-  readonly eventTypes : Map<string, {new(...options: any[]) : EventBase}> = new Map<string, {new(...options: any[]) : EventBase}>();
+  scoreConfig : ScoreConfig = {}
+  bpm : number = 120
+  tracks : FluidTrack[] = []
+  regions : any[] = []
+  startTime? : number
+  duration? : number
+  readonly eventTypes : Map<string, EventClass> = new Map<string, EventClass>()
+
+  registerEventClass(eventClass : EventClass) {
+    const name = eventClass.name
+    if (this.eventTypes.has(name)) console.warn('WARNING: overwriting event type: ' + name)
+    this.eventTypes.set(name, eventClass)
+  }
 
   getOrCreateTrackByName(name: string) : FluidTrack {
     for (const track of this.tracks)
       if (track.name === name)
-        return track;
+        return track
 
-    const newTrack = new FluidTrack({ name });
-    this.tracks.push(newTrack);
-    return newTrack;
+    const newTrack = new FluidTrack({ name })
+    this.tracks.push(newTrack)
+    return newTrack
   }
 
   insertScore(score: any, config: any) {
-    const r = parse(score, this, config);
+    const r = parse(score, this, config)
     // Charles: duration and startTime could be wrong if insert score is called more than once OR config specifies a non-zero start time
-    this.duration = r.duration;
-    this.startTime = r.startTime;
-    // Charles: applyEventMappers also breaks if insertScore is called more than once
-    applyEventMappers(this);
+    this.duration = r.duration
+    this.startTime = r.startTime
+    // Charles: processEvents also breaks if insertScore is called more than once
+    this.processEvents()
+  }
+
+  processEvents() {
+    for (const track of this.tracks) {
+      if (tab.reservedKeys.hasOwnProperty(track.name)) {
+        continue
+      }
+
+      if (!track.clips || !track.clips.length) {
+        console.warn(`applyEventMappers: skipping ${track.name}, because it has no .clips`)
+        continue
+      }
+
+      track.clips.forEach((clip, clipIndex) => {
+        const context : ClipEventContext = {
+          track,
+          clip,
+          clipIndex,
+          data: {},
+        };
+
+        const processEvent = (event) => {
+          if (!event) return
+
+          if (Array.isArray(event)) {
+            if (!event.length) return
+            return processEvent(event.map(processEvent))
+          }
+
+          if (event.constructor === Object) {
+            if (typeof event.type !== 'string') throw new Error(`invalid event (Object without .type string):${JSON.stringify(event)}`)
+            let typeClass = this.eventTypes.get(event.type)
+            if (!typeClass) throw new Error(`"${event.type}" is not a registered event type: ${JSON.stringify(event)}`)
+            event = new typeClass(event)
+          }
+
+          if (typeof event.process === 'function') return processEvent(event.process(context))
+
+          throw new Error(`Unhandled Event (no process method): ${JSON.stringify(event)}`)
+        }
+
+        for (let event of clip.events) processEvent(event)
+      });  // iterate over clips
+    }      // iterate over tracks
   }
 }
 
@@ -73,7 +135,7 @@ export function parse(
   session : FluidSession = new FluidSession({}),
   config)
 {
-  if (!config) config = {};
+  if (!config) config = {}
   else config = Object.assign({}, config); // Shallow copy should be ok
 
   const result = {
