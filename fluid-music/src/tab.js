@@ -97,9 +97,16 @@ const parseTab = function(rhythm, nPattern, nLibrary) {
 
       for (const note of notes) {
         // Copy the event (so we don't modify the nLibrary)
-        let event = Object.assign({}, note);
-        event.startTime = start;
-        event.duration = duration;
+        let event
+        if (typeof note.deepCopy === 'function') {
+          // Charles: We're assuming that if the object has a .deepCopy method, it is an instanceof EventBase This should be explicit
+          // Charles: we should really have the .d ynamic here, so that it can be present in the constructor
+          event = note.deepCopy({ startTime: start, duration })
+        } else {
+          event = Object.assign({}, note);
+          event.startTime = start;
+          event.duration = duration;
+        }
 
         clip.events.push(event);
       }

@@ -5,6 +5,7 @@ A node.js client for the Fluid Engine.
 ```JavaScript
 const path  = require('path');
 const fluid = require('fluid-music');
+const cybr = fluid.cybr;
 
 // Setup some IO filenames
 const document = path.join(__dirname, 'test.tracktionedit');
@@ -13,18 +14,18 @@ const voxVerb  = path.join(__dirname, 'vox-verb.wav');
 
 const client = new fluid.Client(9999);
 client.send([
-  fluid.global.activate(document, true),            // Activate session, creating an empty document
-  fluid.audiotrack.select('vox'),                   // Create and select a track named 'vox'
-  fluid.audiotrack.insertWav('vox-sample', 0, vox), // Insert and select audio clip in selected track
-  fluid.audioclip.fadeInOutSeconds(0.01, 0.5),      // 10ms fade in, 500ms fade out
-  fluid.clip.length(1),                             // Trim the audio clip to one second
-  fluid.plugin.select('eos', 'vst'),                // Insert the eos vst reverb plugin
-  fluid.clip.render(voxVerb, 4),                    // Render the selected clip with 4 second "tail"
-  fluid.audiotrack.select('reversed'),              // Create and select a track named "reversed"
-  fluid.audiotrack.insertWav('r1', 0, voxVerb),     // Insert and select the newly rendered audio
-  fluid.audioclip.reverse(),                        // reverse the selected clip
-  fluid.global.save(),                              // Save document (session) file
-  fluid.transport.play(),
+  cybr.global.activate(document, true),            // Activate session, creating an empty document
+  cybr.audiotrack.select('vox'),                   // Create and select a track named 'vox'
+  cybr.audiotrack.insertWav('vox-sample', 0, vox), // Insert and select audio clip in selected track
+  cybr.audioclip.fadeInOutSeconds(0.01, 0.5),      // 10ms fade in, 500ms fade out
+  cybr.clip.length(1),                             // Trim the audio clip to one second
+  cybr.plugin.select('eos', 'vst'),                // Insert the eos vst reverb plugin
+  cybr.clip.render(voxVerb, 4),                    // Render the selected clip with 4 second "tail"
+  cybr.audiotrack.select('reversed'),              // Create and select a track named "reversed"
+  cybr.audiotrack.insertWav('r1', 0, voxVerb),     // Insert and select the newly rendered audio
+  cybr.audioclip.reverse(),                        // reverse the selected clip
+  cybr.global.save(),                              // Save document (session) file
+  cybr.transport.play(),
 ]);
 ```
 
@@ -49,65 +50,65 @@ Many client methods are available, including the ones below:
 
 ```JavaScript
 // audiotrack:
-fluid.audiotrack.select(...)
-fluid.audiotrack.insertWav(...)
-fluid.audiotrack.selectReturnTrack(...)
-fluid.audiotrack.send(...)
-fluid.audiotrack.mute(...)
-fluid.audiotrack.unmute(...)
-fluid.audiotrack.gain(...)
-fluid.audiotrack.renderRegion(...)
-fluid.audiotrack.removeClips(...)
+cybr.audiotrack.select(...)
+cybr.audiotrack.insertWav(...)
+cybr.audiotrack.selectReturnTrack(...)
+cybr.audiotrack.send(...)
+cybr.audiotrack.mute(...)
+cybr.audiotrack.unmute(...)
+cybr.audiotrack.gain(...)
+cybr.audiotrack.renderRegion(...)
+cybr.audiotrack.removeClips(...)
 
 // clip:
-fluid.clip.render(...)
-fluid.clip.select(...)
-fluid.clip.length(...)
-fluid.clip.trimSeconds(...)
-fluid.clip.setSourceOffsetSeconds(...)
+cybr.clip.render(...)
+cybr.clip.select(...)
+cybr.clip.length(...)
+cybr.clip.trimSeconds(...)
+cybr.clip.setSourceOffsetSeconds(...)
 
 // audioclip:
-fluid.audioclip.reverse(...)
-fluid.audioclip.fadeInOutSeconds(...)
-fluid.audioclip.fadeIn(...)
-fluid.audioclip.fadeOut(...)
-fluid.audioclip.gain(...)
+cybr.audioclip.reverse(...)
+cybr.audioclip.fadeInOutSeconds(...)
+cybr.audioclip.fadeIn(...)
+cybr.audioclip.fadeOut(...)
+cybr.audioclip.gain(...)
 
 // midiclip:
-fluid.midiclip.clear(...)
-fluid.midiclip.select(...)
-fluid.midiclip.note(...)
-fluid.midiclip.create(...)
+cybr.midiclip.clear(...)
+cybr.midiclip.select(...)
+cybr.midiclip.note(...)
+cybr.midiclip.create(...)
 
 // global:
-fluid.global.save(...)
-fluid.global.cd(...)
-fluid.global.activate(...)
+cybr.global.save(...)
+cybr.global.cd(...)
+cybr.global.activate(...)
 
 // plugin:
-fluid.plugin.select(...)
-fluid.plugin.setParamNormalized(...)
-fluid.plugin.setParamExplicit(...)
-fluid.plugin.setParamNormalizedAt(...)
-fluid.plugin.setParamExplicitAt(...)
-fluid.plugin.setSideChainInput(...)
-fluid.plugin.save(...)
-fluid.plugin.load(...)
-fluid.plugin.loadTrkpreset(...)
-fluid.plugin.addpath(...)
+cybr.plugin.select(...)
+cybr.plugin.setParamNormalized(...)
+cybr.plugin.setParamExplicit(...)
+cybr.plugin.setParamNormalizedAt(...)
+cybr.plugin.setParamExplicitAt(...)
+cybr.plugin.setSideChainInput(...)
+cybr.plugin.save(...)
+cybr.plugin.load(...)
+cybr.plugin.loadTrkpreset(...)
+cybr.plugin.addpath(...)
 
 // sampler:
-fluid.sampler.add(...)
-fluid.sampler.clearAll(...)
+cybr.sampler.add(...)
+cybr.sampler.clearAll(...)
 
 // transport:
-fluid.transport.play(...)
-fluid.transport.stop(...)
-fluid.transport.loop(...)
-fluid.transport.to(...)
+cybr.transport.play(...)
+cybr.transport.stop(...)
+cybr.transport.loop(...)
+cybr.transport.to(...)
 
 // groove:
-fluid.groove.applyGroove(...)
+cybr.groove.applyGroove(...)
 ```
 
 ## Fluid Music Tablature
@@ -140,7 +141,7 @@ const hhNotes = fluid.tab.parseTab(r, h,   nLibrary);
 const ksNotes = fluid.tab.parseTab(r, ks0, nLibrary);
 ```
 
-The power of the tablature system comes from `fluid.parse(...)` which processes deeply nested JavaScript objects containing complex combinations and sequences of **pattern**, **rhythm**, and **nLibrary** objects.
+The power of the tablature system comes from `FluidSession.insertScore(...)` which processes deeply nested JavaScript objects containing complex combinations and sequences of **pattern**, **rhythm**, and **nLibrary** objects.
 
 ```JavaScript
 const p0 = { h, ks0 }; // kick/snare/hat patterns
