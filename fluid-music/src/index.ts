@@ -43,8 +43,6 @@ const IpcClient = require('./cybr/IpcClient');
 
 // Other Stuff
 const noteLibrary = require('./note-library');
-const noteTypes = require('./note-types');
-const eventMappers = require('./event-mappers');
 const tab = require('./tab');
 
 
@@ -65,9 +63,7 @@ export = {
   content,
   converters,
   noteLibrary,
-  eventMappers,
   events,
-  noteTypes,
   gen,
   global,
   m,

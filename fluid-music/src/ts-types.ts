@@ -11,7 +11,6 @@ export interface Clip {
   unmappedEvents: FluidEvent[];
   duration : number;
   startTime? : number;
-  eventMappers? : any[];
 }
 
 export interface xLibrary {
@@ -21,7 +20,6 @@ export interface xLibrary {
 export interface ScoreConfig {
   nLibrary?: xLibrary;
   dLibrary?: xLibrary;
-  eventMappers?: any[];
   r?: string;
   d?: string;
 }
