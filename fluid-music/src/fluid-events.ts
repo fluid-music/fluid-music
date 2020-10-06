@@ -26,7 +26,7 @@ export interface EventClass { new(...options: any[]): EventBase }
 export class EventBase implements FluidEvent {
   startTime : number = 0
   duration : number = 0
-  d : object = {}
+  d : any = {}
 
   constructor (options : EventBaseOptions) {
     if (typeof options.startTime === 'number') this.startTime = options.startTime
@@ -263,8 +263,14 @@ export class EventChord extends EventBase {
   }
 
   process (context : ClipEventContext) {
+    const changes : EventBaseOptions = {
+      startTime: this.startTime,
+      duration: this.duration,
+    }
+    if (this.d) changes.d = this.d
+
     return this.events.map((event) : any => {
-      if (event instanceof EventBase) return event.deepCopy()
+      if (event instanceof EventBase) return event.deepCopy(changes)
       return event
     })
   }
@@ -284,6 +290,16 @@ export class EventMidiChord extends EventBase {
     super(options)
     this.notes = options.notes
     if (typeof options.name === 'string') this.name = options.name
+  }
+
+  process(context : ClipEventContext) {
+    const changes : EventMidiNoteOptions = {
+      note: -1,
+      startTime: this.startTime,
+      duration: this.duration,
+    }
+    if (this.d) changes.d = this.d
+    return this.notes.map(n => new EventMidiNote(Object.assign(changes, { note: n })))
   }
 }
 

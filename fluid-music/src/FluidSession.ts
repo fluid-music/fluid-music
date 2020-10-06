@@ -100,7 +100,7 @@ export class FluidSession {
 
           if (Array.isArray(event)) {
             if (!event.length) return
-            return processEvent(event.map(processEvent))
+            return processEvent(event.map(processEvent).filter(e => !!e))
           }
 
           if (event.constructor === Object) {

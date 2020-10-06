@@ -1,12 +1,12 @@
-import { FluidPlugin } from './plugin';
-import { FluidTrack } from './FluidTrack';
-import { vst2ToReaperObject } from './vst2ToReaperObject';
+import { FluidPlugin } from './plugin'
+import { FluidTrack } from './FluidTrack'
+import { vst2ToReaperObject } from './vst2ToReaperObject'
 
 import * as cybr from './cybr/index';
-import FluidIpcClient = require('./cybr/IpcClient');
-import { ClipEventContext } from './ts-types';
-
-const tab  = require('./tab');
+import FluidIpcClient = require('./cybr/IpcClient')
+import { ClipEventContext } from './ts-types'
+import { EventMidiNote } from './fluid-events'
+const tab  = require('./tab')
 const rppp = require('rppp')
 
 
@@ -15,7 +15,7 @@ const rppp = require('rppp')
 // use 20 for the denominator in the equation below. This means that 6.02 db of
 // gain is approximately equal to a gain factor of 2. Remember Power=Voltage^2
 // which is how the 20 ends up in the db equation instead of 10.
-const db2Gain = (db) => Math.pow(10, Math.min(db, 12) / 20);
+const db2Gain = (db) => Math.pow(10, Math.min(db, 12) / 20)
 
 /**
  * Create a `ReaperProject` from a `TracksObject`
@@ -34,7 +34,7 @@ async function tracksToReaperProject(tracksObject : FluidTrack[], bpm : number, 
   await client.send(cybr.global.activate('reaper-helper.tracktionedit', true))
 
   const reaperProject = new rppp.objects.ReaperProject();
-  reaperProject.getOrCreateStructByToken('TEMPO').params = [bpm, 4, 4];
+  reaperProject.getOrCreateStructByToken('TEMPO').params = [bpm, 4, 4]
 
   // // example tracks object
   // const tracks = [
@@ -142,13 +142,13 @@ function midiEventsToReaperObject(midiEvents, context : ClipEventContext) {
 
   let midiArray : any[] = []
   for (const event of midiEvents) {
-    if (event.type === 'midiNote') {
-      let velocity = (event.d && typeof event.d.v === 'number')
-        ? event.d.v
-        : (typeof event.v === 'number')
-          ? event.v
+    if (event instanceof EventMidiNote) {
+      let velocity = (typeof event.velocity === 'number')
+        ? event.velocity
+        : (event.d && typeof event.d.v === 'number')
+          ? event.d.v
           : undefined;
-      midiArray.push({ n: event.n, s: event.startTime, l: event.duration, v: velocity });
+      midiArray.push({ n: event.note, s: event.startTime, l: event.duration, v: velocity });
     }
   }
 
