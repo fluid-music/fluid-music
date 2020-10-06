@@ -61,6 +61,12 @@ export interface EventBaseOptions {
 
 /**
  * An audio sample on a track
+ * @member info file detailes provided by the music-metadata npm package - info
+ * is not currently guaranteed to be present on every `file` event. It includes
+ *      duration: 2.99, // source audio file duration in seconds
+ *      bitsPerSample: 16,
+ *      sampleRate: 44100,
+ *      numberOfChannels: 1,
  */
 export class EventAudioFile extends EventBase {
   // mandatory members
@@ -70,7 +76,13 @@ export class EventAudioFile extends EventBase {
   fadeOutSeconds : number = 0
   fadeInSeconds : number = 0
   oneShot : boolean = false
-  info : object = {}
+  info : {
+    [key: string] : any
+    duration? : number
+    bitsPerSample? : number
+    sampleRate? : number
+    numberOfChannels? : number
+  } = {}
 
   constructor (options : EventAudioFileOptions) {
     super(options)

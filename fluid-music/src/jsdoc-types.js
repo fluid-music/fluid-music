@@ -183,7 +183,7 @@
   * ```
   *
   * These can be found in an `nLibrary`, or in a Clip
-  * @typedef {Object} FluidEvent
+  * @typedef {Object} FluidEventJSDOC
   * @property {string} type String indicating the type of event:
   *   'file' indicates an audio sample, which should have a `.path`.
   *   'iLayers' indicates the presence of a `.iLayers` field, which contains an
