@@ -26,21 +26,14 @@ export class FluidSession {
       this.tracks.push(newTrack)
     }
 
-    this.registerEventClass(EventAudioFile)
-    this.registerEventClass(EventMidiNote)
-    this.registerEventClass(EventTrackAuto)
-    this.registerEventClass(EventPluginAuto)
-    this.registerEventClass(EventMidiChord)
+    this.registerEventClass(EventAudioFile, 'file')
+    this.registerEventClass(EventMidiNote, 'midiNote')
+    this.registerEventClass(EventTrackAuto, 'trackAuto')
+    this.registerEventClass(EventPluginAuto, 'pluginAuto')
+    this.registerEventClass(EventMidiChord, 'midiChord')
     this.registerEventClass(EventChord)
-    this.registerEventClass(EventILayers)
-    this.registerEventClass(EventRandom)
-    this.eventTypes.set('midiNote', EventMidiNote)
-    this.eventTypes.set('file', EventAudioFile)
-    this.eventTypes.set('pluginAuto', EventPluginAuto)
-    this.eventTypes.set('trackAuto', EventTrackAuto)
-    this.eventTypes.set('midiChord', EventMidiChord)
-    this.eventTypes.set('iLayers', EventILayers)
-    this.eventTypes.set('random', EventRandom)
+    this.registerEventClass(EventILayers, 'iLayers')
+    this.registerEventClass(EventRandom, 'random')
   }
 
   scoreConfig : ScoreConfig = {}
@@ -51,10 +44,22 @@ export class FluidSession {
   duration? : number
   readonly eventTypes : Map<string, EventClass> = new Map<string, EventClass>()
 
-  registerEventClass(eventClass : EventClass) {
-    const name = eventClass.name
-    if (this.eventTypes.has(name)) console.warn('WARNING: overwriting event type: ' + name)
-    this.eventTypes.set(name, eventClass)
+  /**
+   * Register a custom class type for handling raw events. Raw events are just
+   * JavaScript objects that have a .type string. Use this method to register
+   * constructors for Raw objects.
+   *
+   * @param eventClass A Class that extends EventBase. The class name (for
+   *    example, `EventAudioFile`) will be registered automatically.
+   * @param extraTypeNames Raw events use a .type string to identify which
+   *    class they should be constructed with. Any type string
+   */
+  registerEventClass(eventClass : EventClass, ...extraTypeNames : string[]) {
+    extraTypeNames.unshift(eventClass.name)
+    for (const name of extraTypeNames) {
+      if (this.eventTypes.has(name)) console.warn('WARNING: overwriting event type: ' + name)
+      this.eventTypes.set(name, eventClass)
+    }
   }
 
   getOrCreateTrackByName(name: string) : FluidTrack {
