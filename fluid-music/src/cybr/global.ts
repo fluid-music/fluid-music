@@ -1,13 +1,13 @@
 /**
- * @param {string} [filename] - '.tracktionedit' or '.wav' filename. If no
+ * @param {string} [filename] '.tracktionedit' or '.wav' filename. If no
  *        filename is provided, an empty string will be used, which implies
  *        'save' as opposed to 'save as'.
- * @param {string} [samplePathMode='decide'] - How should file references to
- *        samples be saved? 'a' = absolute, 'r' = relative, d = save samples
- *        that are in a child folder of the edit as relative, and everything
- *        else as absolute.
+ * @param {string} [samplePathMode] - How should file references to samples be
+ *        saved? 'a' = absolute, 'r' = relative, 'd' = save samples that are in
+ *        a child folder of the edit as relative, and everything else as
+ *        absolute. The server defaults to 'd'ecide if not specified
  */
-export function save(filename, samplePathMode) {
+export function save(filename? : string, samplePathMode? : string) {
   if (samplePathMode && typeof samplePathMode !== 'string')
     throw new Error('global.save samplePathMode argument must be a string');
 

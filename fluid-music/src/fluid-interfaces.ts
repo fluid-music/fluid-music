@@ -14,7 +14,7 @@ export interface Clip {
 }
 
 export interface xLibrary {
-  [key: string]: FluidEvent;
+  [key: string]: FluidEvent | FluidEvent[];
 }
 
 export interface ScoreConfig {
@@ -25,8 +25,8 @@ export interface ScoreConfig {
 }
 
 export interface ScoreObject {
-  [key : string] : any;
-  [key : number] : any;
+  [key : string] : any | any[];
+  [key : number] : any | any[];
 };
 
 /**

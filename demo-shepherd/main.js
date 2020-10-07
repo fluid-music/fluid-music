@@ -1,7 +1,10 @@
+// @ts-check
+
 const path = require('path')
-const fluid = require('fluid-music')
+const fluid = require('../fluid-music')
 const cybr = fluid.cybr
 const nLibrary = require('./n-library-4')
+
 for (const key of Object.keys(nLibrary)) {
   nLibrary[key].notes = nLibrary[key].notes.map(n => n + 12)
 }
@@ -68,24 +71,24 @@ function fadeInOut (event, context) {
   return [event, fadeIn, fadeOut, end]
 }
 
-/**
- * @param {Type} event
- * @param  {fluid.ClipEventContext} context
- */
-const arp = function (event, context) {
-  if (event.type !== 'midiChord') return event
-  const stepSize = 1 / 4 / 8
-  const numSteps = Math.floor(event.duration / stepSize)
-  const result = []
+class EventMidiArp extends fluid.events.EventMidiChord {
+  /**
+   * @param {import('fluid-music/built/ts-types').ClipEventContext} context
+   */
+  process (context) {
+    const stepSize = 1 / 4 / 8
+    const numSteps = Math.floor(this.duration / stepSize)
+    const results = []
 
-  for (let i = 0; i < numSteps; i++) {
-    const n = event.notes[i % event.notes.length]
-    const v = Math.min(127, Math.max(1, Math.round(80 * Math.pow(1.045, -i))))
-    const startTime = stepSize * i + event.startTime
-    const duration = stepSize
-    result.push({ type: 'midiNote', startTime, duration, n, v })
+    for (let i = 0; i < numSteps; i++) {
+      const note = this.notes[i % this.notes.length]
+      const velocity = Math.min(127, Math.max(1, Math.round(80 * Math.pow(1.045, -i))))
+      const startTime = stepSize * i + this.startTime
+      const duration = stepSize
+      results.push({ type: 'midiNote', startTime, duration, note, velocity })
+    }
+    return results
   }
-  return result
 }
 
 const session = new fluid.FluidSession({
@@ -97,6 +100,7 @@ const session = new fluid.FluidSession({
   chords2: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] },
   chords3: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] }
 })
+session.registerEventClass(EventMidiArp, 'midiChord')
 
 const r3 = { r: '123', clips: ['...'] }
 const r5 = { r: '12345', clips: ['.....'] }
@@ -106,17 +110,17 @@ session.insertScore({
   chords1: {
     clips: ['a--', 'd--', 'f--'],
     chords1: ['...', 'w'],
-    eventMappers: [arp]
+    eventMappers: []
   },
   chords2: {
     clips: [r3, 'b--', 'w', 'e--'],
-    eventMappers: [fadeInOut, arp]
+    eventMappers: [fadeInOut]
   },
   chords3: {
     clips: [r5, 'c--'],
-    eventMappers: [fadeInOut, arp]
+    eventMappers: [fadeInOut]
   }
-})
+}, {})
 
 // pseudo side-chain first track
 const clips2and3 = [
@@ -144,7 +148,6 @@ const gainAutomation = tds.map((td, i) => {
   return { type: 'trackAuto', paramKey: 'gain', startTime: td.time, value: sum, curve: -0.5 }
 })
 session.tracks.find(track => track.name === 'chords1').automation.gain = { points: gainAutomation }
-console.warn(gainAutomation)
 
 const client = new cybr.Client({ timeout: Math.pow(2, 31) - 1 })
 client.connect(true)
@@ -155,11 +158,11 @@ const run = async () => {
   console.log(rpp.dump())
 
   // send to CYBR
-  // const activateMsg = fluid.cybr.global.activate(path.join(__dirname, 'demo-shepherd.tracktionedit'), true)
-  // const tracksMsg = fluid.tracksToFluidMessage(session.tracks)
-  // const saveMsg = fluid.cybr.global.save()
+  const activateMsg = fluid.cybr.global.activate(path.join(__dirname, 'demo-shepherd.tracktionedit'), true)
+  const tracksMsg = fluid.tracksToFluidMessage(session.tracks)
+  const saveMsg = fluid.cybr.global.save()
 
-  // await client.send([activateMsg, tracksMsg, saveMsg])
+  await client.send([activateMsg, tracksMsg, saveMsg])
 }
 
 run().finally(() => {

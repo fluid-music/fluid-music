@@ -1,4 +1,4 @@
-import { ClipEventContext } from './ts-types'
+import { ClipEventContext } from './fluid-interfaces'
 import { AutomationPoint } from './plugin'
 import * as random from './random'
 
@@ -15,12 +15,12 @@ export interface FluidEvent {
   duration? : number;
   [key: string] : any;
 
-  d : any; // Dynamic object
+  d? : any; // Dynamic object
   process? : {(context : ClipEventContext) : null|FluidEvent|EventBase|any[]}
 }
 
 export interface EventClass { new(...options: any[]): EventBase }
-
+export type ProcessResult = null|FluidEvent|EventBase|(FluidEvent|EventBase)[]
 /**
  * Helper for copying events.
  * - Arrays will be copied at any depth
@@ -60,7 +60,7 @@ export class EventBase implements FluidEvent {
     return new (this.constructor as any)(Object.assign(args, updates), ...rest) as E
   }
 
-  process (context : ClipEventContext) : null|FluidEvent|EventBase|any[] {
+  process (context : ClipEventContext) : ProcessResult {
     if (this.type === 'EventBase')
       console.warn(`WARNING: Unhandled EventBase Event`)
     else
@@ -114,7 +114,7 @@ export class EventAudioFile extends EventBase {
     if (options.info) this.info = options.info
   }
 
-  process (context : ClipEventContext) {
+  process (context : ClipEventContext) : ProcessResult {
     if (!context.clip.fileEvents) context.clip.fileEvents = [];
     context.clip.fileEvents.push(this);
     return null;
@@ -153,7 +153,7 @@ export class EventMidiNote extends EventBase {
     if (typeof options.velocity === 'number') this.velocity = options.velocity
   }
 
-  process (context : ClipEventContext) {
+  process (context : ClipEventContext) : ProcessResult {
     if (typeof this.note !== 'number' ||
     typeof this.duration !== 'number' ||
     typeof this.startTime !== 'number')
@@ -194,7 +194,7 @@ export class EventPluginAuto extends EventBase {
     if (typeof options.curve === 'number') this.curve = options.curve
   }
 
-  process (context : ClipEventContext) {
+  process (context : ClipEventContext) : ProcessResult {
     const startTime = (context.clip.startTime as number) + (this.startTime as number);
     const point : AutomationPoint = {
       startTime,
@@ -262,7 +262,7 @@ export class EventTrackAuto extends EventBase {
     this.paramKey = options.paramKey
   }
 
-  process (context : ClipEventContext) {
+  process (context : ClipEventContext) : ProcessResult {
     const startTime = (context.clip.startTime as number) + (this.startTime as number);
     const point : AutomationPoint = {
       startTime,
@@ -299,7 +299,7 @@ export class EventChord extends EventBase {
     if (typeof options.name === 'string') this.name = options.name
   }
 
-  process (context : ClipEventContext) {
+  process (context : ClipEventContext) : ProcessResult {
     const changes : EventBaseOptions = {
       startTime: this.startTime,
       duration: this.duration,
@@ -326,7 +326,7 @@ export class EventMidiChord extends EventBase {
     if (typeof options.name === 'string') this.name = options.name
   }
 
-  process(context : ClipEventContext) {
+  process (context : ClipEventContext) : ProcessResult {
     const changes : EventMidiNoteOptions = {
       note: -1,
       startTime: this.startTime,
@@ -355,7 +355,7 @@ export class EventILayers extends EventBase {
     this.layers = options.layers
   }
 
-  process(context : ClipEventContext) {
+  process(context : ClipEventContext) : ProcessResult {
     const changes : any = {
       startTime: this.startTime,
       duration: this.duration,
@@ -403,7 +403,7 @@ export class EventRandom extends EventBase {
     this.choices = options.choices
   }
 
-  process(context : ClipEventContext) {
+  process(context : ClipEventContext) : ProcessResult {
     const changes : any = {
       startTime: this.startTime,
       duration: this.duration,

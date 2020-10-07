@@ -1,7 +1,7 @@
 const tab = require('./tab')
 
 import { FluidTrack, TrackConfig } from './FluidTrack';
-import { ScoreConfig, ClipEventContext } from './ts-types';
+import { ScoreConfig, ClipEventContext } from './fluid-interfaces';
 import { EventClass, EventAudioFile, EventMidiNote, EventTrackAuto, EventPluginAuto, EventMidiChord, EventChord, EventILayers, EventRandom } from './fluid-events'
 
 export interface TracksConfig {
@@ -72,7 +72,7 @@ export class FluidSession {
     return newTrack
   }
 
-  insertScore(score: any, config: any) {
+  insertScore(score: any, config: any = {}) {
     const r = parse(score, this, config)
     // Charles: duration and startTime could be wrong if insert score is called more than once OR config specifies a non-zero start time
     this.duration = r.duration
