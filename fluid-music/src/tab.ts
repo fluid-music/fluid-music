@@ -1,5 +1,7 @@
 const R = require('ramda');
 
+import { copyEvent } from './fluid-events'
+
 /**
  * Rhythm is the parsed representation of a rhythm string. A Rhythm object and
  * its properties are "frozen", and cannot be modified.
@@ -18,7 +20,7 @@ const R = require('ramda');
  *          - .totals is a measure of elapsed times
  *          - .deltas is the duration of each character
  */
-const parseRhythm = function(rhythm) {
+export function parseRhythm(rhythm) {
   // advances will look like this: [.4,0,0,0,0.5,0]
   const advances = rhythmToAdvanceArray(rhythm);
   // each segment will look like this: [[.4,0,0,0],[.5, 0]]
@@ -26,8 +28,8 @@ const parseRhythm = function(rhythm) {
   // forEach segment, what value does it begin at? [0, 0.4]
   const segmentStartTotals = getSegmentStartTotals(advances);
 
-  const totals = []; // [.1, .2, .3, .4, .65, .90]
-  const deltas = []; // [.1, .1, .1, .1, .25, .25]
+  const totals : number[] = []; // [.1, .2, .3, .4, .65, .90]
+  const deltas : number[] = []; // [.1, .1, .1, .1, .25, .25]
   segments.forEach((segment, j) => { // segment will look like [.4,0,0,0]
     const segmentTotal = segment[0];
     segment.forEach((_, i) => {
@@ -65,7 +67,7 @@ const parseRhythm = function(rhythm) {
  *        noteLibrary = {'0': 60, '1': 62 }
  * @returns {Clip} (missing `startTime`. `startTime` is added by `score.parse`)
  */
-const parseTab = function(rhythm, nPattern, nLibrary) {
+export function parseTab(rhythm, nPattern, nLibrary) {
 
   const rhythmObject = typeof rhythm === 'string' ? parseRhythm(rhythm) : rhythm;
   const symbolsAndCounts = patternToSymbolsAndCounts(nPattern);
@@ -75,11 +77,11 @@ const parseTab = function(rhythm, nPattern, nLibrary) {
 
   let p = 0; // position (in the rhythmObject)
   const clip = {
-    events: [],
+    events: [] as any[],
     duration: R.last(rhythmObject.totals),
   };
 
-  for (let [index, sc] of symbolsAndCounts.entries()) {
+  for (const sc of symbolsAndCounts) {
     let symbol = sc[0];
     let count = sc[1];
     if (symbol !== '.') {
@@ -97,18 +99,7 @@ const parseTab = function(rhythm, nPattern, nLibrary) {
 
       for (const note of notes) {
         // Copy the event (so we don't modify the nLibrary)
-        let event
-        if (typeof note.deepCopy === 'function') {
-          // Charles: We're assuming that if the object has a .deepCopy method, it is an instanceof EventBase This should be explicit
-          // Charles: we should really have the .d ynamic here, so that it can be present in the constructor
-          event = note.deepCopy({ startTime: start, duration })
-        } else {
-          event = Object.assign({}, note);
-          event.startTime = start;
-          event.duration = duration;
-        }
-
-        clip.events.push(event);
+        clip.events.push(copyEvent(note, {startTime: start, duration }))
       }
     }
     p += count;
@@ -164,10 +155,10 @@ const division = (char) => {
  * @param {string} rhythm - String representing of a rhythm
  * @returns {number[]}  - An array of durations for each character
  */
-const rhythmToAdvanceArray = function(rhythm) {
+export function rhythmToAdvanceArray(rhythm) {
   if (typeof rhythm === 'string') rhythm = Array.from(rhythm);
 
-  const result = [];
+  const result : number[] = [];
 
   rhythm.forEach((char, i, array) => {
     let next = null; // next non-zero value
@@ -196,10 +187,10 @@ const rhythmToAdvanceArray = function(rhythm) {
  *   out - [[1,0,0,0], [2,0]]
  * @param {number[]} advances
  */
-const advanceArrayToSegments = function(advances) {
-  const nonZeroIndices = []; // [0, 4]
+export function advanceArrayToSegments(advances : number[]) : number[][] {
+  const nonZeroIndices : number[] = []; // [0, 4]
   advances.forEach((e, i) => { if (e !== 0) nonZeroIndices.push(i); });
-  const segments = [];
+  const segments : number[][] = [];
   nonZeroIndices.forEach((nonZeroStartIndex, i, array) => {
     let start = nonZeroStartIndex;
     let end   = (i+1 === array.length) ? advances.length: array[i+1];
@@ -224,8 +215,8 @@ const advanceArrayToSegments = function(advances) {
  * @param {number[]} advances - an array returned by rhythmToAdvanceArray()
  * @returns {number[]} - total elapsed times at the beginning of each segment
  */
-const getSegmentStartTotals = function(advances) {
-  const result = [];
+function getSegmentStartTotals(advances) : number[] {
+  const result : number[] = [];
   let accumulator = 0;
 
   advances.forEach(v => {
@@ -249,13 +240,13 @@ const getSegmentStartTotals = function(advances) {
  * positions that that symbols is active for.
  * @param {string} pattern
  */
-function patternToSymbolsAndCounts(pattern) {
+export function patternToSymbolsAndCounts(pattern) {
   return arrayToSymbolsAndCounts(Array.from(pattern));
 }
 
-function arrayToSymbolsAndCounts(chars) {
+function arrayToSymbolsAndCounts(chars : string[]) : [string, number][] {
   chars = chars.map(c => c === ' ' ? '.' : c);
-  const results = [];
+  const results : [string, number][] = [];
   // pattern: '0-......1-....22'
   // symbols:  0 .     1 .   22
   // counts:   2 6     2 4   11
@@ -292,7 +283,7 @@ function arrayToSymbolsAndCounts(chars) {
  * @param {Object} dLibrary
  * @returns {function}
  */
-const createDynamicGetter = (rhythm, dPattern, dLibrary) => {
+export function createDynamicGetter(rhythm, dPattern, dLibrary) {
   const clip = parseTab(rhythm, dPattern, dLibrary);
   return (time) => {
     let event = clip.events[0] || null;
@@ -307,7 +298,7 @@ const createDynamicGetter = (rhythm, dPattern, dLibrary) => {
 /**
  * These keys cannot be used for patterns in tabs and scores.
  */
-const reservedKeys = {
+export const reservedKeys = {
   r: null,            // rhythm pattern
   d: null,            // dynamics pattern
   v: null,            // deprecated. formerly velocity
@@ -328,14 +319,4 @@ const reservedKeys = {
   key: null,
   parent: null,
   regions: null,
-};
-
-module.exports = {
-  createDynamicGetter,
-  parseTab,
-  parseRhythm,
-  reservedKeys,
-  rhythmToAdvanceArray,
-  advanceArrayToSegments,
-  patternToSymbolsAndCounts,
 };

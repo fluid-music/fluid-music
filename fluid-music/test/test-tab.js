@@ -1,6 +1,6 @@
 const should = require('should');
 const mocha = require('mocha');
-const tab = require('../src/tab');
+const tab = require('../built/tab');
 const converters = require('../built/converters');
 
 const q = 1/4;  // quarter note

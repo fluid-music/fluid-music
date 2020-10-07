@@ -1,6 +1,7 @@
 import { ClipEventContext } from './ts-types'
 import { AutomationPoint } from './plugin'
 import * as random from './random'
+
 /**
 * @typedef {Object} FluidEvent
 * @member type String indicating the type of event
@@ -21,6 +22,22 @@ export interface FluidEvent {
 export interface EventClass { new(...options: any[]): EventBase }
 
 /**
+ * Helper for copying events.
+ * - Arrays will be copied at any depth
+ * - EventBase instances will be copied with '.deepCopy'
+ * - Simple object will be shallow copied
+ *
+ * @param event
+ * @param changes
+ */
+export function copyEvent(event : EventBase|{[key:string]:any}, changes : {[key: string] : any}) {
+  if (Array.isArray(event)) return event.map(e => copyEvent(e, changes))
+  if (event instanceof EventBase) return event.deepCopy(changes)
+  if (typeof event === 'object') return Object.assign(Object.assign({}, event), changes)
+  return event
+}
+
+/**
  * Base class for internal event types.
  */
 export class EventBase implements FluidEvent {
@@ -38,7 +55,7 @@ export class EventBase implements FluidEvent {
     return this.constructor.name
   }
 
-  deepCopy<E extends EventBase> (updates : object = {}, ...rest) {
+  deepCopy<E extends EventBase> (updates : object = {}, ...rest) : E {
     const args = Object.assign({}, this)
     return new (this.constructor as any)(Object.assign(args, updates), ...rest) as E
   }
@@ -75,6 +92,10 @@ export class EventAudioFile extends EventBase {
   // members with default values
   fadeOutSeconds : number = 0
   fadeInSeconds : number = 0
+  /**
+   * When true, the inserted audio file will play to its end instead of obeying
+   * event length (default=false)
+   */
   oneShot : boolean = false
   info : {
     [key: string] : any
@@ -104,7 +125,7 @@ export interface EventAudioFileOptions extends EventBaseOptions {
   fadeOutSeconds? : number
   fadeInSeconds? : number
   oneShot? : boolean
-  info? : object
+  info? : { [key: string] : any }
 }
 
 
@@ -281,10 +302,7 @@ export class EventChord extends EventBase {
     }
     if (this.d) changes.d = this.d
 
-    return this.events.map((event) : any => {
-      if (event instanceof EventBase) return event.deepCopy(changes)
-      return event
-    })
+    return this.events.map(event => copyEvent(event, changes))
   }
 }
 

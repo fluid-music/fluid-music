@@ -1,10 +1,10 @@
 require('mocha')
-require('should')
+const should = require('should')
 
-const { EventBase, EventAudioFile }= require('..').events
+const { EventBase, EventAudioFile, copyEvent }= require('..').events
 
 describe('test-events.js', function () {
-  describe('deepCopy', function () {
+  describe('EventBase.deepCopy', function () {
     it('should deep copy EventBase', function () {
       const baseEvent = new EventBase({d: {v: 127}})
       const copyEvent = baseEvent.deepCopy()
@@ -19,5 +19,32 @@ describe('test-events.js', function () {
       copyEvent.should.be.a.instanceOf(EventAudioFile)
     })
   })
-})
 
+  describe('copyEvent (standalone function)', function () {
+    it('should deep copy an EventAudioFile instance', function () {
+      const fileEvent = new EventAudioFile({ path: 'some/file.wav', fadeOutSeconds: 0.5, info: {sampleRate: 44100} })
+      const copy = copyEvent(fileEvent, {startTime: 500})
+      fileEvent.startTime = 500
+      copy.should.deepEqual(fileEvent)
+      copy.should.be.a.instanceOf(EventAudioFile)
+    })
+
+    it('should shallow copy objects', function () {
+      const event = { type: 'trackAuto', startTime: 500, duration: 1, paramKey: 'gain' }
+      const copy = copyEvent(event)
+      copy.should.deepEqual(event)
+      copy.should.not.equal(event)
+    })
+
+    it('should copy an array', function () {
+      const fileEvent = new EventAudioFile({ path: 'some/file.wav', fadeOutSeconds: 0.5, info: {sampleRate: 44100} })
+      const fileEvent2 = fileEvent.deepCopy({ startTime: 100, duration: 5 })
+      const events = [fileEvent, fileEvent2, {hi:'helloworld'}]
+      const copies = copyEvent(events)
+      events.should.deepEqual(copies)
+      copies[0].should.not.equal(events[0])
+      copies[1].should.not.equal(events[1])
+      copies[2].should.not.equal(events[2])
+    })
+  })
+})
