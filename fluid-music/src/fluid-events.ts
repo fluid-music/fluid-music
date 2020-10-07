@@ -260,6 +260,8 @@ export class EventTrackAuto extends EventBase {
   constructor (options : EventTrackAutoOptions) {
     super(options)
     this.paramKey = options.paramKey
+    if (typeof options.value === 'number') this.value = options.value
+    if (typeof options.curve === 'number') this.curve = options.curve
   }
 
   process (context : ClipEventContext) : ProcessResult {

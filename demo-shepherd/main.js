@@ -1,3 +1,4 @@
+const { EventMidiNote } = require('fluid-music/built/fluid-events')
 // @ts-check
 
 const path = require('path')
@@ -55,23 +56,12 @@ const v = tyrellN6.makeAutomation.tyrellTune2(1)
 const V = tyrellN6.makeAutomation.tyrellCutoff(65)
 const w = [v, V]
 
-function fadeInOut (event, context) {
-  const eventMapId = 'fadeInOutProcessed'
-  if (context.data[eventMapId] || event.type !== 'midiChord') return event
-  context.data[eventMapId] = true
-
-  const startTime = 0 // startTime is relative to the Clip
-  const endTime = startTime + context.clip.duration
-  const midTime = startTime + ((endTime - startTime) / 2)
-
-  const fadeIn = { type: 'trackAuto', paramKey: 'gain', startTime, value: -Infinity, curve: -0.5 }
-  const fadeOut = { type: 'trackAuto', paramKey: 'gain', startTime: midTime, value: 0, curve: 0.5 }
-  const end = { type: 'trackAuto', paramKey: 'gain', startTime: endTime, value: -Infinity }
-
-  return [event, fadeIn, fadeOut, end]
-}
-
 class EventMidiArp extends fluid.events.EventMidiChord {
+  constructor (options) {
+    super(options)
+    this.addFadeInOut = !!options.addFadeInOut
+  }
+
   /**
    * @param {import('fluid-music/built/ts-types').ClipEventContext} context
    */
@@ -85,9 +75,18 @@ class EventMidiArp extends fluid.events.EventMidiChord {
       const velocity = Math.min(127, Math.max(1, Math.round(80 * Math.pow(1.045, -i))))
       const startTime = stepSize * i + this.startTime
       const duration = stepSize
-      results.push({ type: 'midiNote', startTime, duration, note, velocity })
+      results.push(new EventMidiNote({ startTime, duration, note, velocity }))
     }
-    return results
+
+    // add fade in and fade out
+    const startTime = 0 // startTime is relative to the Clip
+    const endTime = startTime + context.clip.duration
+    const midTime = startTime + ((endTime - startTime) / 2)
+    return results.concat(
+      { type: 'trackAuto', paramKey: 'gain', startTime, value: -Infinity, curve: -0.5 },
+      { type: 'trackAuto', paramKey: 'gain', startTime: midTime, value: 0, curve: 0.5 },
+      { type: 'trackAuto', paramKey: 'gain', startTime: endTime, value: -Infinity }
+    )
   }
 }
 
@@ -113,12 +112,10 @@ session.insertScore({
     eventMappers: []
   },
   chords2: {
-    clips: [r3, 'b--', 'w', 'e--'],
-    eventMappers: [fadeInOut]
+    clips: [r3, 'b--', 'w', 'e--']
   },
   chords3: {
-    clips: [r5, 'c--'],
-    eventMappers: [fadeInOut]
+    clips: [r5, 'c--']
   }
 }, {})
 
@@ -149,6 +146,7 @@ const gainAutomation = tds.map((td, i) => {
 })
 session.tracks.find(track => track.name === 'chords1').automation.gain = { points: gainAutomation }
 
+// Convert to reaper/tracktion session
 const client = new cybr.Client({ timeout: Math.pow(2, 31) - 1 })
 client.connect(true)
 
