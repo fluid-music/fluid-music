@@ -1,8 +1,9 @@
 require('should');
 require('mocha');
 
-const fluid = require('..');
-const { EventMidiChord } = require('../built/fluid-events');
+const fluid = require('..')
+const { EventMidiChord } = require('../built/fluid-events')
+const { DragonflyRoomPlugin } = require('../built/plugin-dradonfly-room')
 const FluidSession = fluid.FluidSession;
 
 
@@ -15,13 +16,13 @@ describe('FluidSession', () => {
       bass: {nLibrary, r, gain: -6},
     });
 
-    const bassTrack = session.tracks[0];
-    bassTrack.name.should.equal('bass');
-    bassTrack.gain.should.equal(-6);
+    const bassTrack = session.tracks[0]
+    bassTrack.name.should.equal('bass')
+    bassTrack.gain.should.equal(-6)
 
-    session.insertScore({bass: '0 1 2 0'});
-    const clip = bassTrack.clips[0];
-    clip.midiEvents.length.should.equal(4);
+    session.insertScore({bass: '0 1 2 0'})
+    const clip = bassTrack.clips[0]
+    clip.midiEvents.length.should.equal(4)
   });
 
   describe('insertScore method', function () {
@@ -58,6 +59,32 @@ describe('FluidSession', () => {
         chord2.should.containDeep([{note: 67}, {note: 70}, {note: 74}, {note: 79}])
       })
     }) // describe EventMidiChord
+
+    describe('with EventPluginAuto events', function () {
+      const roomVerb = new fluid.DragonflyRoom()
+      const nLibrary = {
+        a: roomVerb.makeAutomation.decaySeconds(2.4),
+        b: roomVerb.makeAutomation.decaySeconds(4),
+      }
+
+      const r = '1 2 3 4 '
+      const session = new FluidSession({ nLibrary, r }, { reverb: { plugins: [roomVerb] } })
+      session.insertScore({reverb: 'a...b...'})
+
+      it ('should create automation points', function () {
+        const automation = session.tracks[0].plugins[0].automation
+        should(automation.decaySeconds).be.a.Object()
+        automation.decaySeconds.points.length.should.equal(2)
+
+        const [point1, point2] = automation.decaySeconds.points
+        point1.startTime.should.equal(0)
+        point2.startTime.should.equal(0.5)
+
+        point1.value.should.equal(2.4)
+        point2.value.should.equal(4)
+      })
+
+    })
   }) // insertScore method
 });
 
