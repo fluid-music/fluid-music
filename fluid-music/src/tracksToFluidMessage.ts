@@ -217,11 +217,14 @@ function midiEventsToFluidMessage(midiEvents, context) {
 
   for (const event of midiEvents) {
     if (event instanceof EventMidiNote) {
-      let velocity = (event.d && typeof event.d.v === 'number')
-        ? event.d.v
-        : (typeof event.velocity === 'number')
-          ? event.velocity
-          : undefined;
+      // Velocity in the event takes priority over velocity in the .d object
+      let velocity = (typeof event.velocity === 'number')
+        ? event.velocity
+        : (event.d && typeof event.d.velocity === 'number')
+          ? event.d.velocity
+          : (event.d && typeof event.d.v === 'number')
+            ? event.d.v
+            : undefined
       msg.push(cybr.midiclip.note(event.note, event.startTime, event.duration, velocity));
     }
   }

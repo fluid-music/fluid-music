@@ -145,9 +145,11 @@ function midiEventsToReaperObject(midiEvents, context : ClipEventContext) {
     if (event instanceof EventMidiNote) {
       let velocity = (typeof event.velocity === 'number')
         ? event.velocity
-        : (event.d && typeof event.d.v === 'number')
-          ? event.d.v
-          : undefined;
+        : (event.d && typeof event.d.velocity === 'number')
+          ? event.d.velocity
+          : (event.d && typeof event.d.v === 'number')
+            ? event.d.v
+            : undefined
       midiArray.push({ n: event.note, s: event.startTime, l: event.duration, v: velocity });
     }
   }

@@ -133,11 +133,15 @@ export interface EventAudioFileOptions extends EventBaseOptions {
  * A midi note within a midi clip.
  */
 export class EventMidiNote extends EventBase {
-  // mandatory members
+  /**
+   * Midi note number - 60 = C4 = Middle C
+   */
   note : number
 
-  // members with default values
-  velocity : number = 64
+  /**
+   * If present, velocity overrides any velocity found in a .d object
+   */
+  velocity? : number
 
   constructor(options : EventMidiNoteOptions) {
     super(options)
