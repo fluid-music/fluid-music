@@ -2,7 +2,7 @@ import { FluidPlugin, PluginType } from './plugin';
 import { FluidTrack } from './FluidTrack';
 import { ClipEventContext } from './ts-types';
 import { FluidSession } from './FluidSession';
-
+import { EventMidiNote } from './fluid-events'
 import * as cybr from './cybr/index';
 
 const tab  = require('./tab');
@@ -108,7 +108,6 @@ export function tracksToFluidMessage(tracks : FluidTrack[]) {
         track,
         clip,
         clipIndex,
-        messages: clipMessages,
         data: {},
       };
 
@@ -217,13 +216,13 @@ function midiEventsToFluidMessage(midiEvents, context) {
   msg.push(clipMsg);
 
   for (const event of midiEvents) {
-    if (event.type === 'midiNote') {
+    if (event instanceof EventMidiNote) {
       let velocity = (event.d && typeof event.d.v === 'number')
         ? event.d.v
-        : (typeof event.v === 'number')
-          ? event.v
+        : (typeof event.velocity === 'number')
+          ? event.velocity
           : undefined;
-      msg.push(cybr.midiclip.note(event.n, event.startTime, event.duration, velocity));
+      msg.push(cybr.midiclip.note(event.note, event.startTime, event.duration, velocity));
     }
   }
 

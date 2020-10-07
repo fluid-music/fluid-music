@@ -77,8 +77,7 @@ export interface ClipEventContext {
   clip: Clip;
   track: Track;
   clipIndex: number;
-  data: any;
+  data: { [key: string] : any };
   bpm?: number;
   eventIndex?: number;
-  messages?: any[];
 }
