@@ -1,6 +1,6 @@
 import { FluidPlugin, PluginType } from './plugin';
 import { FluidTrack } from './FluidTrack';
-import { ClipEventContext } from './ts-types';
+import { ClipEventContext } from './fluid-interfaces';
 import { FluidSession } from './FluidSession';
 import { EventMidiNote } from './fluid-events'
 import * as cybr from './cybr/index';

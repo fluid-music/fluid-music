@@ -4,7 +4,7 @@ import { vst2ToReaperObject } from './vst2ToReaperObject'
 
 import * as cybr from './cybr/index';
 import FluidIpcClient = require('./cybr/IpcClient')
-import { ClipEventContext } from './ts-types'
+import { ClipEventContext } from './fluid-interfaces'
 import { EventMidiNote } from './fluid-events'
 const tab  = require('./tab')
 const rppp = require('rppp')
