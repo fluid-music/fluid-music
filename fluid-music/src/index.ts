@@ -45,9 +45,6 @@ const IpcClient = require('./cybr/IpcClient');
 
 const tracksToReaperProject = require('./tracksToReaperProject');
 
-// JSDoc
-const jsDocTypes = require('./jsdoc-types');
-
 export = {
   cybr,
   audioclip,
