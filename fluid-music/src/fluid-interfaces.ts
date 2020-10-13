@@ -1,11 +1,23 @@
 import { FluidPlugin, Automation } from "./plugin";
-import { FluidEvent } from './fluid-events'
+import { FluidEvent } from './fluid-techniques'
+
+
+export interface DynamicObject {
+  [key : string] : any
+}
+
+export interface ClipEvent {
+  startTime : number
+  duration : number
+  technique : any
+  d? : DynamicObject
+}
 
 /**
  * @member duration length measured in whole notes
  */
 export interface Clip {
-  events : FluidEvent[];
+  events : ClipEvent[];
   midiEvents : FluidEvent[];
   fileEvents : FluidEvent[];
   unmappedEvents: FluidEvent[];
@@ -63,6 +75,11 @@ export interface Track {
  *    callbacks. Like the EventContext, it is replaced for each Clip.
  */
 export interface ClipEventContext {
+  /**
+   * dynamic object
+   */
+  d: DynamicObject;
+
   clip: Clip;
   track: Track;
   clipIndex: number;

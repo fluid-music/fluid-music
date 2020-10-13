@@ -1,4 +1,4 @@
-const { EventMidiNote } = require('fluid-music/built/fluid-events')
+const { MidiNote } = require('fluid-music/built/fluid-techniques')
 // @ts-check
 
 const path = require('path')
@@ -56,36 +56,43 @@ const v = tyrellN6.makeAutomation.tyrellTune2(1)
 const V = tyrellN6.makeAutomation.tyrellCutoff(65)
 const w = [v, V]
 
-class EventMidiArp extends fluid.events.EventMidiChord {
+class MidiArp extends fluid.techniques.MidiChord {
   constructor (options) {
     super(options)
     this.addFadeInOut = !!options.addFadeInOut
   }
 
   /**
+   * @param {number} startTime
+   * @param {number} duration
    * @param {import('fluid-music/built/ts-types').ClipEventContext} context
    */
-  process (context) {
+  use (startTime, duration, context) {
     const stepSize = 1 / 4 / 8
-    const numSteps = Math.floor(this.duration / stepSize)
+    const numSteps = Math.floor(duration / stepSize)
     const results = []
 
     for (let i = 0; i < numSteps; i++) {
       const note = this.notes[i % this.notes.length]
       const velocity = Math.min(127, Math.max(1, Math.round(80 * Math.pow(1.045, -i))))
-      const startTime = stepSize * i + this.startTime
-      const duration = stepSize
-      results.push(new EventMidiNote({ startTime, duration, note, velocity }))
+      const noteStartTime = stepSize * i + startTime
+      const noteDuration = stepSize
+      results.push({
+        startTime: noteStartTime,
+        duration: noteDuration,
+        technique: new MidiNote({ note, velocity })
+      })
     }
 
-    // add fade in and fade out
-    const startTime = 0 // startTime is relative to the Clip
-    const endTime = startTime + context.clip.duration
-    const midTime = startTime + ((endTime - startTime) / 2)
+    // Add fade in and fade out. Remember that the times below are relative to
+    // the clip (not the session)
+    const strTime = 0
+    const endTime = context.clip.duration
+    const midTime = endTime / 2
     return results.concat(
-      { type: 'trackAuto', paramKey: 'gain', startTime, value: -Infinity, curve: -0.5 },
-      { type: 'trackAuto', paramKey: 'gain', startTime: midTime, value: 0, curve: 0.5 },
-      { type: 'trackAuto', paramKey: 'gain', startTime: endTime, value: -Infinity }
+      { startTime: strTime, technique: new fluid.techniques.TrackAuto({ paramKey: 'gain', curve: -0.5, value: -Infinity }) },
+      { startTime: midTime, technique: new fluid.techniques.TrackAuto({ paramKey: 'gain', curve: 0.5, value: 0 }) },
+      { startTime: endTime, technique: new fluid.techniques.TrackAuto({ paramKey: 'gain', curve: 0.0, value: -Infinity }) }
     )
   }
 }
@@ -99,7 +106,7 @@ const session = new fluid.FluidSession({
   chords2: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] },
   chords3: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] }
 })
-session.registerEventClass(EventMidiArp, 'midiChord')
+session.registerEventClass(MidiArp, 'midiChord')
 
 const r3 = { r: '123', clips: ['...'] }
 const r5 = { r: '12345', clips: ['.....'] }

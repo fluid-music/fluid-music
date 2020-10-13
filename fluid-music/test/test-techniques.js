@@ -1,32 +1,32 @@
 require('mocha')
 const should = require('should')
 
-const { EventBase, EventAudioFile, copyEvent }= require('..').events
+const { Technique, AudioFile, copyEvent }= require('..').techniques
 
-describe('test-events.js', function () {
+describe('test-techniques.js', function () {
   describe('EventBase.deepCopy', function () {
     it('should deep copy EventBase', function () {
-      const baseEvent = new EventBase({d: {v: 127}})
+      const baseEvent = new Technique({d: {v: 127}})
       const copyEvent = baseEvent.deepCopy()
       copyEvent.should.deepEqual(baseEvent)
       copyEvent.should.not.equal(baseEvent)
     })
 
     it('should create an instance of the child class', function () {
-      const fileEvent = new EventAudioFile({ path: 'some/file.wav', fadeInSeconds: 0.001 })
+      const fileEvent = new AudioFile({ path: 'some/file.wav', fadeInSeconds: 0.001 })
       const copyEvent = fileEvent.deepCopy()
       copyEvent.should.deepEqual(fileEvent)
-      copyEvent.should.be.a.instanceOf(EventAudioFile)
+      copyEvent.should.be.a.instanceOf(AudioFile)
     })
   })
 
   describe('copyEvent (standalone function)', function () {
     it('should deep copy an EventAudioFile instance', function () {
-      const fileEvent = new EventAudioFile({ path: 'some/file.wav', fadeOutSeconds: 0.5, info: {sampleRate: 44100} })
+      const fileEvent = new AudioFile({ path: 'some/file.wav', fadeOutSeconds: 0.5, info: {sampleRate: 44100} })
       const copy = copyEvent(fileEvent, {startTime: 500})
       fileEvent.startTime = 500
       copy.should.deepEqual(fileEvent)
-      copy.should.be.a.instanceOf(EventAudioFile)
+      copy.should.be.a.instanceOf(AudioFile)
     })
 
     it('should shallow copy objects', function () {
@@ -37,7 +37,7 @@ describe('test-events.js', function () {
     })
 
     it('should copy an array', function () {
-      const fileEvent = new EventAudioFile({ path: 'some/file.wav', fadeOutSeconds: 0.5, info: {sampleRate: 44100} })
+      const fileEvent = new AudioFile({ path: 'some/file.wav', fadeOutSeconds: 0.5, info: {sampleRate: 44100} })
       const fileEvent2 = fileEvent.deepCopy({ startTime: 100, duration: 5 })
       const events = [fileEvent, fileEvent2, {hi:'helloworld'}]
       const copies = copyEvent(events)

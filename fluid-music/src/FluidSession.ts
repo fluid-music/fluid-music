@@ -1,8 +1,7 @@
-const tab = require('./tab')
-
+import * as tab from './tab'
 import { FluidTrack, TrackConfig } from './FluidTrack';
-import { ScoreConfig, ClipEventContext } from './fluid-interfaces';
-import { EventClass, EventAudioFile, EventMidiNote, EventTrackAuto, EventPluginAuto, EventMidiChord, EventChord, EventILayers, EventRandom } from './fluid-events'
+import { ScoreConfig, ClipEventContext, ClipEvent } from './fluid-interfaces';
+import { EventClass, AudioFile, MidiNote, TrackAuto, PluginAuto, MidiChord, Chord, ILayers, Random } from './fluid-techniques'
 
 export interface TracksConfig {
   [trackName: string] : TrackConfig | FluidTrack
@@ -26,14 +25,14 @@ export class FluidSession {
       this.tracks.push(newTrack)
     }
 
-    this.registerEventClass(EventAudioFile, 'file')
-    this.registerEventClass(EventMidiNote, 'midiNote')
-    this.registerEventClass(EventTrackAuto, 'trackAuto')
-    this.registerEventClass(EventPluginAuto, 'pluginAuto')
-    this.registerEventClass(EventMidiChord, 'midiChord')
-    this.registerEventClass(EventChord)
-    this.registerEventClass(EventILayers, 'iLayers')
-    this.registerEventClass(EventRandom, 'random')
+    this.registerEventClass(AudioFile, 'file')
+    this.registerEventClass(MidiNote, 'midiNote')
+    this.registerEventClass(TrackAuto, 'trackAuto')
+    this.registerEventClass(PluginAuto, 'pluginAuto')
+    this.registerEventClass(MidiChord, 'midiChord')
+    this.registerEventClass(Chord)
+    this.registerEventClass(ILayers, 'iLayers')
+    this.registerEventClass(Random, 'random')
   }
 
   scoreConfig : ScoreConfig = {}
@@ -98,9 +97,10 @@ export class FluidSession {
           clip,
           clipIndex,
           data: {},
+          d: {},
         };
 
-        const processEvent = (event) => {
+        const processEvent = (event : ClipEvent|ClipEvent[]|null) => {
           if (!event) return
 
           if (Array.isArray(event)) {
@@ -108,21 +108,24 @@ export class FluidSession {
             return processEvent(event.map(processEvent).filter(e => !!e))
           }
 
-          if (event.constructor === Object) {
-            if (typeof event.type !== 'string') throw new Error(`invalid event (Object without .type string):${JSON.stringify(event)}`)
-            let typeClass = this.eventTypes.get(event.type)
-            if (!typeClass) throw new Error(`"${event.type}" is not a registered event type: ${JSON.stringify(event)}`)
-            event = new typeClass(event)
+          if (event.technique?.constructor === Object) {
+            if (typeof event.technique.type !== 'string') throw new Error(`invalid event (Object without .type string):${JSON.stringify(event)}`)
+            let typeClass = this.eventTypes.get(event.technique.type)
+            if (!typeClass) throw new Error(`"${event.technique.type}" is not a registered event type: ${JSON.stringify(event)}`)
+            event.technique = new typeClass(event.technique)
           }
 
-          if (typeof event.process === 'function') return processEvent(event.process(context))
+          if (typeof event.technique?.use === 'function') {
+            if (event.d) context.d = event.d
+            return processEvent(event.technique.use(event.startTime, event.duration, context))
+          }
 
-          throw new Error(`Unhandled Event (no process method): ${JSON.stringify(event)}`)
+          throw new Error(`Unhandled Event (no .use(...) method): ${JSON.stringify(event)}`)
         }
 
         for (let event of clip.events) processEvent(event)
-      });  // iterate over clips
-    }      // iterate over tracks
+      }); // iterate over clips  with clips.forEach method
+    }     // iterate over tracks with for...of loop
   }
 }
 
@@ -149,7 +152,7 @@ export function parse(
   };
   if (typeof config.startTime === 'number') result.startTime = config.startTime as number;
 
-  //                                                                               ensure that we do not modify the n/dLibrary, as it may be reused later
+  //------------------------------------------------------------------------------ ensure that we do not modify the n/dLibrary, as it may be reused later
   if (scoreObject.hasOwnProperty('nLibrary'))     config.nLibrary = Object.assign((config.nLibrary && Object.assign({}, config.nLibrary)) || {}, scoreObject.nLibrary);
   if (scoreObject.hasOwnProperty('dLibrary'))     config.dLibrary = Object.assign((config.dLibrary && Object.assign({}, config.dLibrary)) || {}, scoreObject.dLibrary);
   if (scoreObject.hasOwnProperty('r'))            config.r = scoreObject.r;
@@ -192,7 +195,7 @@ export function parse(
     const track = session.getOrCreateTrackByName(config.trackKey);
 
     // Get the dynamic and rhythm strings
-    const d = config.d || track.scoreConfig.d || session.scoreConfig.d; // may be undefined
+    const d = config.d || track.scoreConfig.d || session.scoreConfig.d; // might be defined
     const r = config.r || track.scoreConfig.r || session.scoreConfig.r; // must be defined
     if (r === undefined)
       throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a rhythm`);

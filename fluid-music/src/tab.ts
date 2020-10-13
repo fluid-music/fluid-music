@@ -1,6 +1,6 @@
 const R = require('ramda');
 
-import { copyEvent } from './fluid-events'
+import { Clip, ClipEvent } from './fluid-interfaces'
 
 /**
  * Rhythm is the parsed representation of a rhythm string. A Rhythm object and
@@ -67,7 +67,7 @@ export function parseRhythm(rhythm) {
  *        noteLibrary = {'0': 60, '1': 62 }
  * @returns {Clip} (missing `startTime`. `startTime` is added by `score.parse`)
  */
-export function parseTab(rhythm, nPattern, nLibrary) {
+export function parseTab(rhythm, nPattern, nLibrary) : Clip {
 
   const rhythmObject = typeof rhythm === 'string' ? parseRhythm(rhythm) : rhythm;
   const symbolsAndCounts = patternToSymbolsAndCounts(nPattern);
@@ -76,9 +76,13 @@ export function parseTab(rhythm, nPattern, nLibrary) {
     throw new Error(`parseTab: rhythm ('${rhythm}') not long enough for pattern ('${nPattern}')`);
 
   let p = 0; // position (in the rhythmObject)
-  const clip = {
-    events: [] as any[],
+  const clip : Clip = {
+    startTime : 0,
+    events: [] as ClipEvent[],
     duration: R.last(rhythmObject.totals),
+    midiEvents: [],
+    fileEvents: [],
+    unmappedEvents: [],
   };
 
   for (const sc of symbolsAndCounts) {
@@ -99,7 +103,13 @@ export function parseTab(rhythm, nPattern, nLibrary) {
 
       for (const note of notes) {
         // Copy the event (so we don't modify the nLibrary)
-        clip.events.push(copyEvent(note, {startTime: start, duration }))
+
+        const clipEvent : ClipEvent = {
+          technique: note,
+          startTime: start,
+          duration
+        }
+        clip.events.push(clipEvent)
       }
     }
     p += count;
@@ -108,14 +118,14 @@ export function parseTab(rhythm, nPattern, nLibrary) {
   return clip;
 };
 
-const isEmpty =   (char) => char === ' ' || char === '.';
-const notEmpty =  (char) => !isEmpty(char);
-const isWhole =   (char) => char === 'w';
-const isHalf =    (char) => char === 'h';
-const isQuarter = (char) => char.length === 1 && '1234567890'.includes(char);
-const is8th =     (char) => char === '+';
-const is16th =    (char) => char === 'a' || char === 'e';
-const is32nd =    (char) => char === 't';
+const isEmpty =   (char : string) => char === ' ' || char === '.';
+const notEmpty =  (char : string) => !isEmpty(char);
+const isWhole =   (char : string) => char === 'w';
+const isHalf =    (char : string) => char === 'h';
+const isQuarter = (char : string) => char.length === 1 && '1234567890'.includes(char);
+const is8th =     (char : string) => char === '+';
+const is16th =    (char : string) => char === 'a' || char === 'e';
+const is32nd =    (char : string) => char === 't';
 
 /**
  * Helper method gets the implied division of a rhythm char.
@@ -291,7 +301,7 @@ export function createDynamicGetter(rhythm, dPattern, dLibrary) {
       if (e.startTime > time) break;
       event = e;
     }
-    return event;
+    return event?.technique;
   };
 };
 

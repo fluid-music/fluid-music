@@ -127,9 +127,9 @@ describe('tab.parseTab', () => {
   it('should create the correct note objects', () => {
     const result = tab.parseTab(rhythm, pattern, notes);
     result.events.should.deepEqual([
-      { type: 'midiNote', n: 60, startTime: 0.0,   duration: 0.125 },
-      { type: 'midiNote', n: 64, startTime: 0.5,   duration: 0.125 },
-      { type: 'midiNote', n: 67, startTime: 0.875, duration: 0.0625 },
+      { technique: {type: 'midiNote', note: 60 }, startTime: 0.0,   duration: 0.125 },
+      { technique: {type: 'midiNote', note: 64 }, startTime: 0.5,   duration: 0.125 },
+      { technique: {type: 'midiNote', note: 67 }, startTime: 0.875, duration: 0.0625 },
     ]);
   });
 
@@ -156,8 +156,8 @@ describe('tab.createDynamicGetter', () => {
 
   it('should work', () => {
     const result = tab.createDynamicGetter('1234', dPattern, dLibrary);
-    const expectedA = { a: 'a', startTime: 0, duration: 0.25};
-    const expectedB = { b: 'b', startTime: 0.5, duration: 0.25};
+    const expectedA = { a: 'a' };
+    const expectedB = { b: 'b' };
     result(0).should.deepEqual(expectedA);
     result(0.25).should.deepEqual(expectedA);
     result(0.45).should.deepEqual(expectedA);
@@ -167,7 +167,7 @@ describe('tab.createDynamicGetter', () => {
   it ('should get the most recent dynamic', () => {
     // (even when the time is longer than the length of the dPattern)
     const getDynamic = tab.createDynamicGetter('1234', 'ab', dLibrary);
-    const expected = { b: 'b', startTime: 0.25, duration: 0.25 };
+    const expected = { b: 'b' };
     getDynamic(8).should.deepEqual(expected);
   })
 });

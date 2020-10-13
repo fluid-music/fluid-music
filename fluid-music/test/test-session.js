@@ -2,7 +2,7 @@ require('should');
 require('mocha');
 
 const fluid = require('..')
-const { EventMidiChord } = require('../built/fluid-events')
+const { MidiChord } = require('../built/fluid-techniques')
 const { DragonflyRoomPlugin } = require('../built/plugin-dradonfly-room')
 const FluidSession = fluid.FluidSession;
 
@@ -28,8 +28,8 @@ describe('FluidSession', () => {
   describe('insertScore method', function () {
     describe('with EventMidiChord events', function () {
       const nLibrary = {
-        a: new EventMidiChord({notes: [60, 64, 67, 72]}),
-        b: { type: 'EventMidiChord', notes: [67, 70, 74, 79]}
+        a: new MidiChord({notes: [60, 64, 67, 72]}),
+        b: { type: 'MidiChord', notes: [67, 70, 74, 79]}
       }
       const r = '1 2 3 4 '
       const session = new FluidSession({ nLibrary, r }, { chords: {} })

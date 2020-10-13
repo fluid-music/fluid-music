@@ -5,7 +5,7 @@ import { vst2ToReaperObject } from './vst2ToReaperObject'
 import * as cybr from './cybr/index';
 import FluidIpcClient = require('./cybr/IpcClient')
 import { ClipEventContext } from './fluid-interfaces'
-import { EventMidiNote } from './fluid-events'
+import { MidiNote } from './fluid-techniques'
 const tab  = require('./tab')
 const rppp = require('rppp')
 
@@ -59,6 +59,7 @@ async function tracksToReaperProject(tracksObject : FluidTrack[], bpm : number, 
         clip,
         clipIndex,
         data: {},
+        d: {},
       };
 
       if (clip.midiEvents && clip.midiEvents.length) {
@@ -142,7 +143,7 @@ function midiEventsToReaperObject(midiEvents, context : ClipEventContext) {
 
   let midiArray : any[] = []
   for (const event of midiEvents) {
-    if (event instanceof EventMidiNote) {
+    if (event instanceof MidiNote) {
       let velocity = (typeof event.velocity === 'number')
         ? event.velocity
         : (event.d && typeof event.d.velocity === 'number')

@@ -2,7 +2,7 @@ import { FluidPlugin, PluginType } from './plugin';
 import { FluidTrack } from './FluidTrack';
 import { ClipEventContext } from './fluid-interfaces';
 import { FluidSession } from './FluidSession';
-import { EventMidiNote } from './fluid-events'
+import { MidiNote } from './fluid-techniques'
 import * as cybr from './cybr/index';
 
 const tab  = require('./tab');
@@ -109,6 +109,7 @@ export function tracksToFluidMessage(tracks : FluidTrack[]) {
         clip,
         clipIndex,
         data: {},
+        d: {}
       };
 
       if (clip.midiEvents && clip.midiEvents.length) {
@@ -216,7 +217,7 @@ function midiEventsToFluidMessage(midiEvents, context) {
   msg.push(clipMsg);
 
   for (const event of midiEvents) {
-    if (event instanceof EventMidiNote) {
+    if (event instanceof MidiNote) {
       // Velocity in the event takes priority over velocity in the .d object
       let velocity = (typeof event.velocity === 'number')
         ? event.velocity
