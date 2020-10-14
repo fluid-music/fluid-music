@@ -17,7 +17,7 @@ export interface TechniqueEvent extends Event {
 
 export interface MidiNoteEvent extends Event {
   note : number
-  velocity? : number
+  velocity : number
 }
 
 export interface AudioFileEvent extends Event {
@@ -33,7 +33,6 @@ export interface AudioFileEvent extends Event {
   oneShot : boolean
   info : AudioFileInfo
   startInSourceSeconds : number
-
 }
 
 /**

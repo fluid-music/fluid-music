@@ -101,7 +101,8 @@ export class MidiNote implements Technique {
     const midiNoteEvent : MidiNoteEvent = {
       startTime,
       duration,
-      note: this.note
+      note: this.note,
+      velocity : 64
     }
     if (typeof this.velocity === 'number') midiNoteEvent.velocity = this.velocity
     else if (typeof context.d.velocity === 'number') midiNoteEvent.velocity = context.d.velocity
