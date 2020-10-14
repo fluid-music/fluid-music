@@ -10,7 +10,7 @@ const FluidSession = fluid.FluidSession;
 // Charles: merge in the most useful tests from ../test-obsolete/test-score.js
 describe('FluidSession', () => {
   it('should construct a simple score object', () => {
-    const nLibrary = [60, 63, 67].map(fluid.converters.numberToMidiNote);
+    const nLibrary = [60, 63, 67].map(note => new fluid.techniques.MidiNote({ note }))
     const r = '1 2 3 4 ';
     const session = new FluidSession({}, {
       bass: {nLibrary, r, gain: -6},
@@ -29,7 +29,7 @@ describe('FluidSession', () => {
     describe('with EventMidiChord events', function () {
       const nLibrary = {
         a: new MidiChord({notes: [60, 64, 67, 72]}),
-        b: { type: 'MidiChord', notes: [67, 70, 74, 79]}
+        b: new MidiChord({notes: [67, 70, 74, 79]}),
       }
       const r = '1 2 3 4 '
       const session = new FluidSession({ nLibrary, r }, { chords: {} })
@@ -63,8 +63,8 @@ describe('FluidSession', () => {
     describe('with EventPluginAuto events', function () {
       const roomVerb = new fluid.DragonflyRoom()
       const nLibrary = {
-        a: roomVerb.makeAutomation.decaySeconds(2.4),
-        b: roomVerb.makeAutomation.decaySeconds(4),
+        a: new fluid.techniques.PluginAuto(roomVerb.makeAutomation.decaySeconds(2.4)),
+        b: new fluid.techniques.PluginAuto(roomVerb.makeAutomation.decaySeconds(4)),
       }
 
       const r = '1 2 3 4 '

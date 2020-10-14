@@ -1,6 +1,6 @@
 const R = require('ramda');
 
-import { Clip, ClipEvent } from './fluid-interfaces'
+import { Clip, TechniqueEvent } from './fluid-interfaces'
 
 /**
  * Rhythm is the parsed representation of a rhythm string. A Rhythm object and
@@ -78,7 +78,7 @@ export function parseTab(rhythm, nPattern, nLibrary) : Clip {
   let p = 0; // position (in the rhythmObject)
   const clip : Clip = {
     startTime : 0,
-    events: [] as ClipEvent[],
+    events: [] as TechniqueEvent[],
     duration: R.last(rhythmObject.totals),
     midiEvents: [],
     fileEvents: [],
@@ -104,7 +104,7 @@ export function parseTab(rhythm, nPattern, nLibrary) : Clip {
       for (const note of notes) {
         // Copy the event (so we don't modify the nLibrary)
 
-        const clipEvent : ClipEvent = {
+        const clipEvent : TechniqueEvent = {
           technique: note,
           startTime: start,
           duration

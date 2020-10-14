@@ -1,18 +1,23 @@
 import { FluidPlugin, Automation } from "./plugin";
 
+export interface Technique {
+  use : {(startTime : number, duration : number, context : ClipEventContext) : any }
+}
+
+/** An Event is just anything with a startTime and a duration */
 export interface Event {
   startTime: number
   duration: number
-  d? : DynamicObject
+  d? : DynamicObject // Charles: Decide if .d belongs here or not. If not, tracksToFluidMessage and tracksToReaperProject must be updated
 }
 
-export interface AudioFileInfo {
-  [key: string] : any
-  /** length in seconds */
-  duration? : number
-  bitsPerSample? : number
-  sampleRate? : number
-  numberOfChannels? : number
+export interface TechniqueEvent extends Event {
+  technique : Technique
+}
+
+export interface MidiNoteEvent extends Event {
+  note : number
+  velocity? : number
 }
 
 export interface AudioFileEvent extends Event {
@@ -29,23 +34,28 @@ export interface AudioFileEvent extends Event {
   startInSourceSeconds : number
 }
 
-export interface DynamicObject {
-  [key : string] : any
+/**
+ * Audio file details provided by the music-metadata npm package.
+ */
+export interface AudioFileInfo {
+  [key: string] : any
+  /** length in seconds */
+  duration? : number
+  bitsPerSample? : number
+  sampleRate? : number
+  numberOfChannels? : number
 }
 
-export interface ClipEvent {
-  startTime : number
-  duration : number
-  technique : any
-  d? : DynamicObject
+export interface DynamicObject {
+  [key : string] : any
 }
 
 /**
  * @member duration length measured in whole notes
  */
 export interface Clip {
-  events : ClipEvent[];
-  midiEvents : any[];
+  events : TechniqueEvent[];
+  midiEvents : MidiNoteEvent[];
   fileEvents : AudioFileEvent[];
   unmappedEvents: any[];
   duration : number;
@@ -86,10 +96,9 @@ export interface Track {
 }
 
 /**
- * Score.parse passes ClipEventContext objects as the second argument to
- * eventMapper functions. Its fields specify the context of the ClipEvent
- * currently being processed, including the track and clip that contain the
- * note.
+ * ClipEventContext fields specify the context of the ClipEvent currently being
+ * processed, including the track and clip that contain the note.
+ *
  * @member bpm the bpm of the clip, this is needed in 
  *    tracksToReaperProject.
  * @member clip the Clip that contains the current event
@@ -102,9 +111,6 @@ export interface Track {
  *    callbacks. Like the EventContext, it is replaced for each Clip.
  */
 export interface ClipEventContext {
-  /**
-   * dynamic object
-   */
   d: DynamicObject;
 
   clip: Clip;

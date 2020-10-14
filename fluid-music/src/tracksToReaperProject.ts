@@ -4,8 +4,8 @@ import { vst2ToReaperObject } from './vst2ToReaperObject'
 
 import * as cybr from './cybr/index';
 import FluidIpcClient = require('./cybr/IpcClient')
-import { ClipEventContext } from './fluid-interfaces'
-import { MidiNote } from './fluid-techniques'
+import { ClipEventContext, MidiNoteEvent } from './fluid-interfaces'
+
 const tab  = require('./tab')
 const rppp = require('rppp')
 
@@ -89,6 +89,7 @@ async function tracksToReaperProject(tracksObject : FluidTrack[], bpm : number, 
         throw new Error(`Unsupported reaper track automation lane: "${name}"`);
       }
 
+      automation.points.sort((a, b) => a.startTime - b.startTime)
       for (const autoPoint of automation.points) {
         if (typeof autoPoint.value === 'number') {
           autoObject.addBezierPoint(
@@ -122,11 +123,7 @@ async function tracksToReaperProject(tracksObject : FluidTrack[], bpm : number, 
   return reaperProject;
 };
 
-/**
- * @param {ClipEvent[]} midiEvents
- * @param {ClipEventContext} context This will not have a .eventIndex
- */
-function midiEventsToReaperObject(midiEvents, context : ClipEventContext) {
+function midiEventsToReaperObject(midiEvents : MidiNoteEvent[] , context : ClipEventContext) {
   if (typeof context.clip.startTime !== 'number')
     throw new Error('Clip is missing startTime')
   if (typeof context.bpm !== 'number')
@@ -143,16 +140,14 @@ function midiEventsToReaperObject(midiEvents, context : ClipEventContext) {
 
   let midiArray : any[] = []
   for (const event of midiEvents) {
-    if (event instanceof MidiNote) {
-      let velocity = (typeof event.velocity === 'number')
-        ? event.velocity
-        : (event.d && typeof event.d.velocity === 'number')
-          ? event.d.velocity
-          : (event.d && typeof event.d.v === 'number')
-            ? event.d.v
-            : undefined
-      midiArray.push({ n: event.note, s: event.startTime, l: event.duration, v: velocity });
-    }
+    let velocity = (typeof event.velocity === 'number')
+      ? event.velocity
+      : (event.d && typeof event.d.velocity === 'number')
+        ? event.d.velocity
+        : (event.d && typeof event.d.v === 'number')
+          ? event.d.v
+          : undefined
+    midiArray.push({ n: event.note, s: event.startTime, l: event.duration, v: velocity });
   }
 
   const midiSource = new rppp.objects.ReaperSource()

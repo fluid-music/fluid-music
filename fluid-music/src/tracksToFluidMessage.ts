@@ -1,8 +1,7 @@
 import { FluidPlugin, PluginType } from './plugin';
 import { FluidTrack } from './FluidTrack';
-import { ClipEventContext } from './fluid-interfaces';
+import { ClipEventContext, MidiNoteEvent } from './fluid-interfaces';
 import { FluidSession } from './FluidSession';
-import { MidiNote } from './fluid-techniques'
 import * as cybr from './cybr/index';
 
 const tab  = require('./tab');
@@ -200,12 +199,7 @@ export function tracksToFluidMessage(tracks : FluidTrack[]) {
   return sessionMessages;
 };
 
-
-/**
- * @param {ClipEvent[]} midiEvents
- * @param {ClipEventContext} context This will not have a .eventIndex
- */
-function midiEventsToFluidMessage(midiEvents, context) {
+function midiEventsToFluidMessage(midiEvents : MidiNoteEvent[], context : ClipEventContext) {
   if (typeof context.clip.startTime !== 'number')
     throw new Error('Clip is missing startTime');
 
@@ -217,17 +211,15 @@ function midiEventsToFluidMessage(midiEvents, context) {
   msg.push(clipMsg);
 
   for (const event of midiEvents) {
-    if (event instanceof MidiNote) {
-      // Velocity in the event takes priority over velocity in the .d object
-      let velocity = (typeof event.velocity === 'number')
-        ? event.velocity
-        : (event.d && typeof event.d.velocity === 'number')
-          ? event.d.velocity
-          : (event.d && typeof event.d.v === 'number')
-            ? event.d.v
-            : undefined
-      msg.push(cybr.midiclip.note(event.note, event.startTime, event.duration, velocity));
-    }
+    // Velocity in the event takes priority over velocity in the .d object
+    let velocity = (typeof event.velocity === 'number')
+      ? event.velocity
+      : (event.d && typeof event.d.velocity === 'number')
+        ? event.d.velocity
+        : (event.d && typeof event.d.v === 'number')
+          ? event.d.v
+          : undefined
+    msg.push(cybr.midiclip.note(event.note, event.startTime, event.duration, velocity));
   }
 
   return msg;

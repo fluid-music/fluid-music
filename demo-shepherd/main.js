@@ -5,10 +5,6 @@ const fluid = require('../fluid-music')
 const cybr = fluid.cybr
 const nLibrary = require('./n-library-4')
 
-for (const key of Object.keys(nLibrary)) {
-  nLibrary[key].notes = nLibrary[key].notes.map(n => n + 12)
-}
-
 const tyrellN6 = new fluid.TyrellN6Vst2({
   // Osc Mod
   tyrellSoftSync: 100,
@@ -51,8 +47,8 @@ const tyrellN6 = new fluid.TyrellN6Vst2({
 tyrellN6.automation.tyrellTune2 = { points: [tyrellN6.makeAutomation.tyrellTune2(tyrellN6.parameters.tyrellTune2)] }
 tyrellN6.automation.tyrellCutoff = { points: [tyrellN6.makeAutomation.tyrellCutoff(tyrellN6.parameters.tyrellCutoff)] }
 
-const v = tyrellN6.makeAutomation.tyrellTune2(1)
-const V = tyrellN6.makeAutomation.tyrellCutoff(65)
+const v = new fluid.techniques.PluginAuto(tyrellN6.makeAutomation.tyrellTune2(1))
+const V = new fluid.techniques.PluginAuto(tyrellN6.makeAutomation.tyrellCutoff(65))
 const w = [v, V]
 
 class MidiArp extends fluid.techniques.MidiChord {
@@ -93,6 +89,11 @@ class MidiArp extends fluid.techniques.MidiChord {
 
     return null
   }
+}
+
+for (const key of Object.keys(nLibrary)) {
+  const notes = nLibrary[key].notes.map(n => n + 12)
+  nLibrary[key] = new MidiArp({ notes })
 }
 
 const session = new fluid.FluidSession({

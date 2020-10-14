@@ -1,6 +1,6 @@
 import * as tab from './tab'
 import { FluidTrack, TrackConfig } from './FluidTrack';
-import { ScoreConfig, ClipEventContext, ClipEvent } from './fluid-interfaces';
+import { ScoreConfig, ClipEventContext, TechniqueEvent } from './fluid-interfaces';
 import { TechniqueClass, AudioFile, MidiNote, TrackAuto, PluginAuto, MidiChord, ILayers, Random } from './fluid-techniques'
 
 export interface TracksConfig {
@@ -25,13 +25,13 @@ export class FluidSession {
       this.tracks.push(newTrack)
     }
 
-    this.registerEventClass(AudioFile, 'file')
-    this.registerEventClass(MidiNote, 'midiNote')
-    this.registerEventClass(TrackAuto, 'trackAuto')
-    this.registerEventClass(PluginAuto, 'pluginAuto')
-    this.registerEventClass(MidiChord, 'midiChord')
-    this.registerEventClass(ILayers, 'iLayers')
-    this.registerEventClass(Random, 'random')
+    // this.registerEventClass(AudioFile, 'file')
+    // this.registerEventClass(MidiNote, 'midiNote')
+    // this.registerEventClass(TrackAuto, 'trackAuto')
+    // this.registerEventClass(PluginAuto, 'pluginAuto')
+    // this.registerEventClass(MidiChord, 'midiChord')
+    // this.registerEventClass(ILayers, 'iLayers')
+    // this.registerEventClass(Random, 'random')
   }
 
   scoreConfig : ScoreConfig = {}
@@ -99,30 +99,14 @@ export class FluidSession {
           d: {},
         };
 
-        const processEvent = (event : ClipEvent|ClipEvent[]|null) => {
-          if (!event) return
-
-          if (Array.isArray(event)) {
-            if (!event.length) return
-            return processEvent(event.map(processEvent).filter(e => !!e))
-          }
-
-          if (event.technique?.constructor === Object) {
-            if (typeof event.technique.type !== 'string') throw new Error(`invalid event (Object without .type string):${JSON.stringify(event)}`)
-            let typeClass = this.eventTypes.get(event.technique.type)
-            if (!typeClass) throw new Error(`"${event.technique.type}" is not a registered event type: ${JSON.stringify(event)}`)
-            event.technique = new typeClass(event.technique)
-          }
-
+        for (let event of clip.events) {
           if (typeof event.technique?.use === 'function') {
             if (event.d) context.d = event.d
-            return processEvent(event.technique.use(event.startTime, event.duration, context))
+            event.technique.use(event.startTime, event.duration, context)
+          } else {
+            throw new Error(`Unhandled Event (no .use(...) method): ${JSON.stringify(event)}`)
           }
-
-          throw new Error(`Unhandled Event (no .use(...) method): ${JSON.stringify(event)}`)
         }
-
-        for (let event of clip.events) processEvent(event)
       }); // iterate over clips  with clips.forEach method
     }     // iterate over tracks with for...of loop
   }

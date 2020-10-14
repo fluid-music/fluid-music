@@ -1,84 +1,13 @@
-import { ClipEventContext, DynamicObject, ClipEvent, AudioFileInfo } from './fluid-interfaces'
+import { ClipEventContext, AudioFileInfo, Technique, MidiNoteEvent } from './fluid-interfaces'
 import { AutomationPoint } from './plugin'
 import * as random from './random'
 
-export interface FluidEvent {
-  readonly type : string;
-  startTime? : number;
-  duration? : number;
-  [key: string] : any;
-
-  d? : DynamicObject; // Dynamic object
-}
-
-export interface TechniqueClass { new(...options: any[]): TechniqueBase }
-export type UseResult = ClipEvent|ClipEvent[]|null
+export interface TechniqueClass { new(...options: any[]): Technique }
 
 /**
- * Helper for copying Technique instances.
- * - Arrays will be copied at any depth
- * - EventBase instances will be copied with '.deepCopy'
- * - Simple objects will be shallow copied
- *
- * @param technique
- * @param changes
+ * Insert an audio sample into a track
  */
-export function copyTechnique(technique : TechniqueBase|{[key:string]:any}, changes : {[key: string] : any}) {
-  if (Array.isArray(technique)) return technique.map(e => copyTechnique(e, changes))
-  if (technique instanceof TechniqueBase) return technique.deepCopy(changes)
-  if (typeof technique === 'object') return Object.assign(Object.assign({}, technique), changes)
-  return technique
-}
-
-/**
- * Base class for internal event types.
- */
-export class TechniqueBase implements FluidEvent {
-  startTime : number = 0
-  duration : number = 0
-  d : any = {}
-
-  constructor (options : TechniqueOptions) {
-    if (typeof options.startTime === 'number') this.startTime = options.startTime
-    if (typeof options.duration === 'number') this.duration = options.duration
-    if (options.d) this.d = Object.assign({}, options.d)
-  }
-
-  get type() : string {
-    return this.constructor.name
-  }
-
-  deepCopy<E extends TechniqueBase> (updates : object = {}, ...rest) : E {
-    const args = Object.assign({}, this)
-    return new (this.constructor as any)(Object.assign(args, updates), ...rest) as E
-  }
-
-  use (startTime : number, duration: number, context : ClipEventContext) : UseResult {
-    if (this.type === TechniqueBase.name)
-      console.warn(`WARNING: Unused ${TechniqueBase.name} Technique`)
-    else
-      console.warn(`WARNING: Custom Technique type (${this.constructor.name}) is missing an event.use(startTime, duration, context) method`)
-    return null
-  }
-}
-
-export interface TechniqueOptions {
-  startTime? : number
-  duration? : number
-  d? : any
-}
-
-
-/**
- * An audio sample on a track
- * @member info file details provided by the music-metadata npm package - info
- * is not currently guaranteed to be present on every `file` event. It includes
- *      duration: 2.99, // source audio file duration in seconds
- *      bitsPerSample: 16,
- *      sampleRate: 44100,
- *      numberOfChannels: 1,
- */
-export class AudioFile extends TechniqueBase {
+export class AudioFile implements Technique {
   /** Filepath of the audio file */
   path : string
 
@@ -93,8 +22,6 @@ export class AudioFile extends TechniqueBase {
   startInSourceSeconds : number = 0
 
   constructor (options : AudioFileOptions) {
-    super(options)
-
     if (typeof options.path !== 'string')
       throw new Error('AudioFile Technique constructor did not find an options.path string')
 
@@ -123,7 +50,7 @@ export class AudioFile extends TechniqueBase {
     return null;
   }
 }
-export interface AudioFileOptions extends TechniqueOptions {
+export interface AudioFileOptions {
   path : string
   fadeOutSeconds? : number
   fadeInSeconds? : number
@@ -136,7 +63,7 @@ export interface AudioFileOptions extends TechniqueOptions {
 /**
  * A midi note within a midi clip.
  */
-export class MidiNote extends TechniqueBase {
+export class MidiNote implements Technique {
   /**
    * Midi note number - 60 = C4 = Middle C
    */
@@ -148,7 +75,6 @@ export class MidiNote extends TechniqueBase {
   velocity? : number
 
   constructor(options : MidiNoteOptions) {
-    super(options)
     // For backwards compatibility
     if (typeof options.n === 'number' && typeof options.note !== 'number') options.note = options.n
     if (typeof options.v === 'number' && typeof options.velocity !== 'number') options.velocity = options.v
@@ -158,12 +84,19 @@ export class MidiNote extends TechniqueBase {
   }
 
   use (startTime : number, duration : number, context : ClipEventContext) {
-    const midiNoteEvent = this.deepCopy({ startTime, duration, d: context.d })
+    const midiNoteEvent : MidiNoteEvent = {
+      startTime,
+      duration,
+      d: Object.assign({}, context.d),
+      note: this.note
+    }
+    if (typeof this.velocity === 'number') midiNoteEvent.velocity = this.velocity
     context.clip.midiEvents.push(midiNoteEvent)
+
     return null;
   }
 }
-export interface MidiNoteOptions extends TechniqueOptions {
+export interface MidiNoteOptions {
   note : number
   velocity? : number
   n? : number
@@ -172,10 +105,9 @@ export interface MidiNoteOptions extends TechniqueOptions {
 
 
 /**
- * The `pluginAuto` note type represents an an automation point for a specific
- * plugin on an arbitrary audio track.
+ *  Inserts an automation point for a specific plugin on an arbitrary track
  */
-export class PluginAuto extends TechniqueBase {
+export class PluginAuto implements Technique {
   // Mandatory members
   pluginSelector : PluginSelector
   paramKey : string
@@ -185,7 +117,6 @@ export class PluginAuto extends TechniqueBase {
   curve : number = 0
 
   constructor (options : PluginAuto) {
-    super(options)
     this.pluginSelector = Object.assign({}, options.pluginSelector)
     this.paramKey = options.paramKey // ex: 'sizeMeters'
     if (typeof options.value === 'number') this.value = options.value
@@ -196,7 +127,7 @@ export class PluginAuto extends TechniqueBase {
     startTime = (context.clip.startTime as number) + startTime;
     const point : AutomationPoint = {
       startTime,
-      value: (this.value as number),
+      value: this.value,
       curve: this.curve,
     };
 
@@ -221,8 +152,7 @@ export class PluginAuto extends TechniqueBase {
     return null
   }
 }
-
-export interface PluginAutoOptions extends TechniqueOptions {
+export interface PluginAutoOptions {
   pluginSelector : PluginSelector
   paramKey : string
   value? : number
@@ -231,16 +161,19 @@ export interface PluginAutoOptions extends TechniqueOptions {
 
 /**
  * Identifies a plugin on an arbitrary track
- * @member name
- * @member type ex: 'VST2', 'VST3', 'AudioUnit'
- * @member nth The selected track may have multiple plugins with the same name.
- *    Index from within those plugins. Most of the time this isn't needed,
- *    because it is unusual to have more than one plugin with a given name on a
- *    particular track.
  */
 export interface PluginSelector {
   pluginName : string
+
+  /** ex: 'VST2', 'VST3', 'AudioUnit' */
   pluginType : string
+
+  /**
+   * The selected track may have multiple plugins with the same name. Index from
+   * within those plugins. Most of the time this isn't needed, because it is
+   * unusual to have more than one plugin with the same name on a particular
+   * track.
+   */
   nth? : number
 }
 
@@ -248,13 +181,12 @@ export interface PluginSelector {
 /**
  * An automation event on a track
  */
-export class TrackAuto extends TechniqueBase {
+export class TrackAuto implements Technique {
   paramKey : string
   value : number = 0
   curve : number = 0
 
   constructor (options : TrackAutoOptions) {
-    super(options)
     this.paramKey = options.paramKey
     if (typeof options.value === 'number') this.value = options.value
     if (typeof options.curve === 'number') this.curve = options.curve
@@ -280,38 +212,30 @@ export class TrackAuto extends TechniqueBase {
     return null
   }
 }
-export interface TrackAutoOptions extends TechniqueOptions {
+export interface TrackAutoOptions {
   paramKey : string
   value? : number
   curve? : number
 }
 
 
-export class MidiChord extends TechniqueBase {
+export class MidiChord implements Technique {
   notes : number[]
   name : string = 'midi chord'
 
   constructor (options : MidiChordOptions) {
-    super(options)
     this.notes = options.notes
     if (typeof options.name === 'string') this.name = options.name
   }
 
   use (startTime : number, duration : number, context : ClipEventContext) {
-    const changes : MidiNoteOptions = {
-      note: -1,
-      d : context.d,
-    }
-
     for (const note of this.notes) {
       const midiNote = new MidiNote({ note })
       midiNote.use(startTime, duration, context)
     }
-
-    return null
   }
 }
-export interface MidiChordOptions extends TechniqueOptions {
+export interface MidiChordOptions {
   name? : string
   notes : number[]
 }
@@ -321,38 +245,31 @@ export interface MidiChordOptions extends TechniqueOptions {
  * For samples that have "Intensity Layers," meaning recordings that were
  * sampled at successive increasing performance intensities
  */
-export class ILayers extends TechniqueBase {
-  layers : TechniqueBase[]
+export class ILayers implements Technique {
+  layers : Technique[]
 
   constructor(options : ILayersOptions) {
-    super(options)
     this.layers = options.layers
   }
 
   use (startTime : number, duration : number, context : ClipEventContext) {
     let length = this.layers.length // number of layers
     let index = length - 1          // default to last layer
+    let d = Object.assign({}, context.d)
 
     // Look for an intensity
-    if (this.d && typeof(this.d.intensity) === 'number') {
-      index = Math.floor(this.d.intensity * length)
+    if (typeof d.intensity === 'number') {
+      index = Math.floor(d.intensity * length)
     }
     // If no intensity was found, look for a velocity
-    else if (this.d && typeof this.d.v === 'number') {
-      index = Math.floor(this.d.v / (127 / this.layers.length))
+    else if (typeof d.velocity === 'number') {
+      index = Math.floor(d.velocity / (127 / this.layers.length))
+    } else if (typeof d.v === 'number') {
+      index = Math.floor(d.v / (127 / this.layers.length))
     }
 
     const technique = this.layers[ILayers.clamp(0, length-1, index)]
-    if (technique instanceof TechniqueBase) {
-      return technique.use(startTime, duration, context)
-    }
-
-    return {
-      startTime,
-      duration,
-      d : Object.assign({}, context.d),
-      technique
-    }
+    technique.use(startTime, duration, context)
   }
 
   static clamp(min: number, max: number, value: number) {
@@ -360,15 +277,15 @@ export class ILayers extends TechniqueBase {
     return Math.max(Math.min(value, max), min)
   }
 }
-export interface ILayersOptions extends TechniqueOptions {
-  layers : TechniqueBase[]
+export interface ILayersOptions {
+  layers : Technique[]
 }
 
 /**
  * Randomly chooses a technique from an array of choices
  */
-export class Random extends TechniqueBase {
-  choices : TechniqueBase[]
+export class Random implements Technique {
+  choices : Technique[]
 
   constructor (options : RandomOptions) {
     if (options.choices.length < 1) {
@@ -380,25 +297,14 @@ export class Random extends TechniqueBase {
         throw new Error('Random Technique got an invalid choice: ' + JSON.stringify(choice))
       }
     }
-
-    super(options)
     this.choices = options.choices
   }
 
   use (startTime : number, duration : number, context : ClipEventContext) {
     const technique = random.choice(this.choices)
-    if (technique instanceof TechniqueBase) {
-      return technique.use(startTime, duration, context)
-    }
-
-    return {
-      startTime,
-      duration,
-      d : Object.assign({}, context.d),
-      technique
-    }
+    return technique.use(startTime, duration, context)
   }
 }
-export interface RandomOptions extends TechniqueOptions {
-  choices : TechniqueBase[]
+export interface RandomOptions {
+  choices : Technique[]
 }
