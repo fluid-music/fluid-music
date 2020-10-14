@@ -1,12 +1,12 @@
 require('mocha')
 const should = require('should')
 
-const { Technique, AudioFile, copyEvent }= require('..').techniques
+const { TechniqueBase, AudioFile, copyTechnique } = require('..').techniques
 
 describe('test-techniques.js', function () {
   describe('EventBase.deepCopy', function () {
     it('should deep copy EventBase', function () {
-      const baseEvent = new Technique({d: {v: 127}})
+      const baseEvent = new TechniqueBase({d: {v: 127}})
       const copyEvent = baseEvent.deepCopy()
       copyEvent.should.deepEqual(baseEvent)
       copyEvent.should.not.equal(baseEvent)
@@ -23,7 +23,7 @@ describe('test-techniques.js', function () {
   describe('copyEvent (standalone function)', function () {
     it('should deep copy an EventAudioFile instance', function () {
       const fileEvent = new AudioFile({ path: 'some/file.wav', fadeOutSeconds: 0.5, info: {sampleRate: 44100} })
-      const copy = copyEvent(fileEvent, {startTime: 500})
+      const copy = copyTechnique(fileEvent, {startTime: 500})
       fileEvent.startTime = 500
       copy.should.deepEqual(fileEvent)
       copy.should.be.a.instanceOf(AudioFile)
@@ -31,7 +31,7 @@ describe('test-techniques.js', function () {
 
     it('should shallow copy objects', function () {
       const event = { type: 'trackAuto', startTime: 500, duration: 1, paramKey: 'gain' }
-      const copy = copyEvent(event)
+      const copy = copyTechnique(event)
       copy.should.deepEqual(event)
       copy.should.not.equal(event)
     })
@@ -40,7 +40,7 @@ describe('test-techniques.js', function () {
       const fileEvent = new AudioFile({ path: 'some/file.wav', fadeOutSeconds: 0.5, info: {sampleRate: 44100} })
       const fileEvent2 = fileEvent.deepCopy({ startTime: 100, duration: 5 })
       const events = [fileEvent, fileEvent2, {hi:'helloworld'}]
-      const copies = copyEvent(events)
+      const copies = copyTechnique(events)
       events.should.deepEqual(copies)
       copies[0].should.not.equal(events[0])
       copies[1].should.not.equal(events[1])

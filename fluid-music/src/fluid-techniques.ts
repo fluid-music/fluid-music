@@ -1,4 +1,4 @@
-import { ClipEventContext, DynamicObject, ClipEvent } from './fluid-interfaces'
+import { ClipEventContext, DynamicObject, ClipEvent, AudioFileInfo } from './fluid-interfaces'
 import { AutomationPoint } from './plugin'
 import * as random from './random'
 
@@ -11,28 +11,29 @@ export interface FluidEvent {
   d? : DynamicObject; // Dynamic object
 }
 
-export interface EventClass { new(...options: any[]): Technique }
+export interface TechniqueClass { new(...options: any[]): TechniqueBase }
 export type UseResult = ClipEvent|ClipEvent[]|null
+
 /**
- * Helper for copying events.
+ * Helper for copying Technique instances.
  * - Arrays will be copied at any depth
  * - EventBase instances will be copied with '.deepCopy'
- * - Simple object will be shallow copied
+ * - Simple objects will be shallow copied
  *
- * @param event
+ * @param technique
  * @param changes
  */
-export function copyEvent(event : Technique|{[key:string]:any}, changes : {[key: string] : any}) {
-  if (Array.isArray(event)) return event.map(e => copyEvent(e, changes))
-  if (event instanceof Technique) return event.deepCopy(changes)
-  if (typeof event === 'object') return Object.assign(Object.assign({}, event), changes)
-  return event
+export function copyTechnique(technique : TechniqueBase|{[key:string]:any}, changes : {[key: string] : any}) {
+  if (Array.isArray(technique)) return technique.map(e => copyTechnique(e, changes))
+  if (technique instanceof TechniqueBase) return technique.deepCopy(changes)
+  if (typeof technique === 'object') return Object.assign(Object.assign({}, technique), changes)
+  return technique
 }
 
 /**
  * Base class for internal event types.
  */
-export class Technique implements FluidEvent {
+export class TechniqueBase implements FluidEvent {
   startTime : number = 0
   duration : number = 0
   d : any = {}
@@ -47,16 +48,16 @@ export class Technique implements FluidEvent {
     return this.constructor.name
   }
 
-  deepCopy<E extends Technique> (updates : object = {}, ...rest) : E {
+  deepCopy<E extends TechniqueBase> (updates : object = {}, ...rest) : E {
     const args = Object.assign({}, this)
     return new (this.constructor as any)(Object.assign(args, updates), ...rest) as E
   }
 
   use (startTime : number, duration: number, context : ClipEventContext) : UseResult {
-    if (this.type === Technique.name)
-      console.warn(`WARNING: Unused EventBase Event`)
+    if (this.type === TechniqueBase.name)
+      console.warn(`WARNING: Unused ${TechniqueBase.name} Technique`)
     else
-      console.warn(`WARNING: Custom event type (${this.type}) is missing an event.use(startTime, duration, context) method`)
+      console.warn(`WARNING: Custom Technique type (${this.constructor.name}) is missing an event.use(startTime, duration, context) method`)
     return null
   }
 }
@@ -77,37 +78,47 @@ export interface TechniqueOptions {
  *      sampleRate: 44100,
  *      numberOfChannels: 1,
  */
-export class AudioFile extends Technique {
-  // mandatory members
+export class AudioFile extends TechniqueBase {
+  /** Filepath of the audio file */
   path : string
 
-  // members with default values
-  fadeOutSeconds : number = 0
-  fadeInSeconds : number = 0
   /**
    * When true, the inserted audio file will play to its end instead of obeying
    * event length (default=false)
    */
   oneShot : boolean = false
-  info : {
-    [key: string] : any
-    duration? : number
-    bitsPerSample? : number
-    sampleRate? : number
-    numberOfChannels? : number
-  } = {}
+  fadeOutSeconds : number = 0
+  fadeInSeconds : number = 0
+  info : AudioFileInfo = {}
+  startInSourceSeconds : number = 0
 
   constructor (options : AudioFileOptions) {
     super(options)
+
+    if (typeof options.path !== 'string')
+      throw new Error('AudioFile Technique constructor did not find an options.path string')
+
     this.path = options.path
     if (typeof options.fadeInSeconds === 'number') this.fadeInSeconds = options.fadeInSeconds
     if (typeof options.fadeOutSeconds === 'number') this.fadeOutSeconds = options.fadeOutSeconds
     if (typeof options.oneShot === 'boolean') this.oneShot = options.oneShot
+    if (typeof options.startInSourceSeconds === 'number') this.startInSourceSeconds = options.startInSourceSeconds
     if (options.info) this.info = options.info
   }
 
   use (startTime: number, duration : number, context : ClipEventContext) {
-    const fileEvent = this.deepCopy({ startTime, duration, d: context.d })
+    const fileEvent = {
+      startTime,
+      duration,
+      d: Object.assign({}, context.d),
+      path: this.path,
+      fadeInSeconds: this.fadeInSeconds,
+      fadeOutSeconds: this.fadeOutSeconds,
+      startInSourceSeconds: this.startInSourceSeconds,
+      oneShot: this.oneShot,
+      info: this.info,
+    }
+
     context.clip.fileEvents.push(fileEvent)
     return null;
   }
@@ -116,22 +127,23 @@ export interface AudioFileOptions extends TechniqueOptions {
   path : string
   fadeOutSeconds? : number
   fadeInSeconds? : number
+  startInSourceSeconds? : number
   oneShot? : boolean
-  info? : { [key: string] : any }
+  info? : AudioFileInfo
 }
 
 
 /**
  * A midi note within a midi clip.
  */
-export class MidiNote extends Technique {
+export class MidiNote extends TechniqueBase {
   /**
    * Midi note number - 60 = C4 = Middle C
    */
   note : number
 
   /**
-   * If present, velocity overrides any velocity found in a .d object
+   * If present, velocity overrides a velocity found in a .d object
    */
   velocity? : number
 
@@ -163,7 +175,7 @@ export interface MidiNoteOptions extends TechniqueOptions {
  * The `pluginAuto` note type represents an an automation point for a specific
  * plugin on an arbitrary audio track.
  */
-export class PluginAuto extends Technique {
+export class PluginAuto extends TechniqueBase {
   // Mandatory members
   pluginSelector : PluginSelector
   paramKey : string
@@ -185,10 +197,8 @@ export class PluginAuto extends Technique {
     const point : AutomationPoint = {
       startTime,
       value: (this.value as number),
-      curve: 0,
+      curve: this.curve,
     };
-
-    if (typeof this.curve === 'number') point.curve = this.curve
 
     const nth     = this.pluginSelector.nth || 0;
     const matches = context.track.plugins.filter(plugin =>
@@ -238,7 +248,7 @@ export interface PluginSelector {
 /**
  * An automation event on a track
  */
-export class TrackAuto extends Technique {
+export class TrackAuto extends TechniqueBase {
   paramKey : string
   value : number = 0
   curve : number = 0
@@ -270,7 +280,6 @@ export class TrackAuto extends Technique {
     return null
   }
 }
-
 export interface TrackAutoOptions extends TechniqueOptions {
   paramKey : string
   value? : number
@@ -278,33 +287,7 @@ export interface TrackAutoOptions extends TechniqueOptions {
 }
 
 
-export class Chord extends Technique {
-  events : FluidEvent[]
-  name : string = 'chord'
-
-  constructor (options : EventChordOptions) {
-    super(options)
-    this.events = options.events
-    if (typeof options.name === 'string') this.name = options.name
-  }
-
-  use (startTime : number, duration : number, context : ClipEventContext) {
-    const changes : TechniqueOptions = {
-      startTime,
-      duration,
-      d: context.d
-    }
-
-    return this.events.map(event => copyEvent(event, changes))
-  }
-}
-export interface EventChordOptions extends TechniqueOptions {
-  name? : string
-  events : FluidEvent[]
-}
-
-
-export class MidiChord extends Technique {
+export class MidiChord extends TechniqueBase {
   notes : number[]
   name : string = 'midi chord'
 
@@ -314,23 +297,20 @@ export class MidiChord extends Technique {
     if (typeof options.name === 'string') this.name = options.name
   }
 
-  use (startTime : number, duration : number, context : ClipEventContext) : ClipEvent[] {
+  use (startTime : number, duration : number, context : ClipEventContext) {
     const changes : MidiNoteOptions = {
       note: -1,
       d : context.d,
     }
 
-    return this.notes.map(n => {
-      return { 
-        startTime,
-        duration,
-        d: Object.assign({}, context.d),
-        technique : new MidiNote({ note: n })
-      }
-    })
+    for (const note of this.notes) {
+      const midiNote = new MidiNote({ note })
+      midiNote.use(startTime, duration, context)
+    }
+
+    return null
   }
 }
-
 export interface MidiChordOptions extends TechniqueOptions {
   name? : string
   notes : number[]
@@ -341,8 +321,8 @@ export interface MidiChordOptions extends TechniqueOptions {
  * For samples that have "Intensity Layers," meaning recordings that were
  * sampled at successive increasing performance intensities
  */
-export class ILayers extends Technique {
-  layers : FluidEvent[]
+export class ILayers extends TechniqueBase {
+  layers : TechniqueBase[]
 
   constructor(options : ILayersOptions) {
     super(options)
@@ -362,12 +342,16 @@ export class ILayers extends Technique {
       index = Math.floor(this.d.v / (127 / this.layers.length))
     }
 
-    let newTechnique = this.layers[ILayers.clamp(0, length-1, index)]
+    const technique = this.layers[ILayers.clamp(0, length-1, index)]
+    if (technique instanceof TechniqueBase) {
+      return technique.use(startTime, duration, context)
+    }
+
     return {
       startTime,
       duration,
       d : Object.assign({}, context.d),
-      technique : newTechnique
+      technique
     }
   }
 
@@ -377,29 +361,44 @@ export class ILayers extends Technique {
   }
 }
 export interface ILayersOptions extends TechniqueOptions {
-  layers : FluidEvent[]
+  layers : TechniqueBase[]
 }
 
 /**
  * Randomly chooses a technique from an array of choices
  */
-export class Random extends Technique {
-  choices : FluidEvent[]
+export class Random extends TechniqueBase {
+  choices : TechniqueBase[]
 
   constructor (options : RandomOptions) {
+    if (options.choices.length < 1) {
+      throw new Error('Random Technique needs at least one choice')
+    }
+
+    for (const choice of options.choices) {
+      if (typeof choice.use !== 'function') {
+        throw new Error('Random Technique got an invalid choice: ' + JSON.stringify(choice))
+      }
+    }
+
     super(options)
     this.choices = options.choices
   }
 
   use (startTime : number, duration : number, context : ClipEventContext) {
+    const technique = random.choice(this.choices)
+    if (technique instanceof TechniqueBase) {
+      return technique.use(startTime, duration, context)
+    }
+
     return {
       startTime,
       duration,
       d : Object.assign({}, context.d),
-      technique : random.choice(this.choices)
+      technique
     }
   }
 }
 export interface RandomOptions extends TechniqueOptions {
-  choices : FluidEvent[]
+  choices : TechniqueBase[]
 }

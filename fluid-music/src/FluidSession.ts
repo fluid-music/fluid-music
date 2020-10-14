@@ -1,7 +1,7 @@
 import * as tab from './tab'
 import { FluidTrack, TrackConfig } from './FluidTrack';
 import { ScoreConfig, ClipEventContext, ClipEvent } from './fluid-interfaces';
-import { EventClass, AudioFile, MidiNote, TrackAuto, PluginAuto, MidiChord, Chord, ILayers, Random } from './fluid-techniques'
+import { TechniqueClass, AudioFile, MidiNote, TrackAuto, PluginAuto, MidiChord, ILayers, Random } from './fluid-techniques'
 
 export interface TracksConfig {
   [trackName: string] : TrackConfig | FluidTrack
@@ -30,7 +30,6 @@ export class FluidSession {
     this.registerEventClass(TrackAuto, 'trackAuto')
     this.registerEventClass(PluginAuto, 'pluginAuto')
     this.registerEventClass(MidiChord, 'midiChord')
-    this.registerEventClass(Chord)
     this.registerEventClass(ILayers, 'iLayers')
     this.registerEventClass(Random, 'random')
   }
@@ -41,7 +40,7 @@ export class FluidSession {
   regions : any[] = []
   startTime? : number
   duration? : number
-  readonly eventTypes : Map<string, EventClass> = new Map<string, EventClass>()
+  readonly eventTypes : Map<string, TechniqueClass> = new Map<string, TechniqueClass>()
 
   /**
    * Register a custom class type for handling raw events. Raw events are just
@@ -53,7 +52,7 @@ export class FluidSession {
    * @param extraTypeNames Raw events use a .type string to identify which
    *    class they should be constructed with. Any type string
    */
-  registerEventClass(eventClass : EventClass, ...extraTypeNames : string[]) {
+  registerEventClass(eventClass : TechniqueClass, ...extraTypeNames : string[]) {
     extraTypeNames.unshift(eventClass.name)
     for (const name of extraTypeNames) {
       if (this.eventTypes.has(name)) console.warn('WARNING: overwriting event type: ' + name)

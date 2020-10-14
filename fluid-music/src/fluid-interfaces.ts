@@ -1,6 +1,33 @@
 import { FluidPlugin, Automation } from "./plugin";
-import { FluidEvent } from './fluid-techniques'
 
+export interface Event {
+  startTime: number
+  duration: number
+  d? : DynamicObject
+}
+
+export interface AudioFileInfo {
+  [key: string] : any
+  /** length in seconds */
+  duration? : number
+  bitsPerSample? : number
+  sampleRate? : number
+  numberOfChannels? : number
+}
+
+export interface AudioFileEvent extends Event {
+  path : string
+  fadeOutSeconds : number
+  fadeInSeconds : number
+
+  /**
+   * When true, the inserted audio file will play to its end instead of obeying
+   * event length (default=false)
+   */
+  oneShot : boolean
+  info : AudioFileInfo
+  startInSourceSeconds : number
+}
 
 export interface DynamicObject {
   [key : string] : any
@@ -18,15 +45,15 @@ export interface ClipEvent {
  */
 export interface Clip {
   events : ClipEvent[];
-  midiEvents : FluidEvent[];
-  fileEvents : FluidEvent[];
-  unmappedEvents: FluidEvent[];
+  midiEvents : any[];
+  fileEvents : AudioFileEvent[];
+  unmappedEvents: any[];
   duration : number;
   startTime? : number;
 }
 
 export interface xLibrary {
-  [key: string]: FluidEvent | FluidEvent[];
+  [key: string]: any[];
 }
 
 export interface ScoreConfig {

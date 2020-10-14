@@ -1,5 +1,4 @@
-const { MidiNote } = require('fluid-music/built/fluid-techniques')
-// @ts-check
+//// @ts-check
 
 const path = require('path')
 const fluid = require('../fluid-music')
@@ -65,23 +64,19 @@ class MidiArp extends fluid.techniques.MidiChord {
   /**
    * @param {number} startTime
    * @param {number} duration
-   * @param {import('fluid-music/built/ts-types').ClipEventContext} context
+   * @notparam {import('fluid-music/built/ts-types').ClipEventContext} context
    */
   use (startTime, duration, context) {
     const stepSize = 1 / 4 / 8
     const numSteps = Math.floor(duration / stepSize)
-    const results = []
 
     for (let i = 0; i < numSteps; i++) {
       const note = this.notes[i % this.notes.length]
       const velocity = Math.min(127, Math.max(1, Math.round(80 * Math.pow(1.045, -i))))
       const noteStartTime = stepSize * i + startTime
       const noteDuration = stepSize
-      results.push({
-        startTime: noteStartTime,
-        duration: noteDuration,
-        technique: new MidiNote({ note, velocity })
-      })
+      const technique = new fluid.techniques.MidiNote({ note, velocity })
+      technique.use(noteStartTime, noteDuration, context)
     }
 
     // Add fade in and fade out. Remember that the times below are relative to
@@ -89,11 +84,14 @@ class MidiArp extends fluid.techniques.MidiChord {
     const strTime = 0
     const endTime = context.clip.duration
     const midTime = endTime / 2
-    return results.concat(
-      { startTime: strTime, technique: new fluid.techniques.TrackAuto({ paramKey: 'gain', curve: -0.5, value: -Infinity }) },
-      { startTime: midTime, technique: new fluid.techniques.TrackAuto({ paramKey: 'gain', curve: 0.5, value: 0 }) },
-      { startTime: endTime, technique: new fluid.techniques.TrackAuto({ paramKey: 'gain', curve: 0.0, value: -Infinity }) }
-    )
+    const auto1 = new fluid.techniques.TrackAuto({ paramKey: 'gain', curve: -0.5, value: -Infinity })
+    const auto2 = new fluid.techniques.TrackAuto({ paramKey: 'gain', curve: 0.5, value: 0 })
+    const auto3 = new fluid.techniques.TrackAuto({ paramKey: 'gain', curve: 0.0, value: -Infinity })
+    auto1.use(strTime, 0, context)
+    auto2.use(midTime, 0, context)
+    auto3.use(endTime, 0, context)
+
+    return null
   }
 }
 

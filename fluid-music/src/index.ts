@@ -5,7 +5,7 @@ import * as gen from './plugin-generator';
 import * as converters from './converters';
 import m from './m'
 import * as random from './random';
-import * as techniques from './fluid-techniques'
+import * as techniques from './fluid-techniques';
 import * as noteLibrary from './note-library'
 import * as tab from './tab'
 
