@@ -1,5 +1,6 @@
 import { FluidPlugin, PluginType } from './plugin';
 import { tracksToFluidMessage, sessionToTemplateFluidMessage } from './tracksToFluidMessage';
+import { tracksToReaperProject } from './tracksToReaperProject'
 import { FluidSession } from './FluidSession';
 import * as gen from './plugin-generator';
 import * as converters from './converters';
@@ -30,7 +31,6 @@ import * as sampler from './cybr/sampler';
 import * as tempo from './cybr/tempo';
 import * as transport from './cybr/transport';
 
-
 const pluginDragonflyRoomReverb = require('./cybr/plugin-dragonfly-room');
 const pluginPodolski = require('./cybr/plugin-podolski');
 const pluginTCompressor = require('./cybr/plugin-tcompressor-vst');
@@ -42,8 +42,6 @@ const pluginDexedVst = require('./cybr/plugin-dexed-vst');
 
 const UdpClient = require('./cybr/UdpClient');
 const IpcClient = require('./cybr/IpcClient');
-
-const tracksToReaperProject = require('./tracksToReaperProject');
 
 export = {
   cybr,
