@@ -138,15 +138,11 @@ function midiEventsToReaperObject(midiEvents : MidiNoteEvent[] , context : ClipE
   midiItem.getOrCreateStructByToken('POSITION').params[0] = startTime * 4 * 60 / context.bpm
   midiItem.getOrCreateStructByToken('LENGTH').params[0] = duration * 4 * 60 / context.bpm
 
-  let midiArray : any[] = []
+  const midiArray : any[] = []
   for (const event of midiEvents) {
-    let velocity = (typeof event.velocity === 'number')
+    const velocity = (typeof event.velocity === 'number')
       ? event.velocity
-      : (event.d && typeof event.d.velocity === 'number')
-        ? event.d.velocity
-        : (event.d && typeof event.d.v === 'number')
-          ? event.d.v
-          : undefined
+      : undefined
     midiArray.push({ n: event.note, s: event.startTime, l: event.duration, v: velocity });
   }
 

@@ -8,11 +8,11 @@ export interface Technique {
 export interface Event {
   startTime: number
   duration: number
-  d? : DynamicObject // Charles: Decide if .d belongs here or not. If not, tracksToFluidMessage and tracksToReaperProject must be updated
 }
 
 export interface TechniqueEvent extends Event {
   technique : Technique
+  d? : DynamicObject
 }
 
 export interface MidiNoteEvent extends Event {
@@ -24,6 +24,7 @@ export interface AudioFileEvent extends Event {
   path : string
   fadeOutSeconds : number
   fadeInSeconds : number
+  gainDb : number
 
   /**
    * When true, the inserted audio file will play to its end instead of obeying
@@ -32,6 +33,7 @@ export interface AudioFileEvent extends Event {
   oneShot : boolean
   info : AudioFileInfo
   startInSourceSeconds : number
+
 }
 
 /**

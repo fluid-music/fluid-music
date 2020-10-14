@@ -212,13 +212,9 @@ function midiEventsToFluidMessage(midiEvents : MidiNoteEvent[], context : ClipEv
 
   for (const event of midiEvents) {
     // Velocity in the event takes priority over velocity in the .d object
-    let velocity = (typeof event.velocity === 'number')
+    const velocity = (typeof event.velocity === 'number')
       ? event.velocity
-      : (event.d && typeof event.d.velocity === 'number')
-        ? event.d.velocity
-        : (event.d && typeof event.d.v === 'number')
-          ? event.d.v
-          : undefined
+      : undefined
     msg.push(cybr.midiclip.note(event.note, event.startTime, event.duration, velocity));
   }
 

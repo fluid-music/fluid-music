@@ -21,11 +21,17 @@ export class AudioFile implements Technique {
   info : AudioFileInfo = {}
   startInSourceSeconds : number = 0
 
+  /**
+   * If present, this overrides any gain value in the Dynamic Object
+   */
+  gainDb? : number
+
   constructor (options : AudioFileOptions) {
     if (typeof options.path !== 'string')
       throw new Error('AudioFile Technique constructor did not find an options.path string')
 
     this.path = options.path
+    if (typeof options.gainDb === 'number') this.gainDb = options.gainDb
     if (typeof options.fadeInSeconds === 'number') this.fadeInSeconds = options.fadeInSeconds
     if (typeof options.fadeOutSeconds === 'number') this.fadeOutSeconds = options.fadeOutSeconds
     if (typeof options.oneShot === 'boolean') this.oneShot = options.oneShot
@@ -37,13 +43,20 @@ export class AudioFile implements Technique {
     const fileEvent = {
       startTime,
       duration,
-      d: Object.assign({}, context.d),
+      gainDb: 0,
       path: this.path,
       fadeInSeconds: this.fadeInSeconds,
       fadeOutSeconds: this.fadeOutSeconds,
       startInSourceSeconds: this.startInSourceSeconds,
       oneShot: this.oneShot,
       info: this.info,
+    }
+    if (typeof this.gainDb === 'number') {
+      fileEvent.gainDb = this.gainDb
+    } else if (typeof context.d.gainDb === 'number') {
+      fileEvent.gainDb = context.d.gainDb
+    } else if (typeof context.d.gain === 'number') { // backwards compatibility
+      fileEvent.gainDb = context.d.gain
     }
 
     context.clip.fileEvents.push(fileEvent)
@@ -57,6 +70,7 @@ export interface AudioFileOptions {
   startInSourceSeconds? : number
   oneShot? : boolean
   info? : AudioFileInfo
+  gainDb? : number
 }
 
 
@@ -87,10 +101,12 @@ export class MidiNote implements Technique {
     const midiNoteEvent : MidiNoteEvent = {
       startTime,
       duration,
-      d: Object.assign({}, context.d),
       note: this.note
     }
     if (typeof this.velocity === 'number') midiNoteEvent.velocity = this.velocity
+    else if (typeof context.d.velocity === 'number') midiNoteEvent.velocity = context.d.velocity
+    else if (typeof context.d.v === 'number') midiNoteEvent.velocity = context.d.v
+
     context.clip.midiEvents.push(midiNoteEvent)
 
     return null;
