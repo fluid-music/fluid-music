@@ -1,6 +1,8 @@
 export const linear = (min : number, max: number) => (v: number) => (v - min) / (max - min);
 export const map = (v: number, min: number, max : number) => linear(min, max)(v);
 
+import { PluginAuto as PluginAutoTechnique } from "./fluid-techniques";
+
 export enum PluginType {
   unknown = 'unknown',
   VST2 = 'VST2',
@@ -76,26 +78,6 @@ export interface PluginParameterLibrary {
   [key : string]: PluginParameter;
 }
 
-
-/**
- * Found in NoteLibraries and EventLibraries. Plugin adapters should have static
- * helper methods for generating PluginAutomationEvents.
- *
- * @param value The exact type of this `value` depends on the `.param`. It is
- * assumed that value is an explicit value. If the `.param` contains specifies
- * a method for normalizing `value`, then the automation event should result in
- * a normalized value.
- */
-export interface PluginAutomationEvent extends AutomationPoint {
-  readonly type : string;
-  pluginSelector: PluginSelector;
-  paramKey: string;
-  startTime: number;
-  duration: number;
-  curve: number;
-  value?: number;
-}
-
 /**
  * An collection of the plugin's explicit parameter values. It might only hold
  * a subset of the plugin's parameters.
@@ -107,11 +89,8 @@ export interface PluginParameterValues {
 /**
  * Plugins should have helpers for making automation events
  */
-export interface AutoMaker {
-  (value: any): PluginAutomationEvent;
-}
 export interface AutoMakerLibrary {
-  [key: string]: AutoMaker;
+  [key: string]: { (value: any): PluginAutoTechnique };
 }
 
 /**

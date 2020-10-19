@@ -1,4 +1,5 @@
-import { PluginType, FluidPlugin, PluginAutomationEvent } from '../plugin';
+import { PluginType, FluidPlugin } from '../plugin';
+import { PluginAuto as PluginAutoTechnique } from '../fluid-techniques';
 const pluginName = '#TCompressor'
 const pluginType = PluginType.VST2
 
@@ -68,293 +69,197 @@ const parameterLibrary = {
   gainDb: { name: 'Gain', index: 23, isLinear: true, range: [-30, 30] as [number, number], units: 'db' }
 }
 const makeAutomation = {
-  enable (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  enable (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'enable',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  mode (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  mode (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'mode',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  thresholdDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  thresholdDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'thresholdDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  ratio (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  ratio (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'ratio',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  attackMs (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  attackMs (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'attackMs',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  holdMs (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  holdMs (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'holdMs',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  releaseMs (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  releaseMs (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'releaseMs',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  inputDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  inputDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'inputDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  makeUpDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  makeUpDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'makeUpDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  softKneeDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  softKneeDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'softKneeDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lookaheadMs (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lookaheadMs (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lookaheadMs',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  limit (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  limit (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'limit',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  useSidechainTrigger (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  useSidechainTrigger (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'useSidechainTrigger',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  monitorSidechain (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  monitorSidechain (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'monitorSidechain',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  softClip (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  softClip (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'softClip',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  softClipThresholdDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  softClipThresholdDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'softClipThresholdDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  peakDetection (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  peakDetection (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'peakDetection',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  useSumDetection (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  useSumDetection (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'useSumDetection',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  enableAutoMakeUpGain (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  enableAutoMakeUpGain (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'enableAutoMakeUpGain',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  filter (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  filter (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'filter',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  filterType (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  filterType (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'filterType',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  freqHz (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  freqHz (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'freqHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  q (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  q (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'q',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  gainDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  gainDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'gainDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   }
 }
 export class TCompressorVst2 extends FluidPlugin {

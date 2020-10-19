@@ -44,8 +44,8 @@ const tyrellN6 = new fluid.TyrellN6Vst2({
   // Osc Mod
   tyrellPwdepth: 15
 })
-tyrellN6.automation.tyrellTune2 = { points: [tyrellN6.makeAutomation.tyrellTune2(tyrellN6.parameters.tyrellTune2)] }
-tyrellN6.automation.tyrellCutoff = { points: [tyrellN6.makeAutomation.tyrellCutoff(tyrellN6.parameters.tyrellCutoff)] }
+tyrellN6.automation.tyrellTune2 = { points: [{ value: tyrellN6.parameters.tyrellTune2, startTime: 0, curve: 0 }] }
+tyrellN6.automation.tyrellCutoff = { points: [{ value: tyrellN6.parameters.tyrellCutoff, startTime: 0, curve: 0 }] }
 
 const v = new fluid.techniques.PluginAuto(tyrellN6.makeAutomation.tyrellTune2(1))
 const V = new fluid.techniques.PluginAuto(tyrellN6.makeAutomation.tyrellCutoff(65))

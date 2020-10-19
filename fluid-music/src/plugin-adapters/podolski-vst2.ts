@@ -1,4 +1,5 @@
-import { PluginType, FluidPlugin, PluginAutomationEvent } from '../plugin';
+import { PluginType, FluidPlugin } from '../plugin';
+import { PluginAuto as PluginAutoTechnique } from '../fluid-techniques';
 const pluginName = 'Podolski'
 const pluginType = PluginType.VST2
 
@@ -224,953 +225,637 @@ const parameterLibrary = {
   lfo1FreqModDpt: { name: 'LFO1: FreqMod Dpt', index: 78, isLinear: true, range: [-5, 5] as [number, number] }
 }
 const makeAutomation = {
-  mainOutput (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  mainOutput (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'mainOutput',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  mainActiveLfog (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  mainActiveLfog (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'mainActiveLfog',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  mainActiveChrs (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  mainActiveChrs (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'mainActiveChrs',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  mainActiveDly1 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  mainActiveDly1 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'mainActiveDly1',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfogSync (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfogSync (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfogSync',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfogPhasePercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfogPhasePercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfogPhasePercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccActiveLfo1 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccActiveLfo1 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccActiveLfo1',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccVoices (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccVoices (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccVoices',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccVoiceStack (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccVoiceStack (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccVoiceStack',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccMode (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccMode (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccMode',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccGlidePercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccGlidePercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccGlidePercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod1Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod1Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod1Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod2Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod2Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod2Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod3Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod3Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod3Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod4Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod4Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod4Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod5Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod5Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod5Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod6Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod6Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod6Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod7Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod7Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod7Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod8Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod8Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod8Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod9Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod9Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod9Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod10Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod10Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod10Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod11Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod11Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod11Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod12Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod12Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod12Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod13Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod13Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod13Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod14Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod14Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod14Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod15Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod15Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod15Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccArpStepMod16Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccArpStepMod16Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccArpStepMod16Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1AttackPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1AttackPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1AttackPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1DecayPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1DecayPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1DecayPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1SustainPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1SustainPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1SustainPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1FallRisePercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1FallRisePercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1FallRisePercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1ReleasePercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1ReleasePercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1ReleasePercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1VelocityPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1VelocityPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1VelocityPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1Sync (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1Sync (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1Sync',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1DelayPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1DelayPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1DelayPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  osc1Tune (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  osc1Tune (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'osc1Tune',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  osc1TuneModSrc (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  osc1TuneModSrc (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'osc1TuneModSrc',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  osc1TuneModDepth (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  osc1TuneModDepth (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'osc1TuneModDepth',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  osc1PhasePercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  osc1PhasePercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'osc1PhasePercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  osc1PhaseModSrc (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  osc1PhaseModSrc (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'osc1PhaseModSrc',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  osc1PhaseModDepth (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  osc1PhaseModDepth (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'osc1PhaseModDepth',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  osc1InverseVolumePercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  osc1InverseVolumePercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'osc1InverseVolumePercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  osc1WaveWarpPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  osc1WaveWarpPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'osc1WaveWarpPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  osc1WarpModSrc (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  osc1WarpModSrc (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'osc1WarpModSrc',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  osc1WarpModDepthPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  osc1WarpModDepthPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'osc1WarpModDepthPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  osc1VibratoPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  osc1VibratoPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'osc1VibratoPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vcf0Type (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vcf0Type (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vcf0Type',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vcf0Cutoff (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vcf0Cutoff (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vcf0Cutoff',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vcf0ResonancePercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vcf0ResonancePercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vcf0ResonancePercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vcf0DrivePercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vcf0DrivePercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vcf0DrivePercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vcf0CutoffMod1 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vcf0CutoffMod1 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vcf0CutoffMod1',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vcf0Modsource1 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vcf0Modsource1 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vcf0Modsource1',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vcf0CutoffMod2 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vcf0CutoffMod2 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vcf0CutoffMod2',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vcf0Modsource2 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vcf0Modsource2 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vcf0Modsource2',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vcf0KeyFollowPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vcf0KeyFollowPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vcf0KeyFollowPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vcf0AutoFMPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vcf0AutoFMPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vcf0AutoFMPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vcf0ClickPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vcf0ClickPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vcf0ClickPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vca1PanPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vca1PanPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vca1PanPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vca1VolumePercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vca1VolumePercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vca1VolumePercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vca1ModDepthPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vca1ModDepthPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vca1ModDepthPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  chrsCenterPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  chrsCenterPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'chrsCenterPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  chrsSpeedPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  chrsSpeedPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'chrsSpeedPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  chrsDepthPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  chrsDepthPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'chrsDepthPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  chrsFeedbackPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  chrsFeedbackPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'chrsFeedbackPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  chrsMixPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  chrsMixPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'chrsMixPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  dly1SyncLeft (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  dly1SyncLeft (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'dly1SyncLeft',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  dly1SyncRight (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  dly1SyncRight (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'dly1SyncRight',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  dly1FeedbackPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  dly1FeedbackPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'dly1FeedbackPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  dly1CrossfeedPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  dly1CrossfeedPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'dly1CrossfeedPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  dly1MixPercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  dly1MixPercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'dly1MixPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfogWaveform (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfogWaveform (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfogWaveform',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfogPolarity (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfogPolarity (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfogPolarity',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1Restart (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1Restart (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1Restart',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1Waveform (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1Waveform (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1Waveform',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1PhasePercent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1PhasePercent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1PhasePercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1Polarity (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1Polarity (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1Polarity',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1DepthModDpt1Percent (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1DepthModDpt1Percent (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1DepthModDpt1Percent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1Rate (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1Rate (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1Rate',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1FreqModDpt (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1FreqModDpt (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1FreqModDpt',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   }
 }
 export class PodolskiVst2 extends FluidPlugin {

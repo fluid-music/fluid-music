@@ -1,5 +1,5 @@
-import { PluginType, FluidPlugin, PluginAutomationEvent } from './plugin';
-
+import { PluginType, FluidPlugin } from './plugin';
+import { PluginAuto as PluginAutoTechnique } from './fluid-techniques';
 const pluginName = 'DragonflyRoomReverb';
 const pluginType = PluginType.VST2;
 
@@ -173,209 +173,141 @@ const parameterLibrary = {
 };
 
 const makeAutomation = {
-  dryLevelPercent(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
-      pluginSelector: { pluginName, pluginType },
+  dryLevelPercent(value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       paramKey: 'dryLevelPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+      pluginSelector: { pluginName, pluginType }
+    })
   },
-  earlyLevelPercent(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  earlyLevelPercent(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'earlyLevelPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  earlySendPercent(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  earlySendPercent(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'earlySendPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lateLevelPercent(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lateLevelPercent(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lateLevelPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  sizeMeters(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  sizeMeters(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'sizeMeters',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  widthPercent(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  widthPercent(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'widthPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  predelayMs(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  predelayMs(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'predelayMs',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  decaySeconds(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  decaySeconds(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'decaySeconds',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  diffusePercent(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  diffusePercent(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'diffusePercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  spinHz(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  spinHz(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName,  pluginType },
       paramKey: 'spinHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  wanderPercent(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  wanderPercent(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName,  pluginType },
       paramKey: 'wanderPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  highCutHz(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  highCutHz(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName,  pluginType },
       paramKey: 'highCutHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  earlyDampHz(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  earlyDampHz(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName,  pluginType },
       paramKey: 'earlyDampHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lateDampHz(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lateDampHz(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName,  pluginType },
       paramKey: 'lateDampHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lowBoostPercent(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lowBoostPercent(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName,  pluginType },
       paramKey: 'lowBoostPercent',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lowBoostHz(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lowBoostHz(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName,  pluginType },
       paramKey: 'lowBoostHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lowCutHz(value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lowCutHz(value? : number, curve = 0){
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lowCutHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
 };
 

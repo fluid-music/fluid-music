@@ -1,4 +1,5 @@
-import { PluginType, FluidPlugin, PluginAutomationEvent } from '../plugin';
+import { PluginType, FluidPlugin } from '../plugin';
+import { PluginAuto as PluginAutoTechnique } from '../fluid-techniques';
 const pluginName = '#TEqualiser'
 const pluginType = PluginType.VST2
 
@@ -123,545 +124,365 @@ const parameterLibrary = {
   analyserMode: { name: 'Analyser Mode', index: 44, isLinear: false, choices: {"0":0.1428571492433548,"1":0.4642857313156128,"2":0.8214285969734192,"3":1} }
 }
 const makeAutomation = {
-  band1State (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band1State (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band1State',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band1FrequencyHz (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band1FrequencyHz (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band1FrequencyHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band1GainDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band1GainDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band1GainDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band1Q (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band1Q (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band1Q',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band1Shape (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band1Shape (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band1Shape',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band2State (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band2State (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band2State',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band2FrequencyHz (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band2FrequencyHz (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band2FrequencyHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band2GainDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band2GainDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band2GainDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band2Q (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band2Q (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band2Q',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band2Shape (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band2Shape (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band2Shape',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band3State (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band3State (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band3State',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band3FrequencyHz (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band3FrequencyHz (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band3FrequencyHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band3GainDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band3GainDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band3GainDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band3Q (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band3Q (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band3Q',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band3Shape (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band3Shape (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band3Shape',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band4State (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band4State (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band4State',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band4FrequencyHz (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band4FrequencyHz (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band4FrequencyHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band4GainDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band4GainDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band4GainDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band4Q (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band4Q (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band4Q',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band4Shape (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band4Shape (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band4Shape',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band5State (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band5State (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band5State',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band5FrequencyHz (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band5FrequencyHz (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band5FrequencyHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band5GainDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band5GainDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band5GainDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band5Q (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band5Q (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band5Q',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band5Shape (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band5Shape (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band5Shape',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band6State (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band6State (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band6State',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band6FrequencyHz (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band6FrequencyHz (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band6FrequencyHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band6GainDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band6GainDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band6GainDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band6Q (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band6Q (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band6Q',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band6Shape (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band6Shape (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band6Shape',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band7State (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band7State (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band7State',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band7FrequencyHz (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band7FrequencyHz (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band7FrequencyHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band7GainDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band7GainDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band7GainDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band7Q (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band7Q (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band7Q',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band7Shape (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band7Shape (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band7Shape',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band8State (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band8State (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band8State',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band8FrequencyHz (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band8FrequencyHz (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band8FrequencyHz',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band8GainDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band8GainDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band8GainDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band8Q (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band8Q (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band8Q',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  band8Shape (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  band8Shape (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'band8Shape',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  enable (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  enable (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'enable',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  outputGainDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  outputGainDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'outputGainDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  soloBand (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  soloBand (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'soloBand',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  soloGainDb (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  soloGainDb (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'soloGainDb',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  analyserMode (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  analyserMode (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'analyserMode',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   }
 }
 export class TEqualizerVst2 extends FluidPlugin {

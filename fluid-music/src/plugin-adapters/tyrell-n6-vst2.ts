@@ -1,4 +1,5 @@
-import { PluginType, FluidPlugin, PluginAutomationEvent } from '../plugin';
+import { PluginType, FluidPlugin } from '../plugin';
+import { PluginAuto as PluginAutoTechnique } from '../fluid-techniques';
 const pluginName = 'TyrellN6'
 const pluginType = PluginType.VST2
 
@@ -253,1109 +254,741 @@ const parameterLibrary = {
   lfo2FreqModDpt: { name: 'LFO2: FreqMod Dpt', index: 91, isLinear: true, range: [-5, 5] as [number, number] }
 }
 const makeAutomation = {
-  mainOutput (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  mainOutput (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'mainOutput',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  pcoreMatrix1Source (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  pcoreMatrix1Source (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'pcoreMatrix1Source',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  pcoreMatrix1Depth (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  pcoreMatrix1Depth (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'pcoreMatrix1Depth',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  pcoreMatrix1ViaSrc (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  pcoreMatrix1ViaSrc (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'pcoreMatrix1ViaSrc',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  pcoreMatrix1Via (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  pcoreMatrix1Via (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'pcoreMatrix1Via',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  pcoreMatrix2Source (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  pcoreMatrix2Source (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'pcoreMatrix2Source',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  pcoreMatrix2Depth (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  pcoreMatrix2Depth (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'pcoreMatrix2Depth',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  pcoreMatrix2ViaSrc (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  pcoreMatrix2ViaSrc (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'pcoreMatrix2ViaSrc',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  pcoreMatrix2Via (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  pcoreMatrix2Via (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'pcoreMatrix2Via',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccVoiceStack (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccVoiceStack (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccVoiceStack',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccMode (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccMode (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccMode',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccGlideMode (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccGlideMode (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccGlideMode',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccGlide (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccGlide (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccGlide',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccGlide2 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccGlide2 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccGlide2',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccPortaRange (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccPortaRange (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccPortaRange',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccPitchBendUp (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccPitchBendUp (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccPitchBendUp',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccPitchBendDown (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccPitchBendDown (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccPitchBendDown',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  vccTranspose (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  vccTranspose (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'vccTranspose',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1Attack (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1Attack (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1Attack',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1Decay (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1Decay (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1Decay',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1Sustain (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1Sustain (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1Sustain',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1FallRise (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1FallRise (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1FallRise',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1Release (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1Release (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1Release',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1Velocity (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1Velocity (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1Velocity',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1KeyTrack (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1KeyTrack (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1KeyTrack',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env1Trigger (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env1Trigger (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env1Trigger',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env2Attack (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env2Attack (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env2Attack',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env2Decay (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env2Decay (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env2Decay',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env2Sustain (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env2Sustain (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env2Sustain',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env2FallRise (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env2FallRise (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env2FallRise',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env2Release (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env2Release (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env2Release',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env2Velocity (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env2Velocity (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env2Velocity',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env2KeyTrack (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env2KeyTrack (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env2KeyTrack',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  env2Trigger (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  env2Trigger (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'env2Trigger',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1Sync (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1Sync (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1Sync',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1Delay (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1Delay (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1Delay',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo2Sync (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo2Sync (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo2Sync',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo2Delay (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo2Delay (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo2Delay',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellShape1 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellShape1 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellShape1',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellTuneModSrc1 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellTuneModSrc1 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellTuneModSrc1',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellTuneModDepth1 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellTuneModDepth1 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellTuneModDepth1',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellShape2 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellShape2 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellShape2',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellTune2 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellTune2 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellTune2',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellFineTune2 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellFineTune2 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellFineTune2',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellTuneModSrc2 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellTuneModSrc2 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellTuneModSrc2',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellTuneModDepth2 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellTuneModDepth2 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellTuneModDepth2',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellPwdepth (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellPwdepth (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellPwdepth',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellPwsrc (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellPwsrc (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellPwsrc',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellDetune (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellDetune (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellDetune',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellSoftSync (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellSoftSync (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellSoftSync',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellVibrato (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellVibrato (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellVibrato',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellRingModIn1 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellRingModIn1 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellRingModIn1',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellRingModIn2 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellRingModIn2 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellRingModIn2',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellNoiseColour (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellNoiseColour (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellNoiseColour',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellOscVolume1 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellOscVolume1 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellOscVolume1',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellOscVolume2 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellOscVolume2 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellOscVolume2',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellSubVolume (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellSubVolume (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellSubVolume',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellNoiseVolume (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellNoiseVolume (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellNoiseVolume',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellRingModulator (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellRingModulator (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellRingModulator',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellFeedback (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellFeedback (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellFeedback',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellVcfmode (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellVcfmode (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellVcfmode',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellVcfpoles (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellVcfpoles (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellVcfpoles',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellCutoff (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellCutoff (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellCutoff',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellFreqModSrc1 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellFreqModSrc1 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellFreqModSrc1',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellFreqModDepth1 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellFreqModDepth1 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellFreqModDepth1',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellFreqModSrc2 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellFreqModSrc2 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellFreqModSrc2',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellFreqModDepth2 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellFreqModDepth2 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellFreqModDepth2',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellKeyFollow (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellKeyFollow (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellKeyFollow',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellResonance (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellResonance (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellResonance',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellMixSpread (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellMixSpread (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellMixSpread',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellAudioRateSrc (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellAudioRateSrc (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellAudioRateSrc',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellAudioRateDest (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellAudioRateDest (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellAudioRateDest',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellXmoddepth (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellXmoddepth (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellXmoddepth',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  tyrellAudioRateModSrc (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  tyrellAudioRateModSrc (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'tyrellAudioRateModSrc',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  chrs1Type (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  chrs1Type (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'chrs1Type',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  chrs1Rate (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  chrs1Rate (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'chrs1Rate',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  chrs1Depth (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  chrs1Depth (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'chrs1Depth',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  chrs1Wet (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  chrs1Wet (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'chrs1Wet',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1Restart (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1Restart (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1Restart',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1Waveform (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1Waveform (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1Waveform',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1Phase (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1Phase (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1Phase',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1Polarity (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1Polarity (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1Polarity',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1DepthModDpt1 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1DepthModDpt1 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1DepthModDpt1',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1Rate (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1Rate (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1Rate',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo1FreqModDpt (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo1FreqModDpt (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo1FreqModDpt',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo2Restart (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo2Restart (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo2Restart',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo2Waveform (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo2Waveform (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo2Waveform',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo2Phase (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo2Phase (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo2Phase',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo2Polarity (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo2Polarity (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo2Polarity',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo2DepthModDpt1 (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo2DepthModDpt1 (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo2DepthModDpt1',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo2Rate (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo2Rate (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo2Rate',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   },
-  lfo2FreqModDpt (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+  lfo2FreqModDpt (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: 'lfo2FreqModDpt',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   }
 }
 export class TyrellN6Vst2 extends FluidPlugin {

@@ -2,7 +2,12 @@ import { ClipEventContext, AudioFileInfo, Technique, MidiNoteEvent } from './flu
 import { AutomationPoint } from './plugin'
 import * as random from './random'
 
-export interface TechniqueClass { new(...options: any[]): Technique }
+export interface TechniqueClass {
+  new(...options: any[]): Technique
+}
+export interface PluginAutoTechniqueClass extends TechniqueClass {
+  new(options: PluginAutoOptions) : Technique
+}
 
 /**
  * Insert an audio sample into a track
@@ -134,6 +139,9 @@ export class PluginAuto implements Technique {
   curve : number = 0
 
   constructor (options : PluginAutoOptions) {
+    if (!options.pluginSelector)
+      throw new Error('Cannot create PluginAuto technique without .pluginSelector')
+
     this.pluginSelector = Object.assign({}, options.pluginSelector)
     this.paramKey = options.paramKey // ex: 'sizeMeters'
     if (typeof options.value === 'number') this.value = options.value
@@ -169,11 +177,8 @@ export class PluginAuto implements Technique {
     return null
   }
 }
-export interface PluginAutoOptions {
+export interface PluginAutoOptions extends AutoOptions {
   pluginSelector : PluginSelector
-  paramKey : string
-  value? : number
-  curve? : number
 }
 
 /**
@@ -203,7 +208,7 @@ export class TrackAuto implements Technique {
   value : number = 0
   curve : number = 0
 
-  constructor (options : TrackAutoOptions) {
+  constructor (options : AutoOptions) {
     this.paramKey = options.paramKey
     if (typeof options.value === 'number') this.value = options.value
     if (typeof options.curve === 'number') this.curve = options.curve
@@ -229,7 +234,7 @@ export class TrackAuto implements Technique {
     return null
   }
 }
-export interface TrackAutoOptions {
+export interface AutoOptions {
   paramKey : string
   value? : number
   curve? : number

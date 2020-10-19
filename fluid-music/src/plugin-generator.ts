@@ -37,7 +37,8 @@ export function generatePluginModule(report : any, config : {className?: string,
     }
   })
 
-  let output = `import { PluginType, FluidPlugin, PluginAutomationEvent } from '../plugin';
+  let output = `import { PluginType, FluidPlugin } from '../plugin';
+import { PluginAuto as PluginAutoTechnique } from '../fluid-techniques';
 const pluginName = '${pluginName}'
 const pluginType = ${pluginType}
 
@@ -65,17 +66,13 @@ export interface ${parametersInterfaceName} {
   // makeAutomation includes the helpers for creating automation points
   output += 'const makeAutomation = {\n'
   output += params.map(paramInfo => {
-    return `  ${paramInfo.key} (value? : number) : PluginAutomationEvent {
-    const event : PluginAutomationEvent = {
-      type: 'pluginAuto',
+    return `  ${paramInfo.key} (value? : number, curve = 0) {
+    return new PluginAutoTechnique({
+      value,
+      curve,
       pluginSelector: { pluginName, pluginType },
       paramKey: '${paramInfo.key}',
-      startTime: 0,
-      duration: 0,
-      curve: 0,
-    };
-    if (typeof value === 'number') event.value = value;
-    return event;
+    });
   }`
   }).join(',\n') + '\n}\n'
 
