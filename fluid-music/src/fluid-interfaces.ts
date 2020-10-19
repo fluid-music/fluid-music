@@ -1,3 +1,4 @@
+import { FluidSession } from "./FluidSession";
 import { FluidPlugin, Automation } from "./plugin";
 
 export interface Technique {
@@ -64,7 +65,7 @@ export interface Clip {
 }
 
 export interface xLibrary {
-  [key: string]: any[];
+  [key: string]: any|any[];
 }
 
 export interface ScoreConfig {
@@ -99,25 +100,23 @@ export interface Track {
 /**
  * ClipEventContext fields specify the context of the ClipEvent currently being
  * processed, including the track and clip that contain the note.
- *
- * @member bpm the bpm of the clip, this is needed in 
- *    tracksToReaperProject.
- * @member clip the Clip that contains the current event
- * @member track the Track that contains the current event
- * @member clipIndex index of the clip within the track
- * @member eventIndex index of the event within the clip.
- *    session.processEvents updates this automatically before each event is
- *    processed.
- * @member data this is a convenient place to store data if between .process
- *    callbacks. Like the EventContext, it is replaced for each Clip.
  */
 export interface ClipEventContext {
   d: DynamicObject;
 
-  clip: Clip;
-  track: Track;
-  clipIndex: number;
+  /**
+   * this is a convenient place to store data if between .process
+   * callbacks. Like the EventContext, it is replaced for each Clip.
+   */
   data: { [key: string] : any };
-  bpm?: number;
+  /** The session containing this track, clip, and event */
+  session: FluidSession;
+  /** the Clip that contains the current event */
+  clip: Clip;
+  /** the Track that contains the current event */
+  track: Track;
+  /** index of the clip within the track */
+  clipIndex: number;
+  /** index of the event within the clip. */
   eventIndex?: number;
 }

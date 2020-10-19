@@ -1,6 +1,6 @@
 import * as tab from './tab'
 import { FluidTrack, TrackConfig } from './FluidTrack';
-import { ScoreConfig, ClipEventContext, TechniqueEvent } from './fluid-interfaces';
+import { ScoreConfig, ClipEventContext } from './fluid-interfaces';
 import { TechniqueClass, AudioFile, MidiNote, TrackAuto, PluginAuto, MidiChord, ILayers, Random } from './fluid-techniques'
 
 export interface TracksConfig {
@@ -92,12 +92,13 @@ export class FluidSession {
 
       track.clips.forEach((clip, clipIndex) => {
         const context : ClipEventContext = {
+          session: this,
           track,
           clip,
           clipIndex,
           data: {},
           d: {},
-        };
+        }
 
         for (let event of clip.events) {
           if (typeof event.technique?.use === 'function') {
@@ -107,8 +108,8 @@ export class FluidSession {
             throw new Error(`Unhandled Event (no .use(...) method): ${JSON.stringify(event)}`)
           }
         }
-      }); // iterate over clips  with clips.forEach method
-    }     // iterate over tracks with for...of loop
+      }) // iterate over clips  with clips.forEach method
+    }    // iterate over tracks with for...of loop
   }
 }
 

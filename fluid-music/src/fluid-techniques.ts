@@ -133,7 +133,7 @@ export class PluginAuto implements Technique {
   value : number = 0
   curve : number = 0
 
-  constructor (options : PluginAuto) {
+  constructor (options : PluginAutoOptions) {
     this.pluginSelector = Object.assign({}, options.pluginSelector)
     this.paramKey = options.paramKey // ex: 'sizeMeters'
     if (typeof options.value === 'number') this.value = options.value

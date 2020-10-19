@@ -1,6 +1,6 @@
 import { FluidPlugin, PluginType } from './plugin';
-import { tracksToFluidMessage, sessionToTemplateFluidMessage } from './tracksToFluidMessage';
-import { tracksToReaperProject } from './tracksToReaperProject'
+import { sessionToFluidMessage, sessionToTemplateFluidMessage } from './sessionToFluidMessage';
+import { sessionToReaperProject } from './sessionToReaperProject'
 import { FluidSession } from './FluidSession';
 import * as gen from './plugin-generator';
 import * as converters from './converters';
@@ -74,8 +74,8 @@ export = {
   tab,
   tempo,
   sessionToTemplateFluidMessage,
-  tracksToFluidMessage,
-  tracksToReaperProject,
+  sessionToFluidMessage,
+  sessionToReaperProject,
   transport,
   FluidSession,
   FluidPlugin,

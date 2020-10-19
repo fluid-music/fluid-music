@@ -1,4 +1,4 @@
-//// @ts-check
+// @ts-check
 
 const path = require('path')
 const fluid = require('../fluid-music')
@@ -158,15 +158,16 @@ client.connect(true)
 
 const run = async () => {
   // create RPP
-  const rpp = await fluid.tracksToReaperProject(session.tracks, 92, client)
+  const rpp = await fluid.sessionToReaperProject(session, client)
   console.log(rpp.dump())
 
   // send to CYBR
   const activateMsg = fluid.cybr.global.activate(path.join(__dirname, 'demo-shepherd.tracktionedit'), true)
-  const tracksMsg = fluid.tracksToFluidMessage(session.tracks)
+  const templateMsg = fluid.sessionToTemplateFluidMessage(session)
+  const tracksMsg = fluid.sessionToFluidMessage(session)
   const saveMsg = fluid.cybr.global.save()
 
-  await client.send([activateMsg, tracksMsg, saveMsg])
+  await client.send([activateMsg, templateMsg, tracksMsg, saveMsg])
 }
 
 run().finally(() => {

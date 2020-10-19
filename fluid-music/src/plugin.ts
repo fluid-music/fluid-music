@@ -19,7 +19,7 @@ export enum PluginType {
 export interface PluginSelector {
   readonly pluginName : string;
   readonly pluginType : PluginType;
-  nth? : bigint;
+  nth? : number;
 }
 
 /**
