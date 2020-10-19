@@ -5,8 +5,8 @@ import { vst2ToReaperObject } from './vst2ToReaperObject'
 import * as cybr from './cybr/index';
 import FluidIpcClient = require('./cybr/IpcClient')
 import { ClipEventContext, MidiNoteEvent } from './fluid-interfaces'
+import {reservedKeys } from './tab'
 
-const tab  = require('./tab')
 const rppp = require('rppp')
 
 
@@ -42,7 +42,7 @@ export async function tracksToReaperProject(tracksObject : FluidTrack[], bpm : n
   //   { name: 'kick', clips: [ clip1, clip2... ] },
   // ];
   for (const track of tracksObject) {
-    if (tab.reservedKeys.hasOwnProperty(track.name)) {
+    if (reservedKeys.hasOwnProperty(track.name)) {
       continue;
     }
 

@@ -3,8 +3,7 @@ import { FluidTrack } from './FluidTrack';
 import { ClipEventContext, MidiNoteEvent } from './fluid-interfaces';
 import { FluidSession } from './FluidSession';
 import * as cybr from './cybr/index';
-
-const tab  = require('./tab');
+import * as tab from'./tab';
 
 // This amplification conversion is hard-coded in Tracktion
 const normalizeTracktionGain = (db) => {
