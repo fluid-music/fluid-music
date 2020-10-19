@@ -1,7 +1,6 @@
 import * as tab from './tab'
 import { FluidTrack, TrackConfig } from './FluidTrack';
 import { ScoreConfig, ClipEventContext } from './fluid-interfaces';
-import { TechniqueClass, AudioFile, MidiNote, TrackAuto, PluginAuto, MidiChord, ILayers, Random } from './fluid-techniques'
 
 export interface TracksConfig {
   [trackName: string] : TrackConfig | FluidTrack
@@ -24,14 +23,6 @@ export class FluidSession {
 
       this.tracks.push(newTrack)
     }
-
-    // this.registerEventClass(AudioFile, 'file')
-    // this.registerEventClass(MidiNote, 'midiNote')
-    // this.registerEventClass(TrackAuto, 'trackAuto')
-    // this.registerEventClass(PluginAuto, 'pluginAuto')
-    // this.registerEventClass(MidiChord, 'midiChord')
-    // this.registerEventClass(ILayers, 'iLayers')
-    // this.registerEventClass(Random, 'random')
   }
 
   scoreConfig : ScoreConfig = {}
@@ -40,25 +31,6 @@ export class FluidSession {
   regions : any[] = []
   startTime? : number
   duration? : number
-  readonly eventTypes : Map<string, TechniqueClass> = new Map<string, TechniqueClass>()
-
-  /**
-   * Register a custom class type for handling raw events. Raw events are just
-   * JavaScript objects that have a .type string. Use this method to register
-   * constructors for Raw objects.
-   *
-   * @param eventClass A Class that extends EventBase. The class name (for
-   *    example, `EventAudioFile`) will be registered automatically.
-   * @param extraTypeNames Raw events use a .type string to identify which
-   *    class they should be constructed with. Any type string
-   */
-  registerEventClass(eventClass : TechniqueClass, ...extraTypeNames : string[]) {
-    extraTypeNames.unshift(eventClass.name)
-    for (const name of extraTypeNames) {
-      if (this.eventTypes.has(name)) console.warn('WARNING: overwriting event type: ' + name)
-      this.eventTypes.set(name, eventClass)
-    }
-  }
 
   getOrCreateTrackByName(name: string) : FluidTrack {
     for (const track of this.tracks)
@@ -137,7 +109,7 @@ export function parse(
   if (typeof config.startTime === 'number') result.startTime = config.startTime as number;
 
   //------------------------------------------------------------------------------ ensure that we do not modify the n/dLibrary, as it may be reused later
-  if (scoreObject.hasOwnProperty('nLibrary'))     config.nLibrary = Object.assign((config.nLibrary && Object.assign({}, config.nLibrary)) || {}, scoreObject.nLibrary);
+  if (scoreObject.hasOwnProperty('tLibrary'))     config.nLibrary = Object.assign((config.nLibrary && Object.assign({}, config.tLibrary)) || {}, scoreObject.tLibrary);
   if (scoreObject.hasOwnProperty('dLibrary'))     config.dLibrary = Object.assign((config.dLibrary && Object.assign({}, config.dLibrary)) || {}, scoreObject.dLibrary);
   if (scoreObject.hasOwnProperty('r'))            config.r = scoreObject.r;
   if (scoreObject.hasOwnProperty('d'))            config.d = scoreObject.d;
@@ -184,11 +156,11 @@ export function parse(
     if (r === undefined)
       throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a rhythm`);
 
-    // Make the nLibrary and dLibrary
-    const nLibrary = {};
-    if (session.scoreConfig.nLibrary) Object.assign(nLibrary, session.scoreConfig.nLibrary);
-    if (track.scoreConfig.nLibrary) Object.assign(nLibrary, track.scoreConfig.nLibrary);
-    if (config.nLibrary) Object.assign(nLibrary, config.nLibrary);
+    // Make the tLibrary and dLibrary
+    const tLibrary = {};
+    if (session.scoreConfig.tLibrary) Object.assign(tLibrary, session.scoreConfig.tLibrary);
+    if (track.scoreConfig.tLibrary) Object.assign(tLibrary, track.scoreConfig.tLibrary);
+    if (config.tLibrary) Object.assign(tLibrary, config.tLibrary);
     const dLibrary = {};
     if (session.scoreConfig.dLibrary) Object.assign(dLibrary, session.scoreConfig.dLibrary);
     if (track.scoreConfig.dLibrary) Object.assign(dLibrary, track.scoreConfig.dLibrary);
@@ -196,7 +168,7 @@ export function parse(
 
     // create the clip
     const rhythmObject = tab.parseRhythm(r);
-    const resultClip = tab.parseTab(rhythmObject, scoreObject, nLibrary);
+    const resultClip = tab.parseTab(rhythmObject, scoreObject, tLibrary);
     resultClip.startTime = config.startTime;
 
     // add dynamics

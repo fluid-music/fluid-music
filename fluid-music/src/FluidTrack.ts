@@ -1,4 +1,4 @@
-import { Track, Clip, ScoreConfig, xLibrary } from './fluid-interfaces';
+import { Track, Clip, ScoreConfig } from './fluid-interfaces';
 import { FluidPlugin, Automation } from './plugin';
 
 export interface TrackConfig extends ScoreConfig {

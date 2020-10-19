@@ -53,7 +53,7 @@ export function parseRhythm(rhythm) {
  *
  * @param {string|Rhythm} rhythm
  * @param {string} nPattern
- * @param {NoteLibrary} nLibrary an indexable object
+ * @param {NoteLibrary} tLibrary an indexable object
  *        containing notes or arrays of notes. Can be an object or an array.
  *        If it is an array, the pattern may only contain single digit numbers
  *        (i.e. 0-9).
@@ -67,7 +67,7 @@ export function parseRhythm(rhythm) {
  *        noteLibrary = {'0': 60, '1': 62 }
  * @returns {Clip} (missing `startTime`. `startTime` is added by `score.parse`)
  */
-export function parseTab(rhythm, nPattern, nLibrary) : Clip {
+export function parseTab(rhythm, nPattern, tLibrary) : Clip {
 
   const rhythmObject = typeof rhythm === 'string' ? parseRhythm(rhythm) : rhythm;
   const symbolsAndCounts = patternToSymbolsAndCounts(nPattern);
@@ -89,12 +89,12 @@ export function parseTab(rhythm, nPattern, nLibrary) : Clip {
     let symbol = sc[0];
     let count = sc[1];
     if (symbol !== '.') {
-      if (!nLibrary.hasOwnProperty(symbol))
+      if (!tLibrary.hasOwnProperty(symbol))
         throw new Error(`noteLibrary has no note or chord for "${symbol}"`);
 
-      // Get the event from the nLibrary. Allow nLibrary to contain a single
+      // Get the event from the tLibrary. Allow tLibrary to contain a single
       // event OR an array of simultaneous events
-      let notes = nLibrary[symbol];
+      let notes = tLibrary[symbol];
       if (!Array.isArray(notes)) notes = [notes]
       // Calculate the event start and end times
       const start = (p === 0) ? 0 : rhythmObject.totals[p-1];
@@ -102,7 +102,7 @@ export function parseTab(rhythm, nPattern, nLibrary) : Clip {
       const duration = end - start;
 
       for (const note of notes) {
-        // Copy the event (so we don't modify the nLibrary)
+        // Copy the event (so we don't modify the tLibrary)
 
         const clipEvent : TechniqueEvent = {
           technique: note,
@@ -312,11 +312,12 @@ export const reservedKeys = {
   r: null,            // rhythm pattern
   d: null,            // dynamics pattern
   v: null,            // deprecated. formerly velocity
-  noteLibrary : null, // deprecated in favor of nLibrary
-  nLibrary: null,     // note library
+  noteLibrary : null, // deprecated in favor of tLibrary
+  nLibrary: null,     // deprecated in favor of tLibrary
   vLibrary: null,     // deprecated in favor of dLibrary
   eLibrary: null,     // Possible use: events library
   dLibrary: null,     // dynamics library
+  tLibrary: null,     // technique Library
   eventMappers: null, // specifies custom eventMapper methods
   plugins: null,      // tracksObject has a .plugins array
   duration: null,

@@ -91,21 +91,21 @@ class MidiArp extends fluid.techniques.MidiChord {
   }
 }
 
+const tLibrary = {}
 for (const key of Object.keys(nLibrary)) {
   const notes = nLibrary[key].notes.map(n => n + 12)
-  nLibrary[key] = new MidiArp({ notes })
+  tLibrary[key] = new MidiArp({ notes })
 }
 
 const session = new fluid.FluidSession({
   bpm: 92,
   r: 'hhh',
-  nLibrary: Object.assign({ v, V, w }, nLibrary)
+  tLibrary: Object.assign({ v, V, w }, tLibrary)
 }, {
   chords1: { plugins: [tyrellN6] },
   chords2: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] },
   chords3: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] }
 })
-session.registerEventClass(MidiArp, 'midiChord')
 
 const r3 = { r: '123', clips: ['...'] }
 const r5 = { r: '12345', clips: ['.....'] }

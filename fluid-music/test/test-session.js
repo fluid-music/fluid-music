@@ -10,10 +10,10 @@ const FluidSession = fluid.FluidSession;
 // Charles: merge in the most useful tests from ../test-obsolete/test-score.js
 describe('FluidSession', () => {
   it('should construct a simple score object', () => {
-    const nLibrary = [60, 63, 67].map(note => new fluid.techniques.MidiNote({ note }))
+    const tLibrary = [60, 63, 67].map(note => new fluid.techniques.MidiNote({ note }))
     const r = '1 2 3 4 ';
     const session = new FluidSession({}, {
-      bass: {nLibrary, r, gain: -6},
+      bass: {tLibrary, r, gain: -6},
     });
 
     const bassTrack = session.tracks[0]
@@ -27,12 +27,12 @@ describe('FluidSession', () => {
 
   describe('insertScore method', function () {
     describe('with EventMidiChord events', function () {
-      const nLibrary = {
+      const tLibrary = {
         a: new MidiChord({notes: [60, 64, 67, 72]}),
         b: new MidiChord({notes: [67, 70, 74, 79]}),
       }
       const r = '1 2 3 4 '
-      const session = new FluidSession({ nLibrary, r }, { chords: {} })
+      const session = new FluidSession({ tLibrary, r }, { chords: {} })
 
       session.insertScore({ chords: 'a-..b-..' })
 
@@ -62,13 +62,13 @@ describe('FluidSession', () => {
 
     describe('with EventPluginAuto events', function () {
       const roomVerb = new fluid.DragonflyRoom()
-      const nLibrary = {
+      const tLibrary = {
         a: new fluid.techniques.PluginAuto(roomVerb.makeAutomation.decaySeconds(2.4)),
         b: new fluid.techniques.PluginAuto(roomVerb.makeAutomation.decaySeconds(4)),
       }
 
       const r = '1 2 3 4 '
-      const session = new FluidSession({ nLibrary, r }, { reverb: { plugins: [roomVerb] } })
+      const session = new FluidSession({ tLibrary, r }, { reverb: { plugins: [roomVerb] } })
       session.insertScore({reverb: 'a...b...'})
 
       it ('should create automation points', function () {

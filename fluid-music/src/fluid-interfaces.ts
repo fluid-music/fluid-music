@@ -64,13 +64,12 @@ export interface Clip {
   startTime? : number;
 }
 
-export interface xLibrary {
-  [key: string]: any|any[];
-}
+export interface dLibrary { [key: string] : any|any[] }
+export interface tLibrary { [key: string] : Technique|Technique[] }
 
 export interface ScoreConfig {
-  nLibrary?: xLibrary;
-  dLibrary?: xLibrary;
+  dLibrary?: dLibrary;
+  tLibrary?: tLibrary;
   r?: string;
   d?: string;
 }
@@ -105,8 +104,8 @@ export interface ClipEventContext {
   d: DynamicObject;
 
   /**
-   * this is a convenient place to store data if between .process
-   * callbacks. Like the EventContext, it is replaced for each Clip.
+   * this is a convenient place to store data between .process callbacks. Like
+   * the EventContext, it is replaced for each Clip.
    */
   data: { [key: string] : any };
   /** The session containing this track, clip, and event */
