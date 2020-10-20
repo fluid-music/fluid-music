@@ -44,11 +44,12 @@ const tyrellN6 = new fluid.TyrellN6Vst2({
   // Osc Mod
   tyrellPwdepth: 15
 })
+
 tyrellN6.automation.tyrellTune2 = { points: [{ value: tyrellN6.parameters.tyrellTune2, startTime: 0, curve: 0 }] }
 tyrellN6.automation.tyrellCutoff = { points: [{ value: tyrellN6.parameters.tyrellCutoff, startTime: 0, curve: 0 }] }
 
-const v = new fluid.techniques.PluginAuto(tyrellN6.makeAutomation.tyrellTune2(1))
-const V = new fluid.techniques.PluginAuto(tyrellN6.makeAutomation.tyrellCutoff(65))
+const v = tyrellN6.makeAutomation.tyrellTune2(1)
+const V = tyrellN6.makeAutomation.tyrellCutoff(65)
 const w = [v, V]
 
 class MidiArp extends fluid.techniques.MidiChord {
@@ -60,7 +61,7 @@ class MidiArp extends fluid.techniques.MidiChord {
   /**
    * @param {number} startTime
    * @param {number} duration
-   * @notparam {import('fluid-music/built/ts-types').ClipEventContext} context
+   * @param {import('fluid-music/built/fluid-interfaces').ClipEventContext} context
    */
   use (startTime, duration, context) {
     const stepSize = 1 / 4 / 8
