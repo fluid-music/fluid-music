@@ -3,7 +3,7 @@
 const path = require('path')
 const fluid = require('../fluid-music')
 const cybr = fluid.cybr
-const nLibrary = require('./n-library-4')
+const chords = require('./midi-chords')
 
 const tyrellN6 = new fluid.TyrellN6Vst2({
   // Osc Mod
@@ -91,11 +91,8 @@ class MidiArp extends fluid.techniques.MidiChord {
   }
 }
 
-const tLibrary = {}
-for (const key of Object.keys(nLibrary)) {
-  const notes = nLibrary[key].notes.map(n => n + 12)
-  tLibrary[key] = new MidiArp({ notes })
-}
+const techniques = chords.map(chord => new MidiArp(chord))
+const tLibrary = fluid.tLibrary.fromArray(techniques)
 
 const session = new fluid.FluidSession({
   bpm: 92,

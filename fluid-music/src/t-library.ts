@@ -1,4 +1,5 @@
 import { valueToMidiNoteNumber }  from './converters';
+import { Technique, tLibrary } from './fluid-interfaces';
 
 /**
  * Merge multiple event libraries into one, throw an error if any of the input
@@ -41,4 +42,17 @@ export const stringsToNoteNumbers = (arrayOrNum) => {
 
   // pass objects
   return arrayOrNum;
+}
+
+function createLetterGetter() {
+  const s = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let i = 0;
+  return () => s[i++ % s.length];
+}
+
+export function fromArray(techniques : Technique[]) {
+  const getKey = createLetterGetter()
+  const result : tLibrary = {}
+  techniques.forEach(tech => result[getKey()] = tech)
+  return result
 }
