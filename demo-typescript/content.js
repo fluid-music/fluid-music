@@ -1,5 +1,4 @@
 const path   = require('path');
-const R      = require('ramda');
 const fluid  = require('../fluid-music');
 const cybr   = fluid.cybr;
 const drums  = require('@fluid-music/kit');
@@ -29,37 +28,25 @@ eq.setBand2(330, -3)
 // Create score events (automation/midi/samples/etc)
 
 // Automation Point
-const f = {
-  type: fluid.noteTypes.pluginAuto,
-  plugin: { name: 'Podolski' },
-  param: fluid.pluginPodolski.params.vcf0Cutoff,
-  value: 0.5,
-};
+const f = fluid.PodolskiVst2.makeAutomation.vcf0Cutoff(0.5)
+const p = fluid.DragonflyRoom.makeAutomation.sizeMeters(9)
+const q = fluid.DragonflyRoom.makeAutomation.sizeMeters(30)
 
-const p = fluid.DragonflyRoom.makeAutomation.sizeMeters(9);
-const q = fluid.DragonflyRoom.makeAutomation.sizeMeters(30);
+const r = new fluid.techniques.TrackAuto({ paramKey: 'pan', value: -.5, curve: -0.5 })
+const m = new fluid.techniques.TrackAuto({ paramKey: 'pan', value:  .5 })
+const n = new fluid.techniques.TrackAuto({ paramKey: 'gain', value: -6, curve: 0.8 })
+const u = new fluid.techniques.TrackAuto({ paramKey: 'gain', value: -32.9 })
+const x = new fluid.techniques.TrackAuto({ paramKey: 'width', value: 0 })
+const y = new fluid.techniques.TrackAuto({ paramKey: 'width', value: 1 })
 
-const r = { type: 'trackAuto', paramKey: 'pan', value: -.5, curve: -0.5 };
-const s = { type: 'trackAuto', paramKey: 'pan', value:  .5 };
-const t = { type: 'trackAuto', paramKey: 'gain', value: -6, curve: 0.8 };
-const u = { type: 'trackAuto', paramKey: 'gain', value: -32.9 };
 
-const x = { type: 'trackAuto', paramKey: 'width', value: 0 };
-const y = { type: 'trackAuto', paramKey: 'width', value: 1 };
+const tLibrary = {
+  f, p, q,
+  r, m, n, u, x, y,
+  ...drums.tLibrary
+}
 
-// Create a derivative drum library, modified for this score.
-const nLibrary = Object.assign({}, drums.nLibrary);
-nLibrary.c = {
-  type: 'random',
-  // The high-intensity (aka velocity) sample is dramatically louder than the
-  // earlier ones. Its too harsh, so I'm just going to remove it.
-  choices: R.dropLast(1, nLibrary.c.choices),
-};
-
-// Tambourine sound with properties adjusted for a lower intensity sound
-nLibrary.s = Object.assign({}, nLibrary.c);
-nLibrary.s.choices = nLibrary.c.choices.map(choice => Object.assign({}, choice))
-nLibrary.s.choices.forEach(f =>  { f.startInSourceSeconds=0.02; f.fadeInSeconds=0.003; });
+const chordLibrary = fluid.tLibrary.fromArray(chords.map(chord => new fluid.techniques.MidiChord(chord)))
 
 const dLibrary = {
   p: { dbfs: -6, intensity: 1/2 },
@@ -71,24 +58,24 @@ let session = new fluid.FluidSession({
   bpm: 96,
   r: '1 + 2 + 3 + 4 + ',
   dLibrary, // default for kick and snare
-  nLibrary, // default for kick and snare
+  tLibrary, // default for kick and snare
 }, {
   kick:  { d: '.   . mf      ', gain: -6, plugins: [comp, eq]},
   snare: { d: 'm   f   m   f ' },
-  chrd:  { nLibrary: chords.nLibrary, pan: -.75, plugins: [pwmSynth] },
-  bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p }, plugins: [bassSynth] },
+  chrd:  { tLibrary: chordLibrary, pan: -.75, plugins: [pwmSynth] },
+  // bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p }, plugins: [bassSynth] },
   tamb:  { pan: .25 },
-  revb:  { plugins: [verbPlugin], nLibrary: { p, q, r, s, t, u, x, y } },
+  revb:  { plugins: [verbPlugin], tLibrary: { p, q, r, m, n, u, x, y } },
 });
 
 session.insertScore({
-  kick: ['.   . dd dD .D  ', 'd   d   d   d   '],
+  kick: ['.   . dd-dD--D--', 'd-- d-- d-- d-- '],
   snare:['r---k-  .   k-  ', '              '],
-  tamb: ['c s c s c s c s ', {r: '1....234..', tamb: 'scscs..sss', d: 'p'} ],
-  bass:  '       ab-      ',
+  tamb: ['t t t t t t t t ', {r: '1....234..', tamb: 'Ttttt..ttt', d: 'p'} ],
+  // bass:  '       ab-      ',
   chrd:  'a-  .  ab---    ',
-  revb:  'p      qx  ytrsu',
-}, {eventMappers: drums.eventMappers});
+  revb:  'p      qx  ynrmu',
+});
 
 // const templateMessage = fluid.sessionToTemplateFluidMessage(session);
 // const contentMessage = fluid.tracksToFluidMessage(session.tracks);
@@ -105,7 +92,7 @@ const client = new cybr.Client()
 
 async function run() {
   await client.connect(true)
-  const rpp = await fluid.tracksToReaperProject(session.tracks, 96, client);
+  const rpp = await fluid.sessionToReaperProject(session, client);
   console.log(rpp.dump())
 }
 

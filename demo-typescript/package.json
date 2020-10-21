@@ -9,7 +9,8 @@
   "author": "Charles Holbrow",
   "license": "ISC",
   "dependencies": {
-    "@fluid-music/kit": "^2.0.0",
+    "@fluid-music/kit": "^3.0.0-1",
+    "fluid-music": "file:../fluid-music",
     "ramda": "^0.27.1"
   }
 }
