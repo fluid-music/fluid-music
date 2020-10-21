@@ -220,7 +220,7 @@ function fileEventsToFluidMessage(fileEvents, context) {
 
     if (typeof event.path !== 'string') {
       console.error(event);
-      throw new Error('tracksToFluidMessage: A file event found in the note library does not have a .path string');
+      throw new Error('fileEventsToFluidMessage: A file event found in the note library does not have a .path string');
     };
 
     const clipName = `s${context.clipIndex}.${eventIndex}`;
