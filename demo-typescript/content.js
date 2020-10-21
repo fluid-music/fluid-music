@@ -1,8 +1,11 @@
 const path   = require('path');
-const fluid  = require('../fluid-music');
+const fluid  = require('fluid-music');
 const cybr   = fluid.cybr;
 const drums  = require('@fluid-music/kit');
 const chords = require('./chords');
+
+const { podolskiSine } = require('./presets')
+const { MidiChord, MidiNote } = require('fluid-music/built/fluid-techniques');
 
 
 ////////////////////////////////////////////////////////////////
@@ -10,7 +13,7 @@ const chords = require('./chords');
 
 // Synth VSTs
 const pwmSynth = new fluid.TyrellN6Vst2({ env1Attack: 2, env1Decay: 77, env1Sustain: 69 })
-const bassSynth = new fluid.PodolskiVst2({ vcf0Cutoff: 50 })
+const bassSynth = podolskiSine()
 
 // reverb
 const verbPlugin = new fluid.DragonflyRoom({ decaySeconds: 2.4, predelayMs: 49, dryLevelPercent: 0, earlyLevelPercent: 40, lateLevelPercent: 100 })
@@ -39,7 +42,6 @@ const u = new fluid.techniques.TrackAuto({ paramKey: 'gain', value: -32.9 })
 const x = new fluid.techniques.TrackAuto({ paramKey: 'width', value: 0 })
 const y = new fluid.techniques.TrackAuto({ paramKey: 'width', value: 1 })
 
-
 const tLibrary = {
   f, p, q,
   r, m, n, u, x, y,
@@ -47,6 +49,13 @@ const tLibrary = {
 }
 
 const chordLibrary = fluid.tLibrary.fromArray(chords.map(chord => new fluid.techniques.MidiChord(chord)))
+const bassLibrary = {}
+Object.entries(chordLibrary).forEach(([k, v]) => {
+  if (v instanceof MidiChord) {
+    const note = v.notes.sort((a, b) => a - b)[0] - 36
+    bassLibrary[k] = new MidiNote({ note })
+  }
+})
 
 const dLibrary = {
   p: { dbfs: -6, intensity: 1/2 },
@@ -62,8 +71,8 @@ let session = new fluid.FluidSession({
 }, {
   kick:  { d: '.   . mf      ', gain: -6, plugins: [comp, eq]},
   snare: { d: 'm   f   m   f ' },
-  chrd:  { tLibrary: chordLibrary, pan: -.75, plugins: [pwmSynth] },
-  // bass:  { nLibrary: { a: {type: 'midiNote', n: 36}, b: {type: 'midiNote', n: 39}, f, p }, plugins: [bassSynth] },
+  chrd:  { tLibrary: chordLibrary, pan: -.25, plugins: [pwmSynth], gain: -10 },
+  bass:  { tLibrary: bassLibrary, plugins: [bassSynth] },
   tamb:  { pan: .25 },
   revb:  { plugins: [verbPlugin], tLibrary: { p, q, r, m, n, u, x, y } },
 });
@@ -72,13 +81,13 @@ session.insertScore({
   kick: ['.   . dd-dD--D--', 'd-- d-- d-- d-- '],
   snare:['r---k-  .   k-  ', '              '],
   tamb: ['t t t t t t t t ', {r: '1....234..', tamb: 'Ttttt..ttt', d: 'p'} ],
-  // bass:  '       ab-      ',
+  bass:  '        b-      ',
   chrd:  'a-  .  ab---    ',
   revb:  'p      qx  ynrmu',
 });
 
 // const templateMessage = fluid.sessionToTemplateFluidMessage(session);
-// const contentMessage = fluid.tracksToFluidMessage(session.tracks);
+// const contentMessage = fluid.sessionToFluidMessage(session);
 // const client = new cybr.Client();
 // client.send([
 //   cybr.global.activate(path.join(__dirname, 'session.tracktionedit'), true),

@@ -53,7 +53,7 @@ export function parseRhythm(rhythm) {
  *
  * @param {string|Rhythm} rhythm
  * @param {string} nPattern
- * @param {NoteLibrary} tLibrary an indexable object
+ * @param {tLibrary} tLibrary an indexable object
  *        containing notes or arrays of notes. Can be an object or an array.
  *        If it is an array, the pattern may only contain single digit numbers
  *        (i.e. 0-9).
@@ -90,7 +90,7 @@ export function parseTab(rhythm, nPattern, tLibrary) : Clip {
     let count = sc[1];
     if (symbol !== '.') {
       if (!tLibrary.hasOwnProperty(symbol))
-        throw new Error(`noteLibrary has no note or chord for "${symbol}"`);
+        throw new Error(`tLibrary has no note or chord for "${symbol}"`);
 
       // Get the event from the tLibrary. Allow tLibrary to contain a single
       // event OR an array of simultaneous events
