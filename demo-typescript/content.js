@@ -38,9 +38,9 @@ const automationLibrary = {
   e: new fluid.techniques.TrackAuto({ paramKey: 'width', value: 0 }),
   f: new fluid.techniques.TrackAuto({ paramKey: 'width', value: 1 }),
 
-  u:fluid.PodolskiVst2.makeAutomation.vcf0Cutoff(0.5),
-  v:fluid.DragonflyRoom.makeAutomation.sizeMeters(9),
-  w:fluid.DragonflyRoom.makeAutomation.sizeMeters(30),
+  u: fluid.PodolskiVst2.makeAutomation.vcf0Cutoff(0.5),
+  v: fluid.DragonflyRoom.makeAutomation.sizeMeters(9),
+  w: fluid.DragonflyRoom.makeAutomation.sizeMeters(30),
 }
 
 const chordLibrary = fluid.tLibrary.fromArray(chords.map(chord => new fluid.techniques.MidiChord(chord)))
@@ -65,14 +65,14 @@ let session = new fluid.FluidSession({
   tLibrary: drums.tLibrary,
   // default for kick and snare
   dLibrary,
-}, {
-  kick:  { d: '.   . mf      ', gain: -6, plugins: [comp, eq] },
-  snare: { d: 'm   f   m   f ' },
-  chrd:  { tLibrary: chordLibrary, pan: -.25, plugins: [pwmSynth], gain: -10 },
-  bass:  { tLibrary: bassLibrary, plugins: [bassSynth] },
-  tamb:  { pan: .25 },
-  revb:  { plugins: [verbPlugin], tLibrary: automationLibrary },
-})
+}, [
+  { name: 'kick', d: '.   . mf      ', gain: -6, plugins: [comp, eq] },
+  { name: 'snare',d: 'm   f   m   f ' },
+  { name: 'chrd', tLibrary: chordLibrary, pan: -.25, plugins: [pwmSynth], gain: -10 },
+  { name: 'bass', tLibrary: bassLibrary, plugins: [bassSynth] },
+  { name: 'tamb', pan: .25 },
+  { name: 'revb', plugins: [verbPlugin], tLibrary: automationLibrary },
+])
 
 session.insertScore({
   kick: ['.   . dd-dD--D--', 'd-- d-- d-- d-- '],

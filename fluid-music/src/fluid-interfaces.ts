@@ -68,10 +68,12 @@ export interface dLibrary { [key: string] : any|any[] }
 export interface tLibrary { [key: string] : Technique|Technique[] }
 
 export interface ScoreConfig {
-  dLibrary?: dLibrary;
-  tLibrary?: tLibrary;
-  r?: string;
-  d?: string;
+  tLibrary? : tLibrary
+  dLibrary? : dLibrary
+  r? : string
+  d? : string
+  trackKey? : string
+  startTime? : number
 }
 
 export interface ScoreObject {

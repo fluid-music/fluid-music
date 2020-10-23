@@ -99,11 +99,11 @@ const session = new fluid.FluidSession({
   bpm: 92,
   r: 'hhh',
   tLibrary: Object.assign({ v, V, w }, tLibrary)
-}, {
-  chords1: { plugins: [tyrellN6] },
-  chords2: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] },
-  chords3: { plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] }
-})
+}, [
+  { name: 'chords1', plugins: [tyrellN6] },
+  { name: 'chords2', plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] },
+  { name: 'chords3', plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] }
+])
 
 const r3 = { r: '123', clips: ['...'] }
 const r5 = { r: '12345', clips: ['.....'] }

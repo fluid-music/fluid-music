@@ -1,19 +1,15 @@
 import * as tab from './tab'
 import { FluidTrack, TrackConfig } from './FluidTrack';
-import { ScoreConfig, ClipEventContext } from './fluid-interfaces';
-
-export interface TracksConfig {
-  [trackName: string] : TrackConfig | FluidTrack
-}
+import { ScoreConfig, ClipEventContext, tLibrary, dLibrary } from './fluid-interfaces';
 
 export interface SessionConfig extends ScoreConfig {
   bpm?: number
 }
 
 export class FluidSession {
-  constructor(config: SessionConfig, tracks: TracksConfig = {}) {
-    if (typeof config.bpm === 'number') this.bpm = config.bpm
-    this.scoreConfig = config
+  constructor(session: SessionConfig, tracks: TrackConfig[] = []) {
+    if (typeof session.bpm === 'number') this.bpm = session.bpm
+    this.scoreConfig = session
 
     for (const [name, track] of Object.entries(tracks)) {
       if (!track.name) track.name = name;
@@ -97,10 +93,9 @@ export class FluidSession {
 export function parse(
   scoreObject,
   session : FluidSession = new FluidSession({}),
-  config)
+  config : ScoreConfig = {})
 {
-  if (!config) config = {}
-  else config = Object.assign({}, config); // Shallow copy should be ok
+  config = Object.assign({}, config); // Shallow copy should be ok
 
   const result = {
     duration: 0,
@@ -109,7 +104,7 @@ export function parse(
   if (typeof config.startTime === 'number') result.startTime = config.startTime as number;
 
   //------------------------------------------------------------------------------ ensure that we do not modify the n/dLibrary, as it may be reused later
-  if (scoreObject.hasOwnProperty('tLibrary'))     config.nLibrary = Object.assign((config.nLibrary && Object.assign({}, config.tLibrary)) || {}, scoreObject.tLibrary);
+  if (scoreObject.hasOwnProperty('tLibrary'))     config.tLibrary = Object.assign((config.tLibrary && Object.assign({}, config.tLibrary)) || {}, scoreObject.tLibrary);
   if (scoreObject.hasOwnProperty('dLibrary'))     config.dLibrary = Object.assign((config.dLibrary && Object.assign({}, config.dLibrary)) || {}, scoreObject.dLibrary);
   if (scoreObject.hasOwnProperty('r'))            config.r = scoreObject.r;
   if (scoreObject.hasOwnProperty('d'))            config.d = scoreObject.d;
