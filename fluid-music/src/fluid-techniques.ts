@@ -47,6 +47,7 @@ export class AudioFile implements Technique {
     if (typeof options.fadeOutSeconds === 'number') this.fadeOutSeconds = options.fadeOutSeconds
     if (typeof options.oneShot === 'boolean') this.oneShot = options.oneShot
     if (typeof options.startInSourceSeconds === 'number') this.startInSourceSeconds = options.startInSourceSeconds
+    if (typeof options.trimDb === 'number') this.trimDb = options.trimDb
     if (options.info) this.info = options.info
   }
 
