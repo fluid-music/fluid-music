@@ -1,5 +1,5 @@
 import { FluidPlugin, PluginType } from './plugin';
-import { ClipEventContext, MidiNoteEvent } from './fluid-interfaces';
+import { ClipEventContext, MidiNoteEvent, AudioFileEvent } from './fluid-interfaces';
 import { FluidSession } from './FluidSession';
 import * as cybr from './cybr/index';
 import * as tab from'./tab';
@@ -203,7 +203,7 @@ function midiEventsToFluidMessage(midiEvents : MidiNoteEvent[], context : ClipEv
  * @param {ClipEvent[]} fileEvents
  * @param {ClipEventContext} context This will not have a .eventIndex
  */
-function fileEventsToFluidMessage(fileEvents, context) {
+function fileEventsToFluidMessage(fileEvents : AudioFileEvent[], context : ClipEventContext) {
   if (typeof context.clip.startTime !== 'number')
     throw new Error('Clip is missing startTime');
 
@@ -216,6 +216,9 @@ function fileEventsToFluidMessage(fileEvents, context) {
   // };
 
   return fileEvents.map((event, eventIndex) => {
+    if (typeof context.clip.startTime !== 'number')
+      throw new Error('fileEventsToFluidMessage found a clip with no .startTime')
+
     const startTime = context.clip.startTime + event.startTime;
 
     if (typeof event.path !== 'string') {
@@ -237,9 +240,11 @@ function fileEventsToFluidMessage(fileEvents, context) {
     if (typeof event.fadeOutSeconds === 'number' || typeof event.fadeInSeconds === 'number')
       msg.push(cybr.audioclip.fadeInOutSeconds(event.fadeInSeconds, event.fadeOutSeconds));
 
-    // If there is a dynamics object, look for a dbfs property and apply gain.
-    if (event.d && typeof(event.d.dbfs) === 'number')
-      msg.push(cybr.audioclip.gain(event.d.dbfs));
+    // Remember, it is the the final .use call's job to set event.gainDb. The
+    // AudioFile technique's .use method looks for a dynamic Object, and sets
+    // the event.gainDb property.
+    if (typeof event.gainDb === 'number')
+      msg.push(cybr.audioclip.gain(event.gainDb));
 
     return msg;
   });

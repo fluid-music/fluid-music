@@ -3,7 +3,7 @@ import { FluidSession } from './FluidSession'
 import { vst2ToReaperObject } from './vst2ToReaperObject'
 import * as cybr from './cybr/index';
 import { IpcClient } from './cybr/IpcClient'
-import { ClipEventContext, MidiNoteEvent } from './fluid-interfaces'
+import { ClipEventContext, MidiNoteEvent, AudioFileEvent } from './fluid-interfaces'
 
 const rppp = require('rppp')
 
@@ -147,11 +147,7 @@ function midiEventsToReaperObject(midiEvents : MidiNoteEvent[] , context : ClipE
   return midiItem;
 };
 
-/**
- * @param {ClipEvent[]} fileEvents
- * @param {ClipEventContext} context This will not have a .eventIndex
- */
-function fileEventsToReaperObject(fileEvents, context) {
+function fileEventsToReaperObject(fileEvents : AudioFileEvent[], context : ClipEventContext) {
   if (typeof context.clip.startTime !== 'number')
     throw new Error('Clip is missing startTime')
 
@@ -167,6 +163,9 @@ function fileEventsToReaperObject(fileEvents, context) {
   // };
 
   return fileEvents.map((event, eventIndex) => {
+    if (typeof context.clip.startTime !== 'number')
+      throw new Error('fileEventsToReaperObject found a clip with no .startTime')
+
     const startTime = context.clip.startTime + event.startTime
 
     if (typeof event.path !== 'string') {
@@ -187,7 +186,7 @@ function fileEventsToReaperObject(fileEvents, context) {
     if (event.startInSourceSeconds)
       audioItem.getOrCreateStructByToken('SOFFS').params[0] = event.startInSourceSeconds
 
-    if (event.oneShot && event.info)
+    if (event.oneShot && event.info && typeof event.info.duration === 'number')
       audioItem.getOrCreateStructByToken('LENGTH').params[0] = event.info.duration - (event.startInSourceSeconds || 0)
     else
       audioItem.getOrCreateStructByToken('LENGTH').params[0] = event.duration * 4 * 60 / bpm
@@ -198,9 +197,11 @@ function fileEventsToReaperObject(fileEvents, context) {
     if (typeof event.fadeInSeconds === 'number')
       audioItem.getOrCreateStructByToken('FADEIN').params = [1, event.fadeInSeconds, 0, 1, 0, 0]
 
-    // If there is a dynamics object, look for a dbfs property and apply gain.
-    if (event.d && typeof(event.d.dbfs) === 'number')
-      audioItem.getOrCreateStructByToken('VOLPAN').params = [1, 0, db2Gain(event.d.dbfs), -1]
+    // Remember, it is the the final .use call's job to set event.gainDb. The
+    // AudioFile technique's .use method looks for a dynamic Object, and sets
+    // the event.gainDb property.
+    if (typeof event.gainDb === 'number')
+      audioItem.getOrCreateStructByToken('VOLPAN').params = [1, 0, db2Gain(event.gainDb), -1]
 
     return audioItem;
   });
