@@ -1,38 +1,54 @@
 const OscIpcClient = require("osc-ipc-client")
 const osc = require("osc-min")
 
-const OPTIONS = {
-  targetPort: 9999,
-  targetHost: '127.0.0.1',
-  header: 0xf2b49e2c,
-  timeout: 3000,
-  isUnixDomainSocket: false,
-};
 
-module.exports = class FluidIpcClient {
+interface IpcClientOptions {
+  /** default = 9999 */
+  targetPort? : number
+  /** default = 127.0.0.1 */
+  targetHost? : string
+  /** default = 3000 (in milliseconds) */
+  timeout? : number
+  /** default = false */
+  isUnixDomainSocket? : boolean
+}
+
+
+export class IpcClient {
   /**
-   * @param {number|object} portOrOptions can be a port number, or an options object
-   * @param {number} [portOrOptions.targetPort=9999]
-   * @param {string} [portOrOptions.targetHost='127.0.0.1']
-   * @param {number} [portOrOptions.timeout=3000] timeout in milliseconds
+   * @param portOrOptions can be a port number, or an options object
    */
-  constructor(portOrOptions) {
-    const defaultOptions = Object.assign({}, OPTIONS);
+  constructor(portOrOptions? : IpcClientOptions|number) {
+    if (typeof portOrOptions === 'number') {
+      this.config.targetPort = portOrOptions
+    } else if (!portOrOptions) {
+      // use the defaults
+    } else {
+      Object.assign(this.config, portOrOptions);
+    }
 
-    let options = defaultOptions;
-    if (portOrOptions === undefined) options = defaultOptions;
-    else if (typeof portOrOptions === 'number') options.targetPort = portOrOptions;
-    else options = Object.assign(defaultOptions, portOrOptions);
-
-    this.client = null;
-    this.options = options;
-    this.timeout = options.timeout;
-    this.connectionInitiated = false;
-    this.connected = false;
-    this.queue = []; // FIFO
-    this.broken = false;
-    this.keepOpen = false;
+    this.timeout = this.config.timeout;
   }
+
+  config = {
+    targetPort: 9999,
+    targetHost: '127.0.0.1',
+    header: 0xf2b49e2c,
+    timeout: 3000,
+    isUnixDomainSocket: false,
+  }
+
+  client? : typeof OscIpcClient = null
+  queue : any[] = [] // FIFO
+  timeout : number
+
+  // State
+  connectPromise? : Promise<any>
+  broken : boolean = false
+  keepOpen : boolean = false
+  connected : boolean = false
+  connectionInitiated : boolean = false
+
 
   rejectAllPendingRequests(reason) {
     while (this.queue.length) {
@@ -63,7 +79,7 @@ module.exports = class FluidIpcClient {
     this.connectionInitiated = true;
     this.keepOpen = keepOpen;
 
-    this.client = new OscIpcClient(this.options);
+    this.client = new OscIpcClient(this.config);
     this.client.once('connect', () => this.connected = true);
     this.client.on('res', (data) => {
       const pObj = this.queue.shift();
@@ -93,15 +109,15 @@ module.exports = class FluidIpcClient {
 
   /**
    * Send a message to the server.
-   * @param {Object|Buffer} msgObject Can be an osc-min object json or a Buffer
-   * @param {Date|number[]} [timetag] See osc-min docs for details
+   * @param msgObject Can be an osc-min object json or a Buffer
+   * @param timetag See osc-min docs for details
    */
-  async send(msgObject, timetag) {
+  async send(msgObject : object|Buffer, timetag? : Date|number[]) {
     if (this.broken) throw new Error('FluidIpcClient: cannot send after close');
     if (!this.connectionInitiated) await this.connect();
     if (!this.connected) await this.connectPromise;
 
-    let pObj = {};
+    let pObj : any = {};
     this.queue.push(pObj);
 
     pObj.promise = new Promise((resolve, reject) => {
@@ -162,7 +178,7 @@ module.exports = class FluidIpcClient {
    * Close the client, causing all pending promises to immediately reject. You
    * may call close() multiple times.
    */
-  close(error) {
+  close(error? : any) {
     error = (typeof error === 'string') ? new Error(error) : error;
     this.client.close(error);
   }

@@ -1,6 +1,6 @@
 import * as audiotrack from './audiotrack'
 import * as plugin from './plugin'
-import FluidIpcClient = require('./IpcClient');
+import { IpcClient } from './IpcClient';
 
 /**
  * @param pluginName The plugin name (see cybr.plugin.select)
@@ -19,10 +19,10 @@ export async function requestReport(
   trackName : string = 'plugin-helper-track',
   nth : number = 0,
   extraMessages : any[] = [],
-  client : FluidIpcClient = new FluidIpcClient({}),
+  client : IpcClient = new IpcClient({}),
   pauseMs : number = 120
 ){
-  if (!(client instanceof FluidIpcClient))
+  if (!(client instanceof IpcClient))
     throw new Error('cybr.requests.requestReport was not passed an IpcClient instance')
 
   const msg1 = [

@@ -1,5 +1,5 @@
 import { FluidPlugin, PluginType } from './plugin';
-import FluidIpcClient = require('./cybr/IpcClient');
+import { IpcClient } from './cybr/IpcClient';
 import * as cybr from './cybr/index';
 
 const rppp = require('rppp')
@@ -17,7 +17,7 @@ const rppp = require('rppp')
  *
  * @returns {ReaperVst}
  */
-export async function vst2ToReaperObject(client: FluidIpcClient, trackName: string, plugin: FluidPlugin, n: number, bpm: number) {
+export async function vst2ToReaperObject(client: IpcClient, trackName: string, plugin: FluidPlugin, n: number, bpm: number) {
 
   const cybrType = (plugin.pluginType === PluginType.unknown) ? undefined : plugin.pluginType;
   const pluginName = plugin.pluginName;

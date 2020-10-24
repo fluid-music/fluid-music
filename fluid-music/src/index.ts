@@ -41,7 +41,7 @@ const pluginZebra2Vst2 = require('./cybr/plugin-zebra2-vst2');
 const pluginDexedVst = require('./cybr/plugin-dexed-vst');
 
 const UdpClient = require('./cybr/UdpClient');
-const IpcClient = require('./cybr/IpcClient');
+import { IpcClient } from './cybr/IpcClient';
 
 export = {
   cybr,

@@ -2,7 +2,7 @@ import { FluidPlugin } from './plugin'
 import { FluidSession } from './FluidSession'
 import { vst2ToReaperObject } from './vst2ToReaperObject'
 import * as cybr from './cybr/index';
-import FluidIpcClient = require('./cybr/IpcClient')
+import { IpcClient } from './cybr/IpcClient'
 import { ClipEventContext, MidiNoteEvent } from './fluid-interfaces'
 
 const rppp = require('rppp')
@@ -17,7 +17,7 @@ const db2Gain = (db) => Math.pow(10, Math.min(db, 12) / 20)
 /**
  * Create a `ReaperProject` from a `FluidSession`
  */
-export async function sessionToReaperProject(session : FluidSession, client: FluidIpcClient) {
+export async function sessionToReaperProject(session : FluidSession, client: IpcClient) {
   if (!session.bpm) throw new TypeError('tracksToReaperProject could not find a session.bpm')
 
   await client.send(cybr.global.activate('reaper-helper.tracktionedit', true))

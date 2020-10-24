@@ -20,6 +20,7 @@ export const pluginZebra2Vst2 = require('./plugin-zebra2-vst2');
 export const pluginDexedVst = require('./plugin-dexed-vst');
 export const pluginDragonflyRoomReverb = require('./plugin-dragonfly-room');
 
-export const IpcClient = require('./IpcClient');
-export const UdpClient = require('./UdpClient');
+export { IpcClient } from './IpcClient';
+import { IpcClient } from './IpcClient';
 export const Client = IpcClient;
+export const UdpClient = require('./UdpClient');
