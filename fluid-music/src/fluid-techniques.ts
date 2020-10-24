@@ -27,6 +27,12 @@ export class AudioFile implements Technique {
   startInSourceSeconds : number = 0
 
   /**
+   * Adjust the sample playback level. Unlike gainDb, trimDb is always applied,
+   * and will not be overridden when a dynamic object specifies a gain.
+   */
+  trimDb : number = 0
+
+  /**
    * If present, this overrides any gain value in the Dynamic Object
    */
   gainDb? : number
@@ -63,6 +69,7 @@ export class AudioFile implements Technique {
     } else if (typeof context.d.gain === 'number') { // backwards compatibility
       fileEvent.gainDb = context.d.gain
     }
+    fileEvent.gainDb += this.trimDb
 
     context.clip.fileEvents.push(fileEvent)
     return null;
@@ -76,6 +83,7 @@ export interface AudioFileOptions {
   oneShot? : boolean
   info? : AudioFileInfo
   gainDb? : number
+  trimDb? : number
 }
 
 
