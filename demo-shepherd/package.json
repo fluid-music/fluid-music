@@ -12,6 +12,7 @@
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
   "dependencies": {
+    "fluid-music": "file:../fluid-music",
     "standard": "^14.3.4"
   }
 }

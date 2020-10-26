@@ -68,7 +68,7 @@ export class FluidSession {
           d: {},
         }
 
-        for (let event of clip.events) {
+        for (const event of clip.events) {
           if (typeof event.technique?.use === 'function') {
             if (event.d) context.d = event.d
             event.technique.use(event.startTime, event.duration, context)

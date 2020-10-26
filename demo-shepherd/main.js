@@ -1,7 +1,7 @@
 // @ts-check
 
 const path = require('path')
-const fluid = require('../fluid-music')
+const fluid = require('fluid-music')
 const cybr = fluid.cybr
 const chords = require('./midi-chords')
 
@@ -52,6 +52,20 @@ const v = tyrellN6.makeAutomation.tyrellTune2(1)
 const V = tyrellN6.makeAutomation.tyrellCutoff(65)
 const w = [v, V]
 
+const BPM = 92
+const msPerQuarter = 60000 / BPM
+const stereoDelay = new fluid.TStereoDelayVst2({
+  lLowCutHz: 50,
+  lHighCutHz: 3000,
+  rLowCutHz: 100,
+  rHighCutHz: 3100,
+  wetDb: 0,
+  dryDb: -50,
+  lDelayMs: msPerQuarter / 2,
+  rDelayMs: msPerQuarter / 2 * 1.5,
+  sync: 0
+})
+
 class MidiArp extends fluid.techniques.MidiChord {
   constructor (options) {
     super(options)
@@ -96,13 +110,14 @@ const techniques = chords.map(chord => new MidiArp(chord))
 const tLibrary = fluid.tLibrary.fromArray(techniques)
 
 const session = new fluid.FluidSession({
-  bpm: 92,
+  bpm: BPM,
   r: 'hhh',
   tLibrary: Object.assign({ v, V, w }, tLibrary)
 }, [
   { name: 'chords1', plugins: [tyrellN6] },
   { name: 'chords2', plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] },
-  { name: 'chords3', plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] }
+  { name: 'chords3', plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] },
+  { name: 'delay', plugins: [stereoDelay] }
 ])
 
 const r3 = { r: '123', clips: ['...'] }
