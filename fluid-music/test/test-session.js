@@ -86,5 +86,26 @@ describe('FluidSession', () => {
 
     })
   }) // insertScore method
+
+  describe('send resolution', function () {
+    it('should add sends even when the sending track precedes the receiving track', function () {
+      const session = new FluidSession({}, [
+        { name: 'send track', sends : [{to: 'receive track', gainDb: -6 }] },
+        { name: 'unused track' },
+        { name: 'receive track' },
+      ])
+
+      for (const track of session.tracks) {
+        track.unresolvedSends.length.should.equal(0, `"${track.name} erroneously contains unresolved sends: ${JSON.stringify(track.unresolvedSends)}`)
+      }
+
+      const receiveTrack = session.getTrackByName('receive track')
+      const sendTrack = session.getTrackByName('send track')
+      should.exist(sendTrack)
+      should.exist(receiveTrack)
+      receiveTrack.receives[0].gainDb.should.equal(-6)
+      receiveTrack.receives[0].from.should.equal(sendTrack)
+    })
+  })
 });
 

@@ -1,6 +1,6 @@
 import * as tab from './tab'
-import { FluidTrack, TrackConfig } from './FluidTrack';
-import { ScoreConfig, ClipEventContext, tLibrary, dLibrary } from './fluid-interfaces';
+import { FluidReceive, FluidTrack, TrackConfig } from './FluidTrack';
+import { ScoreConfig, ClipEventContext } from './fluid-interfaces';
 
 export interface SessionConfig extends ScoreConfig {
   bpm?: number
@@ -19,6 +19,8 @@ export class FluidSession {
 
       this.tracks.push(newTrack)
     }
+
+    this.resolveSends()
   }
 
   scoreConfig : ScoreConfig = {}
@@ -28,10 +30,24 @@ export class FluidSession {
   startTime? : number
   duration? : number
 
-  getOrCreateTrackByName(name: string) : FluidTrack {
+  forEachTrack(func : { (track : FluidTrack, index : number) : any }) {
+    let i = 0;
+    for (const track of this.tracks) {
+      func(track, i++)
+    }
+  }
+
+  getTrackByName(name: string) : FluidTrack|null {
     for (const track of this.tracks)
       if (track.name === name)
         return track
+
+    return null
+  }
+
+  getOrCreateTrackByName(name: string) : FluidTrack {
+    const track = this.getTrackByName(name)
+    if (track) return track
 
     const newTrack = new FluidTrack({ name })
     this.tracks.push(newTrack)
@@ -45,6 +61,33 @@ export class FluidSession {
     this.startTime = r.startTime
     // Charles: processEvents also breaks if insertScore is called more than once
     this.processEvents()
+  }
+
+  /**
+   * Iterate over the tracks, and resolve any unresolved sends. This is used
+   * internally, and does not need to be called by consuming code.
+   *
+   * Sends are specified on sending tracks, but stored in receiving tracks. This
+   * makes it easy to delete a track without having to go hunt down all the
+   * tracks that send to it.
+   */
+  resolveSends() {
+    this.forEachTrack((sendTrack, i) => {
+      if (!sendTrack.unresolvedSends.length) return
+
+      sendTrack.unresolvedSends = sendTrack.unresolvedSends.filter(send => {
+        const receiveTrack = this.getTrackByName(send.to)
+        if (receiveTrack) {
+          const receiveOptions = Object.assign({}, send, {from: sendTrack})
+          const receive = new FluidReceive(receiveOptions)
+          receiveTrack.receives.push(receive)
+          return false
+        } else {
+          console.warn(`WARNING: Track (${sendTrack.name}) contains a send to a non-existent track (${send.to})`)
+          return true
+        }
+      })
+    })
   }
 
   processEvents() {

@@ -96,6 +96,15 @@ export interface Track {
   automation: Automation;
   duration? : number;
   startTime? : number;
+  receives : TrackReceive[]
+}
+
+export enum Tap { postFader }
+export interface TrackReceive {
+  tap : Tap;
+  gainDb : number;
+  pan : number;
+  from : Track;
 }
 
 /**

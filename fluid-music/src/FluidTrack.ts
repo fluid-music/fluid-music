@@ -1,14 +1,39 @@
-import { Track, Clip, ScoreConfig } from './fluid-interfaces';
+import { Track, Clip, ScoreConfig, TrackReceive, Tap } from './fluid-interfaces';
 import { FluidPlugin, Automation } from './plugin';
+
+export interface UnresolvedSend {
+  to : string
+  gainDb? : number
+  pan? : number
+  tap? : Tap
+}
+
+export class FluidReceive implements TrackReceive {
+  constructor (options : {
+    from : FluidTrack
+    gainDb? : number
+    pan? : number
+    tap? : Tap
+  }) {
+    this.from = options.from
+    if (typeof options.gainDb === 'number') this.gainDb = options.gainDb
+    if (typeof options.pan === 'number') this.pan = options.pan
+  }
+
+  from : FluidTrack
+  gainDb : number = 0
+  pan : number = 0
+  tap : Tap = Tap.postFader
+}
 
 export interface TrackConfig extends ScoreConfig {
   name?: string;
   gain? : number;
   pan? : number;
   width? : number;
-  plugins?: FluidPlugin[];
+  plugins? : FluidPlugin[];
+  sends? : UnresolvedSend[];
 }
-
 
 export class FluidTrack implements Track {
   constructor(config: TrackConfig) {
@@ -18,6 +43,8 @@ export class FluidTrack implements Track {
     if (typeof config.gain === 'number') this.gain = config.gain;
     if (typeof config.pan === 'number') this.pan = config.pan;
     if (typeof config.width === 'number') this.width = config.width;
+    if (config.sends?.length) this.unresolvedSends = config.sends.map(send => send)
+
     if (config.plugins) {
       for (let plugin of config.plugins)
         if (!(plugin instanceof FluidPlugin))
@@ -36,7 +63,9 @@ export class FluidTrack implements Track {
   width = 0;
   plugins : FluidPlugin[] = [];
   clips : Clip[] = [];
+  receives : TrackReceive[] = [];
   automation : Automation = {};
   duration? : number;
   startTime? : number;
+  unresolvedSends : UnresolvedSend[] = [];
 }
