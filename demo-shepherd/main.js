@@ -55,10 +55,10 @@ const w = [v, V]
 const BPM = 92
 const msPerQuarter = 60000 / BPM
 const stereoDelay = new fluid.TStereoDelayVst2({
-  lLowCutHz: 50,
-  lHighCutHz: 3000,
-  rLowCutHz: 100,
-  rHighCutHz: 3100,
+  lLowCutHz: 100,
+  lHighCutHz: 8000,
+  rLowCutHz: 110,
+  rHighCutHz: 8800,
   wetDb: 0,
   dryDb: -50,
   lDelayMs: msPerQuarter / 2,
@@ -115,8 +115,8 @@ const session = new fluid.FluidSession({
   tLibrary: Object.assign({ v, V, w }, tLibrary)
 }, [
   { name: 'chords1', plugins: [tyrellN6] },
-  { name: 'chords2', plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] },
-  { name: 'chords3', plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)] },
+  { name: 'chords2', plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)], sends: [{ to: 'delay', gainDb: -6, pan: 0.2 }] },
+  { name: 'chords3', plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)], sends: [{ to: 'delay', gainDb: -6, pan: -0.2 }] },
   { name: 'delay', plugins: [stereoDelay] }
 ])
 

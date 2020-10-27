@@ -41,6 +41,31 @@ export async function sessionToReaperProject(session : FluidSession, client: Ipc
 
     reaperProject.addTrack(newTrack);
 
+    // handle receives (and sends, implicitly)
+    track.receives.forEach(receive => {
+      // get the absolute index of the sending track
+      let found = false
+      let index = 0
+      session.forEachTrack((track, i) => {
+        if (found) return
+        if (track === receive.from) {
+          index = i
+          found = true;
+        }
+      })
+
+      if (found) {
+        newTrack.addReceive({
+          sourceTrackNumber: index,
+          gain: db2Gain(receive.gainDb),
+          pan: receive.pan
+        })
+      } else {
+        throw new Error(`sessionToReaperProject failed: ${track.name} contained broken receive: ${JSON.stringify(receive)}`)
+      }
+    })
+
+    // handle Clips
     track.clips.forEach((clip, clipIndex) => {
 
       // Create one EventContext object for each clip.
