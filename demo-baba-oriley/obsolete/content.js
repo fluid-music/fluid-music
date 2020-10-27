@@ -3,6 +3,8 @@ const fluid   = require('../fluid-music');
 const helpers = require('./helpers');
 const k       = { type: 'file', path: '909k.wav' };
 
+console.error('content.js is obsolete. use score.js instead')
+
 let nLibrary = { F: 53, c: 60, f: 65, d: 62, e: 64, H: 58, k };
 let dLibrary = { 0: 10, 1: 20, 2: 30, 3: 40, 4: 50, 5: 60, 6: 70, 7: 80, 8: 90, 9: 100, a: 110, b: 120, c: 127 };
 
