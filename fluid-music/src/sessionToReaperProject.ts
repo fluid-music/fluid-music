@@ -16,20 +16,25 @@ const db2Gain = (db) => Math.pow(10, Math.min(db, 12) / 20)
 
 /**
  * Create a `ReaperProject` from a `FluidSession`
+ *
+ * WARNING: If the session contains VSTs, the `cybr` server must be running.
  */
-export async function sessionToReaperProject(session : FluidSession, client: IpcClient) {
-  if (!session.bpm) throw new TypeError('tracksToReaperProject could not find a session.bpm')
+export async function sessionToReaperProject(session : FluidSession, client?: IpcClient) {
+  if (!session.bpm) throw new Error('Cannot create reaper project: session BPM must be non-zero')
 
-  await client.send(cybr.global.activate('reaper-helper.tracktionedit', true))
+  // If the user does not pass in a client, we will create one automatically. In
+  // the event that a client is created automatically, we want to close it
+  // close it when then method returns. However, if the user passed in a client,
+  // we must not close that client on behalf of the user.
+  //
+  // Note that we don't want to create the client here, because it may not be
+  // needed - it is only used when the session contains one or more VST plugins.
+  const closeClientWhenDone = !client
+  let tracktionSessionActivated = false
 
   const reaperProject = new rppp.objects.ReaperProject();
   reaperProject.getOrCreateStructByToken('TEMPO').params = [session.bpm, 4, 4]
 
-  // // example tracks object
-  // const tracks = [
-  //   { name: 'bass', clips: [ clip1, clip2... ] },
-  //   { name: 'kick', clips: [ clip1, clip2... ] },
-  // ];
   for (const track of session.tracks) {
 
     const newTrack = new rppp.objects.ReaperTrack();
@@ -130,11 +135,24 @@ export async function sessionToReaperProject(session : FluidSession, client: Ipc
       newTrack.add(FXChain);
 
       for (const plugin of track.plugins) {
+        if (!client) {
+          console.warn('Encountered a VST while creating a Reaper project, but no cybr IcpClient was supplied. A client will be created implicitly.')
+          client = new cybr.IpcClient()
+          await client.connect(true)
+        }
+        if (!tracktionSessionActivated) {
+          await client.send(cybr.global.activate('reaper-helper.tracktionedit', true))
+          tracktionSessionActivated = true
+        }
         const vst2 = await vst2ToReaperObject(client, track.name, plugin, nth(plugin), session.bpm);
         FXChain.add(vst2);
       } // for (plugin of track.plugins)
     }
   }     // for (track of tracks)
+
+
+  if (client && tracktionSessionActivated && closeClientWhenDone) client.close()
+
   return reaperProject;
 };
 

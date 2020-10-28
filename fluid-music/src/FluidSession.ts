@@ -5,6 +5,8 @@ import * as cybr from './cybr'
 import { FluidReceive, FluidTrack, TrackConfig } from './FluidTrack';
 import { ScoreConfig, ClipEventContext } from './fluid-interfaces';
 import { sessionToTemplateFluidMessage, sessionToContentFluidMessage } from './sessionToFluidMessage'
+import { sessionToReaperProject } from './sessionToReaperProject';
+import { createWriteStream } from 'fs';
 
 export interface SessionConfig extends ScoreConfig {
   bpm?: number
@@ -177,6 +179,20 @@ export class FluidSession {
     await client.send(cybr.global.save())
 
     if (closeWhenFinished) client.close()
+  }
+
+  async saveAsReaperFile (
+    filename : string = 'fluid',
+    client? : cybr.IpcClient)
+  {
+    // create a filename if the caller did not provide one
+    if (!filename) filename = 'fluid'
+    if (!path.isAbsolute(filename)) filename = path.join(process.cwd(), filename)
+    if (!filename.toLowerCase().endsWith('.RPP')) filename += '.RPP'
+
+    const rpp = await sessionToReaperProject(this, client)
+    const stream = createWriteStream(filename, 'utf8')
+    stream.write(rpp.dump())
   }
 }
 
