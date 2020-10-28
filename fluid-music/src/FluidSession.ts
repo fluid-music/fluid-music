@@ -1,6 +1,10 @@
+import * as path from 'path'
+
 import * as tab from './tab'
+import * as cybr from './cybr'
 import { FluidReceive, FluidTrack, TrackConfig } from './FluidTrack';
 import { ScoreConfig, ClipEventContext } from './fluid-interfaces';
+import { sessionToTemplateFluidMessage, sessionToContentFluidMessage } from './sessionToFluidMessage'
 
 export interface SessionConfig extends ScoreConfig {
   bpm?: number
@@ -131,6 +135,48 @@ export class FluidSession {
         clip.events = []
       })  // iterate over clips  with clips.forEach method
     }     // iterate over tracks with for...of loop
+  }
+
+  /**
+   * Create a .tracktionedit file from the session. The `cybr` server must be
+   * running when this is called.
+   *
+   * WARNING: sessionToTracktionEdit may not be called simultaneously with other
+   * methods that access the cybr server. Use `await` or `.then` to make sure that
+   * this method finishes before using communicating with the server
+   *
+   * @param filename can be absolute or relative to the working directory. The
+   *    .tracktionedit file extension will be added if it is not present
+   * @param client created (and closed) automatically when not provided
+   */
+  async saveAsTracktionFile (
+    filename : string = 'fluid',
+    client? : cybr.IpcClient)
+  {
+    let closeWhenFinished = false
+
+    // create a client if caller did not provide one
+    if (!client) {
+      closeWhenFinished = true
+      client = new cybr.IpcClient()
+      await client.connect(true)
+    }
+
+    // create a filename if the caller did not provide one
+    if (!filename) filename = 'fluid'
+    if (!path.isAbsolute(filename)) filename = path.join(process.cwd(), filename)
+    if (!filename.toLowerCase().endsWith('.tracktionedit')) filename += '.tracktionedit'
+
+    await client.send([
+      cybr.global.activate(filename, true),
+      sessionToTemplateFluidMessage(this),
+      sessionToContentFluidMessage(this),
+    ])
+
+    await new Promise(resolve => setTimeout(resolve, 100))
+    await client.send(cybr.global.save())
+
+    if (closeWhenFinished) client.close()
   }
 }
 

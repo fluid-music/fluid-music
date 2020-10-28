@@ -1,6 +1,5 @@
 // @ts-check
 
-const path = require('path')
 const fluid = require('fluid-music')
 const cybr = fluid.cybr
 const chords = require('./midi-chords')
@@ -170,10 +169,9 @@ const client = new cybr.Client(/* { timeout: 30000 } */)
 client.connect(true)
 
 const run = async () => {
-
   const rpp = await fluid.sessionToReaperProject(session, client)
   console.log(rpp.dump())
-  await fluid.saveSessionAsTracktionFile(session, 'demo-shepherd', client)
+  await session.saveAsTracktionFile('demo-shepherd', client)
 }
 
 run().finally(() => {
