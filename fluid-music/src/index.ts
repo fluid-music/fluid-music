@@ -11,13 +11,12 @@ import * as tLibrary from './t-library';
 import * as tab from './tab';
 
 // New Style Plugins
-import { DragonflyRoom } from './plugin-dradonfly-room';
+import { DragonflyRoom } from './plugin-dragonfly-room';
 import { TCompressorVst2 } from './plugin-adapters/t-compressor-vst2'
 import { TEqualizerVst2 } from './plugin-adapters/t-equalizer-vst2'
 import { TStereoDelayVst2 } from './plugin-adapters/t-stereo-delay-vst2'
 import { PodolskiVst2 } from './plugin-adapters/podolski-vst2'
 import { TyrellN6Vst2 } from './plugin-adapters/tyrell-n6-vst2'
-
 
 // OSC Message Helpers
 import * as cybr from './cybr/index';
@@ -32,15 +31,6 @@ import * as plugin from './cybr/plugin';
 import * as sampler from './cybr/sampler';
 import * as tempo from './cybr/tempo';
 import * as transport from './cybr/transport';
-
-const pluginDragonflyRoomReverb = require('./cybr/plugin-dragonfly-room');
-const pluginPodolski = require('./cybr/plugin-podolski');
-const pluginTCompressor = require('./cybr/plugin-tcompressor-vst');
-const pluginTEqualiser = require('./cybr/plugin-tequaliser');
-const pluginTReverber8 = require('./cybr/plugin-treverber8');
-const pluginTStereoDelay = require('./cybr/plugin-tstereodelay');
-const pluginZebra2Vst2 = require('./cybr/plugin-zebra2-vst2');
-const pluginDexedVst = require('./cybr/plugin-dexed-vst');
 
 const UdpClient = require('./cybr/UdpClient');
 import { IpcClient } from './cybr/IpcClient';
@@ -63,14 +53,6 @@ export = {
   m,
   midiclip,
   plugin,
-  pluginDragonflyRoomReverb,
-  pluginPodolski,
-  pluginTCompressor,
-  pluginTEqualiser,
-  pluginTReverber8,
-  pluginTStereoDelay,
-  pluginZebra2Vst2,
-  pluginDexedVst,
   random,
   sampler,
   tab,
