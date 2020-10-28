@@ -85,7 +85,7 @@ session.insertScore({
 });
 
 // const templateMessage = fluid.sessionToTemplateFluidMessage(session);
-// const contentMessage = fluid.sessionToFluidMessage(session);
+// const contentMessage = fluid.sessionToContentFluidMessage(session);
 // const client = new cybr.Client();
 // client.send([
 //   cybr.global.activate(path.join(__dirname, 'session.tracktionedit'), true),

@@ -177,7 +177,7 @@ const run = async () => {
   // send to CYBR
   const activateMsg = fluid.cybr.global.activate(path.join(__dirname, 'demo-shepherd.tracktionedit'), true)
   const templateMsg = fluid.sessionToTemplateFluidMessage(session)
-  const tracksMsg = fluid.sessionToFluidMessage(session)
+  const tracksMsg = fluid.sessionToContentFluidMessage(session)
   const saveMsg = fluid.cybr.global.save()
 
   await client.send([activateMsg, templateMsg, tracksMsg, saveMsg])

@@ -96,15 +96,16 @@ export interface Track {
   automation: Automation;
   duration? : number;
   startTime? : number;
-  receives : TrackReceive[]
+  receives : TrackReceive[];
 }
 
 export enum Tap { postFader }
 export interface TrackReceive {
   tap : Tap;
   gainDb : number;
-  pan : number;
   from : Track;
+  // Reaper (and rppp) support panning stereo in sends, but tracktion does not.
+  // For now, I will not implement panning in sends.
 }
 
 /**

@@ -973,14 +973,17 @@ void removeAllPluginAutomationFromTrack(te::ClipTrack& track) {
 void setParamAutomationPoint(te::AutomatableParameter::Ptr param, float paramValue, double timeInWholeNotes, float curveValue, bool isNormalized) {
     if (isNormalized) paramValue = param->valueRange.convertFrom0to1(paramValue);
     te::AutomationCurve curve = param->getCurve();
-    // If this is the first time changing the value of the parameter,
-    // set it to its default at time 0.
-    if(!param->hasAutomationPoints()) {
-        curve.addPoint(0, param->getCurrentValue(), 0);
-    }
 
     double changeTime = param->getEdit().tempoSequence.beatsToTime(timeInWholeNotes * 4);
 
     curve.addPoint(changeTime, paramValue, curveValue);
-    curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
+
+    // Originally, I used the following line of code to remove any redundant
+    // automation points. However, it seems that this caused more trouble than
+    // it saved.
+    // curve.removeRedundantPoints(te::EditTimeRange(0, curve.getLength()+1));
+    //
+    // It appears that there is a bug where when there are two automation points
+    // at the same time, the undesired one might get removed if (for example)
+    // the two automation points had different curve values.
 }

@@ -58,7 +58,6 @@ export async function sessionToReaperProject(session : FluidSession, client: Ipc
         newTrack.addReceive({
           sourceTrackNumber: index,
           gain: db2Gain(receive.gainDb),
-          pan: receive.pan
         })
       } else {
         throw new Error(`sessionToReaperProject failed: ${track.name} contained broken receive: ${JSON.stringify(receive)}`)

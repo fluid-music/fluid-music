@@ -639,6 +639,11 @@ OSCMessage FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
         return reply;
     }
 
+    // cybr identifies busses by a name string. Ensure that:
+    //     - a track with the specified name exists
+    //     - a bus with the specified name exists
+    //     - the track has a "receive" plugin, adding the receive if needed
+
     te::Edit& edit = activeCybrEdit->getEdit();
     String busName = message[0].getString();
     int busIndex = ensureBus(edit, busName);
@@ -669,7 +674,8 @@ OSCMessage FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
         }
     }
 
-    // No return plugin was found on the track. Insert a new one.
+    // If no return plugin was found on the track insert a new one before all
+    // other plugins on the track
     if (!returnPlugin) {
         te::Plugin::Ptr plugin = selectedAudioTrack->edit.getPluginCache().createNewPlugin("auxreturn", PluginDescription());
         if (auto foundPlugin = dynamic_cast<te::AuxReturnPlugin*>(plugin.get())) {
@@ -684,6 +690,10 @@ OSCMessage FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
     return reply;
 }
 
+/**
+ * Verify that a send to a particular bus exists. If it does not, add it to
+ * the end of the plugin chain.
+ */
 OSCMessage FluidOscServer::ensureSend(const OSCMessage& message) {
     OSCMessage reply("/audiotrack/send/set/db/reply");
     if (!selectedAudioTrack) {
@@ -710,6 +720,7 @@ OSCMessage FluidOscServer::ensureSend(const OSCMessage& message) {
         position = message[2].getString();
     }
 
+    // cybr identifies busses by a name
     int busIndex = ensureBus(selectedAudioTrack->edit, busName);
 
     if (busIndex == -1) {
@@ -859,7 +870,7 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
         !message[2].isFloat32() ||
         !message[3].isFloat32() ||
         !message[4].isString() ) {
-        String errorString = "Setting parameter failed. Incorrect arguments.";
+        String errorString = "Setting parameter failed. Incorrect arguments. (sfffs, expected).";
         constructReply(reply, 1, errorString);
         return reply;
     }
@@ -874,12 +885,12 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
     float paramValue = message[1].getFloat32();
     bool isNormalized = message[4].getString() == "normalized";
     if (isNormalized){
-        if (paramValue > 1 || paramValue < 0){
-            String errorString = "Setting parameter " + paramName
-            + " failed. Normalized value has to be between 0 and 1.";
-            constructReply(reply, 1, errorString);
-            return reply;
+        if (paramValue > 1 || paramValue < 0) {
+            std::cout << "Setting parameter " + paramName + ": normalized value clamped" << std::endl;
         }
+
+        if (paramValue > 1) paramValue = 1;
+        else if ( paramValue < 0) paramValue = 0;
     }
 
     double changeWholeNotes = (double)message[2].getFloat32();
@@ -892,10 +903,9 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
 
     float curveValue = message[3].getFloat32();
     if (curveValue > 1 || curveValue < -1) {
-         String errorString = "Setting parameter " + paramName
-               + " failed. Curve has to be between -1 and 1.";
-         constructReply(reply, 1, errorString);
-         return reply;
+        std::cout << "Setting parameter " + paramName + "curve value clamped" << std::endl;
+        if (curveValue < -1) curveValue = -1;
+        else if (curveValue > 1) curveValue = 1;
     }
 
     te::AutomatableParameter::Ptr foundParam;
