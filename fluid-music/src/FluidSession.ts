@@ -27,8 +27,9 @@ export class FluidSession {
   bpm : number = 120
   tracks : FluidTrack[] = []
   regions : any[] = []
-  startTime? : number
-  duration? : number
+
+  /** position of the edit cursor, measured in whole notes */
+  editCursorTime : number = 0
 
   forEachTrack(func : { (track : FluidTrack, index : number) : any }) {
     let i = 0;
@@ -54,12 +55,20 @@ export class FluidSession {
     return newTrack
   }
 
-  insertScore(score: any, config: any = {}) {
+  /**
+   * Insert a score object into the session.
+   *
+   * The contents of the score will be inserted at `session.editCursorTime`,
+   * unless a `config.starTime` is specified.
+   *
+   * Inserting moves `session.editCursorTime` to the end of newly inserted
+   * content. (When no `config.startTime is specified, calling `insertScore`
+   * multiple times inserts contents sequentially)
+   */
+  insertScore(score: any, config: ScoreConfig = {}) {
+    config = { startTime: this.editCursorTime, ...config }
     const r = parse(score, this, config)
-    // Charles: duration and startTime could be wrong if insert score is called more than once OR config specifies a non-zero start time
-    this.duration = r.duration
-    this.startTime = r.startTime
-    // Charles: processEvents also breaks if insertScore is called more than once
+    this.editCursorTime = r.duration + r.startTime
     this.processEvents()
   }
 
@@ -118,9 +127,10 @@ export class FluidSession {
           } else {
             throw new Error(`Unhandled Event (no .use(...) method): ${JSON.stringify(event)}`)
           }
-        }
-      }) // iterate over clips  with clips.forEach method
-    }    // iterate over tracks with for...of loop
+        } // iterate over "TechniqueEvent"
+        clip.events = []
+      })  // iterate over clips  with clips.forEach method
+    }     // iterate over tracks with for...of loop
   }
 }
 

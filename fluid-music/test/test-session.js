@@ -83,8 +83,38 @@ describe('FluidSession', () => {
         point1.value.should.equal(2.4)
         point2.value.should.equal(4)
       })
-
     })
+
+    describe('called multiple times on the same session', function () {
+
+      let session
+      const r = '1234'
+      const score1 = { bass: ['0...', '1...'] }
+      const score2 = { bass: ['2...', '3.4.'] }
+
+
+      beforeEach(function () {
+        const tLibrary = [60, 63, 67, 72, 75].map(note => new fluid.techniques.MidiNote({ note }))
+        session = new FluidSession({}, { bass: { tLibrary, r, gain: -6 } })
+      })
+
+      it('should insert contents sequentially when with each subsequent call', function () {
+        session.insertScore(score1)
+        session.insertScore(score2)
+        const bassTrack = session.tracks[0]
+        bassTrack.clips.length.should.equal(4)
+
+        const lastClip = bassTrack.clips[3]
+        lastClip.startTime.should.equal(3)
+        lastClip.midiEvents.length.should.equal(2)
+
+        const lastMidiEvent = lastClip.midiEvents[1]
+        lastMidiEvent.note.should.equal(75)
+        lastMidiEvent.startTime.should.equal(0.5)
+
+        session.editCursorTime.should.equal(4)
+      })
+    }) // multiple calls to insertScore
   }) // insertScore method
 
   describe('send resolution', function () {

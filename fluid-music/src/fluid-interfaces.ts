@@ -85,7 +85,7 @@ export interface ScoreObject {
  * @member gain post-fx gain in dbfs
  * @member pan post-fx pan (-1 to 1)
  * @member duration? length measured in whole notes
- * @member automation? 
+ * @member automation?
  */
 export interface Track {
   name: string;
