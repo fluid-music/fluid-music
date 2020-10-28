@@ -1,3 +1,4 @@
+import * as path from 'path'
 import { FluidPlugin, PluginType } from './plugin';
 import { ClipEventContext, MidiNoteEvent, AudioFileEvent } from './fluid-interfaces';
 import { FluidSession } from './FluidSession';
@@ -239,7 +240,7 @@ function fileEventsToFluidMessage(fileEvents : AudioFileEvent[], context : ClipE
 
     if (typeof event.path !== 'string') {
       console.error(event);
-      throw new Error('fileEventsToFluidMessage: A file event found in the note library does not have a .path string');
+      throw new Error(`fileEventsToFluidMessage: A file event is missing a .path string ${JSON.stringify(event)}`);
     };
 
     const clipName = `s${context.clipIndex}.${eventIndex}`;
@@ -264,5 +265,44 @@ function fileEventsToFluidMessage(fileEvents : AudioFileEvent[], context : ClipE
 
     return msg;
   });
+}
+
+/**
+ * WARNING: sessionToTracktionEdit may not be called simultaneously with other
+ * methods that access the cybr server. Use `await` or `.then` to make sure that
+ * this method finishes before using communicating with the server
+ * @param session
+ * @param filename can be absolute or relative to the working directory
+ * @param client will be created and closed automatically when not provided
+ */
+export async function saveSessionAsTracktionFile (
+  session : FluidSession,
+  filename : string = 'fluid',
+  client? : cybr.IpcClient)
+{
+  let closeWhenFinished = false
+
+  // create a client if caller did not provide one
+  if (!client) {
+    closeWhenFinished = true
+    client = new cybr.IpcClient()
+    await client.connect(true)
+  }
+
+  // create a filename if the caller did not provide one
+  if (!filename) filename = 'fluid'
+  if (!path.isAbsolute(filename)) filename = path.join(process.cwd(), filename)
+  if (!filename.toLowerCase().endsWith('.tracktionedit')) filename += '.tracktionedit'
+
+  await client.send([
+    cybr.global.activate(filename, true),
+    sessionToTemplateFluidMessage(session),
+    sessionToContentFluidMessage(session),
+  ])
+
+  await new Promise(resolve => setTimeout(resolve, 100))
+  await client.send(cybr.global.save())
+
+  if (closeWhenFinished) client.close()
 }
 

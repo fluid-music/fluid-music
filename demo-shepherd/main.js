@@ -166,21 +166,14 @@ const gainAutomation = tds.map((td, i) => {
 session.tracks.find(track => track.name === 'chords1').automation.gain = { points: gainAutomation }
 
 // Convert to reaper/tracktion session
-const client = new cybr.Client({ timeout: Math.pow(2, 31) - 1 })
+const client = new cybr.Client(/* { timeout: 30000 } */)
 client.connect(true)
 
 const run = async () => {
-  // create RPP
+
   const rpp = await fluid.sessionToReaperProject(session, client)
   console.log(rpp.dump())
-
-  // send to CYBR
-  const activateMsg = fluid.cybr.global.activate(path.join(__dirname, 'demo-shepherd.tracktionedit'), true)
-  const templateMsg = fluid.sessionToTemplateFluidMessage(session)
-  const tracksMsg = fluid.sessionToContentFluidMessage(session)
-  const saveMsg = fluid.cybr.global.save()
-
-  await client.send([activateMsg, templateMsg, tracksMsg, saveMsg])
+  await fluid.saveSessionAsTracktionFile(session, 'demo-shepherd', client)
 }
 
 run().finally(() => {

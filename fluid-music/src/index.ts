@@ -1,5 +1,5 @@
 import { FluidPlugin, PluginType } from './plugin';
-import { sessionToContentFluidMessage, sessionToTemplateFluidMessage } from './sessionToFluidMessage';
+import { sessionToContentFluidMessage, sessionToTemplateFluidMessage, saveSessionAsTracktionFile } from './sessionToFluidMessage';
 import { sessionToReaperProject } from './sessionToReaperProject'
 import { FluidSession } from './FluidSession';
 import * as gen from './plugin-generator';
@@ -59,6 +59,7 @@ export = {
   tempo,
   sessionToTemplateFluidMessage,
   sessionToContentFluidMessage,
+  saveSessionAsTracktionFile,
   sessionToReaperProject,
   transport,
   FluidSession,
