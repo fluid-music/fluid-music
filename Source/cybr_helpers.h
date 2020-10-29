@@ -55,6 +55,12 @@ int ensureBus(te::Edit& edit, juce::String busName);
 Includes some simple checks like non-zero duration, file write access. */
 void renderTrackRegion(juce::File outputFile, te::Track& track, te::EditTimeRange range);
 
+/** Get the submix track by name, creating it if needed. If no parent is
+ * specified, create the submix track at the root level. If a parent is
+ * specified, search recursively for the parent submix, creating it at the root
+ * level if needed.
+ */
+te::FolderTrack* getOrCreateSubmixByName(te::Edit& edit, const juce::String name, const juce::String parentName = juce::String());
 te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const juce::String name);
 te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const juce::String name);
 te::RackType::Ptr ensureWidthRack(te::AudioTrack& track);

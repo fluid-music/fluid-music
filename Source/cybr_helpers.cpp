@@ -757,8 +757,34 @@ te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name) {
     }
 
     return foundTrack;
+}
 
+te::FolderTrack* getOrCreateSubmixByName(te::Edit& edit, const String name, const String parentName) {
+    // When no parent is specified, look for the submix recursively
+    if (parentName.isEmpty()) {
+        for (auto* folderTrack : te::getTracksOfType<te::FolderTrack>(edit, true)){
+            if (!folderTrack->isSubmixFolder()) continue;
+            if (folderTrack->getName() == name) return folderTrack;
+        }
 
+        // Submix not found. Create it
+        te::TrackInsertPoint insertPoint(nullptr, te::getTopLevelTracks(edit).getLast());
+        return edit.insertNewFolderTrack(insertPoint, nullptr, true).get();
+    }
+
+    te::FolderTrack* parent = getOrCreateSubmixByName(edit, parentName);
+
+    // Check for a track in the parent's immediate (non-recursive) children
+    for (auto* track : parent->getAllSubTracks(false)) {
+        if (auto* folderTrack = dynamic_cast<te::FolderTrack*>(track)) {
+            if (!folderTrack->isSubmixFolder()) continue;
+            if (folderTrack->getName() == name) return folderTrack;
+        }
+    }
+
+    // We have a parent, but the child does not exist. Create it.
+    te::TrackInsertPoint insertPoint(parent, parent->getAllSubTracks(false).getLast());
+    return edit.insertNewFolderTrack(insertPoint, nullptr, true).get();
 }
 
 te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name) {
