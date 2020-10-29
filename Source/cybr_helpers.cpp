@@ -526,7 +526,7 @@ void saveTracktionPreset(te::Plugin* plugin, String name) {
     std::cout << "Save tracktion preset: " << file.getFullPathName() << std::endl;
 }
 
-te::RackType::Ptr ensureWidthRack(te::AudioTrack& track) {
+te::RackType::Ptr ensureWidthRack(te::Track& track) {
     for (auto plugin : track.pluginList) {
         if (auto rack = dynamic_cast<te::RackInstance*>(plugin)) {
             if (rack->state.hasProperty("cybr-width")) {
@@ -613,7 +613,14 @@ te::RackType::Ptr ensureWidthRack(te::AudioTrack& track) {
         auto panMacro = track.macroParameterList.createMacroParameter();
         panMacro->macroName = "pan automation";
         panMacro->value = 0.5;
-        track.getVolumePlugin()->panParam->addModifier(*panMacro, 1, -0.5);
+
+        auto volumePlugin  = track.pluginList.getPluginsOfType<te::VolumeAndPanPlugin>().getLast();
+        jassert(volumePlugin);
+        if (volumePlugin) {
+            volumePlugin->panParam->addModifier(*panMacro, 1, -0.5);
+        } else {
+            std::cout << "DANGER: ensureWidthRack couldn't find a volume plugin" << std::endl;
+        }
     }
 
     // find the last volume plugin in the track
@@ -631,7 +638,7 @@ te::RackType::Ptr ensureWidthRack(te::AudioTrack& track) {
     return cybrRackType;
 }
 
-void loadTracktionPreset(te::AudioTrack& audioTrack, ValueTree v) {
+void loadTracktionPreset(te::Track& audioTrack, ValueTree v) {
     bool loaded = false;
     for (ValueTree preset : v) {
         if (!preset.hasType(te::IDs::PLUGIN)) continue;
@@ -781,8 +788,15 @@ te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name, c
 }
 
 te::FolderTrack* getOrCreateSubmixByName(te::Edit& edit, const String name, const String submixName) {
-    // When no parent is specified, look for the submix recursively
+    // In each of the steps below, if we find a suitable track, just return it.
+    // If no suitable track was found, create a new submix track, inserting it
+    // at the correct point, and put it in this variable. Before the final
+    // return statement, initialize the new folder track.
+
+    te::FolderTrack::Ptr newFolderTrack = nullptr;
+    
     if (submixName.isEmpty()) {
+        // No parent was specified, so look for the submix recursively
         for (auto* folderTrack : te::getTracksOfType<te::FolderTrack>(edit, true)){
             if (!folderTrack->isSubmixFolder()) continue;
             if (folderTrack->getName() == name) return folderTrack;
@@ -790,29 +804,34 @@ te::FolderTrack* getOrCreateSubmixByName(te::Edit& edit, const String name, cons
 
         // Submix not found. Create it
         te::TrackInsertPoint insertPoint(nullptr, te::getTopLevelTracks(edit).getLast());
-        auto submixTrack = edit.insertNewFolderTrack(insertPoint, nullptr, true).get();
-        submixTrack->setName(name);
-        return submixTrack;
-    }
+        newFolderTrack = edit.insertNewFolderTrack(insertPoint, nullptr, true);
+    } else {
+        // A parent was specified. Get or create the parent submix
+        te::FolderTrack* parent = getOrCreateSubmixByName(edit, submixName);
 
-    te::FolderTrack* parent = getOrCreateSubmixByName(edit, submixName);
+        // Check for a track in the parent's immediate (non-recursive) children
+        for (auto* track : parent->getAllSubTracks(false)) {
+            if (auto* folderTrack = dynamic_cast<te::FolderTrack*>(track)) {
+                if (!folderTrack->isSubmixFolder()) continue;
+                if (folderTrack->getName() == name) return folderTrack;
+            }
+        }
 
-    // Check for a track in the parent's immediate (non-recursive) children
-    for (auto* track : parent->getAllSubTracks(false)) {
-        if (auto* folderTrack = dynamic_cast<te::FolderTrack*>(track)) {
-            if (!folderTrack->isSubmixFolder()) continue;
-            if (folderTrack->getName() == name) return folderTrack;
+        if (!newFolderTrack) {
+            // We have a parent, but the child does not exist. Create it.
+            te::TrackInsertPoint insertPoint(parent, parent->getAllSubTracks(false).getLast());
+            newFolderTrack = edit.insertNewFolderTrack(insertPoint, nullptr, true);
         }
     }
 
-    // We have a parent, but the child does not exist. Create it.
-    te::TrackInsertPoint insertPoint(parent, parent->getAllSubTracks(false).getLast());
-    auto submixTrack = edit.insertNewFolderTrack(insertPoint, nullptr, true).get();
-    submixTrack->setName(name);
-    return submixTrack;
+    jassert(newFolderTrack);
+
+    newFolderTrack->setName(name);
+    ensureWidthRack(*newFolderTrack);
+    return newFolderTrack.get();
 }
 
-te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name) {
+te::MidiClip* getOrCreateMidiClipByName(te::ClipTrack& track, const String name) {
     for (auto* clip : track.getClips()) {
         if (auto midiClip = dynamic_cast<te::MidiClip*>(clip)) {
             if (midiClip->getName() == name) return midiClip;
@@ -822,7 +841,7 @@ te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name
     return clip;
 }
 
-te::Plugin* getOrCreatePluginByName(te::AudioTrack& track, const String name, const String type, const int index) {
+te::Plugin* getOrCreatePluginByName(te::Track& track, const String name, const String type, const int index) {
     // To insert a plugin, we need two things:
     // (1) A PluginDescription. For internal plugins, a description is arbitrary
     PluginDescription foundPluginDesc;
@@ -1010,7 +1029,7 @@ void removeAllClipsFromTrack(te::ClipTrack& track) {
     }
 }
 
-void removeAllPluginAutomationFromTrack(te::ClipTrack& track) {
+void removeAllPluginAutomationFromTrack(te::Track& track) {
     for (auto plugin : track.getAllPlugins()) {
         for (te::AutomatableParameter* param : plugin->getAutomatableParameters()) {
             if (param->hasAutomationPoints()) {

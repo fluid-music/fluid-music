@@ -18,7 +18,7 @@
 typedef void (*OscHandlerFunc)(const juce::OSCMessage&);
 
 struct SelectedObjects {
-    te::AudioTrack* audioTrack = nullptr;
+    te::Track* audioTrack = nullptr;
     te::Clip* clip = nullptr;
     te::Plugin* plugin = nullptr;
 };
@@ -95,7 +95,7 @@ private:
     void constructReply(juce::OSCMessage &reply, int error, juce::String message);
     void constructReply(juce::OSCMessage &reply, juce::String message);
     
-    te::AudioTrack* selectedAudioTrack = nullptr;
+    te::Track* selectedTrack = nullptr;
     te::Clip* selectedClip = nullptr;
     te::Plugin* selectedPlugin = nullptr;
 };

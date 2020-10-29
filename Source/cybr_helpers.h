@@ -41,11 +41,11 @@ void queryPluginParamPoints(te::Engine& engine, const juce::String pluginName, c
 void printOscMessage(const juce::OSCMessage& message);
 void printPreset(te::Plugin* plugin);
 void saveTracktionPreset(te::Plugin* plugin, juce::String name);
-void loadTracktionPreset(te::AudioTrack& track, juce::ValueTree preset);
+void loadTracktionPreset(te::Track& track, juce::ValueTree preset);
 juce::ValueTree loadXmlFile(juce::File file);
 
 void removeAllClipsFromTrack(te::ClipTrack& track);
-void removeAllPluginAutomationFromTrack(te::ClipTrack& track);
+void removeAllPluginAutomationFromTrack(te::Track& track);
 
 /** Get the index of the bus with a given name. If that bus does not exist,
  create it. If all buses already have a name, return -1 */
@@ -62,13 +62,13 @@ void renderTrackRegion(juce::File outputFile, te::Track& track, te::EditTimeRang
  */
 te::FolderTrack* getOrCreateSubmixByName(te::Edit& edit, const juce::String name, const juce::String parentName = juce::String());
 te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const juce::String name, const juce::String parentName = juce::String());
-te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const juce::String name);
-te::RackType::Ptr ensureWidthRack(te::AudioTrack& track);
+te::MidiClip* getOrCreateMidiClipByName(te::ClipTrack& track, const juce::String name);
+te::RackType::Ptr ensureWidthRack(te::Track& track);
 
 /** Add a plugin just before the VolumeAndPan plugin.
  `type` can be 'vst|vst3|tracktion|AudioUnit' or an empty string.
  If `type` is an empty string, search all types.*/
-te::Plugin* getOrCreatePluginByName(te::AudioTrack& track,
+te::Plugin* getOrCreatePluginByName(te::Track& track,
                                     const juce::String name,
                                     const juce::String type = {},
                                     const int index = 0);

@@ -39,7 +39,7 @@ void FluidOscServer::constructReply(OSCMessage &reply, String message){
 }
 
 SelectedObjects FluidOscServer::getSelectedObjects() {
-    return { selectedAudioTrack, selectedClip, selectedPlugin };
+    return { selectedTrack, selectedClip, selectedPlugin };
 }
 
 OSCBundle FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects parentSelection) {
@@ -49,7 +49,7 @@ OSCBundle FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjec
         if (element.isMessage()) {
             // allow messages to update the current selection ("currBundle")
             OSCMessage replyMessage = handleOscMessage(element.getMessage());
-            currBundle.audioTrack = selectedAudioTrack;
+            currBundle.audioTrack = selectedTrack;
             currBundle.clip = selectedClip;
             currBundle.plugin = selectedPlugin;
             reply.addElement(replyMessage);
@@ -60,7 +60,7 @@ OSCBundle FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjec
         }
     }
 
-    selectedAudioTrack = parentSelection.audioTrack;
+    selectedTrack = parentSelection.audioTrack;
     selectedClip = parentSelection.clip;
     selectedPlugin = parentSelection.plugin;
     return reply;
@@ -146,12 +146,19 @@ OSCMessage FluidOscServer::clearContent(const OSCMessage& message) {
 
 OSCMessage FluidOscServer::removeAudioTrackClips(const OSCMessage& message) {
     OSCMessage reply("/audiotrack/remove/clips/reply");
-    if (!selectedAudioTrack) {
-        String errorString = "Cannot remove audio track clips: no track selected";
+    if (!selectedTrack) {
+        const String errorString = "Cannot remove audio track clips: no track selected";
         constructReply(reply, 1, errorString);
         return reply;
     }
-    removeAllClipsFromTrack(*selectedAudioTrack);
+    if (auto* clipTrack = dynamic_cast<te::ClipTrack*>(selectedTrack)) {
+        removeAllClipsFromTrack(*clipTrack);
+    } else {
+        const String result = "Not removing clips, because selected track is not a ClipTrack";
+        constructReply(reply, 0, result);
+        return reply;
+    }
+
     reply.addInt32(0);
     return reply;
 }
@@ -159,12 +166,12 @@ OSCMessage FluidOscServer::removeAudioTrackClips(const OSCMessage& message) {
 OSCMessage FluidOscServer::removeAudioTrackAutomation(const OSCMessage& message) {
     OSCMessage reply("/audiotrack/remove/automation/reply");
 
-    if (!selectedAudioTrack) {
+    if (!selectedTrack) {
         String errorString = "Cannot remove audio track automation: no track selected";
         constructReply(reply, 1, errorString);
         return reply;
     }
-    removeAllPluginAutomationFromTrack(*selectedAudioTrack);
+    removeAllPluginAutomationFromTrack(*selectedTrack);
 
     reply.addInt32(0);
     return reply;
@@ -406,7 +413,7 @@ OSCMessage FluidOscServer::setClipLength(const juce::OSCMessage& message) {
 
 OSCMessage FluidOscServer::selectClip(const juce::OSCMessage& message) {
     OSCMessage reply("/clip/select/reply");
-    if (!selectedAudioTrack) {
+    if (!selectedTrack) {
         String errorString = "Cannot select clip: No audio track selected";
         constructReply(reply, 1, errorString);
         return reply;
@@ -418,19 +425,22 @@ OSCMessage FluidOscServer::selectClip(const juce::OSCMessage& message) {
     }
 
     String clipName = message[0].getString();
-    for (auto clip : selectedAudioTrack->getClips()) {
-        if (clip->getName().equalsIgnoreCase(clipName)) {
-            selectedClip = clip;
-            String replyString = "Selected " + clip->getName()
-             + " (" + clip->state.getType().toString() + ") on "
-            + selectedAudioTrack->getName();
-            constructReply(reply, 0, replyString);
-            return reply;
+
+    if (auto* clipTrack = dynamic_cast<te::ClipTrack*>(selectedTrack)) {
+        for (auto clip : clipTrack->getClips()) {
+            if (clip->getName().equalsIgnoreCase(clipName)) {
+                selectedClip = clip;
+                String replyString = "Selected " + clip->getName()
+                + " (" + clip->state.getType().toString() + ") on "
+                + clipTrack->getName();
+                constructReply(reply, 0, replyString);
+                return reply;
+            }
         }
     }
 
     String errorString = "Cannot select clip: \"" + clipName
-    + "\" not found on track " + selectedAudioTrack->getName();
+    + "\" not found on track " + selectedTrack->getName();
     constructReply(reply, 1, errorString);
     return reply;
 }
@@ -443,7 +453,7 @@ OSCMessage FluidOscServer::renderRegion(const OSCMessage& message) {
     // If both 1 and 2 are floats, render this time range. Otherwise,
     // render the edit loop region.
     OSCMessage reply("/audiotrack/region/render/reply");
-    if (!selectedAudioTrack) {
+    if (!selectedTrack) {
         String errorString = "Cannot render track region: No selected track";
         constructReply(reply, 1, errorString);
         return reply;
@@ -456,9 +466,9 @@ OSCMessage FluidOscServer::renderRegion(const OSCMessage& message) {
     }
 
     String filename = message[0].getString();
-    File outputFile = selectedAudioTrack->edit.filePathResolver(filename);
+    File outputFile = selectedTrack->edit.filePathResolver(filename);
 
-    te::TransportControl& transport = selectedAudioTrack->edit.getTransport();
+    te::TransportControl& transport = selectedTrack->edit.getTransport();
     te::EditTimeRange range = transport.getLoopRange();
 
     if (message.size() >= 3 && message[1].isFloat32() && message[2].isFloat32()) {
@@ -470,7 +480,7 @@ OSCMessage FluidOscServer::renderRegion(const OSCMessage& message) {
         range.start = startSeconds;
         range.end = endSeconds;
     }
-    renderTrackRegion(outputFile, *selectedAudioTrack, range);
+    renderTrackRegion(outputFile, *selectedTrack, range);
 
     reply.addInt32(0);
     return reply;
@@ -488,7 +498,7 @@ OSCMessage FluidOscServer::renderClip(const juce::OSCMessage &message) {
     }
 
     String filename = message[0].getString();
-    File outputFile = selectedAudioTrack->edit.filePathResolver(filename);
+    File outputFile = selectedTrack->edit.filePathResolver(filename);
 
     if (!selectedClip) {
         String errorString = "Cannot render selected clip: No clip selected";
@@ -631,7 +641,7 @@ OSCMessage FluidOscServer::selectAudioTrack(const juce::OSCMessage& message) {
     }
 
     String trackName = message[0].getString();
-    selectedAudioTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), trackName, submixName);
+    selectedTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), trackName, submixName);
 
     reply.addInt32(0);
     return reply;
@@ -666,12 +676,12 @@ OSCMessage FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
         return reply;
     }
 
-    selectedAudioTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), busName);
-    jassert(selectedAudioTrack); // I believe this will always return a track
+    selectedTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), busName);
+    jassert(selectedTrack); // I believe this will always return a track
 
     // Look through plugins on the track, see if it already has an AuxReturnPlugin
     te::AuxReturnPlugin* returnPlugin = nullptr;
-    for (te::Plugin* checkPlugin : selectedAudioTrack->pluginList) {
+    for (te::Plugin* checkPlugin : selectedTrack->pluginList) {
         if (auto foundPlugin = dynamic_cast<te::AuxReturnPlugin*>(checkPlugin)) {
             if (foundPlugin->busNumber == busIndex) {
                 String replyString = "Skip insert aux return plugin. Edit already has " + busName + " return";
@@ -689,11 +699,11 @@ OSCMessage FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
     // If no return plugin was found on the track insert a new one before all
     // other plugins on the track
     if (!returnPlugin) {
-        te::Plugin::Ptr plugin = selectedAudioTrack->edit.getPluginCache().createNewPlugin("auxreturn", PluginDescription());
+        te::Plugin::Ptr plugin = selectedTrack->edit.getPluginCache().createNewPlugin("auxreturn", PluginDescription());
         if (auto foundPlugin = dynamic_cast<te::AuxReturnPlugin*>(plugin.get())) {
             returnPlugin = foundPlugin;
             returnPlugin->busNumber = busIndex;
-            selectedAudioTrack->pluginList.insertPlugin(foundPlugin, 0, nullptr);
+            selectedTrack->pluginList.insertPlugin(foundPlugin, 0, nullptr);
 
             String replyString = "Insert auxreturn plugin with busNumber: " + String(busIndex);
             constructReply(reply, 0, replyString);
@@ -708,7 +718,7 @@ OSCMessage FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
  */
 OSCMessage FluidOscServer::ensureSend(const OSCMessage& message) {
     OSCMessage reply("/audiotrack/send/set/db/reply");
-    if (!selectedAudioTrack) {
+    if (!selectedTrack) {
         String errorString = "Cannot ensure send: no audio track selected";
         constructReply(reply, 1, errorString);
         return reply;
@@ -733,7 +743,7 @@ OSCMessage FluidOscServer::ensureSend(const OSCMessage& message) {
     }
 
     // cybr identifies busses by a name
-    int busIndex = ensureBus(selectedAudioTrack->edit, busName);
+    int busIndex = ensureBus(selectedTrack->edit, busName);
 
     if (busIndex == -1) {
         String errorString = "Cannot create send: no available busses";
@@ -750,7 +760,7 @@ OSCMessage FluidOscServer::ensureSend(const OSCMessage& message) {
     // Look through plugins on the track, see if it already has an AuxSendPlugin
     te::AuxSendPlugin* sendPlugin = nullptr;
     bool foundVolume = false;
-    for (te::Plugin* checkPlugin : selectedAudioTrack->pluginList) {
+    for (te::Plugin* checkPlugin : selectedTrack->pluginList) {
         if (!foundVolume) {
             if (auto foundPlugin = dynamic_cast<te::VolumeAndPanPlugin*>(checkPlugin))
                 foundVolume = true;
@@ -766,11 +776,11 @@ OSCMessage FluidOscServer::ensureSend(const OSCMessage& message) {
     }
 
     if (!sendPlugin) {
-        te::Plugin::Ptr plugin = selectedAudioTrack->edit.getPluginCache().createNewPlugin("auxsend", PluginDescription());
+        te::Plugin::Ptr plugin = selectedTrack->edit.getPluginCache().createNewPlugin("auxsend", PluginDescription());
         if (auto foundPlugin = dynamic_cast<te::AuxSendPlugin*>(plugin.get())) {
             sendPlugin = foundPlugin;
             sendPlugin->busNumber = busIndex;
-            selectedAudioTrack->pluginList.insertPlugin(foundPlugin, -1, nullptr);
+            selectedTrack->pluginList.insertPlugin(foundPlugin, -1, nullptr);
             String replyString = "Insert auxsend plugin with busNumber: " + String(busIndex);
             constructReply(reply, 0, replyString);
         }
@@ -797,12 +807,12 @@ OSCMessage FluidOscServer::selectPlugin(const OSCMessage& message) {
 
     if (message.size() > 2 && message[2].isString())
         pluginFormat = message[2].getString();
-    if (!selectedAudioTrack){
+    if (!selectedTrack){
         String errorString = "Cannot select plugin: No audio track selected";
         constructReply(reply, 1, errorString);
         return reply;
     }
-    selectedPlugin = getOrCreatePluginByName(*selectedAudioTrack, pluginName, pluginFormat, index);
+    selectedPlugin = getOrCreatePluginByName(*selectedTrack, pluginName, pluginFormat, index);
     reply.addInt32(0);
     return reply;
 }
@@ -837,7 +847,7 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
     }
 
     if (auto rack = dynamic_cast<te::RackInstance*>(selectedPlugin)) {
-        auto rackType = selectedAudioTrack->edit.getRackList().getRackTypeForID(rack->rackTypeID);
+        auto rackType = selectedTrack->edit.getRackList().getRackTypeForID(rack->rackTypeID);
         for (auto macro : rackType->macroParameterList.getMacroParameters()) {
             if (macro->macroName == paramName) { // CAUTION: this is case sensitive, while below is insensitive
                 macro->setParameter(paramValue, juce::NotificationType::sendNotificationSync);
@@ -922,7 +932,7 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
 
     te::AutomatableParameter::Ptr foundParam;
     if (auto rack = dynamic_cast<te::RackInstance*>(selectedPlugin)) {
-        auto rackType = selectedAudioTrack->edit.getRackList().getRackTypeForID(rack->rackTypeID);
+        auto rackType = selectedTrack->edit.getRackList().getRackTypeForID(rack->rackTypeID);
         for (auto macro : rackType->macroParameterList.getMacroParameters()) {
             if (macro->macroName == paramName) { // CAUTION: this is case sensitive, while below is insensitive
                 foundParam = macro;
@@ -962,7 +972,7 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
 juce::OSCMessage FluidOscServer::setTrackWidth(const juce::OSCMessage& message) {
     OSCMessage reply("/audiotrack/set/width/reply");
 
-    if (!selectedAudioTrack) {
+    if (!selectedTrack) {
         constructReply(reply, 1, "Cannot set track width: No audiotrack selected");
         return reply;
     }
@@ -988,12 +998,12 @@ juce::OSCMessage FluidOscServer::setTrackWidth(const juce::OSCMessage& message) 
     }
 
     float paramValue = message[0].getFloat32() * 0.5 + 0.5;
-    auto plugin = getOrCreatePluginByName(*selectedAudioTrack, "cybr-width", "tracktion");
+    auto plugin = getOrCreatePluginByName(*selectedTrack, "cybr-width", "tracktion");
     auto rack = dynamic_cast<te::RackInstance*>(plugin);
     jassert(rack);
 
     if (isAutomation) {
-        for (auto macro : selectedAudioTrack->macroParameterList.getMacroParameters()) {
+        for (auto macro : selectedTrack->macroParameterList.getMacroParameters()) {
             if (macro->macroName == "width automation") {
                 // Charles: I'm a little confused about the "macro" data type.
                 // It seems like it is a regular pointer, while setParamAutomationPoint
@@ -1004,7 +1014,7 @@ juce::OSCMessage FluidOscServer::setTrackWidth(const juce::OSCMessage& message) 
             }
         }
     } else  {
-        for (auto macro : selectedAudioTrack->macroParameterList.getMacroParameters()) {
+        for (auto macro : selectedTrack->macroParameterList.getMacroParameters()) {
             if (macro->macroName == "width") {
                 macro->setParameter(paramValue, juce::NotificationType::sendNotificationSync);
             }
@@ -1141,7 +1151,7 @@ OSCMessage FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
 
 OSCMessage FluidOscServer::loadPluginTrkpreset(const juce::OSCMessage &message) {
     OSCMessage reply("/plugin/load/trkpreset/reply");
-    if (!selectedAudioTrack) {
+    if (!selectedTrack) {
         String errorString = "Cannot load plugin preset: No audio track selected";
         constructReply(reply, 1, errorString);
         return reply;
@@ -1169,14 +1179,14 @@ OSCMessage FluidOscServer::loadPluginTrkpreset(const juce::OSCMessage &message) 
         return reply;
     }
 
-    loadTracktionPreset(*selectedAudioTrack, v);
+    loadTracktionPreset(*selectedTrack, v);
     reply.addInt32(0);
     return reply;
 }
 
 OSCMessage FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     OSCMessage reply("/plugin/load/reply");
-    if (!selectedAudioTrack) {
+    if (!selectedTrack) {
         String errorString = "Cannot load plugin preset: No audio track selected";
         constructReply(reply, 1, errorString);
         return reply;
@@ -1191,7 +1201,7 @@ OSCMessage FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     String filename = message[0].getString();
     if (!filename.endsWithIgnoreCase(".trkpreset")) filename.append(".trkpreset", 10);
 
-    File editDirectory = selectedAudioTrack->edit.editFileRetriever().getParentDirectory();
+    File editDirectory = selectedTrack->edit.editFileRetriever().getParentDirectory();
     File file = editDirectory.getChildFile(filename);
 
     // First check if the file is an absolute file, OR was found relative to
@@ -1213,7 +1223,7 @@ OSCMessage FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
         return reply;
     }
 
-    loadTracktionPreset(*selectedAudioTrack, v);
+    loadTracktionPreset(*selectedTrack, v);
 
     reply.addInt32(0);
     return reply;
@@ -1221,7 +1231,7 @@ OSCMessage FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
 
 OSCMessage FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
     OSCMessage reply("/midiclip/select/reply");
-    if (!selectedAudioTrack){
+    if (!selectedTrack){
         String errorString = "Cannot load plugin preset: No audio track selected";
         constructReply(reply, 1, errorString);
         return reply;
@@ -1232,23 +1242,30 @@ OSCMessage FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
         return reply;
     }
 
-    String clipName = message[0].getString();
-    selectedClip = getOrCreateMidiClipByName(*selectedAudioTrack, clipName);
+    if (auto* clipTrack = dynamic_cast<te::ClipTrack*>(selectedTrack)) {
+        String clipName = message[0].getString();
+        selectedClip = getOrCreateMidiClipByName(*clipTrack, clipName);
 
-    // Clip startBeats
-    if (message.size() >= 2 && message[1].isFloat32()) {
-        double startBeats = message[1].getFloat32() * 4.0;
-        double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
-        selectedClip->setStart(startSeconds, false, true);
+        // Clip startBeats
+        if (message.size() >= 2 && message[1].isFloat32()) {
+            double startBeats = message[1].getFloat32() * 4.0;
+            double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
+            selectedClip->setStart(startSeconds, false, true);
+        }
+        // Clip length
+        if (message.size() >= 3 && message[2].isFloat32()) {
+            double lengthInBeats = message[2].getFloat32() * 4.0;
+            double startBeat = selectedClip->getStartBeat();
+            double endBeat = startBeat + lengthInBeats;
+            double endTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeat);
+            selectedClip->setEnd(endTime, true);
+        }
+    } else {
+        String errorString = "Cannot select Midi Clip: selected track is not a ClipTrack.";
+        constructReply(reply, 1, errorString);
+        return reply;
     }
-    // Clip length
-    if (message.size() >= 3 && message[2].isFloat32()) {
-        double lengthInBeats = message[2].getFloat32() * 4.0;
-        double startBeat = selectedClip->getStartBeat();
-        double endBeat = startBeat + lengthInBeats;
-        double endTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeat);
-        selectedClip->setEnd(endTime, true);
-    }
+
     reply.addInt32(0);
     return reply;
 }
@@ -1344,7 +1361,7 @@ OSCMessage FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
 
 OSCMessage FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     OSCMessage reply("/audiotrack/insert/wav/reply");
-    if(!selectedAudioTrack){
+    if(!selectedTrack){
         String errorString = "Cannot insert wave sample: Must select Audio Track before inserting";
         constructReply(reply, 1, errorString);
         return reply;
@@ -1379,11 +1396,11 @@ OSCMessage FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     double startBeat = 0;
     if (message[2].isFloat32()) startBeat = message[2].getFloat32() * 4.0;
     else if (message[2].isInt32()) startBeat = message[2].getInt32() * 4;
-    double startSeconds = selectedAudioTrack->edit.tempoSequence.beatsToTime(startBeat);
+    double startSeconds = selectedTrack->edit.tempoSequence.beatsToTime(startBeat);
 
     // The default filePathResolver checks for an absolute file, then looks
     // in the relative to the edit file directory (using edit.editFileRetriever)
-    File file = selectedAudioTrack->edit.filePathResolver(filePath);
+    File file = selectedTrack->edit.filePathResolver(filePath);
     // First check if the file is an absolute file, OR was found relative to
     // the edit file directory.
     if (file.existsAsFile()) {
@@ -1392,22 +1409,27 @@ OSCMessage FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
         // Look in the sample search path.
         file = CybrSearchPath(CYBR_SAMPLE).find(filePath);
         if (file != File()) filePath = file.getFullPathName(); // Found it!
-        else std::cout << "Cannot insert wave file: file not found: " << filePath << std::endl;
+        else std::cout << "Cannot insert wave file: File not found: " << filePath << std::endl;
     }
 
-    te::AudioFile audiofile(selectedAudioTrack->edit.engine, file);
+    te::AudioFile audiofile(selectedTrack->edit.engine, file);
     if(!audiofile.isWavFile()){
         String errorString = "Cannot insert wave file: Must be valid WAV file.";
         constructReply(reply, 1, errorString);
         return reply;
     }
 
-    te::EditTimeRange timeRange = te::EditTimeRange(startSeconds, startSeconds+audiofile.getLength());
-
-    te::ClipPosition pos;
-    pos.time = timeRange;
-    te::WaveAudioClip::Ptr c = selectedAudioTrack->insertWaveClip(clipName, file, pos, false);
-    selectedClip = c.get();
+    if (auto* audioTrack = dynamic_cast<te::AudioTrack*>(selectedTrack)) {
+        te::EditTimeRange timeRange = te::EditTimeRange(startSeconds, startSeconds+audiofile.getLength());
+        te::ClipPosition pos;
+        pos.time = timeRange;
+        te::WaveAudioClip::Ptr c = audioTrack->insertWaveClip(clipName, file, pos, false);
+        selectedClip = c.get();
+    } else {
+        String errorString = "Cannot insert wave file: Selected track is not an AudioTrack";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
 
     reply.addInt32(0);
     return reply;
@@ -1415,7 +1437,7 @@ OSCMessage FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
 
 OSCMessage FluidOscServer::setTrackGain(const OSCMessage& message) {
     OSCMessage reply("/audiotrack/set/db/reply");
-    if (!selectedAudioTrack) {
+    if (!selectedTrack) {
         String errorString = "Cannot set track gain: No track selected.";
         constructReply(reply, 1, errorString);
         return reply;
@@ -1444,15 +1466,15 @@ OSCMessage FluidOscServer::setTrackGain(const OSCMessage& message) {
     }
 
     if (isAutomation) {
-        getOrCreatePluginByName(*selectedAudioTrack, "volume", "tracktion", 1);
-        auto plugin = getOrCreatePluginByName(*selectedAudioTrack, "volume", "tracktion", 0);
+        getOrCreatePluginByName(*selectedTrack, "volume", "tracktion", 1);
+        auto plugin = getOrCreatePluginByName(*selectedTrack, "volume", "tracktion", 0);
         if (auto volumePlugin = dynamic_cast<te::VolumeAndPanPlugin*>(plugin)) {
             float paramValue = te::decibelsToVolumeFaderPosition(gainDb);
             setParamAutomationPoint(volumePlugin->volParam, paramValue, timeInWholeNotes, curveValue, false);
             reply.addInt32(0);
             return reply;
         }
-    } else if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
+    } else if (auto volumePlugin = selectedTrack->pluginList.getPluginsOfType<te::VolumeAndPanPlugin>().getLast()) {
         volumePlugin->setVolumeDb(gainDb);
         reply.addInt32(0);
         return reply;
@@ -1465,7 +1487,7 @@ OSCMessage FluidOscServer::setTrackGain(const OSCMessage& message) {
 
 OSCMessage FluidOscServer::setTrackPan(const OSCMessage& message) {
     OSCMessage reply("/audiotrack/set/pan/reply");
-    if (!selectedAudioTrack) {
+    if (!selectedTrack) {
         String errorString = "Cannot set track pan: No track selected.";
         constructReply(reply, 1, errorString);
         return reply;
@@ -1494,15 +1516,15 @@ OSCMessage FluidOscServer::setTrackPan(const OSCMessage& message) {
     }
 
     if (isAutomation) {
-        ensureWidthRack(*selectedAudioTrack);
-        for (auto macro : selectedAudioTrack->macroParameterList.getMacroParameters()) {
+        ensureWidthRack(*selectedTrack);
+        for (auto macro : selectedTrack->macroParameterList.getMacroParameters()) {
             if (macro->macroName == "pan automation") {
                 setParamAutomationPoint(macro, panValue * 0.5 + 0.5, timeInWholeNotes, curveValue);
                 reply.addInt32(0);
                 return reply;
             }
         }
-    } else if (auto volumePlugin = selectedAudioTrack->getVolumePlugin()) {
+    } else if (auto volumePlugin = selectedTrack->pluginList.getPluginsOfType<te::VolumeAndPanPlugin>().getLast()) {
         volumePlugin->setPan(panValue);
         reply.addInt32(0);
         return reply;
@@ -1515,13 +1537,13 @@ OSCMessage FluidOscServer::setTrackPan(const OSCMessage& message) {
 
 OSCMessage FluidOscServer::muteTrack(bool mute) {
     OSCMessage reply("/audiotrack/mute/reply");
-    if (!selectedAudioTrack) {
+    if (!selectedTrack) {
         String errorString = "Cannot " + String((mute ? "mute" : "unmute")) + ": No track selected.";
         constructReply(reply, 1, errorString);
         return reply;
     }
 
-    selectedAudioTrack->setMute(mute);
+    selectedTrack->setMute(mute);
     reply.addInt32(0);
     return reply;
 }
