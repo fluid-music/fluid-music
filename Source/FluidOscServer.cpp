@@ -618,8 +618,20 @@ OSCMessage FluidOscServer::selectAudioTrack(const juce::OSCMessage& message) {
         return reply;
     }
 
+    bool makeFolder = false;
+    String submixName = String();
+
+    if (message.size() >= 2) {
+        if (!message[1].isString()) {
+            String errorString = "Cannot select audio track: invalid parent track name string";
+            constructReply(reply, 1, errorString);
+            return reply;
+        }
+        submixName = message[1].getString();
+    }
+
     String trackName = message[0].getString();
-    selectedAudioTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), trackName);
+    selectedAudioTrack = getOrCreateAudioTrackByName(activeCybrEdit->getEdit(), trackName, submixName);
 
     reply.addInt32(0);
     return reply;

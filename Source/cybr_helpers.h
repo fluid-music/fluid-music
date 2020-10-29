@@ -61,7 +61,7 @@ void renderTrackRegion(juce::File outputFile, te::Track& track, te::EditTimeRang
  * level if needed.
  */
 te::FolderTrack* getOrCreateSubmixByName(te::Edit& edit, const juce::String name, const juce::String parentName = juce::String());
-te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const juce::String name);
+te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const juce::String name, const juce::String parentName = juce::String());
 te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const juce::String name);
 te::RackType::Ptr ensureWidthRack(te::AudioTrack& track);
 

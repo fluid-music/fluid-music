@@ -737,19 +737,40 @@ void printOscMessage(const OSCMessage& message) {
     std::cout << std::endl;
 };
 
-te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name) {
+te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name, const String submixName) {
     te::AudioTrack* foundTrack = nullptr;
 
-    for (auto* track : te::getAudioTracks(edit)) {
-        if (track->getName() != name) continue;
-        foundTrack = track;
-        break;
-    }
+    if (submixName.isEmpty()) {
+        // If no submix was specified, look recursively
+        for (auto* track : te::getAudioTracks(edit)) {
+            if (track->getName() != name) continue;
+            foundTrack = track;
+            break;
+        }
 
-    if (!foundTrack) {
-        te::TrackInsertPoint insertPoint(nullptr, te::getTopLevelTracks(edit).getLast());
-        foundTrack = edit.insertNewAudioTrack(insertPoint, nullptr).get();
-        foundTrack->setName(name);
+        if (!foundTrack) {
+            te::TrackInsertPoint insertPoint(nullptr, te::getTopLevelTracks(edit).getLast());
+            foundTrack = edit.insertNewAudioTrack(insertPoint, nullptr).get();
+            foundTrack->setName(name);
+        }
+    } else {
+        // A submix was specified. The parent, and look through its immediate children
+        auto* submixTrack = getOrCreateSubmixByName(edit, submixName);
+        auto checkTracks = submixTrack->getAllSubTracks(false);
+        for (auto* track : checkTracks) {
+            if (auto* audioTrack = dynamic_cast<te::AudioTrack*>(track)) {
+                if (track->getName() == name) {
+                    foundTrack = audioTrack;
+                    break;
+                }
+            }
+        }
+        if (!foundTrack) {
+            // No appropriately named audio track was found in the children. Create it.
+            te::TrackInsertPoint insertPoint(submixTrack, submixTrack->getAllSubTracks(false).getLast());
+            foundTrack = edit.insertNewAudioTrack(insertPoint, nullptr).get();
+            foundTrack->setName(name);
+        }
     }
 
     if (foundTrack) {
@@ -759,9 +780,9 @@ te::AudioTrack* getOrCreateAudioTrackByName(te::Edit& edit, const String name) {
     return foundTrack;
 }
 
-te::FolderTrack* getOrCreateSubmixByName(te::Edit& edit, const String name, const String parentName) {
+te::FolderTrack* getOrCreateSubmixByName(te::Edit& edit, const String name, const String submixName) {
     // When no parent is specified, look for the submix recursively
-    if (parentName.isEmpty()) {
+    if (submixName.isEmpty()) {
         for (auto* folderTrack : te::getTracksOfType<te::FolderTrack>(edit, true)){
             if (!folderTrack->isSubmixFolder()) continue;
             if (folderTrack->getName() == name) return folderTrack;
@@ -769,10 +790,12 @@ te::FolderTrack* getOrCreateSubmixByName(te::Edit& edit, const String name, cons
 
         // Submix not found. Create it
         te::TrackInsertPoint insertPoint(nullptr, te::getTopLevelTracks(edit).getLast());
-        return edit.insertNewFolderTrack(insertPoint, nullptr, true).get();
+        auto submixTrack = edit.insertNewFolderTrack(insertPoint, nullptr, true).get();
+        submixTrack->setName(name);
+        return submixTrack;
     }
 
-    te::FolderTrack* parent = getOrCreateSubmixByName(edit, parentName);
+    te::FolderTrack* parent = getOrCreateSubmixByName(edit, submixName);
 
     // Check for a track in the parent's immediate (non-recursive) children
     for (auto* track : parent->getAllSubTracks(false)) {
@@ -784,7 +807,9 @@ te::FolderTrack* getOrCreateSubmixByName(te::Edit& edit, const String name, cons
 
     // We have a parent, but the child does not exist. Create it.
     te::TrackInsertPoint insertPoint(parent, parent->getAllSubTracks(false).getLast());
-    return edit.insertNewFolderTrack(insertPoint, nullptr, true).get();
+    auto submixTrack = edit.insertNewFolderTrack(insertPoint, nullptr, true).get();
+    submixTrack->setName(name);
+    return submixTrack;
 }
 
 te::MidiClip* getOrCreateMidiClipByName(te::AudioTrack& track, const String name) {

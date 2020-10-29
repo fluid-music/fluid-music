@@ -2,13 +2,16 @@
  * Select an audio track by name
  * @param {string} trackName
  */
-export function select(trackName) {
+export function select(trackName : string, parent? : string) {
   if (typeof trackName !== 'string')
     throw new Error('audiotrack.Select requires track name string, got: ' + trackName);
-  return {
-    address: '/audiotrack/select',
-    args: [{ type: 'string', value: trackName }],
-  }
+
+  const args = [{ type: 'string', value: trackName }]
+
+  if (typeof parent === 'string')
+    args.push({ type: 'string', value: parent })
+
+  return { address: '/audiotrack/select', args }
 }
 
 /**
@@ -18,7 +21,7 @@ export function select(trackName) {
  * @param {number} startTimeInWholeNotes clip start time in quarter notes
  * @param {string} fileName
  */
-export function insertWav (clipName, startTimeInWholeNotes, fileName){
+export function insertWav (clipName : string, startTimeInWholeNotes : number, fileName : string) {
   if (typeof clipName !== 'string')
     throw new Error('audiotrack.insertWav: clipName must be a string');
   if (typeof startTimeInWholeNotes !== 'number')
@@ -43,14 +46,25 @@ export function insertWav (clipName, startTimeInWholeNotes, fileName){
  * @param {string} busName - name of audiotrack (the return will be named
  *                           after the audio track).
  */
-export function selectReturnTrack(busName) {
+export function selectReturnTrack(busName : string) {
   if (typeof busName !== 'string')
-    throw new Error('bus.selectReturnTrack requires track name string, got: ' + busName);
+    throw new Error('selectReturnTrack requires track name string, got: ' + busName);
 
-  return {
-    address: '/audiotrack/select/return',
-    args: [{ type: 'string', value: busName }],
-  }
+  const args = [{ type: 'string', value: busName }]
+
+  return { address: '/audiotrack/select/return', args }
+}
+
+export function selectSubmixTrack(name: string, parent? : string) {
+  if (typeof name !== 'string')
+    throw new Error('selectSubmixTrack requires a name string')
+  
+  const args = [{ type: 'string', value: name }]
+
+  if (typeof parent === 'string')
+    args.push({ type: 'string', value: parent })
+
+  return { address: '/track/select/submix', args }
 }
 
 /**
@@ -59,7 +73,7 @@ export function selectReturnTrack(busName) {
  * @param {string} busName The name of the return bus to send to
  * @param {number} [levelDb=0] default on the server is 0
  */
-export function send(busName, levelDb) {
+export function send(busName : string, levelDb? : number) {
   if (typeof busName !== 'string')
     throw new Error('send requires track name string, got: ' + busName);
 
