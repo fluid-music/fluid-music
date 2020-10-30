@@ -97,6 +97,7 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.toString().startsWith("/plugin/sampler")) return handleSamplerMessage(message);
     if (msgAddressPattern.matches({"/audiotrack/select"})) return selectAudioTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/select/return"})) return selectReturnTrack(message);
+    if (msgAddressPattern.matches({"/audiotrack/select/submix"})) return selectSubmixTrack(message);
     if (msgAddressPattern.matches({"/audiotrack/set/db"})) return setTrackGain(message);
     if (msgAddressPattern.matches({"/audiotrack/set/pan"})) return setTrackPan(message);
     if (msgAddressPattern.matches({"/audiotrack/set/width"})) return setTrackWidth(message);
@@ -128,6 +129,34 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     return error;
 }
 
+OSCMessage FluidOscServer::selectSubmixTrack(const OSCMessage& message) {
+    OSCMessage reply("/audiotrack/select/submix/reply");
+    if (!activeCybrEdit) {
+        constructReply(reply, 1, "Cannot select submix track: No active edit");
+        return reply;
+    }
+
+    if (!message.size() || !message[0].isString()) {
+        constructReply(reply, 1, "Cannot select submix track: Invalid submix name");
+        return reply;
+    }
+
+    String submixName = message[0].getString();
+    String parentName = String();
+
+    if (message.size() >= 2) {
+        if (!message[1].isString()) {
+            constructReply(reply, 1, "Cannot select submix track: Invalid parent submix name");
+            return reply;
+        }
+        parentName = message[1].getString();
+    }
+
+    selectedTrack = getOrCreateSubmixByName(activeCybrEdit->getEdit(), submixName, parentName);
+    constructReply(reply, 0, "Submix selected: " + selectedTrack->getName());
+    return reply;
+}
+
 OSCMessage FluidOscServer::clearContent(const OSCMessage& message) {
     OSCMessage reply("/content/clear/reply");
     if (!activeCybrEdit) {
@@ -151,6 +180,7 @@ OSCMessage FluidOscServer::removeAudioTrackClips(const OSCMessage& message) {
         constructReply(reply, 1, errorString);
         return reply;
     }
+
     if (auto* clipTrack = dynamic_cast<te::ClipTrack*>(selectedTrack)) {
         removeAllClipsFromTrack(*clipTrack);
     } else {

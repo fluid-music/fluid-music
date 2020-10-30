@@ -64,7 +64,7 @@ export function selectSubmixTrack(name: string, parent? : string) {
   if (typeof parent === 'string')
     args.push({ type: 'string', value: parent })
 
-  return { address: '/track/select/submix', args }
+  return { address: '/audiotrack/select/submix', args }
 }
 
 /**

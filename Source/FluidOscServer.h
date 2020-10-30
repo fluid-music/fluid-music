@@ -38,6 +38,7 @@ public:
 
     // message handlers
     juce::OSCMessage selectAudioTrack(const juce::OSCMessage& message);
+    juce::OSCMessage selectSubmixTrack(const juce::OSCMessage& message);
     juce::OSCMessage removeAudioTrackClips(const juce::OSCMessage& message);
     juce::OSCMessage removeAudioTrackAutomation(const juce::OSCMessage& message);
     juce::OSCMessage selectReturnTrack(const juce::OSCMessage& message);
@@ -46,7 +47,6 @@ public:
     juce::OSCMessage setPluginParam(const juce::OSCMessage& message);
     juce::OSCMessage setPluginParamAt(const juce::OSCMessage& message);
     juce::OSCMessage setTrackWidth(const juce::OSCMessage& message);
-//    juce::OSCMessage setTrackWidthAt(const juce::OSCMessage& message); Charles: Decide if this is really needed or not
     juce::OSCMessage setPluginSideChainInput(const juce::OSCMessage& message);
     juce::OSCMessage getPluginReport(const juce::OSCMessage& message);
     juce::OSCMessage getPluginParameterReport(const juce::OSCMessage& message);
