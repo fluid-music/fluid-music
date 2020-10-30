@@ -1,4 +1,4 @@
-import { Track, Clip, ScoreConfig, TrackReceive, Tap } from './fluid-interfaces';
+import { Clip, ScoreConfig, TrackReceive, Tap } from './fluid-interfaces';
 import { FluidPlugin, Automation } from './plugin';
 
 export interface UnresolvedSend {
@@ -12,17 +12,14 @@ export class FluidReceive implements TrackReceive {
   constructor (options : {
     from : FluidTrack
     gainDb? : number
-    pan? : number
     tap? : Tap
   }) {
     this.from = options.from
     if (typeof options.gainDb === 'number') this.gainDb = options.gainDb
-    if (typeof options.pan === 'number') this.pan = options.pan
   }
 
   from : FluidTrack
   gainDb : number = 0
-  pan : number = 0
   tap : Tap = Tap.postFader
 }
 
@@ -35,7 +32,7 @@ export interface TrackConfig extends ScoreConfig {
   sends? : UnresolvedSend[];
 }
 
-export class FluidTrack implements Track {
+export class FluidTrack {
   constructor(config: TrackConfig) {
     if (typeof config.name === 'string') this.name = config.name;
     else throw new Error('Cannot create track without a name');

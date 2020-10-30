@@ -1,5 +1,6 @@
-import { FluidSession } from "./FluidSession";
-import { FluidPlugin, Automation } from "./plugin";
+import { FluidSession } from './FluidSession'
+import { FluidTrack } from './FluidTrack'
+import { FluidPlugin, Automation } from './plugin'
 
 export interface Technique {
   use : {(startTime : number, duration : number, context : ClipEventContext) : any }
@@ -81,29 +82,12 @@ export interface ScoreObject {
   [key : number] : any | any[];
 };
 
-/**
- * @member gain post-fx gain in dbfs
- * @member pan post-fx pan (-1 to 1)
- * @member duration? length measured in whole notes
- * @member automation?
- */
-export interface Track {
-  name: string;
-  gain: number;
-  pan: number;
-  clips: Clip[];
-  plugins: FluidPlugin[];
-  automation: Automation;
-  duration? : number;
-  startTime? : number;
-  receives : TrackReceive[];
-}
 
 export enum Tap { postFader }
 export interface TrackReceive {
   tap : Tap;
   gainDb : number;
-  from : Track;
+  from : FluidTrack;
   // Reaper (and rppp) support panning stereo in sends, but tracktion does not.
   // For now, I will not implement panning in sends.
 }
@@ -125,7 +109,7 @@ export interface ClipEventContext {
   /** the Clip that contains the current event */
   clip: Clip;
   /** the Track that contains the current event */
-  track: Track;
+  track: FluidTrack;
   /** index of the clip within the track */
   clipIndex: number;
   /** index of the event within the clip. */
