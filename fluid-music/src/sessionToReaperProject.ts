@@ -1,5 +1,6 @@
 import { FluidPlugin } from './plugin'
 import { FluidSession } from './FluidSession'
+import { FluidTrack } from './FluidTrack'
 import { vst2ToReaperObject } from './vst2ToReaperObject'
 import * as cybr from './cybr/index';
 import { IpcClient } from './cybr/IpcClient'
@@ -32,35 +33,38 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
   const closeClientWhenDone = !client
   let tracktionSessionActivated = false
 
-  const reaperProject = new rppp.objects.ReaperProject();
+  const reaperProject = new rppp.objects.ReaperProject()
   reaperProject.getOrCreateStructByToken('TEMPO').params = [session.bpm, 4, 4]
+  const flatTracks : [FluidTrack, any][] = []
 
-  for (const track of session.tracks) {
+  session.forEachTrack((track) => {
 
-    const newTrack = new rppp.objects.ReaperTrack();
-    newTrack.getOrCreateStructByToken('NAME').params[0] = track.name;
+    const rpppTrack = new rppp.objects.ReaperTrack()
+    rpppTrack.getOrCreateStructByToken('NAME').params[0] = track.name
 
-    const volPan = newTrack.getOrCreateStructByToken('VOLPAN')
+    const volPan = rpppTrack.getOrCreateStructByToken('VOLPAN')
     volPan.params[0] = db2Gain(track.gain)
     volPan.params[1] = track.pan
 
-    reaperProject.addTrack(newTrack);
+    // In addition to adding the track to the rppp project, create two parallel
+    // arrays. one with the rpp objects, and one with the FluidTrack objects.
+    // We'll use these later to get any VSTs.
+    reaperProject.addTrack(rpppTrack);
+    flatTracks.push([track, rpppTrack])
 
     // handle receives (and sends, implicitly)
     track.receives.forEach(receive => {
       // get the absolute index of the sending track
-      let found = false
       let index = 0
-      session.forEachTrack((track, i) => {
-        if (found) return
-        if (track === receive.from) {
-          index = i
-          found = true;
-        }
+      let found = false
+
+      session.forEachTrack((track) => {
+        if (track === receive.from) return found = true;
+        index++
       })
 
       if (found) {
-        newTrack.addReceive({
+        rpppTrack.addReceive({
           sourceTrackNumber: index,
           gain: db2Gain(receive.gainDb),
         })
@@ -83,11 +87,11 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
       };
 
       if (clip.midiEvents && clip.midiEvents.length) {
-        newTrack.contents.push(midiEventsToReaperObject(clip.midiEvents, context));
+        rpppTrack.contents.push(midiEventsToReaperObject(clip.midiEvents, context));
       }
 
       if (clip.fileEvents && clip.fileEvents.length) {
-        newTrack.contents = newTrack.contents.concat(fileEventsToReaperObject(clip.fileEvents, context));
+        rpppTrack.contents = rpppTrack.contents.concat(fileEventsToReaperObject(clip.fileEvents, context));
       }
     }); // track.clips.forEach
 
@@ -119,8 +123,13 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
           );
         }
       }
-      newTrack.add(autoObject);
+      rpppTrack.add(autoObject);
     } // for [name, automation] of track.automation
+  })  // session.forEachTrack
+
+  // Get VST state info
+  for (let i = 0; i < flatTracks.length; i++) {
+    const [fluidTrack, rpppTrack] = flatTracks[i]
 
     // Handle plugins/plugin automation
     const count : any = {};
@@ -130,11 +139,11 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
       return count[str]++;
     }
 
-    if (track.plugins.length > 0) {
+    if (fluidTrack.plugins.length > 0) {
       const FXChain = new rppp.objects.ReaperFXChain();
-      newTrack.add(FXChain);
+      rpppTrack.add(FXChain);
 
-      for (const plugin of track.plugins) {
+      for (const plugin of fluidTrack.plugins) {
         if (!client) {
           console.warn('Encountered a VST while creating a Reaper project, but no cybr IcpClient was supplied. A client will be created implicitly.')
           client = new cybr.IpcClient()
@@ -144,12 +153,11 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
           await client.send(cybr.global.activate('reaper-helper.tracktionedit', true))
           tracktionSessionActivated = true
         }
-        const vst2 = await vst2ToReaperObject(client, track.name, plugin, nth(plugin), session.bpm);
+        const vst2 = await vst2ToReaperObject(client, fluidTrack.name, plugin, nth(plugin), session.bpm);
         FXChain.add(vst2);
       } // for (plugin of track.plugins)
     }
-  }     // for (track of tracks)
-
+  }
 
   if (client && tracktionSessionActivated && closeClientWhenDone) client.close()
 
@@ -195,14 +203,6 @@ function fileEventsToReaperObject(fileEvents : AudioFileEvent[], context : ClipE
 
   const bpm = context.session.bpm
   if (!bpm) throw new Error('fileEventToReaperObject could not find a session.bpm parameter')
-
-  // exampleClipEvent = {
-  //   type: 'file',
-  //   path: 'media/kick.wav',
-  //   startTime: 0.50,
-  //   duration: 0.25,
-  //   d: { v: 70, dbfs: -10 }, // If .v is present here...
-  // };
 
   return fileEvents.map((event, eventIndex) => {
     if (typeof context.clip.startTime !== 'number')

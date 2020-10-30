@@ -60,8 +60,8 @@ const stereoDelay = new fluid.TStereoDelayVst2({
   rHighCutHz: 8800,
   wetDb: 0,
   dryDb: -50,
-  lDelayMs: msPerQuarter / 2,
-  rDelayMs: msPerQuarter / 2 * 1.5,
+  lDelayMs: msPerQuarter / 4,
+  rDelayMs: msPerQuarter / 4 * 1.5,
   sync: 0
 })
 
