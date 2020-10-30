@@ -5,6 +5,7 @@ import { vst2ToReaperObject } from './vst2ToReaperObject'
 import * as cybr from './cybr/index';
 import { IpcClient } from './cybr/IpcClient'
 import { ClipEventContext, MidiNoteEvent, AudioFileEvent } from './fluid-interfaces'
+import { is } from 'ramda';
 
 const rppp = require('rppp')
 
@@ -37,7 +38,7 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
   reaperProject.getOrCreateStructByToken('TEMPO').params = [session.bpm, 4, 4]
   const flatTracks : [FluidTrack, any][] = []
 
-  session.forEachTrack((track) => {
+  session.forEachTrack((track, i, ancestors) => {
 
     const rpppTrack = new rppp.objects.ReaperTrack()
     rpppTrack.getOrCreateStructByToken('NAME').params[0] = track.name
@@ -49,8 +50,45 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
     // In addition to adding the track to the rppp project, create two parallel
     // arrays. one with the rpp objects, and one with the FluidTrack objects.
     // We'll use these later to get any VSTs.
-    reaperProject.addTrack(rpppTrack);
+    reaperProject.addTrack(rpppTrack)
     flatTracks.push([track, rpppTrack])
+
+    // Handle parent/child track groups. Reaper uses a two-element struct to
+    // indicate folder structure. The following code is a little convoluted,
+    // but it does get the job done. I left notes for how the struct works
+    // in the RPPP repo.
+    const isBus = [
+      0, // 0 = normal, 1 = folder, 2 = folder end
+      0 // difference between this level and subsequent track level
+    ] as [number, number]
+    rpppTrack.getOrCreateStructByToken('ISBUS').params = isBus;
+    const atRootLevel = ancestors.length === 0
+    const isLastOfLevel = atRootLevel
+      ? i === (session.tracks.length - 1)
+      : i === (ancestors[ancestors.length - 1].children.length - 1)
+    const isLastInArray = (item: any, array: any[]) => {
+      return array.length === 0 ? false : (array[array.length - 1] === item)
+    }
+    if (track.children.length) {
+      isBus[0] = 1
+      isBus[1] = 1
+    } else if (atRootLevel) {
+      // do nothing (and use [0, 0])
+    } else if (isLastOfLevel && !atRootLevel) {
+      isBus[0] = 2
+      isBus[1] = -1
+      // check how many levels 'up' the next track is
+      for (i = ancestors.length - 1; i >= 0; i--) {
+        // "aunts" contains the parent's siblings (in order)
+        let aunts = i === 0 ? session.tracks : ancestors[i-1].children
+        const ancestor = ancestors[i]
+        if (isLastInArray(ancestor, aunts)) {
+          isBus[1]--
+        } else {
+          break
+        }
+      }
+    }
 
     // handle receives (and sends, implicitly)
     track.receives.forEach(receive => {
