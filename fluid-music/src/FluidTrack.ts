@@ -24,12 +24,13 @@ export class FluidReceive implements TrackReceive {
 }
 
 export interface TrackConfig extends ScoreConfig {
-  name?: string;
-  gain? : number;
-  pan? : number;
-  width? : number;
-  plugins? : FluidPlugin[];
-  sends? : UnresolvedSend[];
+  name?: string
+  gain? : number
+  pan? : number
+  width? : number
+  plugins? : FluidPlugin[]
+  sends? : UnresolvedSend[]
+  children: TrackConfig[]
 }
 
 export class FluidTrack {
@@ -46,23 +47,23 @@ export class FluidTrack {
       for (let plugin of config.plugins)
         if (!(plugin instanceof FluidPlugin))
           throw new Error(`plugin was not an instance of FluidPlugin: ${JSON.stringify(plugin)}`);
-      this.plugins = (config.plugins as FluidPlugin[]);
+      this.plugins = (config.plugins as FluidPlugin[])
     }
 
-    this.scoreConfig = {...config};
+    this.scoreConfig = {...config}
   }
-  scoreConfig : ScoreConfig = {};
+  scoreConfig : ScoreConfig = {}
 
   // Track
   name: string;
-  gain = 0;
-  pan = 0;
-  width = 0;
-  plugins : FluidPlugin[] = [];
-  clips : Clip[] = [];
-  receives : TrackReceive[] = [];
-  automation : Automation = {};
-  duration? : number;
-  startTime? : number;
-  unresolvedSends : UnresolvedSend[] = [];
+  gain = 0
+  pan = 0
+  width = 0
+  plugins : FluidPlugin[] = []
+  clips : Clip[] = []
+  receives : TrackReceive[] = []
+  automation : Automation = {}
+  duration? : number
+  startTime? : number
+  unresolvedSends : UnresolvedSend[] = []
 }

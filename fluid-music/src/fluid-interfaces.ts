@@ -1,6 +1,5 @@
 import { FluidSession } from './FluidSession'
 import { FluidTrack } from './FluidTrack'
-import { FluidPlugin, Automation } from './plugin'
 
 export interface Technique {
   use : {(startTime : number, duration : number, context : ClipEventContext) : any }
