@@ -137,5 +137,43 @@ describe('FluidSession', () => {
       receiveTrack.receives[0].from.should.equal(sendTrack)
     })
   })
+
+  describe('forEachTrack', function () {
+    let session;
+
+    beforeEach(function() {
+      session = new FluidSession({}, [
+        { name: 'topA', },
+        { name: 'topB', children: [
+          { name: 'childB0' },
+          { name: 'childB1' }
+        ]},
+        { name: 'level1', children: [
+          { name: 'level2', children: [
+            { name: 'level3A' },
+            { name: 'level3B' }
+          ]}
+        ]}
+      ])
+    })
+
+    it('should find all tracks', function () {
+      const tracks = [];
+      session.forEachTrack((track, i, parents) => {
+        tracks.push([track, i, parents])
+      })
+
+      tracks.length.should.equal(8);
+      const [lastTrack, lastIndex, lastParents] = tracks[7]
+      lastTrack.name.should.equal('level3B')
+      lastParents.should.containDeep([
+        { name: 'level1' },
+        { name: 'level2' }
+      ])
+
+      const childB1Parents = tracks[3][2]
+      childB1Parents.should.deepEqual([ session.tracks[1] ])
+    })
+  })
 });
 

@@ -37,19 +37,50 @@ export class FluidSession {
   /** position of the edit cursor, measured in whole notes */
   editCursorTime : number = 0
 
-  forEachTrack(func : { (track : FluidTrack, index : number) : any }) {
-    let i = 0;
-    for (const track of this.tracks) {
-      func(track, i++)
+  /**
+   * Recursively iterate over all tracks, including track folders and their
+   * children, passing each track in to the supplied function as the first
+   * argument. If the supplied function returns anything other than undefined,
+   * the iteration is interrupted, and forEachTrack will return the value
+   * returned by `func`.
+   *
+   * Note that iteration will be interrupted when `func` returns ANY value
+   * other than `undefined`. This includes falsy values like `null` and `0`.
+   *
+   * IMPORTANT: This iterates over the underlying arrays directly, so you
+   * should not add or remove tracks to the session during iteration.
+   *
+   * @param func for each track, func will be called with three arguments: a
+   *    a `FluidTrack`, a position index which specifies the position of the
+   *    track within its parent, and a 'parents' array. The 'parents' array
+   *    contains the track's entire parent hierarchy, starting with the 'oldest'
+   *    grandparent, and ending with the child's immediate parent.
+   */
+  forEachTrack<T>(func : {(track : FluidTrack, index : number, parents: FluidTrack[]) : T }) : T|undefined {
+    const iterateOver = (tracks: FluidTrack[], parents: FluidTrack[]) : T|undefined => {
+      let i = 0; // parentIndex
+
+      for (const track of tracks) {
+        const result = func(track, i++, parents)
+        if (result !== undefined) return result
+
+        if (track.children.length) {
+          const result = iterateOver(track.children, [...parents, track])
+          if (result !== undefined) return result
+        }
+      }
+      return undefined
     }
+
+    return iterateOver(this.tracks, [])
   }
 
   getTrackByName(name: string) : FluidTrack|null {
-    for (const track of this.tracks)
-      if (track.name === name)
-        return track
+    const result = this.forEachTrack(track => {
+      return track.name === name ? track : undefined
+    })
 
-    return null
+    return result || null
   }
 
   getOrCreateTrackByName(name: string) : FluidTrack {

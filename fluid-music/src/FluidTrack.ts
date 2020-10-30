@@ -24,13 +24,13 @@ export class FluidReceive implements TrackReceive {
 }
 
 export interface TrackConfig extends ScoreConfig {
-  name?: string
+  name: string
   gain? : number
   pan? : number
   width? : number
   plugins? : FluidPlugin[]
   sends? : UnresolvedSend[]
-  children: TrackConfig[]
+  children?: TrackConfig[]
 }
 
 export class FluidTrack {
@@ -51,6 +51,11 @@ export class FluidTrack {
     }
 
     this.scoreConfig = {...config}
+
+    // As the last step, construct any child tracks
+    if (config.children?.length) {
+      this.children = config.children.map(childConfig => new FluidTrack(childConfig))
+    }
   }
   scoreConfig : ScoreConfig = {}
 
@@ -66,4 +71,5 @@ export class FluidTrack {
   duration? : number
   startTime? : number
   unresolvedSends : UnresolvedSend[] = []
+  children: FluidTrack[] = []
 }
