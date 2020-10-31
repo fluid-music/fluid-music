@@ -50,27 +50,22 @@ export class FluidSession {
    * IMPORTANT: This iterates over the underlying arrays directly, so you
    * should not add or remove tracks to the session during iteration.
    *
-   * @param func for each track, func will be called with four arguments:
+   * @param func for each track, func will be called with three arguments:
    *    (1) a `FluidTrack`
    *    (2) an index which specifies the position of the track within
    *    its immediate parent
-   *    (3) a 'parents' array, which contains the track's entire parent
-   *    hierarchy, starting with the 'oldest' grandparent, and ending with the
-   *    child's immediate parent.
-   *    (4) a cumulative index, which indicates the position of the track
-   *    among all tracks, including unrelated ancestors. This index uniquely
-   *    identifies the track at the time of iteration. Note that this index is
-   *    likely to be different on subsequent calls if (for example) the track in
-   *    question was moved, or if other tracks were added or removed.
+   *    (3) a 'ancestors' array, which contains the track's parent, (and its
+   *    parent's parent, etc) starting with the 'oldest' grandparent, and ending
+   *    with the tracks immediate parent.
    */
-  forEachTrack<T>(func : {(track : FluidTrack, index : number, parents: FluidTrack[], totalIndex : number) : T }) : T|undefined {
+  forEachTrack<T>(func : {(track : FluidTrack, index : number, parents: FluidTrack[]) : T }) : T|undefined {
     let cumulativeIndex = 0
 
     const iterateOver = (tracks: FluidTrack[], parents: FluidTrack[]) : T|undefined => {
       let i = 0 // parentIndex
 
       for (const track of tracks) {
-        const result = func(track, i++, parents, cumulativeIndex++)
+        const result = func(track, i++, parents)
         if (result !== undefined) return result
 
         if (track.children.length) {

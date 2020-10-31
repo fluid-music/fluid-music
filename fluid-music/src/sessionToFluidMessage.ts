@@ -1,5 +1,6 @@
 import { FluidPlugin, PluginType } from './plugin';
 import { ClipEventContext, MidiNoteEvent, AudioFileEvent } from './fluid-interfaces';
+import { FluidTrack } from './FluidTrack'
 import { FluidSession } from './FluidSession';
 import * as cybr from './cybr/index';
 import * as tab from'./tab';
@@ -8,6 +9,15 @@ import * as tab from'./tab';
 const normalizeTracktionGain = (db) => {
   const normalized = Math.exp((db-6) * (1/20));
   return Math.max(Math.min(normalized, 1), 0);
+}
+
+const isSubmixTrack = (track : FluidTrack) => {
+  return !!track.children.length
+}
+const createSelectMessage = (track : FluidTrack, parentName? : string) => {
+  return isSubmixTrack(track)
+    ? cybr.audiotrack.selectSubmixTrack(track.name, parentName)
+    : cybr.audiotrack.select(track.name, parentName)
 }
 
 /**
@@ -21,10 +31,11 @@ export function sessionToTemplateFluidMessage(session : FluidSession) {
     cybr.tempo.set(session.bpm),
   ];
 
-  for (const track of session.tracks) {
+  session.forEachTrack((track, i, ancestors) => {
+    const parentName = ancestors.length ? ancestors[ancestors.length - 1].name : undefined
     // Create a sub-message for each track
-    let trackMessages : any[] = [
-      cybr.audiotrack.select(track.name),
+    const trackMessages : any[] = [
+      createSelectMessage(track, parentName),
       cybr.audiotrack.gain(track.gain), // normalization not needed with .gain
       cybr.audiotrack.pan(track.pan),
     ];
@@ -57,11 +68,12 @@ export function sessionToTemplateFluidMessage(session : FluidSession) {
         }
       }
     }
-  }
+  })
+
   // Now that the tracks have been created, iterate over them again, adding
   // sends and receives as needed
-  for (const track of session.tracks) {
-    if (!track.receives.length) continue;
+  session.forEachTrack(track => {
+    if (!track.receives.length) return;
 
     const sendReceiveMessage = [] as any[]
     sessionMessages.push(sendReceiveMessage)
@@ -77,7 +89,7 @@ export function sessionToTemplateFluidMessage(session : FluidSession) {
         cybr.audiotrack.send(track.name, receive.gainDb)
       )
     }
-  }
+  })
 
   return sessionMessages;
 }
@@ -90,17 +102,24 @@ export function sessionToTemplateFluidMessage(session : FluidSession) {
 export function sessionToContentFluidMessage(session : FluidSession) {
   const sessionMessages : any[] = [];
 
-  for (const track of session.tracks) {
-    if (tab.reservedKeys.hasOwnProperty(track.name)) {
-      continue;
-    }
+  session.forEachTrack((track, i, ancestors) => {
+    const parentName = ancestors.length ? ancestors[ancestors.length - 1].name : undefined
+    const isSubmix = isSubmixTrack(track)
 
     // Create a sub-message for each track
     let trackMessages : any[] = [];
-    trackMessages.push(cybr.audiotrack.select(track.name));
+    trackMessages.push(createSelectMessage(track, parentName));
     sessionMessages.push(trackMessages);
 
     track.clips.forEach((clip, clipIndex) => {
+      if (isSubmix) {
+        if (clip.fileEvents.length || clip.midiEvents.length) {
+          // Charles: The best thing to do is probably to have some system that
+          // creates an additional track, and puts the clips on it. However, I'm
+          // not going to add that until it is clearly needed.
+          throw new Error(`sessionToTemplateFluidMessage: ${track.name} track has clips and and child track, but tracktion does not allow clips directly on submix tracks`)
+        }
+      }
 
       // Create a sub-message for each clip. Note that the naming convention
       // gets a little confusing, because we do not yet know if "clip" contains
@@ -188,7 +207,7 @@ export function sessionToContentFluidMessage(session : FluidSession) {
         } // for (autoPoint of automation.points)
       }   // for (paramName, automation of plugin.automation)
     }     // for (plugin of track.plugins)
-  }       // for (track of tracks)
+  })      // for (track of tracks)
 
   return sessionMessages;
 };
