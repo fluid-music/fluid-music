@@ -1,9 +1,8 @@
 import { FluidPlugin, PluginType } from './plugin';
-import { ClipEventContext, MidiNoteEvent, AudioFileEvent } from './fluid-interfaces';
+import { ClipEventContext, MidiNoteEvent, AudioFileEvent, Tap } from './fluid-interfaces';
 import { FluidTrack } from './FluidTrack'
 import { FluidSession } from './FluidSession';
 import * as cybr from './cybr/index';
-import * as tab from'./tab';
 
 // This amplification conversion is hard-coded in Tracktion
 const normalizeTracktionGain = (db) => {
@@ -32,14 +31,20 @@ export function sessionToTemplateFluidMessage(session : FluidSession) {
   ];
 
   session.forEachTrack((track, i, ancestors) => {
-    const parentName = ancestors.length ? ancestors[ancestors.length - 1].name : undefined
     // Create a sub-message for each track
+    const parentName = ancestors.length ? ancestors[ancestors.length - 1].name : undefined
     const trackMessages : any[] = [
       createSelectMessage(track, parentName),
       cybr.audiotrack.gain(track.gain), // normalization not needed with .gain
       cybr.audiotrack.pan(track.pan),
     ];
     sessionMessages.push(trackMessages);
+  })
+
+  session.forEachTrack((track, i, ancestors) => {
+    const parentName = ancestors.length ? ancestors[ancestors.length - 1].name : undefined
+    const trackMessages : any[] = [createSelectMessage(track, parentName)]
+    sessionMessages.push(trackMessages)
 
     // Handle plugins. This deals with plugin state (not automation)
     const count : any = {};
@@ -48,12 +53,17 @@ export function sessionToTemplateFluidMessage(session : FluidSession) {
       if (!count.hasOwnProperty(str)) count[str] = 0;
       return count[str]++;
     }
-    const pluginMessages : any[] = [];
-    trackMessages.push(pluginMessages)
-    for (const plugin of track.plugins) {
-      const cybrType = plugin.pluginType === PluginType.unknown ? null : plugin.pluginType;
-      pluginMessages.push(cybr.plugin.select(plugin.pluginName, cybrType, nth(plugin)));
+    const allPluginMessages : any[] = []
+    trackMessages.push(allPluginMessages)
 
+    for (const plugin of track.plugins) {
+      const pluginMessages : any[] = []
+      allPluginMessages.push(pluginMessages)
+
+      const cybrType = plugin.pluginType === PluginType.unknown ? null : plugin.pluginType
+      pluginMessages.push(cybr.plugin.select(plugin.pluginName, cybrType, nth(plugin)))
+
+      // set parameters
       for (const [paramKey, explicitValue] of Object.entries(plugin.parameters)) {
         const paramName = plugin.getParameterName(paramKey);
         if (typeof explicitValue === 'number') {
@@ -65,6 +75,17 @@ export function sessionToTemplateFluidMessage(session : FluidSession) {
           }
         } else {
           console.warn(`found non-number parameter value in ${plugin.pluginName} - ${paramKey}: ${explicitValue}`);
+        }
+      }
+
+      // check for side chain routing
+      if (plugin.sidechainReceive) {
+        pluginMessages.push(cybr.plugin.setSidechainInput(plugin.sidechainReceive.from.name))
+        if (plugin.sidechainReceive.gainDb !== 0) {
+          console.warn(`${plugin.pluginName} on ${track.name} track has non-zero sidechain gain, but this type of gain is not supported by tracktion`)
+        }
+        if (plugin.sidechainReceive.tap !== Tap.postFader) {
+          console.warn(`${plugin.pluginName} on ${track.name} track has non post-fader Tap, but tracktion only supports post-fader sidechain input`)
         }
       }
     }

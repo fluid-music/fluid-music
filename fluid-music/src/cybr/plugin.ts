@@ -201,7 +201,7 @@ export function setExternalParamHelper(paramName, paramValue, timeInWholeNotes, 
  *    selected plugin's side chain input. The track will be created if it does
  *    not exist.
  */
-export function setSideChainInput(inputTrackName) {
+export function setSidechainInput(inputTrackName) {
   if (typeof inputTrackName !== 'string')
     throw new Error('plugin.setSideChainInput requires an input track name');
 

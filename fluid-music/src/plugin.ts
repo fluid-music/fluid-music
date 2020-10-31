@@ -216,19 +216,12 @@ export class FluidPlugin {
    * necessary.
    *
    * @param track name of the track that will feed the sidechain
-   * @param gainDb gain to apply to the side chain feed
    */
-  sidechainWith(track : string|FluidTrack, gainDb : number = 0) {
+  sidechainWith(track : string|FluidTrack) {
     if (typeof track === 'string') {
-      this.unresolvedSidechainReceive = {
-        from: track,
-        gainDb
-      }
+      this.unresolvedSidechainReceive = { from: track }
     } else if (track instanceof FluidTrack) {
-      this.sidechainReceive = new FluidReceive({
-        from: track,
-        gainDb
-      })
+      this.sidechainReceive = new FluidReceive({ from: track })
     } else {
       throw new Error(`sidechainWith received an invalid track: ${track}`)
     }

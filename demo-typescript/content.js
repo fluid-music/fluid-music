@@ -23,6 +23,14 @@ const comp = new fluid.TCompressorVst2()
 comp.parameters.thresholdDb = -8
 comp.parameters.ratio = 2.5
 
+const bassComp = new fluid.TCompressorVst2({
+  attackMs: 12,
+  releaseMs: 80,
+  useSidechainTrigger: 1,
+  thresholdDb: -8,
+  ratio: 4,
+})
+
 // #TEqualiser VST
 const eq = new fluid.TEqualizerVst2()
 eq.setBand2(330, -3)
@@ -69,7 +77,7 @@ let session = new fluid.FluidSession({
   { name: 'kick', d: '.   . mf      ', gain: -6, plugins: [comp, eq] },
   { name: 'snare',d: 'm   f   m   f ' },
   { name: 'chrd', tLibrary: chordLibrary, pan: -.25, plugins: [pwmSynth], gain: -10 },
-  { name: 'bass', tLibrary: bassLibrary, plugins: [bassSynth] },
+  { name: 'bass', tLibrary: bassLibrary, plugins: [bassSynth, bassComp.sidechainWith('kick')] },
   { name: 'tamb', pan: .25 },
   { name: 'revb', plugins: [verbPlugin], tLibrary: automationLibrary },
 ])
@@ -84,22 +92,11 @@ session.insertScore({
   revb:  'e       f       ',
 });
 
-// const templateMessage = fluid.sessionToTemplateFluidMessage(session);
-// const contentMessage = fluid.sessionToContentFluidMessage(session);
-// const client = new cybr.Client();
-// client.send([
-//   cybr.global.activate(path.join(__dirname, 'session.tracktionedit'), true),
-//   cybr.transport.loop(0, session.editCursorTime),
-//   templateMessage,
-//   contentMessage,
-//   cybr.global.save(null, 'd'),
-// ]);
-
 const client = new cybr.Client()
 async function run() {
   await client.connect(true)
-  const rpp = await fluid.sessionToReaperProject(session, client);
-  console.log(rpp.dump())
+  await session.saveAsReaperFile('demo-typescript', client)
+  await session.saveAsTracktionFile('demo-typescript', client)
 }
 
 run()
