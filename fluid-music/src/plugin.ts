@@ -196,7 +196,7 @@ export class FluidPlugin {
   }
 
   /**
-   * Setup a sidechain input to a track.
+   * Specify a sidechain input to the plugin.
    *
    * If the first argument is a name string (not a Track Object), the sidechain
    * routing will be unresolved. To resolve the routing, insert the plugin into
@@ -211,9 +211,9 @@ export class FluidPlugin {
    *  { name: 'bass', plugins: [compressor.sidechainFrom('kick')]}
    * ])
    * ```
-   * Note that sidechains are  resolved by the FluidSession constructor, so in
-   * the example above there a call to `session.resolveSidechainReceives()` is
-   * not necessary.
+   * Note that sidechains are resolved by the FluidSession constructor, so in
+   * the example above, a call to `session.resolveSidechainReceives()` is not
+   * necessary.
    *
    * @param track name of the track that will feed the sidechain
    * @param gainDb gain to apply to the side chain feed
