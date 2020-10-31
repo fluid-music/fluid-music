@@ -9,13 +9,13 @@ const { MidiChord, MidiNote } = require('fluid-music/built/fluid-techniques');
 
 
 ////////////////////////////////////////////////////////////////
-// Configure some VSTs using the auto-generated VST adapters
+// Configure some VSTs
 
-// Synth VSTs
+// Synthesizers
 const pwmSynth = new fluid.TyrellN6Vst2({ env1Attack: 2, env1Decay: 77, env1Sustain: 69 })
 const bassSynth = podolskiSine()
 
-// reverb
+// Reverb
 const verbPlugin = new fluid.DragonflyRoom({ decaySeconds: 2.4, predelayMs: 49, dryLevelPercent: 0, earlyLevelPercent: 40, lateLevelPercent: 100 })
 
 // #TCompressor VST
@@ -89,14 +89,13 @@ session.insertScore({
 // const client = new cybr.Client();
 // client.send([
 //   cybr.global.activate(path.join(__dirname, 'session.tracktionedit'), true),
-//   cybr.transport.loop(0, session.duration),
+//   cybr.transport.loop(0, session.editCursorTime),
 //   templateMessage,
 //   contentMessage,
 //   cybr.global.save(null, 'd'),
 // ]);
 
 const client = new cybr.Client()
-
 async function run() {
   await client.connect(true)
   const rpp = await fluid.sessionToReaperProject(session, client);

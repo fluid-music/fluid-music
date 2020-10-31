@@ -114,3 +114,23 @@ export interface ClipEventContext {
   /** index of the event within the clip. */
   eventIndex?: number;
 }
+
+/**
+ * UnresolvedSends can be passed into FluidSession constructor in order to
+ * describe a send even when the receiving track may not have been created yet.
+ */
+export interface UnresolvedSend {
+  to : string
+  gainDb? : number
+  tap? : Tap
+}
+
+/**
+ * UnresolvedReceives are used for describing sidechain inputs to plugins
+ */
+export interface UnresolvedReceive {
+  /** track name */
+  from : string
+  gainDb?: number
+  tap? : Tap
+}

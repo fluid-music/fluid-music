@@ -1,7 +1,9 @@
 export const linear = (min : number, max: number) => (v: number) => (v - min) / (max - min);
 export const map = (v: number, min: number, max : number) => linear(min, max)(v);
 
+import { Tap, UnresolvedReceive } from "./fluid-interfaces";
 import { PluginAuto as PluginAutoTechnique } from "./fluid-techniques";
+import { FluidReceive, FluidTrack } from "./FluidTrack";
 
 export enum PluginType {
   unknown = 'unknown',
@@ -118,6 +120,9 @@ export class FluidPlugin {
   readonly automation : Automation = {};
   readonly makeAutomation : AutoMakerLibrary = {};
 
+  sidechainReceive? : FluidReceive
+  unresolvedSidechainReceive? : UnresolvedReceive
+
   constructor (
     public readonly pluginName : string,
     public readonly pluginType : PluginType,
@@ -188,5 +193,46 @@ export class FluidPlugin {
       }
     }
     return null;
+  }
+
+  /**
+   * Setup a sidechain input to a track.
+   *
+   * If the first argument is a name string (not a Track Object), the sidechain
+   * routing will be unresolved. To resolve the routing, insert the plugin into
+   * a track, and call `.resolveSidechainReceives` on the parent session.
+   *
+   * `sidechainWith` returns the plugin itself, so you can setup a sidechain
+   * compressor like this:
+   *
+   * ```javascript
+   * const session = new FluidSession({}, [
+   *  { name: 'kick' },
+   *  { name: 'bass', plugins: [compressor.sidechainFrom('kick')]}
+   * ])
+   * ```
+   * Note that sidechains are  resolved by the FluidSession constructor, so in
+   * the example above there a call to `session.resolveSidechainReceives()` is
+   * not necessary.
+   *
+   * @param track name of the track that will feed the sidechain
+   * @param gainDb gain to apply to the side chain feed
+   */
+  sidechainWith(track : string|FluidTrack, gainDb : number = 0) {
+    if (typeof track === 'string') {
+      this.unresolvedSidechainReceive = {
+        from: track,
+        gainDb
+      }
+    } else if (track instanceof FluidTrack) {
+      this.sidechainReceive = new FluidReceive({
+        from: track,
+        gainDb
+      })
+    } else {
+      throw new Error(`sidechainWith received an invalid track: ${track}`)
+    }
+
+    return this
   }
 }

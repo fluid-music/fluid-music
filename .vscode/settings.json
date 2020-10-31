@@ -3,7 +3,8 @@
     "Podolski",
     "Tracktion",
     "audioclip",
-    "cybr"
+    "cybr",
+    "sidechains"
   ],
   "files.watcherExclude": {
     "**/Builds/**": true

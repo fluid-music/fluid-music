@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as tab from './tab'
 import * as cybr from './cybr'
 import { FluidReceive, FluidTrack, TrackConfig } from './FluidTrack';
-import { ScoreConfig, ClipEventContext } from './fluid-interfaces';
+import { ScoreConfig, ClipEventContext, Tap } from './fluid-interfaces';
 import { sessionToTemplateFluidMessage, sessionToContentFluidMessage } from './sessionToFluidMessage'
 import { sessionToReaperProject } from './sessionToReaperProject';
 import { createWriteStream } from 'fs';
@@ -27,6 +27,7 @@ export class FluidSession {
     }
 
     this.resolveSends()
+    this.resolveSidechainReceives()
   }
 
   scoreConfig : ScoreConfig = {}
@@ -137,6 +138,27 @@ export class FluidSession {
           return true
         }
       })
+    })
+  }
+
+  resolveSidechainReceives() {
+    this.forEachTrack(track => {
+      for (const plugin of track.plugins) {
+        if (plugin.unresolvedSidechainReceive) {
+          const sendTrackName = plugin.unresolvedSidechainReceive.from;
+          const sendTrack = this.getTrackByName(sendTrackName)
+          if (sendTrack) {
+            plugin.sidechainReceive = new FluidReceive({
+              from: sendTrack,
+              tap: plugin.unresolvedSidechainReceive.tap,
+              gainDb: plugin.unresolvedSidechainReceive.gainDb
+            })
+            delete plugin.unresolvedSidechainReceive
+          } else {
+            console.warn(`WARNING: Track (${track.name}) includes a plugin (${plugin.pluginName})which contains a sidechain receive from a non-existent track (${sendTrackName})`)
+          }
+        }
+      }
     })
   }
 

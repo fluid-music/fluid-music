@@ -1,12 +1,5 @@
-import { Clip, ScoreConfig, TrackReceive, Tap } from './fluid-interfaces';
+import { Clip, ScoreConfig, TrackReceive, Tap, UnresolvedSend } from './fluid-interfaces';
 import { FluidPlugin, Automation } from './plugin';
-
-export interface UnresolvedSend {
-  to : string
-  gainDb? : number
-  pan? : number
-  tap? : Tap
-}
 
 export class FluidReceive implements TrackReceive {
   constructor (options : {
