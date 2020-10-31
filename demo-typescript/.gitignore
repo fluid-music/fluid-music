@@ -1,2 +1,5 @@
 node_modules/
 session.tracktionedit
+.tmp_session
+demo-typescript.RPP
+demo-typescript.tracktionedit
