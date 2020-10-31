@@ -1,10 +1,10 @@
 import { FluidPlugin } from './plugin'
 import { FluidSession } from './FluidSession'
-import { FluidTrack } from './FluidTrack'
+import { FluidReceive, FluidTrack } from './FluidTrack'
 import { vst2ToReaperObject } from './vst2ToReaperObject'
 import * as cybr from './cybr/index';
 import { IpcClient } from './cybr/IpcClient'
-import { ClipEventContext, MidiNoteEvent, AudioFileEvent } from './fluid-interfaces'
+import { ClipEventContext, MidiNoteEvent, AudioFileEvent, Tap } from './fluid-interfaces'
 import { is } from 'ramda';
 
 const rppp = require('rppp')
@@ -193,6 +193,33 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
         }
         const vst2 = await vst2ToReaperObject(client, fluidTrack.name, plugin, nth(plugin), session.bpm);
         FXChain.add(vst2);
+
+        // get the sicechain receive
+        const receive = plugin.sidechainReceive
+        if (receive instanceof FluidReceive) {
+          if (receive.gainDb !== 0) {
+            console.warn(`${plugin.pluginName} on ${fluidTrack.name} track has non-zero sidechain gain, but this type of gain is not supported by the Reaper exporter`)
+          }
+          if (receive.tap !== Tap.postFader) {
+            console.warn(`${plugin.pluginName} on ${fluidTrack.name} track has non post-fader Tap, but the Reaper exporter only supports post-fader sidechain input`)
+          }
+          let sourceTrackIndex = 0
+          let found = false
+          session.forEachTrack(checkTrack => {
+            if (checkTrack === receive.from) {
+              found = true
+              return true
+            }
+            sourceTrackIndex++
+            return undefined
+          })
+          if (!found) throw new Error('Failed to find sidechain receive track')
+          rpppTrack.addReceive({ sourceTrackNumber: sourceTrackIndex, destinationChannel: 2 })
+          // ensure at least 4 tracks
+          const nchan = rpppTrack.getOrCreateStructByToken('NCHAN').params
+          if (!nchan.length) nchan.push(4)
+          else if (nchan[0] < 4) nchan[0] = 4
+        }
       } // for (plugin of track.plugins)
     }
   }

@@ -27,7 +27,7 @@ const bassComp = new fluid.TCompressorVst2({
   attackMs: 12,
   releaseMs: 80,
   useSidechainTrigger: 1,
-  thresholdDb: -8,
+  thresholdDb: -11,
   ratio: 4,
 })
 

@@ -4,6 +4,7 @@
     "Tracktion",
     "audioclip",
     "cybr",
+    "nchan",
     "sidechains"
   ],
   "files.watcherExclude": {
