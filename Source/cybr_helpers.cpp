@@ -794,7 +794,7 @@ te::FolderTrack* getOrCreateSubmixByName(te::Edit& edit, const String name, cons
     // return statement, initialize the new folder track.
 
     te::FolderTrack::Ptr newFolderTrack = nullptr;
-    
+
     if (submixName.isEmpty()) {
         // No parent was specified, so look for the submix recursively
         for (auto* folderTrack : te::getTracksOfType<te::FolderTrack>(edit, true)){
@@ -910,13 +910,17 @@ te::Plugin* getOrCreatePluginByName(te::Track& track, const String name, const S
     // We should now have the type AND PluginDescription. At what position in
     // the list should it be inserted?
     //
-    // Look for the first volume plugin, and insert before. If no volume plugin
-    // is found, insert it at "-1", which is at the end of the list.
+    // Look for the first volume or width plugin, and insert before. If no width or
+    // volume plugin is found, insert it at "-1", which is at the end of the list.
     int insertPoint = -1;
     {
         int i = 0;
         for (te::Plugin* checkPlugin : track.pluginList) {
             if (auto x = dynamic_cast<te::VolumeAndPanPlugin*>(checkPlugin)) {
+                insertPoint = i;
+                break;
+            }
+            if (checkPlugin->state.hasProperty("cybr-width")) {
                 insertPoint = i;
                 break;
             }
