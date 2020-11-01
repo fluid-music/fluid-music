@@ -7,7 +7,6 @@ const chords = require('./chords');
 const { podolskiSine } = require('./presets')
 const { MidiChord, MidiNote } = require('fluid-music/built/fluid-techniques');
 
-
 ////////////////////////////////////////////////////////////////
 // Configure some VSTs
 
@@ -18,7 +17,7 @@ const bassSynth = podolskiSine()
 // Reverb
 const verbPlugin = new fluid.DragonflyRoom({ decaySeconds: 2.4, predelayMs: 49, dryLevelPercent: 0, earlyLevelPercent: 40, lateLevelPercent: 100 })
 
-// #TCompressor VST
+// TCompressor VST
 const comp = new fluid.TCompressorVst2()
 comp.parameters.thresholdDb = -8
 comp.parameters.ratio = 2.5
@@ -31,7 +30,16 @@ const bassComp = new fluid.TCompressorVst2({
   ratio: 4,
 })
 
-// #TEqualiser VST
+const scComp = new fluid.RoughRider3Vst2({
+  enableExternalSidechain: 1.0,
+  sensitivityDb: -16,
+  ratio: 7,
+  makeupGainDb: 0,
+  releaseMs: 310,
+  attackMs: 10,
+})
+
+// TEqualiser VST
 const eq = new fluid.TEqualizerVst2()
 eq.setBand2(330, -3)
 
@@ -76,7 +84,7 @@ let session = new fluid.FluidSession({
 }, [
   { name: 'kick', d: '.   . mf      ', gain: -6, plugins: [comp, eq] },
   { name: 'snare',d: 'm   f   m   f ' },
-  { name: 'chrd', tLibrary: chordLibrary, pan: -.25, plugins: [pwmSynth], gain: -10 },
+  { name: 'chrd', gain: -10, tLibrary: chordLibrary, pan: -.25, plugins: [pwmSynth, scComp.sidechainWith('kick')] },
   { name: 'bass', tLibrary: bassLibrary, plugins: [bassSynth, bassComp.sidechainWith('kick')] },
   { name: 'tamb', pan: .25 },
   { name: 'revb', plugins: [verbPlugin], tLibrary: automationLibrary },

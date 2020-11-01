@@ -17,6 +17,7 @@ import { TEqualizerVst2 } from './plugin-adapters/t-equalizer-vst2'
 import { TStereoDelayVst2 } from './plugin-adapters/t-stereo-delay-vst2'
 import { PodolskiVst2 } from './plugin-adapters/podolski-vst2'
 import { TyrellN6Vst2 } from './plugin-adapters/tyrell-n6-vst2'
+import { RoughRider3Vst2 } from './plugin-adapters/rough-rider-3-vst2'
 
 // OSC Message Helpers
 import * as cybr from './cybr/index';
@@ -64,6 +65,7 @@ export = {
   FluidSession,
   FluidPlugin,
   PluginType,
+  RoughRider3Vst2,
   DragonflyRoom,
   PodolskiVst2,
   TCompressorVst2,

@@ -12,8 +12,13 @@ for (const paramInfo of tCompReport.params) {
     paramInfo.range = [1, 1000]
     paramInfo.isContinuous = true
     paramInfo.isLinear = false
-    paramInfo.powerFuncB = 2
     paramInfo.units = null
+    paramInfo.choices = null
+    paramInfo.normalizeFunctionAsString = `(ratio: number) => {
+      const a = 0.08
+      const u = Math.log10((1000 - a) / a)
+      return Math.log10((ratio + a - 1) / a) / u
+    }`
   } else if (paramInfo.name === 'Attack') {
     paramInfo.isLinear = true
     paramInfo.isContinuous = true
@@ -29,8 +34,13 @@ for (const paramInfo of tCompReport.params) {
   } else if (paramInfo.name === 'SC HPF') {
     paramInfo.key = 'sidechainHighpass'
   } else if (paramInfo.name === 'SC Active') {
-    paramInfo.key = 'enableExternalSidechain'
+    paramInfo.key = 'externalSidechainEnable'
+  } else if (paramInfo.name === 'Makeup') {
+    paramInfo.key = 'makeupGainDb'
+  } else if (paramInfo.name === 'Input Lvl') {
+    paramInfo.key = 'inputGainDb'
   }
+
 }
 
 const moduleString = fluid.gen.generatePluginModule(tCompReport)

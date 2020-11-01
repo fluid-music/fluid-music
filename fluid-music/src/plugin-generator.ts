@@ -60,6 +60,8 @@ export interface ${parametersInterfaceName} {
     if (param.units) result += `, units: '${param.units}'`
     if (typeof param.powerFuncB === 'number') result += `, powerFuncB: ${param.powerFuncB}`
     if (param.choices) result += `, choices: ${JSON.stringify(param.choices)}`
+    if (param.normalizeFunctionAsString) result += `,
+    normalize: ${param.normalizeFunctionAsString}`
     return result + ' }'
   }).join(',\n') + '\n}\n'
 
