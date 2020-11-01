@@ -5,7 +5,6 @@ import { vst2ToReaperObject } from './vst2ToReaperObject'
 import * as cybr from './cybr/index';
 import { IpcClient } from './cybr/IpcClient'
 import { ClipEventContext, MidiNoteEvent, AudioFileEvent, Tap } from './fluid-interfaces'
-import { is } from 'ramda';
 
 const rppp = require('rppp')
 
