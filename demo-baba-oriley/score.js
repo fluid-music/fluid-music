@@ -40,12 +40,12 @@ const client = new fluid.Client();
 client.connect(true)
 
 async function run() {
-  const rpp = await fluid.sessionToReaperProject(session, client)
-  console.log(rpp.dump())
+  await session.saveAsReaperFile('demo-baba-oriley', client)
+  await session.saveAsTracktionFile('demo-baba-oriley', client)
 }
 
 run().then(() => {
-
+  console.warn('exported :)')
 }).finally(() => {
   client.close()
 })
