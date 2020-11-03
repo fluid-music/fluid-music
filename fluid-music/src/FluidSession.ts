@@ -245,7 +245,7 @@ export class FluidSession {
     // create a filename if the caller did not provide one
     if (!filename) filename = 'fluid'
     if (!path.isAbsolute(filename)) filename = path.join(process.cwd(), filename)
-    if (!filename.toLowerCase().endsWith('.RPP')) filename += '.RPP'
+    if (!filename.toLowerCase().endsWith('.rpp')) filename += '.RPP'
 
     const rpp = await sessionToReaperProject(this, client)
     const stream = createWriteStream(filename, 'utf8')
