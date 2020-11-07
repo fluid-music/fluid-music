@@ -98,7 +98,7 @@ let session = new fluid.FluidSession({
 session.insertScore({
   skik: ['d---d---d---d---', 'd---d---d---d---'],
   kick: ['.   . dd-dD--D--', 'd-- d-- d-- d-- '],
-  snare:['r---k-  r   k-  ', '              '],
+  snare:['r---s       s   ', '              '],
   tamb: ['t t t t t t t t ', {r: '1....234..', tamb: 'Ttttt..ttt', d: 'p'} ],
   sub:   '        b-      ',
   chrd:  'a-  .  ab---    ',

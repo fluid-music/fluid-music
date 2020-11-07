@@ -78,11 +78,17 @@ export class AudioFile implements Technique {
     if (this.mode === AudioFile.Modes.Event) {
       // do nothing - just use default (above)
     } else if (this.mode === AudioFile.Modes.OneShot) {
-      if (this.info?.duration) {
+      if (this.info.duration) {
         durationSeconds = this.info.duration
       }
     } else if (this.mode === AudioFile.Modes.OneVoice) {
-      // this is handled in the finalizer
+      if (typeof this.info.duration === 'number') {
+        durationSeconds = this.info.duration - this.startInSourceSeconds
+      }
+      // The rest of this is handled in the finalizer. As of Nov 6, 2020, the
+      // finalizer is hardCoded in Session.processEvents. but I may eventually
+      // support custom finalizers, which would be added to the technique
+      // (similar to .use method)
     }
 
     if (this.info?.duration) {
