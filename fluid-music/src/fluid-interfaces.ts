@@ -1,5 +1,6 @@
 import { FluidSession } from './FluidSession'
 import { FluidTrack } from './FluidTrack'
+import { AudioFileMode } from './fluid-techniques'
 
 export interface Technique {
   use : {(startTime : number, duration : number, context : ClipEventContext) : any }
@@ -21,19 +22,16 @@ export interface MidiNoteEvent extends Event {
   velocity : number
 }
 
-export interface AudioFileEvent extends Event {
+export interface AudioFileEvent {
   path : string
   fadeOutSeconds : number
   fadeInSeconds : number
   gainDb : number
-
-  /**
-   * When true, the inserted audio file will play to its end instead of obeying
-   * event length (default=false)
-   */
-  oneShot : boolean
+  mode : AudioFileMode
   info : AudioFileInfo
   startInSourceSeconds : number
+  startTimeSeconds : number
+  durationSeconds : number
 }
 
 /**

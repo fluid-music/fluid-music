@@ -272,17 +272,17 @@ function fileEventsToReaperObject(fileEvents : AudioFileEvent[], context : ClipE
     if (typeof context.clip.startTime !== 'number')
       throw new Error('fileEventsToReaperObject found a clip with no .startTime')
 
-    const startTime = context.clip.startTime + event.startTime
-
     if (typeof event.path !== 'string') {
       console.error(event);
       throw new Error('tracksToFluidMessage: A file event found in the note library does not have a .path string');
-    };
+    }
+
+    const startTimeSeconds = (context.clip.startTime * 4 * 60 / bpm) + event.startTimeSeconds
 
     const audioItem = new rppp.objects.ReaperItem();
     const clipName = `s${context.clipIndex}.${eventIndex}`;
     audioItem.getOrCreateStructByToken('NAME').params[0] = clipName
-    audioItem.getOrCreateStructByToken('POSITION').params[0] = startTime * 4 * 60 / bpm
+    audioItem.getOrCreateStructByToken('POSITION').params[0] = startTimeSeconds
 
     const audioSource = new rppp.objects.ReaperSource()
     audioSource.makeWaveSource()
@@ -292,10 +292,7 @@ function fileEventsToReaperObject(fileEvents : AudioFileEvent[], context : ClipE
     if (event.startInSourceSeconds)
       audioItem.getOrCreateStructByToken('SOFFS').params[0] = event.startInSourceSeconds
 
-    if (event.oneShot && event.info && typeof event.info.duration === 'number')
-      audioItem.getOrCreateStructByToken('LENGTH').params[0] = event.info.duration - (event.startInSourceSeconds || 0)
-    else
-      audioItem.getOrCreateStructByToken('LENGTH').params[0] = event.duration * 4 * 60 / bpm
+    audioItem.getOrCreateStructByToken('LENGTH').params[0] = event.durationSeconds
 
     // apply fade in/out times (if specified)
     if (typeof event.fadeOutSeconds === 'number')
