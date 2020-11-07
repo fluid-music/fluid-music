@@ -99,9 +99,9 @@ export class IpcClient {
 
     this.connectPromise = new Promise((resolve, reject) => {
       this.client.once('connect', () => { resolve('connected'); });
-      this.client.once('error', (error) => {this.client.close(); reject(error);});
-      this.client.once('close', (error) => {reject(error)});
-      this.client.once('timeout', () => {this.client.close(); reject('Connection Timed Out')});
+      this.client.once('error', (error) => { this.client.close(); reject(error); });
+      this.client.once('close', (error) => { error && reject(error) });
+      this.client.once('timeout', () => { this.client.close('Connection Timed Out'); });
     });
 
     return this.connectPromise;
