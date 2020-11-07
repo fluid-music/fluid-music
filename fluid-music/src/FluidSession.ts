@@ -3,10 +3,11 @@ import * as path from 'path'
 import * as tab from './tab'
 import * as cybr from './cybr'
 import { FluidReceive, FluidTrack, TrackConfig } from './FluidTrack';
-import { ScoreConfig, ClipEventContext, Tap } from './fluid-interfaces';
+import { ScoreConfig, ClipEventContext, Clip } from './fluid-interfaces';
 import { sessionToTemplateFluidMessage, sessionToContentFluidMessage } from './sessionToFluidMessage'
 import { sessionToReaperProject } from './sessionToReaperProject';
 import { createWriteStream } from 'fs';
+import { AudioFileMode } from './fluid-techniques';
 
 export interface SessionConfig extends ScoreConfig {
   bpm?: number
@@ -163,7 +164,16 @@ export class FluidSession {
   }
 
   processEvents() {
+    // Charles: At some point in the future, I may implement custom finalizers,
+    // which could be stored in a Map like this:
+    // const finalizers = new Map<Clip, {(clip : Clip) : any}[]>()
+
     this.forEachTrack(track => {
+
+      if (!track.clips || !track.clips.length) {
+        console.warn(`processEvents: skipping ${track.name}, because it has no .clips`)
+      }
+
       track.clips.forEach((clip, clipIndex) => {
         const context : ClipEventContext = {
           session: this,
@@ -184,7 +194,23 @@ export class FluidSession {
         } // iterate over "TechniqueEvent"
         clip.events = []
       })  // iterate over clips  with clips.forEach method
-    })    // iterate over tracks
+    })    // iterate over tracks with session.forEachTrack
+
+    // Finalize
+    this.forEachTrack(track => {
+      track.clips.forEach((clip) => {
+        clip.fileEvents.sort((a, b) => a.startTimeSeconds - b.startTimeSeconds)
+        for (let i = 1; i < clip.fileEvents.length; i++) {
+          const fEvent1 = clip.fileEvents[i - 1]
+          const fEvent2 = clip.fileEvents[i]
+          if (fEvent1.mode === AudioFileMode.OneVoice && typeof fEvent1.info.duration === 'number') {
+            const maxDuration = fEvent1.info.duration - fEvent1.startInSourceSeconds
+            const secondsBetween = fEvent2.startTimeSeconds - fEvent1.startTimeSeconds
+            fEvent1.durationSeconds = Math.min(secondsBetween + fEvent1.fadeOutSeconds, maxDuration)
+          }
+        }
+      })
+    })
   }
 
   /**

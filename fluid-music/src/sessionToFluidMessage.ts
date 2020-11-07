@@ -273,9 +273,10 @@ function fileEventsToFluidMessage(fileEvents : AudioFileEvent[], context : ClipE
 
   return fileEvents.map((event, eventIndex) => {
     if (typeof context.clip.startTime !== 'number')
-      throw new Error('fileEventsToFluidMessage found a clip with no .startTime')
+      throw new Error('fileEventsToFluidMessage found a clip with no .startTime: ' + JSON.stringify(context.clip))
 
-    const startTime = context.clip.startTime + event.startTime;
+    const startTime = context.clip.startTime + (event.startTimeSeconds * context.session.bpm / 60 / 4)
+    const duration = event.durationSeconds * context.session.bpm / 60 / 4
 
     if (typeof event.path !== 'string') {
       console.error(event);
@@ -288,9 +289,7 @@ function fileEventsToFluidMessage(fileEvents : AudioFileEvent[], context : ClipE
     if (event.startInSourceSeconds)
       msg.push(cybr.clip.setSourceOffsetSeconds(event.startInSourceSeconds));
 
-    // adjust the clip length, unless the event is a .oneShot
-    if (!event.oneShot)
-      msg.push(cybr.clip.length(event.duration));
+    msg.push(cybr.clip.length(duration));
 
     // apply fade in/out times (if specified)
     if (typeof event.fadeOutSeconds === 'number' || typeof event.fadeInSeconds === 'number')

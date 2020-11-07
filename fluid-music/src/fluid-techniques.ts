@@ -1,4 +1,4 @@
-import { ClipEventContext, AudioFileInfo, Technique, MidiNoteEvent } from './fluid-interfaces'
+import { ClipEventContext, AudioFileInfo, Technique, MidiNoteEvent, AudioFileEvent } from './fluid-interfaces'
 import { AutomationPoint } from './plugin'
 import * as random from './random'
 
@@ -9,10 +9,28 @@ export interface PluginAutoTechniqueClass extends TechniqueClass {
   new(options: PluginAutoOptions) : Technique
 }
 
+
+/** AudioFile playback modes */
+export enum AudioFileMode {
+  /**
+   * In this default mode, a `'1234'` rhythm  string, combined with a `'s...'`
+   * will trim the length of the inserted audio file to a quarter note. */
+  Event,
+  /**
+   * The OneShot mode plays the file to its conclusion, ignoring the event
+   * length extracted from the pattern string */
+  OneShot,
+  /**
+   * Play the audio file to its conclusion, OR fade it out at the onset of the
+   * next AudioFile in the clip */
+  OneVoice,
+}
 /**
  * Insert an audio sample into a track
  */
 export class AudioFile implements Technique {
+  static Modes = AudioFileMode
+
   /** Filepath of the audio file */
   path : string
 
@@ -25,6 +43,7 @@ export class AudioFile implements Technique {
   fadeInSeconds : number = 0
   info : AudioFileInfo = {}
   startInSourceSeconds : number = 0
+  mode = AudioFile.Modes.OneVoice
 
   /**
    * Adjust the sample playback level. Unlike gainDb, trimDb is always applied,
@@ -38,6 +57,7 @@ export class AudioFile implements Technique {
   gainDb? : number
 
   constructor (options : AudioFileOptions) {
+
     if (typeof options.path !== 'string')
       throw new Error('AudioFile Technique constructor did not find an options.path string')
 
@@ -45,24 +65,43 @@ export class AudioFile implements Technique {
     if (typeof options.gainDb === 'number') this.gainDb = options.gainDb
     if (typeof options.fadeInSeconds === 'number') this.fadeInSeconds = options.fadeInSeconds
     if (typeof options.fadeOutSeconds === 'number') this.fadeOutSeconds = options.fadeOutSeconds
-    if (typeof options.oneShot === 'boolean') this.oneShot = options.oneShot
     if (typeof options.startInSourceSeconds === 'number') this.startInSourceSeconds = options.startInSourceSeconds
     if (typeof options.trimDb === 'number') this.trimDb = options.trimDb
     if (options.info) this.info = options.info
+    if (options.mode) this.mode = options.mode
   }
 
   use (startTime: number, duration : number, context : ClipEventContext) {
-    const fileEvent = {
-      startTime,
-      duration,
+    let durationSeconds = duration * 4 * 60 / context.session.bpm
+    let startTimeSeconds = startTime * 4 * 60 / context.session.bpm
+
+    if (this.mode === AudioFile.Modes.Event) {
+      // do nothing - just use default (above)
+    } else if (this.mode === AudioFile.Modes.OneShot) {
+      if (this.info?.duration) {
+        durationSeconds = this.info.duration
+      }
+    } else if (this.mode === AudioFile.Modes.OneVoice) {
+      // this is handled in the finalizer
+    }
+
+    if (this.info?.duration) {
+      const maxDuration = this.info.duration - this.startInSourceSeconds
+      durationSeconds = Math.min(durationSeconds, maxDuration)
+    }
+
+    const fileEvent : AudioFileEvent = {
+      startTimeSeconds,
+      durationSeconds,
       gainDb: 0,
       path: this.path,
       fadeInSeconds: this.fadeInSeconds,
       fadeOutSeconds: this.fadeOutSeconds,
       startInSourceSeconds: this.startInSourceSeconds,
-      oneShot: this.oneShot,
+      mode: this.mode,
       info: this.info,
     }
+
     if (typeof this.gainDb === 'number') {
       fileEvent.gainDb = this.gainDb
     } else if (typeof context.d.gainDb === 'number') {
@@ -81,10 +120,10 @@ export interface AudioFileOptions {
   fadeOutSeconds? : number
   fadeInSeconds? : number
   startInSourceSeconds? : number
-  oneShot? : boolean
   info? : AudioFileInfo
   gainDb? : number
   trimDb? : number
+  mode? : AudioFileMode
 }
 
 
