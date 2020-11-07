@@ -31,8 +31,8 @@ const bassComp = new fluid.TCompressorVst2({
 })
 
 const scComp = new fluid.RoughRider3Vst2({
-  enableExternalSidechain: 1.0,
-  sensitivityDb: -16,
+  externalSidechainEnable: 1,
+  sensitivityDb: -10,
   ratio: 7,
   makeupGainDb: 0,
   releaseMs: 310,
@@ -70,8 +70,8 @@ Object.entries(chordLibrary).forEach(([k, v]) => {
 
 const dLibrary = {
   p: { dbfs: -6, intensity: 1/2 },
-  f: { dbfs: 0, intensity: 1.0 },
   m: { dbfs: -2.6, intensity: 3/4 },
+  f: { dbfs: 0, intensity: 1.0 },
 };
 
 let session = new fluid.FluidSession({
@@ -79,22 +79,28 @@ let session = new fluid.FluidSession({
   r: '1 + 2 + 3 + 4 + ',
   // default for kick and snare
   tLibrary: drums.tLibrary,
-  // default for kick and snare
   dLibrary,
 }, [
-  { name: 'kick', d: '.   . mf      ', gain: -6, plugins: [comp, eq] },
-  { name: 'snare',d: 'm   f   m   f ' },
-  { name: 'chrd', gain: -10, tLibrary: chordLibrary, pan: -.25, plugins: [pwmSynth, scComp.sidechainWith('kick')] },
-  { name: 'bass', tLibrary: bassLibrary, plugins: [bassSynth, bassComp.sidechainWith('kick')] },
-  { name: 'tamb', pan: .25 },
+  { name: 'mute', gain: -Infinity, children: [
+    { name: 'skik' },
+  ]},
+  { name: 'drums', gain: -6, children: [
+    { name: 'kick', d: '.   . mf      ', gain: -6, plugins: [comp, eq] },
+    { name: 'snare',d: 'm   f   m   f ' },
+    { name: 'tamb', pan: .25 },
+    { name: 'sub', tLibrary: bassLibrary, plugins: [bassSynth, bassComp.sidechainWith('skik')] },
+  ]},
+  { name: 'chrd', gain: -10, tLibrary: chordLibrary, pan: -.25, plugins: [pwmSynth, scComp.sidechainWith('skik')] },
   { name: 'revb', plugins: [verbPlugin], tLibrary: automationLibrary },
+
 ])
 
 session.insertScore({
+  skik: ['d---d---d---d---', 'd---d---d---d---'],
   kick: ['.   . dd-dD--D--', 'd-- d-- d-- d-- '],
-  snare:['r---k-  .   k-  ', '              '],
+  snare:['r---k-  r   k-  ', '              '],
   tamb: ['t t t t t t t t ', {r: '1....234..', tamb: 'Ttttt..ttt', d: 'p'} ],
-  bass:  '        b-      ',
+  sub:   '        b-      ',
   chrd:  'a-  .  ab---    ',
   //     '1 + 2 + 3 + 4 + ',
   revb:  'e       f       ',

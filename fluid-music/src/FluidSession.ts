@@ -163,16 +163,7 @@ export class FluidSession {
   }
 
   processEvents() {
-    for (const track of this.tracks) {
-      if (tab.reservedKeys.hasOwnProperty(track.name)) {
-        continue
-      }
-
-      if (!track.clips || !track.clips.length) {
-        console.warn(`processEvents: skipping ${track.name}, because it has no .clips`)
-        continue
-      }
-
+    this.forEachTrack(track => {
       track.clips.forEach((clip, clipIndex) => {
         const context : ClipEventContext = {
           session: this,
@@ -193,7 +184,7 @@ export class FluidSession {
         } // iterate over "TechniqueEvent"
         clip.events = []
       })  // iterate over clips  with clips.forEach method
-    }     // iterate over tracks with for...of loop
+    })    // iterate over tracks
   }
 
   /**
