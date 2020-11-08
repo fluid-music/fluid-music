@@ -1,3 +1,4 @@
+import { extname } from 'path'
 import { FluidPlugin } from './plugin'
 import { FluidSession } from './FluidSession'
 import { FluidReceive, FluidTrack } from './FluidTrack'
@@ -285,7 +286,12 @@ function fileEventsToReaperObject(fileEvents : AudioFileEvent[], context : ClipE
     audioItem.getOrCreateStructByToken('POSITION').params[0] = startTimeSeconds
 
     const audioSource = new rppp.objects.ReaperSource()
-    audioSource.makeWaveSource()
+    const extension = extname(event.path).toLowerCase()
+
+    if (extension === '.wav') audioSource.makeWaveSource()
+    else if (extension === '.mp3') audioSource.makeMp3Source()
+    else throw new Error(`Reaper exporter found unsupported audio file extension on: ${event.path}`)
+
     audioSource.getOrCreateStructByToken('FILE').params = [event.path]
     audioItem.add(audioSource)
 
