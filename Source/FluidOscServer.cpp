@@ -1443,8 +1443,8 @@ OSCMessage FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     }
 
     te::AudioFile audiofile(selectedTrack->edit.engine, file);
-    if(!audiofile.isWavFile()){
-        String errorString = "Cannot insert wave file: Must be valid WAV file.";
+    if(!audiofile.isValid() || audiofile.isNull()){
+        String errorString = "Cannot insert wave file: Must be valid audio file.";
         constructReply(reply, 1, errorString);
         return reply;
     }
