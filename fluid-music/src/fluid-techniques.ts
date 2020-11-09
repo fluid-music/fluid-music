@@ -15,11 +15,16 @@ export enum AudioFileMode {
   /**
    * In this default mode, a `'1234'` rhythm  string, combined with a `'s...'`
    * will trim the length of the inserted audio file to a quarter note. */
-  Event,
+  Event = 1,
+  // Even though ts docs imply otherwise, enums indices may start on 0 if we do
+  // not specify = 1. This causes a bug when we check for the presence of an
+  // optional AudioFileMode member with `if (event.mode)`
+
   /**
    * The OneShot mode plays the file to its conclusion, ignoring the event
    * length extracted from the pattern string */
   OneShot,
+
   /**
    * Play the audio file to its conclusion, OR fade it out at the onset of the
    * next AudioFile in the clip */
