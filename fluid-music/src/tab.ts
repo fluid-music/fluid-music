@@ -72,8 +72,9 @@ export function parseTab(rhythm, nPattern, tLibrary) : Clip {
   const rhythmObject = typeof rhythm === 'string' ? parseRhythm(rhythm) : rhythm;
   const symbolsAndCounts = patternToSymbolsAndCounts(nPattern);
 
-  if (nPattern.length > rhythmObject.r.length)
-    throw new Error(`parseTab: rhythm ('${rhythm}') not long enough for pattern ('${nPattern}')`);
+  if (nPattern.length > rhythmObject.r.length) {
+    throw new Error(`parseTab: rhythm ('${rhythmObject.r}') not long enough for pattern ('${nPattern}')`);
+  }
 
   let p = 0; // position (in the rhythmObject)
   const clip : Clip = {
@@ -293,7 +294,13 @@ function arrayToSymbolsAndCounts(chars : string[]) : [string, number][] {
  * @param {Object} dLibrary
  * @returns {function}
  */
-export function createDynamicGetter(rhythm, dPattern, dLibrary) {
+export function createDynamicGetter(rhythm, dPattern : string, dLibrary) {
+  // Just truncate the rhythm if it is too long. This might not be the ideal
+  // long term solution, but for now parseTab will not allow pattern strings
+  // to be longer than rhythm strings
+  const rLength = typeof rhythm === 'string' ? rhythm.length : rhythm.r.length
+  if (dPattern.length > rLength) dPattern = dPattern.slice(0, rLength)
+
   const clip = parseTab(rhythm, dPattern, dLibrary);
   return (time) => {
     let event = clip.events[0] || null;
