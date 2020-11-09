@@ -69,9 +69,9 @@ Object.entries(chordLibrary).forEach(([k, v]) => {
 })
 
 const dLibrary = {
-  p: { dbfs: -6, intensity: 1/2 },
-  m: { dbfs: -2.6, intensity: 3/4 },
-  f: { dbfs: 0, intensity: 1.0 },
+  p: { gainDb: -6, intensity: 1/2 },
+  m: { gainDb: -2.6, intensity: 3/4 },
+  f: { gainDb: 0, intensity: 1.0 },
 };
 
 let session = new fluid.FluidSession({
