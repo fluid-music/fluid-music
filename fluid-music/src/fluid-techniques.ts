@@ -48,7 +48,7 @@ export class AudioFile implements Technique {
   fadeInSeconds : number = 0
   info : AudioFileInfo = {}
   startInSourceSeconds : number = 0
-  mode = AudioFile.Modes.OneVoice
+  mode = AudioFile.Modes.Event
 
   /**
    * Adjust the sample playback level. Unlike gainDb, trimDb is always applied,
