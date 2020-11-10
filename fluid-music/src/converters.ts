@@ -1,7 +1,11 @@
-const R      = require('ramda');
 const s11    = require('sharp11');
 const Parser = require('expr-eval').Parser;
 const parser = new Parser();
+
+const clamp = (min, max, v) => {
+  if (min > max) [min, max] = [max, min]
+  return Math.max(Math.min(max, v), min)
+}
 
 /**
  * Convert a string or number to a number of whole notes.
@@ -63,7 +67,7 @@ export const numberToMidiNote = (note) => ({type: 'midiNote', note});
 
 export function midiVelocityToDbfs(v, min = -60, max = 6) {
   const range = max - min;
-  return R.clamp(min, max, v / 127 * range + min);
+  return clamp(min, max, v / 127 * range + min);
 };
 
 
@@ -74,6 +78,6 @@ export function velocityNumberToDynamic(velocity) {
   return {
     v: velocity,
     dbfs: midiVelocityToDbfs(velocity, -10, 10),
-    intensity: R.clamp(0, 1, Math.floor(velocity / 127)),
+    intensity: clamp(0, 1, Math.floor(velocity / 127)),
   }
 }

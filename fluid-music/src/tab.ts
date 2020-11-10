@@ -1,5 +1,3 @@
-const R = require('ramda');
-
 import { Clip, TechniqueEvent } from './fluid-interfaces'
 
 /**
@@ -80,7 +78,7 @@ export function parseTab(rhythm, nPattern, tLibrary) : Clip {
   const clip : Clip = {
     startTime : 0,
     events: [] as TechniqueEvent[],
-    duration: R.last(rhythmObject.totals),
+    duration: rhythmObject.totals[rhythmObject.totals.length - 1],
     midiEvents: [],
     unmappedEvents: [],
   };
