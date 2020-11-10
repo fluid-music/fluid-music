@@ -92,7 +92,6 @@ let session = new fluid.FluidSession({
   ]},
   { name: 'chrd', gain: -10, tLibrary: chordLibrary, pan: -.25, plugins: [pwmSynth, scComp.sidechainWith('skik')] },
   { name: 'revb', plugins: [verbPlugin], tLibrary: automationLibrary },
-
 ])
 
 session.insertScore({

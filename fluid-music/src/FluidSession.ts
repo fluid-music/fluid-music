@@ -7,7 +7,7 @@ import { ScoreConfig, ClipEventContext, Clip } from './fluid-interfaces';
 import { sessionToTemplateFluidMessage, sessionToContentFluidMessage } from './sessionToFluidMessage'
 import { sessionToReaperProject } from './sessionToReaperProject';
 import { createWriteStream } from 'fs';
-import { AudioFileMode } from './fluid-techniques';
+import { AudioFileMode } from './FluidAudioFile'
 
 export interface SessionConfig extends ScoreConfig {
   bpm?: number
@@ -198,10 +198,10 @@ export class FluidSession {
 
     // Finalize
     this.forEachTrack(track => {
-      track.fileEvents.sort((a, b) => a.startTimeSeconds - b.startTimeSeconds)
-      for (let i = 1; i < track.fileEvents.length; i++) {
-        const fEvent1 = track.fileEvents[i - 1]
-        const fEvent2 = track.fileEvents[i]
+      track.audioFiles.sort((a, b) => a.startTimeSeconds - b.startTimeSeconds)
+      for (let i = 1; i < track.audioFiles.length; i++) {
+        const fEvent1 = track.audioFiles[i - 1]
+        const fEvent2 = track.audioFiles[i]
         if (fEvent1.mode === AudioFileMode.OneVoice && typeof fEvent1.info.duration === 'number') {
           const maxDuration = fEvent1.info.duration - fEvent1.startInSourceSeconds
           const secondsBetween = fEvent2.startTimeSeconds - fEvent1.startTimeSeconds

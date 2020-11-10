@@ -5,7 +5,9 @@ import { FluidReceive, FluidTrack } from './FluidTrack'
 import { vst2ToReaperObject } from './vst2ToReaperObject'
 import * as cybr from './cybr/index';
 import { IpcClient } from './cybr/IpcClient'
-import { ClipEventContext, MidiNoteEvent, AudioFileEvent, Tap } from './fluid-interfaces'
+import { ClipEventContext, MidiNoteEvent, Tap } from './fluid-interfaces'
+import { FluidAudioFile } from './FluidAudioFile'
+
 
 const rppp = require('rppp')
 
@@ -111,7 +113,7 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
       }
     })
 
-    const rppItems = fileEventsToReaperObjects(track.fileEvents, session)
+    const rppItems = fileEventsToReaperObjects(track.audioFiles, session)
 
     // handle Clips
     track.clips.forEach((clip, clipIndex) => {
@@ -262,7 +264,7 @@ function midiEventsToReaperObject(midiEvents : MidiNoteEvent[] , context : ClipE
   return midiItem;
 };
 
-function fileEventsToReaperObjects(fileEvents : AudioFileEvent[], session : FluidSession) {
+function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : FluidSession) {
   const bpm = session.bpm
   if (!bpm) throw new Error('fileEventToReaperObject could not find a session.bpm parameter')
 

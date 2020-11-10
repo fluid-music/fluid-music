@@ -1,6 +1,5 @@
 import { FluidSession } from './FluidSession'
 import { FluidTrack } from './FluidTrack'
-import { AudioFileMode } from './fluid-techniques'
 
 export interface Technique {
   use : {(startTime : number, duration : number, context : ClipEventContext) : any }
@@ -20,30 +19,6 @@ export interface TechniqueEvent extends Event {
 export interface MidiNoteEvent extends Event {
   note : number
   velocity : number
-}
-
-export interface AudioFileEvent {
-  path : string
-  fadeOutSeconds : number
-  fadeInSeconds : number
-  gainDb : number
-  mode : AudioFileMode
-  info : AudioFileInfo
-  startInSourceSeconds : number
-  startTimeSeconds : number
-  durationSeconds : number
-}
-
-/**
- * Audio file details provided by the music-metadata npm package.
- */
-export interface AudioFileInfo {
-  [key: string] : any
-  /** length in seconds */
-  duration? : number
-  bitsPerSample? : number
-  sampleRate? : number
-  numberOfChannels? : number
 }
 
 export interface DynamicObject {

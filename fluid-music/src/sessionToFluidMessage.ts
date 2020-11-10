@@ -1,8 +1,9 @@
 import { basename } from 'path'
 import { FluidPlugin, PluginType } from './plugin';
-import { ClipEventContext, MidiNoteEvent, AudioFileEvent, Tap } from './fluid-interfaces';
+import { ClipEventContext, MidiNoteEvent, Tap } from './fluid-interfaces';
 import { FluidTrack } from './FluidTrack'
 import { FluidSession } from './FluidSession';
+import { FluidAudioFile } from './FluidAudioFile'
 import * as cybr from './cybr/index';
 
 // This amplification conversion is hard-coded in Tracktion
@@ -132,8 +133,8 @@ export function sessionToContentFluidMessage(session : FluidSession) {
     let trackMessages : any[] = []
     sessionMessages.push(trackMessages)
     trackMessages.push(createSelectMessage(track, parentName))
-    trackMessages.push(fileEventsToFluidMessage(track.fileEvents, session))
-    if (isSubmix && track.fileEvents.length) {
+    trackMessages.push(fileEventsToFluidMessage(track.audioFiles, session))
+    if (isSubmix && track.audioFiles.length) {
       throw new Error(`sessionToTemplateFluidMessage: ${track.name} track has file events and child tracks, but tracktion does not allow events directly on submix tracks`)
     }
 
@@ -253,7 +254,7 @@ function midiEventsToFluidMessage(midiEvents : MidiNoteEvent[], context : ClipEv
   return msg;
 };
 
-function fileEventsToFluidMessage(fileEvents : AudioFileEvent[], session : FluidSession) {
+function fileEventsToFluidMessage(fileEvents : FluidAudioFile[], session : FluidSession) {
   return fileEvents.map((event, eventIndex) => {
 
 

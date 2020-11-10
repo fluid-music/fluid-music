@@ -1,5 +1,5 @@
-import { ClipEventContext, AudioFileInfo, Technique, MidiNoteEvent, AudioFileEvent } from './fluid-interfaces'
-import { FluidTrack } from './FluidTrack'
+import { ClipEventContext, Technique, MidiNoteEvent } from './fluid-interfaces'
+import { AudioFileMode, FluidAudioFile } from './FluidAudioFile'
 import { AutomationPoint } from './plugin'
 import * as random from './random'
 
@@ -10,165 +10,41 @@ export interface PluginAutoTechniqueClass extends TechniqueClass {
   new(options: PluginAutoOptions) : Technique
 }
 
-
-/** AudioFile playback modes */
-export enum AudioFileMode {
-  /**
-   * In this default mode, a `'1234'` rhythm  string, combined with a `'s...'`
-   * will trim the length of the inserted audio file to a quarter note. */
-  Event = 1,
-  // Even though ts docs imply otherwise, enums indices may start on 0 if we do
-  // not specify = 1. This causes a bug when we check for the presence of an
-  // optional AudioFileMode member with `if (event.mode)`
-
-  /**
-   * The OneShot mode plays the file to its conclusion, ignoring the event
-   * length extracted from the pattern string */
-  OneShot,
-
-  /**
-   * Play the audio file to its conclusion, OR fade it out at the onset of the
-   * next AudioFile in the clip */
-  OneVoice,
-}
 /**
  * Insert an audio sample into a track
  */
-export class AudioFile implements Technique {
-  static Modes = AudioFileMode
+export class AudioFile extends FluidAudioFile implements Technique {
 
-  /** Filepath of the audio file */
-  path : string
-
-  /**
-   * When true, the inserted audio file will play to its end instead of obeying
-   * event length (default=false)
-   */
-  oneShot : boolean = false
-  fadeOutSeconds : number = 0
-  fadeInSeconds : number = 0
-  info : AudioFileInfo = {}
-  startInSourceSeconds : number = 0
-  mode = AudioFile.Modes.Event
-
-  /**
-   * Adjust the sample playback level. Unlike gainDb, trimDb is always applied,
-   * and will not be overridden when a dynamic object specifies a gain.
-   */
-  trimDb : number = 0
-
-  /**
-   * If present, this overrides any gain value in the Dynamic Object
-   */
-  gainDb? : number
-
-  constructor (options : AudioFileOptions) {
-
-    if (typeof options.path !== 'string')
-      throw new Error('AudioFile Technique constructor did not find an options.path string')
-
-    this.path = options.path
-    if (typeof options.gainDb === 'number') this.gainDb = options.gainDb
-    if (typeof options.fadeInSeconds === 'number') this.fadeInSeconds = options.fadeInSeconds
-    if (typeof options.fadeOutSeconds === 'number') this.fadeOutSeconds = options.fadeOutSeconds
-    if (typeof options.startInSourceSeconds === 'number') this.startInSourceSeconds = options.startInSourceSeconds
-    if (typeof options.trimDb === 'number') this.trimDb = options.trimDb
-    if (options.info) this.info = options.info
-    if (options.mode) this.mode = options.mode
-
-    if (this.mode === AudioFileMode.OneShot && typeof this.info.duration !== 'number') {
-      throw new Error('AudioFile techniques cannot have .mode=OneShot without specifying an info.duration')
-    }
-  }
-
-  use (startTime: number, duration : number, context : ClipEventContext) {
-    let durationSeconds = duration * 4 * 60 / context.session.bpm
-    let startTimeSeconds = (context.clip.startTime + startTime) * 4 * 60 / context.session.bpm
-    const fileEvent = this.insertIntoTrack(context.track, startTimeSeconds, durationSeconds)
+  use(startTime : number, duration : number, context : ClipEventContext)  {
+    const newAudioFile = new FluidAudioFile(this)
+    newAudioFile.durationSeconds = duration * 4 * 60 / context.session.bpm
+    newAudioFile.startTimeSeconds = (context.clip.startTime + startTime) * 4 * 60 / context.session.bpm
 
     if (typeof this.gainDb === 'number') {
       // just use the default
     } else if (typeof context.d.gainDb === 'number') {
-      fileEvent.gainDb = this.trimDb + context.d.gainDb
+      newAudioFile.gainDb = this.trimDb + context.d.gainDb
     } else if (typeof context.d.gain === 'number') { // backwards compatibility
-      fileEvent.gainDb = this.trimDb + context.d.gain
+      newAudioFile.gainDb = this.trimDb + context.d.gain
     }
 
-    return null;
-  }
-
-  /**
-   * Instantiate an AudioFileEvent, and insert it into `track`.
-   * @param track
-   * @param startTimeSeconds
-   * @param durationSeconds Set the duration (including fades) of the sample.
-   *    this value may be overridden depending on the value of .mode property
-   *    and the contends of the .info object. For example, objects in OneShot
-   *    mode will ignore durationSeconds, and set the length of the audio file
-   *    to the length of the underlying audio sample. Objects in OneVoice mode
-   *    will fade out at the onset of the next sample on the track.
-   */
-  insertIntoTrack(track : FluidTrack, startTimeSeconds : number, durationSeconds? : number) {
-
-    if (typeof durationSeconds !== 'number' && this.info.duration) {
-      durationSeconds = this.info.duration - this.startInSourceSeconds
-    }
-
-    if (this.mode === AudioFile.Modes.Event) {
-      // Just use the default
-    } else if (this.mode === AudioFile.Modes.OneShot) {
-      // in OneShot mode, always use the info.duration
-      if (typeof this.info.duration === 'number') {
-        durationSeconds = this.info.duration - this.startInSourceSeconds
-      } else {
-        console.warn('Warning: sample in OneShot mode has unknown length:', this)
+    if (newAudioFile.mode === AudioFileMode.Event) {
+      if (newAudioFile.info.duration) {
+        newAudioFile.durationSeconds = Math.min(newAudioFile.durationSeconds, newAudioFile.info.duration - newAudioFile.startInSourceSeconds)
       }
-    } else if (this.mode === AudioFile.Modes.OneVoice) {
-      // The rest of this is handled in the finalizer. As of Nov 6, 2020, the
-      // finalizer is hardCoded in Session.processEvents. but I may eventually
-      // support custom finalizers, which would be added to the technique
-      // (similar to .use method)
+    } else if (newAudioFile.mode === AudioFileMode.OneShot) {
+      if (!newAudioFile.info.duration) throw new Error('Cannot use OneShot Audio File that does not specify a file length in info.duration:' + JSON.stringify(newAudioFile))
+      newAudioFile.durationSeconds = newAudioFile.info.duration - newAudioFile.startInSourceSeconds
+    } else if (newAudioFile.mode === AudioFileMode.OneVoice) {
+      if (newAudioFile.info.duration) {
+        newAudioFile.durationSeconds = newAudioFile.info.duration = newAudioFile.startInSourceSeconds
+      }
     }
 
-    if (typeof durationSeconds !== 'number') {
-      throw new Error('AudioFile technique could not figure out a how long this sample should be: ' + JSON.stringify(this))
-    }
-
-    if (this.info?.duration) {
-      const maxDuration = this.info.duration - this.startInSourceSeconds
-      durationSeconds = Math.min(durationSeconds, maxDuration)
-    }
-
-    const fileEvent : AudioFileEvent = {
-      startTimeSeconds,
-      durationSeconds,
-      gainDb: this.trimDb,
-      path: this.path,
-      fadeInSeconds: this.fadeInSeconds,
-      fadeOutSeconds: this.fadeOutSeconds,
-      startInSourceSeconds: this.startInSourceSeconds,
-      mode: this.mode,
-      info: this.info,
-    }
-
-    if (typeof this.gainDb === 'number') fileEvent.gainDb += this.gainDb
-
-    track.fileEvents.push(fileEvent)
-    return fileEvent;
+    context.track.audioFiles.push(newAudioFile)
+    return newAudioFile
   }
 }
-
-export interface AudioFileOptions {
-  path : string
-  fadeOutSeconds? : number
-  fadeInSeconds? : number
-  startInSourceSeconds? : number
-  info? : AudioFileInfo
-  gainDb? : number
-  trimDb? : number
-  mode? : AudioFileMode
-}
-
 
 /**
  * A midi note within a midi clip.
