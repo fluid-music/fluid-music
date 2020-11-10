@@ -1,4 +1,5 @@
 import { ClipEventContext, AudioFileInfo, Technique, MidiNoteEvent, AudioFileEvent } from './fluid-interfaces'
+import { FluidTrack } from './FluidTrack'
 import { AutomationPoint } from './plugin'
 import * as random from './random'
 
@@ -74,26 +75,63 @@ export class AudioFile implements Technique {
     if (typeof options.trimDb === 'number') this.trimDb = options.trimDb
     if (options.info) this.info = options.info
     if (options.mode) this.mode = options.mode
+
+    if (this.mode === AudioFileMode.OneShot && typeof this.info.duration !== 'number') {
+      throw new Error('AudioFile techniques cannot have .mode=OneShot without specifying an info.duration')
+    }
   }
 
   use (startTime: number, duration : number, context : ClipEventContext) {
     let durationSeconds = duration * 4 * 60 / context.session.bpm
     let startTimeSeconds = (context.clip.startTime + startTime) * 4 * 60 / context.session.bpm
+    const fileEvent = this.insertIntoTrack(context.track, startTimeSeconds, durationSeconds)
+
+    if (typeof this.gainDb === 'number') {
+      // just use the default
+    } else if (typeof context.d.gainDb === 'number') {
+      fileEvent.gainDb = this.trimDb + context.d.gainDb
+    } else if (typeof context.d.gain === 'number') { // backwards compatibility
+      fileEvent.gainDb = this.trimDb + context.d.gain
+    }
+
+    return null;
+  }
+
+  /**
+   * Instantiate an AudioFileEvent, and insert it into `track`.
+   * @param track
+   * @param startTimeSeconds
+   * @param durationSeconds Set the duration (including fades) of the sample.
+   *    this value may be overridden depending on the value of .mode property
+   *    and the contends of the .info object. For example, objects in OneShot
+   *    mode will ignore durationSeconds, and set the length of the audio file
+   *    to the length of the underlying audio sample. Objects in OneVoice mode
+   *    will fade out at the onset of the next sample on the track.
+   */
+  insertIntoTrack(track : FluidTrack, startTimeSeconds : number, durationSeconds? : number) {
+
+    if (typeof durationSeconds !== 'number' && this.info.duration) {
+      durationSeconds = this.info.duration - this.startInSourceSeconds
+    }
 
     if (this.mode === AudioFile.Modes.Event) {
-      // do nothing - just use default (above)
+      // Just use the default
     } else if (this.mode === AudioFile.Modes.OneShot) {
-      if (this.info.duration) {
-        durationSeconds = this.info.duration
-      }
-    } else if (this.mode === AudioFile.Modes.OneVoice) {
+      // in OneShot mode, always use the info.duration
       if (typeof this.info.duration === 'number') {
         durationSeconds = this.info.duration - this.startInSourceSeconds
+      } else {
+        console.warn('Warning: sample in OneShot mode has unknown length:', this)
       }
+    } else if (this.mode === AudioFile.Modes.OneVoice) {
       // The rest of this is handled in the finalizer. As of Nov 6, 2020, the
       // finalizer is hardCoded in Session.processEvents. but I may eventually
       // support custom finalizers, which would be added to the technique
       // (similar to .use method)
+    }
+
+    if (typeof durationSeconds !== 'number') {
+      throw new Error('AudioFile technique could not figure out a how long this sample should be: ' + JSON.stringify(this))
     }
 
     if (this.info?.duration) {
@@ -104,7 +142,7 @@ export class AudioFile implements Technique {
     const fileEvent : AudioFileEvent = {
       startTimeSeconds,
       durationSeconds,
-      gainDb: 0,
+      gainDb: this.trimDb,
       path: this.path,
       fadeInSeconds: this.fadeInSeconds,
       fadeOutSeconds: this.fadeOutSeconds,
@@ -113,19 +151,13 @@ export class AudioFile implements Technique {
       info: this.info,
     }
 
-    if (typeof this.gainDb === 'number') {
-      fileEvent.gainDb = this.gainDb
-    } else if (typeof context.d.gainDb === 'number') {
-      fileEvent.gainDb = context.d.gainDb
-    } else if (typeof context.d.gain === 'number') { // backwards compatibility
-      fileEvent.gainDb = context.d.gain
-    }
-    fileEvent.gainDb += this.trimDb
+    if (typeof this.gainDb === 'number') fileEvent.gainDb += this.gainDb
 
-    context.track.fileEvents.push(fileEvent)
-    return null;
+    track.fileEvents.push(fileEvent)
+    return fileEvent;
   }
 }
+
 export interface AudioFileOptions {
   path : string
   fadeOutSeconds? : number
