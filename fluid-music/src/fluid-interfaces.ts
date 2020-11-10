@@ -56,10 +56,9 @@ export interface DynamicObject {
 export interface Clip {
   events : TechniqueEvent[];
   midiEvents : MidiNoteEvent[];
-  fileEvents : AudioFileEvent[];
   unmappedEvents: any[];
   duration : number;
-  startTime? : number;
+  startTime : number;
 }
 
 export interface dLibrary { [key: string] : any|any[] }

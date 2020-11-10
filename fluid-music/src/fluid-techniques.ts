@@ -78,7 +78,7 @@ export class AudioFile implements Technique {
 
   use (startTime: number, duration : number, context : ClipEventContext) {
     let durationSeconds = duration * 4 * 60 / context.session.bpm
-    let startTimeSeconds = startTime * 4 * 60 / context.session.bpm
+    let startTimeSeconds = (context.clip.startTime + startTime) * 4 * 60 / context.session.bpm
 
     if (this.mode === AudioFile.Modes.Event) {
       // do nothing - just use default (above)
@@ -122,7 +122,7 @@ export class AudioFile implements Technique {
     }
     fileEvent.gainDb += this.trimDb
 
-    context.clip.fileEvents.push(fileEvent)
+    context.track.fileEvents.push(fileEvent)
     return null;
   }
 }

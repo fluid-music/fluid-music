@@ -1,4 +1,4 @@
-import { Clip, ScoreConfig, TrackReceive, Tap, UnresolvedSend } from './fluid-interfaces';
+import { Clip, ScoreConfig, TrackReceive, Tap, UnresolvedSend, AudioFileEvent } from './fluid-interfaces';
 import { FluidPlugin, Automation } from './plugin';
 
 export class FluidReceive implements TrackReceive {
@@ -57,8 +57,9 @@ export class FluidTrack {
   gain = 0
   pan = 0
   width = 0
-  plugins : FluidPlugin[] = []
   clips : Clip[] = []
+  fileEvents : AudioFileEvent[] = []
+  plugins : FluidPlugin[] = []
   receives : TrackReceive[] = []
   automation : Automation = {}
   duration? : number

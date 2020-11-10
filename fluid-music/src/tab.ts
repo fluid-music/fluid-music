@@ -82,7 +82,6 @@ export function parseTab(rhythm, nPattern, tLibrary) : Clip {
     events: [] as TechniqueEvent[],
     duration: R.last(rhythmObject.totals),
     midiEvents: [],
-    fileEvents: [],
     unmappedEvents: [],
   };
 

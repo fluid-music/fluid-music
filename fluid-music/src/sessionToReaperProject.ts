@@ -1,4 +1,4 @@
-import { extname } from 'path'
+import { extname, basename } from 'path'
 import { FluidPlugin } from './plugin'
 import { FluidSession } from './FluidSession'
 import { FluidReceive, FluidTrack } from './FluidTrack'
@@ -111,9 +111,10 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
       }
     })
 
+    const rppItems = fileEventsToReaperObjects(track.fileEvents, session)
+
     // handle Clips
     track.clips.forEach((clip, clipIndex) => {
-
       // Create one EventContext object for each clip.
       const context = {
         session,
@@ -125,13 +126,12 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
       };
 
       if (clip.midiEvents && clip.midiEvents.length) {
-        rpppTrack.contents.push(midiEventsToReaperObject(clip.midiEvents, context));
-      }
-
-      if (clip.fileEvents && clip.fileEvents.length) {
-        rpppTrack.contents = rpppTrack.contents.concat(fileEventsToReaperObject(clip.fileEvents, context));
+        rppItems.push(midiEventsToReaperObject(clip.midiEvents, context));
       }
     }); // track.clips.forEach
+
+    rppItems.sort((a, b) => a.getOrCreateStructByToken('POSITION').params[0] - b.getOrCreateStructByToken('POSITION')[0])
+    rpppTrack.contents = rpppTrack.contents.concat(rppItems)
 
     // Handle track specific automation.
     for (const [name, automation] of Object.entries(track.automation)) {
@@ -262,28 +262,20 @@ function midiEventsToReaperObject(midiEvents : MidiNoteEvent[] , context : ClipE
   return midiItem;
 };
 
-function fileEventsToReaperObject(fileEvents : AudioFileEvent[], context : ClipEventContext) {
-  if (typeof context.clip.startTime !== 'number')
-    throw new Error('Clip is missing startTime')
-
-  const bpm = context.session.bpm
+function fileEventsToReaperObjects(fileEvents : AudioFileEvent[], session : FluidSession) {
+  const bpm = session.bpm
   if (!bpm) throw new Error('fileEventToReaperObject could not find a session.bpm parameter')
 
   return fileEvents.map((event, eventIndex) => {
-    if (typeof context.clip.startTime !== 'number')
-      throw new Error('fileEventsToReaperObject found a clip with no .startTime')
-
     if (typeof event.path !== 'string') {
       console.error(event);
       throw new Error('tracksToFluidMessage: A file event found in the note library does not have a .path string');
     }
 
-    const startTimeSeconds = (context.clip.startTime * 4 * 60 / bpm) + event.startTimeSeconds
-
     const audioItem = new rppp.objects.ReaperItem();
-    const clipName = `s${context.clipIndex}.${eventIndex}`;
+    const clipName = `${basename(event.path)}.${eventIndex}`;
     audioItem.getOrCreateStructByToken('NAME').params[0] = clipName
-    audioItem.getOrCreateStructByToken('POSITION').params[0] = startTimeSeconds
+    audioItem.getOrCreateStructByToken('POSITION').params[0] = event.startTimeSeconds
 
     const audioSource = new rppp.objects.ReaperSource()
     const extension = extname(event.path).toLowerCase()

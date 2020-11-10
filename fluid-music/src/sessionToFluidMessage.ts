@@ -1,3 +1,4 @@
+import { basename } from 'path'
 import { FluidPlugin, PluginType } from './plugin';
 import { ClipEventContext, MidiNoteEvent, AudioFileEvent, Tap } from './fluid-interfaces';
 import { FluidTrack } from './FluidTrack'
@@ -128,18 +129,20 @@ export function sessionToContentFluidMessage(session : FluidSession) {
     const isSubmix = isSubmixTrack(track)
 
     // Create a sub-message for each track
-    let trackMessages : any[] = [];
-    trackMessages.push(createSelectMessage(track, parentName));
-    sessionMessages.push(trackMessages);
+    let trackMessages : any[] = []
+    sessionMessages.push(trackMessages)
+    trackMessages.push(createSelectMessage(track, parentName))
+    trackMessages.push(fileEventsToFluidMessage(track.fileEvents, session))
+    if (isSubmix && track.fileEvents.length) {
+      throw new Error(`sessionToTemplateFluidMessage: ${track.name} track has file events and child tracks, but tracktion does not allow events directly on submix tracks`)
+    }
 
     track.clips.forEach((clip, clipIndex) => {
-      if (isSubmix) {
-        if (clip.fileEvents.length || clip.midiEvents.length) {
-          // Charles: The best thing to do is probably to have some system that
-          // creates an additional track, and puts the clips on it. However, I'm
-          // not going to add that until it is clearly needed.
-          throw new Error(`sessionToTemplateFluidMessage: ${track.name} track has clips and and child track, but tracktion does not allow clips directly on submix tracks`)
-        }
+      if (isSubmix && clip.midiEvents.length) {
+        // Charles: The best thing to do is probably to have some system that
+        // creates an additional track, and puts the clips on it. However, I'm
+        // not going to add that until it is clearly needed.
+        throw new Error(`sessionToTemplateFluidMessage: ${track.name} track has both MIDI clips and child tracks, but tracktion does not allow clips directly on submix tracks`)
       }
 
       // Create a sub-message for each clip. Note that the naming convention
@@ -161,11 +164,6 @@ export function sessionToContentFluidMessage(session : FluidSession) {
       if (clip.midiEvents && clip.midiEvents.length) {
         clipMessages.push(midiEventsToFluidMessage(clip.midiEvents, context));
       }
-
-      if (clip.fileEvents && clip.fileEvents.length) {
-        clipMessages.push(fileEventsToFluidMessage(clip.fileEvents, context));
-      }
-
     }); // track.clips.forEach
 
     // Handle track specific automation.
@@ -255,35 +253,19 @@ function midiEventsToFluidMessage(midiEvents : MidiNoteEvent[], context : ClipEv
   return msg;
 };
 
-/**
- * @param {ClipEvent[]} fileEvents
- * @param {ClipEventContext} context This will not have a .eventIndex
- */
-function fileEventsToFluidMessage(fileEvents : AudioFileEvent[], context : ClipEventContext) {
-  if (typeof context.clip.startTime !== 'number')
-    throw new Error('Clip is missing startTime');
-
-  // exampleClipEvent = {
-  //   type: 'file',
-  //   path: 'media/kick.wav',
-  //   startTime: 0.50,
-  //   length: 0.25,
-  //   d: { v: 70, dbfs: -10 }, // If .v is present here...
-  // };
-
+function fileEventsToFluidMessage(fileEvents : AudioFileEvent[], session : FluidSession) {
   return fileEvents.map((event, eventIndex) => {
-    if (typeof context.clip.startTime !== 'number')
-      throw new Error('fileEventsToFluidMessage found a clip with no .startTime: ' + JSON.stringify(context.clip))
 
-    const startTime = context.clip.startTime + (event.startTimeSeconds * context.session.bpm / 60 / 4)
-    const duration = event.durationSeconds * context.session.bpm / 60 / 4
+
+    const startTime = event.startTimeSeconds * session.bpm / 60 / 4
+    const duration = event.durationSeconds * session.bpm / 60 / 4
 
     if (typeof event.path !== 'string') {
       console.error(event);
       throw new Error(`fileEventsToFluidMessage: A file event is missing a .path string ${JSON.stringify(event)}`);
     };
 
-    const clipName = `s${context.clipIndex}.${eventIndex}`;
+    const clipName = `s${basename(event.path)}.${eventIndex}`;
     const msg = [cybr.audiotrack.insertWav(clipName, startTime, event.path)];
 
     if (event.startInSourceSeconds)

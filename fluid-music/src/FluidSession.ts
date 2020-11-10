@@ -198,18 +198,16 @@ export class FluidSession {
 
     // Finalize
     this.forEachTrack(track => {
-      track.clips.forEach((clip) => {
-        clip.fileEvents.sort((a, b) => a.startTimeSeconds - b.startTimeSeconds)
-        for (let i = 1; i < clip.fileEvents.length; i++) {
-          const fEvent1 = clip.fileEvents[i - 1]
-          const fEvent2 = clip.fileEvents[i]
-          if (fEvent1.mode === AudioFileMode.OneVoice && typeof fEvent1.info.duration === 'number') {
-            const maxDuration = fEvent1.info.duration - fEvent1.startInSourceSeconds
-            const secondsBetween = fEvent2.startTimeSeconds - fEvent1.startTimeSeconds
-            fEvent1.durationSeconds = Math.min(secondsBetween + fEvent1.fadeOutSeconds, maxDuration)
-          }
+      track.fileEvents.sort((a, b) => a.startTimeSeconds - b.startTimeSeconds)
+      for (let i = 1; i < track.fileEvents.length; i++) {
+        const fEvent1 = track.fileEvents[i - 1]
+        const fEvent2 = track.fileEvents[i]
+        if (fEvent1.mode === AudioFileMode.OneVoice && typeof fEvent1.info.duration === 'number') {
+          const maxDuration = fEvent1.info.duration - fEvent1.startInSourceSeconds
+          const secondsBetween = fEvent2.startTimeSeconds - fEvent1.startTimeSeconds
+          fEvent1.durationSeconds = Math.min(secondsBetween + fEvent1.fadeOutSeconds, maxDuration)
         }
-      })
+      }
     })
   }
 
