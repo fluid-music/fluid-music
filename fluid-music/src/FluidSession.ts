@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as tab from './tab'
 import * as cybr from './cybr'
 import { FluidReceive, FluidTrack, TrackConfig } from './FluidTrack';
-import { ScoreConfig, ClipEventContext, Clip } from './fluid-interfaces';
+import { ScoreConfig, UseContext } from './fluid-interfaces';
 import { sessionToTemplateFluidMessage, sessionToContentFluidMessage } from './sessionToFluidMessage'
 import { sessionToReaperProject } from './sessionToReaperProject';
 import { createWriteStream } from 'fs';
@@ -163,31 +163,40 @@ export class FluidSession {
     })
   }
 
+  timeWholeNotesToSeconds(timeInWholeNotes : number) {
+    return timeInWholeNotes * 4 * 60 / this.bpm
+  }
+
+  timeSecondsToWholeNotes(timeInSeconds : number) {
+    return timeInSeconds * this.bpm / 4 / 60
+  }
+
   processEvents() {
     // Charles: At some point in the future, I may implement custom finalizers,
     // which could be stored in a Map like this:
     // const finalizers = new Map<Clip, {(clip : Clip) : any}[]>()
 
     this.forEachTrack(track => {
-
-      if (!track.clips || !track.clips.length) {
-        console.warn(`processEvents: skipping ${track.name}, because it has no .clips`)
-      }
-
       track.clips.forEach((clip, clipIndex) => {
-        const context : ClipEventContext = {
-          session: this,
-          track,
-          clip,
-          clipIndex,
-          data: {},
-          d: {},
-        }
-
+        const data = {}
+        let eventIndex = 0
         for (const event of clip.events) {
           if (typeof event.technique?.use === 'function') {
-            if (event.d) context.d = event.d
-            event.technique.use(event.startTime, event.duration, context)
+            let useContext : UseContext = {
+              d: event.d ? event.d : {},
+              track,
+              clip,
+              clipIndex,
+              data,
+              eventIndex: eventIndex++, // Caution, this is probably broken
+              session: this,
+              startTime: clip.startTime + event.startTime,
+              duration: event.duration,
+              startTimeSeconds: this.timeWholeNotesToSeconds(event.startTime + clip.startTime),
+              durationSeconds: this.timeWholeNotesToSeconds(event.duration)
+            }
+
+            event.technique.use(useContext)
           } else {
             throw new Error(`Unhandled Event (no .use(...) method): ${JSON.stringify(event)}`)
           }
@@ -205,6 +214,7 @@ export class FluidSession {
         if (fEvent1.mode === AudioFileMode.OneVoice && typeof fEvent1.info.duration === 'number') {
           const maxDuration = fEvent1.info.duration - fEvent1.startInSourceSeconds
           const secondsBetween = fEvent2.startTimeSeconds - fEvent1.startTimeSeconds
+
           fEvent1.durationSeconds = Math.min(secondsBetween + fEvent1.fadeOutSeconds, maxDuration)
         }
       }

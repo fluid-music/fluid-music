@@ -2,7 +2,7 @@ import { FluidSession } from './FluidSession'
 import { FluidTrack } from './FluidTrack'
 
 export interface Technique {
-  use : {(startTime : number, duration : number, context : ClipEventContext) : any }
+  use : {(context : UseContext) : any }
 }
 
 /** An Event is just anything with a startTime and a duration */
@@ -85,6 +85,32 @@ export interface ClipEventContext {
   clipIndex: number;
   /** index of the event within the clip. */
   eventIndex?: number;
+}
+
+export interface UseContext {
+  d: DynamicObject;
+
+  /**
+   * this is a convenient place to store data between .process callbacks. Like
+   * the EventContext, it is replaced for each Clip.
+   */
+  data: { [key: string] : any };
+  /** The session containing this track, clip, and event */
+  session: FluidSession;
+  /** the Clip that contains the current event */
+  clip?: Clip;
+  /** the Track that contains the current event */
+  track: FluidTrack;
+  /** index of the clip within the track */
+  clipIndex: number;
+  /** index of the event within the clip. */
+  eventIndex: number;
+  /** Event time measured in whole notes */
+  startTime: number;
+  /** Event duration, measured in whole notes */
+  duration: number;
+  startTimeSeconds: number;
+  durationSeconds: number;
 }
 
 /**

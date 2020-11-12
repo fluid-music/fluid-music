@@ -68,5 +68,5 @@ export class FluidAudioFile {
   info : AudioFileInfo = {}
   startInSourceSeconds : number = 0
   startTimeSeconds : number = 0
-  durationSeconds : number = 0
+  durationSeconds : number = 1
 }

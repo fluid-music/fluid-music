@@ -1,4 +1,4 @@
-import { ClipEventContext, Technique, MidiNoteEvent } from './fluid-interfaces'
+import { Technique, MidiNoteEvent, UseContext } from './fluid-interfaces'
 import { AudioFileMode, FluidAudioFile } from './FluidAudioFile'
 import { AutomationPoint } from './plugin'
 import * as random from './random'
@@ -15,17 +15,17 @@ export interface PluginAutoTechniqueClass extends TechniqueClass {
  */
 export class AudioFile extends FluidAudioFile implements Technique {
 
-  use(startTime : number, duration : number, context : ClipEventContext)  {
+  use ({ track, startTimeSeconds, durationSeconds, d } : UseContext)  {
     const newAudioFile = new FluidAudioFile(this)
-    newAudioFile.durationSeconds = duration * 4 * 60 / context.session.bpm
-    newAudioFile.startTimeSeconds = (context.clip.startTime + startTime) * 4 * 60 / context.session.bpm
+    newAudioFile.durationSeconds = durationSeconds
+    newAudioFile.startTimeSeconds = startTimeSeconds
 
     if (typeof this.gainDb === 'number') {
       // just use the default
-    } else if (typeof context.d.gainDb === 'number') {
-      newAudioFile.gainDb = this.trimDb + context.d.gainDb
-    } else if (typeof context.d.gain === 'number') { // backwards compatibility
-      newAudioFile.gainDb = this.trimDb + context.d.gain
+    } else if (typeof d.gainDb === 'number') {
+      newAudioFile.gainDb = this.trimDb + d.gainDb
+    } else if (typeof d.gain === 'number') { // backwards compatibility
+      newAudioFile.gainDb = this.trimDb + d.gain
     }
 
     if (newAudioFile.mode === AudioFileMode.Event) {
@@ -37,11 +37,11 @@ export class AudioFile extends FluidAudioFile implements Technique {
       newAudioFile.durationSeconds = newAudioFile.info.duration - newAudioFile.startInSourceSeconds
     } else if (newAudioFile.mode === AudioFileMode.OneVoice) {
       if (newAudioFile.info.duration) {
-        newAudioFile.durationSeconds = newAudioFile.info.duration = newAudioFile.startInSourceSeconds
+        newAudioFile.durationSeconds = newAudioFile.info.duration - newAudioFile.startInSourceSeconds
       }
     }
 
-    context.track.audioFiles.push(newAudioFile)
+    track.audioFiles.push(newAudioFile)
     return newAudioFile
   }
 }
@@ -69,18 +69,21 @@ export class MidiNote implements Technique {
     if (typeof options.velocity === 'number') this.velocity = options.velocity
   }
 
-  use (startTime : number, duration : number, context : ClipEventContext) {
+  use (context : UseContext) {
+    if (!context.clip) throw new Error('Cannot .use MidiNote without a clip: ' + JSON.stringify({ note: this, context }))
+
+    const { d, startTime, clip, duration } = context
     const midiNoteEvent : MidiNoteEvent = {
-      startTime,
+      startTime: startTime - clip.startTime,
       duration,
       note: this.note,
       velocity : 64
     }
     if (typeof this.velocity === 'number') midiNoteEvent.velocity = this.velocity
-    else if (typeof context.d.velocity === 'number') midiNoteEvent.velocity = context.d.velocity
-    else if (typeof context.d.v === 'number') midiNoteEvent.velocity = context.d.v
+    else if (typeof d.velocity === 'number') midiNoteEvent.velocity = d.velocity
+    else if (typeof d.v === 'number') midiNoteEvent.velocity = d.v
 
-    context.clip.midiEvents.push(midiNoteEvent)
+    clip.midiEvents.push(midiNoteEvent)
 
     return null;
   }
@@ -115,8 +118,8 @@ export class PluginAuto implements Technique {
     if (typeof options.curve === 'number') this.curve = options.curve
   }
 
-  use (startTime : number, duration : number, context : ClipEventContext) {
-    startTime = (context.clip.startTime as number) + startTime;
+  use ({ track, startTime } : UseContext) {
+
     const point : AutomationPoint = {
       startTime,
       value: this.value,
@@ -124,13 +127,13 @@ export class PluginAuto implements Technique {
     };
 
     const nth     = this.pluginSelector.nth || 0;
-    const matches = context.track.plugins.filter(plugin =>
+    const matches = track.plugins.filter(plugin =>
       plugin.pluginName === this.pluginSelector.pluginName &&
       plugin.pluginType === this.pluginSelector.pluginType);
 
     if (nth >= matches.length) {
       const needed = nth - matches.length + 1;
-      if (needed > 0) throw new Error(`${needed} missing ${this.pluginSelector.pluginName} plugins of on ${context.track.name} track`);
+      if (needed > 0) throw new Error(`${needed} missing ${this.pluginSelector.pluginName} plugins of on ${track.name} track`);
     }
 
     const plugin = matches[nth];
@@ -181,8 +184,7 @@ export class TrackAuto implements Technique {
     if (typeof options.curve === 'number') this.curve = options.curve
   }
 
-  use (startTime : number, duration : number, context : ClipEventContext) {
-    startTime = (context.clip.startTime as number) + startTime;
+  use ({ startTime, track } : UseContext) {
     const point : AutomationPoint = {
       startTime,
       value: (this.value as number),
@@ -191,7 +193,7 @@ export class TrackAuto implements Technique {
 
     if (typeof this.curve === 'number') point.curve = this.curve
 
-    const automation = context.track.automation
+    const automation = track.automation
 
     if (!automation.hasOwnProperty(this.paramKey))
       automation[this.paramKey] = { points: [] };
@@ -217,10 +219,10 @@ export class MidiChord implements Technique {
     if (typeof options.name === 'string') this.name = options.name
   }
 
-  use (startTime : number, duration : number, context : ClipEventContext) {
+  use (context : UseContext) {
     for (const note of this.notes) {
       const midiNote = new MidiNote({ note })
-      midiNote.use(startTime, duration, context)
+      midiNote.use(context)
     }
   }
 }
@@ -241,7 +243,7 @@ export class ILayers implements Technique {
     this.layers = options.layers
   }
 
-  use (startTime : number, duration : number, context : ClipEventContext) {
+  use (context : UseContext) {
     let length = this.layers.length // number of layers
     let index = length - 1          // default to last layer
     let d = Object.assign({}, context.d)
@@ -258,7 +260,7 @@ export class ILayers implements Technique {
     }
 
     const technique = this.layers[ILayers.clamp(0, length-1, index)]
-    technique.use(startTime, duration, context)
+    technique.use(context)
   }
 
   static clamp(min: number, max: number, value: number) {
@@ -289,9 +291,9 @@ export class Random implements Technique {
     this.choices = options.choices
   }
 
-  use (startTime : number, duration : number, context : ClipEventContext) {
+  use (context : UseContext) {
     const technique = random.choice(this.choices)
-    return technique.use(startTime, duration, context)
+    return technique.use(context)
   }
 }
 export interface RandomOptions {

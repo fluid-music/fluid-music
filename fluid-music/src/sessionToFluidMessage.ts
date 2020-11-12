@@ -146,24 +146,22 @@ export function sessionToContentFluidMessage(session : FluidSession) {
         throw new Error(`sessionToTemplateFluidMessage: ${track.name} track has both MIDI clips and child tracks, but tracktion does not allow clips directly on submix tracks`)
       }
 
-      // Create a sub-message for each clip. Note that the naming convention
-      // gets a little confusing, because we do not yet know if "clip" contains
-      // a single "Midi Clip", a collection of audio file events, or both.
-      const clipMessages : any[] = [];
-      trackMessages.push(clipMessages);
-
       // Create one EventContext object for each clip.
-      const context : ClipEventContext = {
-        track,
-        clip,
-        clipIndex,
-        session,
-        data: {},
-        d: {}
-      };
-
       if (clip.midiEvents && clip.midiEvents.length) {
-        clipMessages.push(midiEventsToFluidMessage(clip.midiEvents, context));
+        // Create a sub-message for each clip. Note that the naming convention
+        // gets a little confusing, because we do not yet know if "clip" contains
+        // a single "Midi Clip", a collection of audio file events, or both.
+        const clipMessages : any[] = [];
+        trackMessages.push(clipMessages);
+        const clipName  = `${track.name} ${clipIndex}`
+        clipMessages.push(cybr.midiclip.select(clipName, clip.startTime, clip.duration))
+        clipMessages.push(clip.midiEvents.map(event => {
+          // Velocity in the event takes priority over velocity in the .d object
+          const velocity = (typeof event.velocity === 'number')
+            ? event.velocity
+            : undefined
+          return cybr.midiclip.note(event.note, event.startTime, event.duration, velocity);
+        }))
       }
     }); // track.clips.forEach
 
@@ -232,34 +230,11 @@ export function sessionToContentFluidMessage(session : FluidSession) {
   return sessionMessages;
 };
 
-function midiEventsToFluidMessage(midiEvents : MidiNoteEvent[], context : ClipEventContext) {
-  if (typeof context.clip.startTime !== 'number')
-    throw new Error('Clip is missing startTime');
-
-  const msg : any[] = [];
-  const clipName  = `${context.track.name} ${context.clipIndex}`
-  const startTime = context.clip.startTime;
-  const duration  = context.clip.duration;
-  const clipMsg   = cybr.midiclip.select(clipName, startTime, duration)
-  msg.push(clipMsg);
-
-  for (const event of midiEvents) {
-    // Velocity in the event takes priority over velocity in the .d object
-    const velocity = (typeof event.velocity === 'number')
-      ? event.velocity
-      : undefined
-    msg.push(cybr.midiclip.note(event.note, event.startTime, event.duration, velocity));
-  }
-
-  return msg;
-};
-
 function fileEventsToFluidMessage(fileEvents : FluidAudioFile[], session : FluidSession) {
   return fileEvents.map((event, eventIndex) => {
 
-
-    const startTime = event.startTimeSeconds * session.bpm / 60 / 4
-    const duration = event.durationSeconds * session.bpm / 60 / 4
+    const startTime = session.timeSecondsToWholeNotes(event.startTimeSeconds)
+    const duration = session.timeSecondsToWholeNotes(event.durationSeconds)
 
     if (typeof event.path !== 'string') {
       console.error(event);
