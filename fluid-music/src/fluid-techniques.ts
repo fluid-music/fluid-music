@@ -1,5 +1,5 @@
 import { Technique, MidiNoteEvent, UseContext } from './fluid-interfaces'
-import { AudioFileMode, FluidAudioFile } from './FluidAudioFile'
+import { AudioFileMode, AudioFileOptions, FluidAudioFile } from './FluidAudioFile'
 import { AutomationPoint } from './plugin'
 import * as random from './random'
 
@@ -20,12 +20,12 @@ export class AudioFile extends FluidAudioFile implements Technique {
     newAudioFile.durationSeconds = durationSeconds
     newAudioFile.startTimeSeconds = startTimeSeconds
 
-    if (typeof this.gainDb === 'number') {
-      // just use the default
-    } else if (typeof d.gainDb === 'number') {
-      newAudioFile.gainDb = this.trimDb + d.gainDb
-    } else if (typeof d.gain === 'number') { // backwards compatibility
-      newAudioFile.gainDb = this.trimDb + d.gain
+    if (typeof d.gainDb === 'number' || typeof d.gain === 'number') {
+      console.warn(`AudioFile technique's .use encountered obsolete gain(Db) dynamic`, this, d)
+    }
+
+    if (typeof d.trimDb === 'number') {
+      newAudioFile.gainDb = this.gainDb + d.trimDb
     }
 
     if (newAudioFile.mode === AudioFileMode.Event) {

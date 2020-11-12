@@ -1,9 +1,9 @@
 import { basename } from 'path'
 import { FluidPlugin, PluginType } from './plugin';
-import { ClipEventContext, MidiNoteEvent, Tap } from './fluid-interfaces';
+import { Tap } from './fluid-interfaces';
 import { FluidTrack } from './FluidTrack'
 import { FluidSession } from './FluidSession';
-import { FluidAudioFile } from './FluidAudioFile'
+import { FluidAudioFile, resolveFades } from './FluidAudioFile'
 import * as cybr from './cybr/index';
 
 // This amplification conversion is hard-coded in Tracktion
@@ -230,34 +230,35 @@ export function sessionToContentFluidMessage(session : FluidSession) {
   return sessionMessages;
 };
 
-function fileEventsToFluidMessage(fileEvents : FluidAudioFile[], session : FluidSession) {
-  return fileEvents.map((event, eventIndex) => {
+function fileEventsToFluidMessage(audioFiles : FluidAudioFile[], session : FluidSession) {
+  return audioFiles.map((audioFile, eventIndex) => {
 
-    const startTime = session.timeSecondsToWholeNotes(event.startTimeSeconds)
-    const duration = session.timeSecondsToWholeNotes(event.durationSeconds)
+    const startTime = session.timeSecondsToWholeNotes(audioFile.startTimeSeconds)
+    const duration = session.timeSecondsToWholeNotes(audioFile.durationSeconds)
 
-    if (typeof event.path !== 'string') {
-      console.error(event);
-      throw new Error(`fileEventsToFluidMessage: A file event is missing a .path string ${JSON.stringify(event)}`);
+    if (typeof audioFile.path !== 'string') {
+      console.error(audioFile);
+      throw new Error(`fileEventsToFluidMessage: A file event is missing a .path string ${JSON.stringify(audioFile)}`);
     };
 
-    const clipName = `s${basename(event.path)}.${eventIndex}`;
-    const msg = [cybr.audiotrack.insertWav(clipName, startTime, event.path)];
+    const clipName = `s${basename(audioFile.path)}.${eventIndex}`;
+    const msg = [cybr.audiotrack.insertWav(clipName, startTime, audioFile.path)];
 
-    if (event.startInSourceSeconds)
-      msg.push(cybr.clip.setSourceOffsetSeconds(event.startInSourceSeconds));
+    if (audioFile.startInSourceSeconds)
+      msg.push(cybr.clip.setSourceOffsetSeconds(audioFile.startInSourceSeconds));
 
     msg.push(cybr.clip.length(duration));
 
-    // apply fade in/out times (if specified)
-    if (typeof event.fadeOutSeconds === 'number' || typeof event.fadeInSeconds === 'number')
-      msg.push(cybr.audioclip.fadeInOutSeconds(event.fadeInSeconds, event.fadeOutSeconds));
+    const { fadeInSeconds, fadeOutSeconds, gainDb } = resolveFades(audioFile)
 
-    // Remember, it is the the final .use call's job to set event.gainDb. The
-    // AudioFile technique's .use method looks for a dynamic Object, and sets
-    // the event.gainDb property.
-    if (typeof event.gainDb === 'number')
-      msg.push(cybr.audioclip.gain(event.gainDb));
+    // apply fade in/out times (if specified)
+    if (fadeOutSeconds || fadeInSeconds) {
+      msg.push(cybr.audioclip.fadeInOutSeconds(fadeInSeconds, fadeOutSeconds));
+    }
+
+    if (gainDb) {
+      msg.push(cybr.audioclip.gain(gainDb));
+    }
 
     return msg;
   });

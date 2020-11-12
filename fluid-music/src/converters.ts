@@ -2,9 +2,17 @@ const s11    = require('sharp11');
 const Parser = require('expr-eval').Parser;
 const parser = new Parser();
 
-const clamp = (min, max, v) => {
+export function clamp (min, max, v) {
   if (min > max) [min, max] = [max, min]
   return Math.max(Math.min(max, v), min)
+}
+
+export function dbToGain (db) {
+  return Math.pow(10, db / 20)
+}
+
+export function gainToDb (gain) {
+  return 20 * Math.log10(gain)
 }
 
 /**

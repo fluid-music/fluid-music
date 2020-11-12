@@ -1,3 +1,5 @@
+import { gainToDb, clamp } from './converters'
+
 /** AudioFile playback modes */
 export enum AudioFileMode {
   /**
@@ -36,7 +38,6 @@ export interface AudioFileOptions {
   fadeOutSeconds? : number
   fadeInSeconds? : number
   gainDb? : number
-  trimDb? : number
   mode? : AudioFileMode
   info? : AudioFileInfo
   startInSourceSeconds? : number
@@ -62,11 +63,47 @@ export class FluidAudioFile {
   path : string = ''
   fadeOutSeconds : number = 0
   fadeInSeconds : number = 0
-  gainDb? : number
-  trimDb : number = 0
+  gainDb : number = 0
   mode : AudioFileMode = AudioFileMode.Event
   info : AudioFileInfo = {}
   startInSourceSeconds : number = 0
   startTimeSeconds : number = 0
   durationSeconds : number = 1
+}
+
+/**
+ * resolveFades is used internally to account for the case when an audio file's
+ * in and out fades are longer than the item containing the audio file itself.
+ * You may set an audio file's `.fadeInSeconds` to a value that is longer than
+ * the duration of the audio file instance on a track. Exporters use this method
+ * to simulate a long fade in by artificially reducing the audioFile's gain.
+ *
+ * This prevents short clips with long gains from fading in faster than they
+ * should. If you want to avoid this behavior, make sure that the total
+ * `.fadeInSeconds` and `.fadeOutSeconds` in your audio files do not exceed the
+ * `.durationSeconds`.
+ */
+export function resolveFades(audioFile : FluidAudioFile) {
+  const fractionOfFadeInTime = clamp(0, 1, audioFile.durationSeconds / audioFile.fadeInSeconds)
+  const fadeInGain = Math.sqrt(fractionOfFadeInTime) // Assume constant power fade
+  const fadeInDb = gainToDb(fadeInGain)
+
+  const fractionOfFadeOutTime = clamp(0, 1, audioFile.durationSeconds / audioFile.fadeOutSeconds)
+  const fadeOutGain = Math.sqrt(fractionOfFadeOutTime) // Assume constant power fade
+  const fadeOutDb = gainToDb(fadeOutGain)
+
+  let fadeInSeconds = audioFile.fadeInSeconds
+  let fadeOutSeconds = audioFile.fadeOutSeconds
+
+  const denominator = fadeInSeconds + fadeOutSeconds
+  if (denominator > audioFile.durationSeconds) {
+    fadeInSeconds = audioFile.durationSeconds * fadeInSeconds / denominator
+    fadeOutSeconds = audioFile.durationSeconds * fadeOutSeconds / denominator
+  }
+
+  return {
+    fadeInSeconds,
+    fadeOutSeconds,
+    gainDb: audioFile.gainDb + fadeInDb + fadeOutDb
+  }
 }

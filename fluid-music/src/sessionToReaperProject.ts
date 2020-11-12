@@ -2,11 +2,12 @@ import { extname, basename } from 'path'
 import { FluidPlugin } from './plugin'
 import { FluidSession } from './FluidSession'
 import { FluidReceive, FluidTrack } from './FluidTrack'
+import { FluidAudioFile, resolveFades } from './FluidAudioFile'
 import { vst2ToReaperObject } from './vst2ToReaperObject'
 import * as cybr from './cybr/index';
 import { IpcClient } from './cybr/IpcClient'
 import { ClipEventContext, MidiNoteEvent, Tap } from './fluid-interfaces'
-import { FluidAudioFile } from './FluidAudioFile'
+
 
 
 const rppp = require('rppp')
@@ -268,43 +269,43 @@ function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : Flui
   const bpm = session.bpm
   if (!bpm) throw new Error('fileEventToReaperObject could not find a session.bpm parameter')
 
-  return fileEvents.map((event, eventIndex) => {
-    if (typeof event.path !== 'string') {
-      console.error(event);
+  return fileEvents.map((audioFile, eventIndex) => {
+    if (typeof audioFile.path !== 'string') {
+      console.error(audioFile);
       throw new Error('tracksToFluidMessage: A file event found in the note library does not have a .path string');
     }
 
+    const { fadeInSeconds, fadeOutSeconds, gainDb } = resolveFades(audioFile)
+
     const audioItem = new rppp.objects.ReaperItem();
-    const clipName = `${basename(event.path)}.${eventIndex}`;
+    const clipName = `${basename(audioFile.path)}.${eventIndex}`;
     audioItem.getOrCreateStructByToken('NAME').params[0] = clipName
-    audioItem.getOrCreateStructByToken('POSITION').params[0] = event.startTimeSeconds
+    audioItem.getOrCreateStructByToken('POSITION').params[0] = audioFile.startTimeSeconds
 
     const audioSource = new rppp.objects.ReaperSource()
-    const extension = extname(event.path).toLowerCase()
+    const extension = extname(audioFile.path).toLowerCase()
 
     if (extension === '.wav') audioSource.makeWaveSource()
     else if (extension === '.mp3') audioSource.makeMp3Source()
-    else throw new Error(`Reaper exporter found unsupported audio file extension on: ${event.path}`)
+    else throw new Error(`Reaper exporter found unsupported audio file extension on: ${audioFile.path}`)
 
-    audioSource.getOrCreateStructByToken('FILE').params = [event.path]
+    audioSource.getOrCreateStructByToken('FILE').params = [audioFile.path]
     audioItem.add(audioSource)
 
-    if (event.startInSourceSeconds)
-      audioItem.getOrCreateStructByToken('SOFFS').params[0] = event.startInSourceSeconds
+    if (audioFile.startInSourceSeconds)
+      audioItem.getOrCreateStructByToken('SOFFS').params[0] = audioFile.startInSourceSeconds
 
-    audioItem.getOrCreateStructByToken('LENGTH').params[0] = event.durationSeconds
+    audioItem.getOrCreateStructByToken('LENGTH').params[0] = audioFile.durationSeconds
 
     // apply fade in/out times (if specified)
-    if (typeof event.fadeOutSeconds === 'number')
-      audioItem.getOrCreateStructByToken('FADEOUT').params = [1, event.fadeOutSeconds, 0, 1, 0, 0]
-    if (typeof event.fadeInSeconds === 'number')
-      audioItem.getOrCreateStructByToken('FADEIN').params = [1, event.fadeInSeconds, 0, 1, 0, 0]
+    audioItem.getOrCreateStructByToken('FADEOUT').params = [1, fadeOutSeconds, 0, 1, 0, 0]
+    audioItem.getOrCreateStructByToken('FADEIN').params = [1, fadeInSeconds, 0, 1, 0, 0]
 
     // Remember, it is the the final .use call's job to set event.gainDb. The
     // AudioFile technique's .use method looks for a dynamic Object, and sets
     // the event.gainDb property.
-    if (typeof event.gainDb === 'number')
-      audioItem.getOrCreateStructByToken('VOLPAN').params = [1, 0, db2Gain(event.gainDb), -1]
+    if (typeof audioFile.gainDb === 'number')
+      audioItem.getOrCreateStructByToken('VOLPAN').params = [1, 0, db2Gain(gainDb), -1]
 
     return audioItem;
   });
