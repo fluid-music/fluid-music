@@ -2,6 +2,7 @@ import { FluidPlugin, PluginType } from './plugin';
 import { sessionToContentFluidMessage, sessionToTemplateFluidMessage } from './sessionToFluidMessage';
 import { sessionToReaperProject } from './sessionToReaperProject'
 import { FluidSession } from './FluidSession';
+import { FluidAudioFile } from './FluidAudioFile'
 import * as gen from './plugin-generator';
 import * as converters from './converters';
 import m from './m'
@@ -11,7 +12,7 @@ import * as tLibrary from './t-library';
 import * as tab from './tab';
 
 // New Style Plugins
-import { DragonflyRoom } from './plugin-dragonfly-room';
+import { DragonflyRoom } from './plugin-dragonfly-room'
 import { TCompressorVst2 } from './plugin-adapters/t-compressor-vst2'
 import { TEqualizerVst2 } from './plugin-adapters/t-equalizer-vst2'
 import { TStereoDelayVst2 } from './plugin-adapters/t-stereo-delay-vst2'
@@ -62,6 +63,7 @@ export = {
   sessionToContentFluidMessage,
   sessionToReaperProject,
   transport,
+  FluidAudioFile,
   FluidSession,
   FluidPlugin,
   PluginType,
