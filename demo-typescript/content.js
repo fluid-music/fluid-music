@@ -11,16 +11,20 @@ const { MidiChord, MidiNote } = require('fluid-music/built/fluid-techniques');
 // Configure some VSTs
 
 // Synthesizers
-const pwmSynth = new fluid.TyrellN6Vst2({ env1Attack: 2, env1Decay: 77, env1Sustain: 69 })
+const pwmSynth = new fluid.TyrellN6Vst2({ env1Attack: 2, env1Decay: 77, env1Sustain: 69, tyrellCutoff: 84 })
 const bassSynth = podolskiSine()
 
 // Reverb
-const verbPlugin = new fluid.DragonflyRoom({ decaySeconds: 2.4, predelayMs: 49, dryLevelPercent: 0, earlyLevelPercent: 40, lateLevelPercent: 100 })
-
-// TCompressor VST
-const comp = new fluid.TCompressorVst2()
-comp.parameters.thresholdDb = -8
-comp.parameters.ratio = 2.5
+const verbPlugin = new fluid.DragonflyRoom({
+  decaySeconds: 1.5,
+  predelayMs: 40,
+  dryLevelPercent: 0,
+  earlyLevelPercent: 40,
+  lateLevelPercent: 100,
+  highCutHz: 7800,
+  earlyDampHz: 4600,
+  lateDampHz: 3900,
+})
 
 const bassComp = new fluid.TCompressorVst2({
   attackMs: 12,
@@ -69,9 +73,9 @@ Object.entries(chordLibrary).forEach(([k, v]) => {
 })
 
 const dLibrary = {
-  p: { gainDb: -6, intensity: 1/2 },
-  m: { gainDb: -2.6, intensity: 3/4 },
-  f: { gainDb: 0, intensity: 1.0 },
+  p: { trimDb: -6, intensity: 1/2 },
+  m: { trimDb: -2.6, intensity: 3/4 },
+  f: { trimDb: 0, intensity: 1.0 },
 };
 
 let session = new fluid.FluidSession({
@@ -81,28 +85,26 @@ let session = new fluid.FluidSession({
   tLibrary: drums.tLibrary,
   dLibrary,
 }, [
-  { name: 'mute', gain: -Infinity, children: [
+  { name: 'mute', gainDb: -Infinity, children: [
     { name: 'skik' },
   ]},
-  { name: 'drums', gain: -6, children: [
-    { name: 'kick', d: '.   . mf      ', gain: -6, plugins: [comp, eq] },
-    { name: 'snare',d: 'm   f   m   f ' },
-    { name: 'tamb', pan: .25 },
-    { name: 'sub', tLibrary: bassLibrary, plugins: [bassSynth, bassComp.sidechainWith('skik')] },
+  { name: 'drums', gainDb: -6, children: [
+    { name: 'kick',  gainDb: -6, sends: [{ to: 'revb', gainDb: -20 }], d: '.   . mf      ', plugins: [eq] },
+    { name: 'snare', gainDb: -6, sends: [{ to: 'revb', gainDb: -22 }], d: 'm   f   m   f ' },
+    { name: 'tamb',  gainDb: -2, sends: [{ to: 'revb', gainDb: -15 }] },
+    { name: 'sub',   tLibrary: bassLibrary, plugins: [bassSynth, bassComp.sidechainWith('kick')] },
   ]},
-  { name: 'chrd', gain: -10, tLibrary: chordLibrary, pan: -.25, plugins: [pwmSynth, scComp.sidechainWith('skik')] },
-  { name: 'revb', plugins: [verbPlugin], tLibrary: automationLibrary },
+  { name: 'chrd', gainDb: -10, tLibrary: chordLibrary, pan: -.25, plugins: [pwmSynth, scComp.sidechainWith('skik')] },
+  { name: 'revb', gainDb: -10, plugins: [verbPlugin], tLibrary: automationLibrary },
 ])
 
 session.insertScore({
-  skik: ['d---d---d---d---', 'd---d---d---d---'],
+  skik: ['d   d   d   d   ', 'd   d   d   d   '],
   kick: ['.   . dd-dD--D--', 'd-- d-- d-- d-- '],
   snare:['r---s       s   ', '              '],
   tamb: ['t t t t t t t t ', {r: '1....234..', tamb: 'Ttttt..ttt', d: 'p'} ],
-  sub:   '        b-      ',
+  sub:   '       b-       ',
   chrd:  'a-  .  ab---    ',
-  //     '1 + 2 + 3 + 4 + ',
-  revb:  'e       f       ',
 });
 
 const client = new cybr.Client()

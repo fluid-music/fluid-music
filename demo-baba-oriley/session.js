@@ -6,14 +6,14 @@ const session = new fluid.FluidSession({
   bpm: BPM,
 }, [
   { name: 'organ1',
-    gain: -6,
+    gainDb: -6,
     sends: [
       { to: '16th delay', gainDb: -2.3 },
       { to: 'reverb', gainDb: -12 }
     ]},
   {
     name: 'organ2',
-    gain: -9,
+    gainDb: -9,
     sends: [
       { to: '16th delay', gainDb: -6 },
       { to: 'reverb', gainDb: -12 }

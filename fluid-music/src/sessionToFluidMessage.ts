@@ -37,7 +37,7 @@ export function sessionToTemplateFluidMessage(session : FluidSession) {
     const parentName = ancestors.length ? ancestors[ancestors.length - 1].name : undefined
     const trackMessages : any[] = [
       createSelectMessage(track, parentName),
-      cybr.audiotrack.gain(track.gain), // normalization not needed with .gain
+      cybr.audiotrack.gain(track.gainDb), // normalization not needed with .gain
       cybr.audiotrack.pan(track.pan),
     ];
     sessionMessages.push(trackMessages);

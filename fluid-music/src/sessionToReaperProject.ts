@@ -47,7 +47,7 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
     rpppTrack.getOrCreateStructByToken('NAME').params[0] = track.name
 
     const volPan = rpppTrack.getOrCreateStructByToken('VOLPAN')
-    volPan.params[0] = db2Gain(track.gain)
+    volPan.params[0] = db2Gain(track.gainDb)
     volPan.params[1] = track.pan
 
     // In addition to adding the track to the rppp project, create two parallel

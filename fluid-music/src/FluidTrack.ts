@@ -19,7 +19,7 @@ export class FluidReceive implements TrackReceive {
 
 export interface TrackConfig extends ScoreConfig {
   name: string
-  gain? : number
+  gainDb? : number
   pan? : number
   width? : number
   plugins? : FluidPlugin[]
@@ -32,7 +32,7 @@ export class FluidTrack {
     if (typeof config.name === 'string') this.name = config.name;
     else throw new Error('Cannot create track without a name');
 
-    if (typeof config.gain === 'number') this.gain = config.gain;
+    if (typeof config.gainDb === 'number') this.gainDb = config.gainDb;
     if (typeof config.pan === 'number') this.pan = config.pan;
     if (typeof config.width === 'number') this.width = config.width;
     if (config.sends?.length) this.unresolvedSends = config.sends.map(send => send)
@@ -55,7 +55,7 @@ export class FluidTrack {
 
   // Track
   name: string;
-  gain = 0
+  gainDb = 0
   pan = 0
   width = 0
   clips : Clip[] = []
