@@ -1,7 +1,6 @@
-# Fluid Music Recipes
+# Deprecated
 
-Official fluid music recipes.
+See:
+- https://www.npmjs.com/package/@fluid-music/recipes
+- https://github.com/fluid-music/recipes
 
-```
-$ npm install
-```
