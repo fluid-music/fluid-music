@@ -242,7 +242,7 @@ function fileEventsToFluidMessage(audioFiles : FluidAudioFile[], session : Fluid
     };
 
     const clipName = `s${basename(audioFile.path)}.${eventIndex}`;
-    const msg = [cybr.audiotrack.insertWav(clipName, startTime, audioFile.path)];
+    const msg = [cybr.audiotrack.insertWav(clipName, startTime, audioFile.path)] as any[];
 
     if (audioFile.startInSourceSeconds)
       msg.push(cybr.clip.setSourceOffsetSeconds(audioFile.startInSourceSeconds));
@@ -258,6 +258,10 @@ function fileEventsToFluidMessage(audioFiles : FluidAudioFile[], session : Fluid
 
     if (gainDb) {
       msg.push(cybr.audioclip.gain(gainDb));
+    }
+
+    if (audioFile.reversed) {
+      msg.push(cybr.audioclip.reverse(true))
     }
 
     return msg;

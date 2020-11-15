@@ -267,12 +267,14 @@ function midiEventsToReaperObject(midiEvents : MidiNoteEvent[] , context : ClipE
 
 function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : FluidSession) {
   const bpm = session.bpm
-  if (!bpm) throw new Error('fileEventToReaperObject could not find a session.bpm parameter')
+  if (!bpm) throw new Error('fileEventsToReaperObjects could not find a session.bpm parameter')
 
   return fileEvents.map((audioFile, eventIndex) => {
-    if (typeof audioFile.path !== 'string') {
+
+    const errorMessage = audioFile.check()
+    if (errorMessage) {
       console.error(audioFile);
-      throw new Error('tracksToFluidMessage: A file event found in the note library does not have a .path string');
+      throw new Error('fileEventsToReaperObjects: ' + errorMessage);
     }
 
     const { fadeInSeconds, fadeOutSeconds, gainDb } = resolveFades(audioFile)
@@ -281,16 +283,6 @@ function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : Flui
     const clipName = `${basename(audioFile.path)}.${eventIndex}`;
     audioItem.getOrCreateStructByToken('NAME').params[0] = clipName
     audioItem.getOrCreateStructByToken('POSITION').params[0] = audioFile.startTimeSeconds
-
-    const audioSource = new rppp.objects.ReaperSource()
-    const extension = extname(audioFile.path).toLowerCase()
-
-    if (extension === '.wav') audioSource.makeWaveSource()
-    else if (extension === '.mp3') audioSource.makeMp3Source()
-    else throw new Error(`Reaper exporter found unsupported audio file extension on: ${audioFile.path}`)
-
-    audioSource.getOrCreateStructByToken('FILE').params = [audioFile.path]
-    audioItem.add(audioSource)
 
     if (audioFile.startInSourceSeconds)
       audioItem.getOrCreateStructByToken('SOFFS').params[0] = audioFile.startInSourceSeconds
@@ -306,6 +298,32 @@ function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : Flui
     // the event.gainDb property.
     if (typeof audioFile.gainDb === 'number')
       audioItem.getOrCreateStructByToken('VOLPAN').params = [1, 0, db2Gain(gainDb), -1]
+
+    const audioSource = new rppp.objects.ReaperSource()
+    const extension = extname(audioFile.path).toLowerCase()
+
+    if (extension === '.wav') audioSource.makeWaveSource()
+    else if (extension === '.mp3') audioSource.makeMp3Source()
+    else throw new Error(`Reaper exporter found unsupported audio file extension on: ${audioFile.path}`)
+
+    audioSource.getOrCreateStructByToken('FILE').params = [audioFile.path]
+    audioItem.add(audioSource)
+
+    if (audioFile.reversed) {
+      if (typeof audioFile.info.duration !== 'number') {
+        throw new Error('fileEventsToReaperObject: reversed AudioFile is missing info.duration')
+      }
+
+      audioItem.reverseSources()
+      audioItem.getOrCreateStructByToken('SOFFS').params[0] =
+        audioFile.info.duration - (audioFile.durationSeconds + audioFile.startInSourceSeconds)
+
+      const fadeIn = audioItem.getOrCreateStructByToken('FADEIN')
+      const fadeOut = audioItem.getOrCreateStructByToken('FADEOUT')
+      const fadeInParams = fadeIn.params
+      fadeIn.params = fadeOut.params
+      fadeOut.params = fadeInParams
+    }
 
     return audioItem;
   });

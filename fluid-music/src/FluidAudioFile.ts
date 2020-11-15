@@ -1,3 +1,4 @@
+import { error } from 'console'
 import { gainToDb, clamp } from './converters'
 
 /** AudioFile playback modes */
@@ -43,6 +44,7 @@ export interface AudioFileOptions {
   startInSourceSeconds? : number
   startTimeSeconds? : number
   durationSeconds? : number
+  reversed? : boolean
 }
 
 export class FluidAudioFile {
@@ -51,17 +53,21 @@ export class FluidAudioFile {
       throw new Error('AudioFile Technique constructor did not find an options.path string')
     }
 
-    if (this.mode === AudioFileMode.OneShot && typeof this.info.duration !== 'number') {
-      throw new Error('AudioFile techniques cannot have .mode=OneShot without specifying an info.duration')
-    }
-
     Object.assign(this, options)
+
+    const errorMessage = this.check()
+    if (errorMessage) {
+      console.error(this)
+      throw new Error(errorMessage)
+    }
   }
 
   static Modes = AudioFileMode
 
   path : string = ''
+  /** Fade out time in seconds. When `.reversed` this is the fade in time */
   fadeOutSeconds : number = 0
+  /** Fade in time in seconds. When `.reversed` this is the fade out time */
   fadeInSeconds : number = 0
   gainDb : number = 0
   mode : AudioFileMode = AudioFileMode.Event
@@ -69,6 +75,27 @@ export class FluidAudioFile {
   startInSourceSeconds : number = 0
   startTimeSeconds : number = 0
   durationSeconds : number = 1
+  reversed : boolean = false
+
+  /**
+   * Check the AudioFile for potential problems. If problems are found, return
+   * an error message string. Otherwise, return null
+   */
+  check() : string|null {
+    if (typeof this.path !== 'string' || this.path === '') {
+      return 'AudioFile technique is missing a path'
+    }
+
+    if (this.reversed && !this.info.duration) {
+      return 'Audio file is reversed, but has no duration'
+    }
+
+    if (this.mode === AudioFileMode.OneShot && typeof this.info.duration !== 'number') {
+      return 'AudioFile techniques cannot have .mode=OneShot without specifying an info.duration'
+    }
+
+    return null
+  }
 }
 
 /**
