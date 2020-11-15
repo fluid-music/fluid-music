@@ -1,4 +1,5 @@
 import { error } from 'console'
+import { fileURLToPath } from 'url'
 import { gainToDb, clamp } from './converters'
 
 /** AudioFile playback modes */
@@ -18,7 +19,7 @@ export enum AudioFileMode {
 
   /**
    * Play the audio file to its conclusion, OR fade it out at the onset of the
-   * next AudioFile in the clip */
+   * next AudioFile in the clip (whichever happens first) */
   OneVoice,
 }
 
@@ -55,6 +56,12 @@ export class FluidAudioFile {
 
     Object.assign(this, options)
 
+    // If the user did not specify durationSeconds, assume the region of
+    // interest ends at the end of the source file
+    if (!options.durationSeconds && this.info.duration) {
+      this.durationSeconds = this.info.duration - this.startInSourceSeconds
+    }
+
     const errorMessage = this.check()
     if (errorMessage) {
       console.error(this)
@@ -72,8 +79,16 @@ export class FluidAudioFile {
   gainDb : number = 0
   mode : AudioFileMode = AudioFileMode.Event
   info : AudioFileInfo = {}
-  startInSourceSeconds : number = 0
+  /** The time within the parent (track) that this sample will be triggered */
   startTimeSeconds : number = 0
+  /** startInSourceSeconds is the beginning of the region of interest within
+   * the audio source file. Set this to zero to play from the beginning
+   */
+  startInSourceSeconds : number = 0
+  /** durationSeconds specifies the length of the playback event on the main
+   * channel which corresponds to the length of the region of interest. Note
+   * that this may change if (for example), I add a playback speed property
+   */
   durationSeconds : number = 1
   reversed : boolean = false
 
@@ -95,6 +110,34 @@ export class FluidAudioFile {
     }
 
     return null
+  }
+
+  /**
+   * Calculate how long the audio file can play until it ends. This is
+   * determined by the `.startInSourceSeconds` property.
+   *
+   * When reversed, the `.durationSeconds` value is used in the calculation
+   *
+   * When the file is NOT reversed, the source file length is used, so make sure
+   * that it exists in the `.info` object.
+   */
+  getMaxDurationSeconds() {
+    if (this.reversed) {
+      return this.startInSourceSeconds + this.durationSeconds
+    }
+    return this.getSourceDurationSeconds() - this.startInSourceSeconds
+  }
+
+  /**
+   * Return the length of the source audio file in seconds. If the length is not
+   * included in .info, print a WARNING message, and return an arbitrary value.
+   */
+  getSourceDurationSeconds() {
+    if (!this.info.duration) {
+      console.warn('WARNING: AudioFile is missing source length. Make sure that .info.duration is a value in seconds: ' + this.path)
+      return 4 // 4 is arbitrary
+    }
+    return this.info.duration
   }
 }
 

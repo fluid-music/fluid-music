@@ -3,7 +3,7 @@ require('mocha');
 
 const fluid = require('..')
 const { MidiChord } = require('../built/fluid-techniques')
-const { DragonflyRoomPlugin } = require('../built/plugin-dradonfly-room')
+const { DragonflyRoomPlugin } = require('../built/plugin-dragonfly-room')
 const FluidSession = fluid.FluidSession;
 
 
@@ -13,12 +13,12 @@ describe('FluidSession', () => {
     const tLibrary = [60, 63, 67].map(note => new fluid.techniques.MidiNote({ note }))
     const r = '1 2 3 4 ';
     const session = new FluidSession({}, {
-      bass: {tLibrary, r, gain: -6},
+      bass: {tLibrary, r, gainDb: -6},
     });
 
     const bassTrack = session.tracks[0]
     bassTrack.name.should.equal('bass')
-    bassTrack.gain.should.equal(-6)
+    bassTrack.gainDb.should.equal(-6)
 
     session.insertScore({bass: '0 1 2 0'})
     const clip = bassTrack.clips[0]

@@ -288,6 +288,13 @@ function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : Flui
       audioItem.getOrCreateStructByToken('SOFFS').params[0] = audioFile.startInSourceSeconds
 
     audioItem.getOrCreateStructByToken('LENGTH').params[0] = audioFile.durationSeconds
+    // Disable looping by default. Looping caused problems with mp3 files. I
+    // do not know how Reaper determines the exact length of an mp3 file, but
+    // it finds different lengths than audio-metadata. This causes problems
+    // trying to insert mp3 files, because we don't know how long to make the
+    // item. Other DAWs also don't allow "Loop Source" functionality at all, so
+    // to keep things portable, we probably just want to disable loop source
+    audioItem.getOrCreateStructByToken('LOOP').params[0] = 0
 
     // apply fade in/out times (if specified)
     audioItem.getOrCreateStructByToken('FADEOUT').params = [1, fadeOutSeconds, 0, 1, 0, 0]
@@ -302,13 +309,22 @@ function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : Flui
     const audioSource = new rppp.objects.ReaperSource()
     const extension = extname(audioFile.path).toLowerCase()
 
-    if (extension === '.wav') audioSource.makeWaveSource()
-    else if (extension === '.mp3') audioSource.makeMp3Source()
-    else throw new Error(`Reaper exporter found unsupported audio file extension on: ${audioFile.path}`)
+    // I don't know what the second argument to FILE means, but for some reason
+    // audio artifacts (pops that sound like cuts without a fade) can occur in
+    // mp3 files when it is 0
+    if (extension === '.wav' || extension === '.aif' || extension === '.aiff' ) {
+      audioSource.makeWaveSource()
+      audioSource.getOrCreateStructByToken('FILE').params = [audioFile.path, 0]
+    } else if (extension === '.mp3') {
+      audioSource.makeMp3Source()
+      audioSource.getOrCreateStructByToken('FILE').params = [audioFile.path, 1]
+    } else {
+      throw new Error(`Reaper exporter found unsupported audio file extension on: ${audioFile.path}`)
+    }
 
-    audioSource.getOrCreateStructByToken('FILE').params = [audioFile.path]
     audioItem.add(audioSource)
-
+    // If we are going to call .reverseSources, we must do it AFTER adding the
+    // SOURCE. CALL audioItem.add(SOURCE) first, then audioItem.reverseSources.
     if (audioFile.reversed) {
       if (typeof audioFile.info.duration !== 'number') {
         throw new Error('fileEventsToReaperObject: reversed AudioFile is missing info.duration')

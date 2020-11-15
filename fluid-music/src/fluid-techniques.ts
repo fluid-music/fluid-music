@@ -3,6 +3,8 @@ import { AudioFileMode, AudioFileOptions, FluidAudioFile } from './FluidAudioFil
 import { AutomationPoint } from './plugin'
 import * as random from './random'
 
+import {basename } from 'path'
+
 export interface TechniqueClass {
   new(...options: any[]): Technique
 }
@@ -17,7 +19,6 @@ export class AudioFile extends FluidAudioFile implements Technique {
 
   use ({ track, startTimeSeconds, durationSeconds, d } : UseContext)  {
     const newAudioFile = new FluidAudioFile(this)
-    newAudioFile.durationSeconds = durationSeconds
     newAudioFile.startTimeSeconds = startTimeSeconds
 
     if (typeof d.gainDb === 'number' || typeof d.gain === 'number') {
@@ -30,15 +31,15 @@ export class AudioFile extends FluidAudioFile implements Technique {
 
     if (newAudioFile.mode === AudioFileMode.Event) {
       if (newAudioFile.info.duration) {
-        newAudioFile.durationSeconds = Math.min(newAudioFile.durationSeconds, newAudioFile.info.duration - newAudioFile.startInSourceSeconds)
+        newAudioFile.durationSeconds = Math.min(durationSeconds, newAudioFile.getMaxDurationSeconds())
+      } else {
+        newAudioFile.durationSeconds = durationSeconds
       }
     } else if (newAudioFile.mode === AudioFileMode.OneShot) {
       if (!newAudioFile.info.duration) throw new Error('Cannot use OneShot Audio File that does not specify a file length in info.duration:' + JSON.stringify(newAudioFile))
-      newAudioFile.durationSeconds = newAudioFile.info.duration - newAudioFile.startInSourceSeconds
+      newAudioFile.durationSeconds = newAudioFile.getMaxDurationSeconds()
     } else if (newAudioFile.mode === AudioFileMode.OneVoice) {
-      if (newAudioFile.info.duration) {
-        newAudioFile.durationSeconds = newAudioFile.info.duration - newAudioFile.startInSourceSeconds
-      }
+      this.durationSeconds = newAudioFile.getMaxDurationSeconds() // May be trimmed in the finalizer
     }
 
     track.audioFiles.push(newAudioFile)
