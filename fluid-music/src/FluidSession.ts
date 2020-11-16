@@ -213,8 +213,13 @@ export class FluidSession {
         const fEvent2 = track.audioFiles[i]
         if (fEvent1.mode === AudioFileMode.OneVoice && typeof fEvent1.info.duration === 'number') {
           const secondsBetween = fEvent2.startTimeSeconds - fEvent1.startTimeSeconds
-          const fadeOutSeconds = fEvent1.reversed ? fEvent1.fadeInSeconds : fEvent1.fadeOutSeconds
-          fEvent1.durationSeconds = Math.min(secondsBetween + fadeOutSeconds,  fEvent1.getMaxDurationSeconds())
+          const fadeOutSeconds = fEvent1.getFadeRightSeconds()
+          const maxDurationSeconds = secondsBetween + fadeOutSeconds
+          const currentSeconds = fEvent1.durationSeconds
+          const trimSeconds = maxDurationSeconds - currentSeconds
+
+          // Shrink only, don't expand
+          if (trimSeconds < 0) fEvent1.trimRightBySeconds(trimSeconds)
         }
       }
     })

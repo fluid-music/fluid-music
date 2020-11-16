@@ -1,5 +1,3 @@
-import { error } from 'console'
-import { fileURLToPath } from 'url'
 import { gainToDb, clamp } from './converters'
 
 /** AudioFile playback modes */
@@ -134,10 +132,82 @@ export class FluidAudioFile {
    */
   getSourceDurationSeconds() {
     if (!this.info.duration) {
-      console.warn('WARNING: AudioFile is missing source length. Make sure that .info.duration is a value in seconds: ' + this.path)
+      console.warn('WARNING: AudioFile is missing source length. Make sure that .info.duration is a value in seconds: ' + this)
       return 4 // 4 is arbitrary
     }
     return this.info.duration
+  }
+
+  getTailLeftSeconds () {
+    if (this.reversed) {
+      return this.getSourceDurationSeconds() - (this.startInSourceSeconds + this.durationSeconds)
+    }
+    return this.startInSourceSeconds
+  }
+
+  getTailRightSeconds() {
+    if (this.reversed) {
+      return this.startInSourceSeconds
+    }
+    return this.getSourceDurationSeconds() - (this.startInSourceSeconds + this.durationSeconds)
+  }
+
+  getFadeLeftSeconds() {
+    if (this.reversed) return this.fadeOutSeconds
+    return this.fadeInSeconds
+  }
+
+  getFadeRightSeconds() {
+    if (this.reversed) return this.fadeInSeconds
+    return this.fadeOutSeconds
+  }
+
+  setFadeLeftSeconds(seconds : number) {
+    if (this.reversed) this.fadeOutSeconds = seconds
+    else this.fadeInSeconds = seconds
+  }
+
+  setFadeRightSeconds(seconds : number) {
+    if (this.reversed) this.fadeInSeconds = seconds
+    else this.fadeOutSeconds = seconds
+  }
+
+  /**
+   * Drag the right edge of the item without moving the contents of the item on
+   * the timeline.
+   *
+   * @param seconds Positive values make the item longer by moving the right
+   * edge to the right. Negative values make the item shorter by moving the
+   * right edge to the left.
+   */
+  trimRightBySeconds(seconds : number) {
+    if (this.reversed) this.startInSourceSeconds -= seconds
+    this.durationSeconds += seconds // No else (intentional)
+  }
+
+  /**
+   * Drag the left edge of the item without moving the contents of the item on
+   * the timeline.
+   *
+   * @param seconds Positive values make the item longer by moving the left edge
+   * to the left. Negative values make the item shorter by moving the left edge
+   * to the right.
+   */
+  trimLeftBySeconds(seconds : number) {
+    if (this.reversed) {
+      this.durationSeconds += seconds
+      this.startTimeSeconds -= seconds
+    } else {
+      // Charles: test this:
+      this.startInSourceSeconds -= seconds
+      this.durationSeconds += seconds
+      this.startTimeSeconds -= seconds
+    }
+  }
+
+  trimLeftBySecondsSafe(seconds : number) {
+    seconds = Math.min(seconds, this.startTimeSeconds, this.getTailLeftSeconds())
+    this.trimLeftBySeconds(seconds)
   }
 }
 
