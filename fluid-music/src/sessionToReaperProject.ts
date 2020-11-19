@@ -283,17 +283,16 @@ function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : Flui
     const clipName = `${basename(audioFile.path)}.${eventIndex}`;
     audioItem.getOrCreateStructByToken('NAME').params[0] = clipName
     audioItem.getOrCreateStructByToken('POSITION').params[0] = audioFile.startTimeSeconds
-
-    if (audioFile.startInSourceSeconds)
-      audioItem.getOrCreateStructByToken('SOFFS').params[0] = audioFile.startInSourceSeconds
+    audioItem.getOrCreateStructByToken('SOFFS').params[0] = audioFile.startInSourceSeconds || 0
 
     audioItem.getOrCreateStructByToken('LENGTH').params[0] = audioFile.durationSeconds
     // Disable looping by default. Looping caused problems with mp3 files. I
     // do not know how Reaper determines the exact length of an mp3 file, but
-    // it finds different lengths than audio-metadata. This causes problems
-    // trying to insert mp3 files, because we don't know how long to make the
-    // item. Other DAWs also don't allow "Loop Source" functionality at all, so
-    // to keep things portable, we probably just want to disable loop source
+    // it finds different lengths than the audio-metadata npm package. This
+    // causes problems trying to insert mp3 files, because we don't know how
+    // long to make the item. Other DAWs also don't allow "Loop Source"
+    // functionality at all, so to keep things portable, we probably just want
+    // to disable loop source
     audioItem.getOrCreateStructByToken('LOOP').params[0] = 0
 
     // apply fade in/out times (if specified)
@@ -325,14 +324,14 @@ function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : Flui
     audioItem.add(audioSource)
     // If we are going to call .reverseSources, we must do it AFTER adding the
     // SOURCE. CALL audioItem.add(SOURCE) first, then audioItem.reverseSources.
-    if (audioFile.reversed) {
+    if (audioFile.isReversed()) {
       if (typeof audioFile.info.duration !== 'number') {
         throw new Error('fileEventsToReaperObject: reversed AudioFile is missing info.duration')
       }
 
       audioItem.reverseSources()
       audioItem.getOrCreateStructByToken('SOFFS').params[0] =
-        audioFile.info.duration - (audioFile.durationSeconds + audioFile.startInSourceSeconds)
+        audioFile.getSourceDurationSeconds() - audioFile.startInSourceSeconds
 
       const fadeIn = audioItem.getOrCreateStructByToken('FADEIN')
       const fadeOut = audioItem.getOrCreateStructByToken('FADEOUT')

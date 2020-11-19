@@ -233,8 +233,8 @@ export function sessionToContentFluidMessage(session : FluidSession) {
 function fileEventsToFluidMessage(audioFiles : FluidAudioFile[], session : FluidSession) {
   return audioFiles.map((audioFile, eventIndex) => {
 
-    const startTime = session.timeSecondsToWholeNotes(audioFile.startTimeSeconds)
-    const duration = session.timeSecondsToWholeNotes(audioFile.durationSeconds)
+    let startTime = session.timeSecondsToWholeNotes(audioFile.startTimeSeconds)
+    let duration = session.timeSecondsToWholeNotes(audioFile.durationSeconds)
 
     if (typeof audioFile.path !== 'string') {
       console.error(audioFile);
@@ -244,9 +244,8 @@ function fileEventsToFluidMessage(audioFiles : FluidAudioFile[], session : Fluid
     const clipName = `s${basename(audioFile.path)}.${eventIndex}`;
     const msg = [cybr.audiotrack.insertWav(clipName, startTime, audioFile.path)] as any[];
 
-    if (audioFile.startInSourceSeconds)
-      msg.push(cybr.clip.setSourceOffsetSeconds(audioFile.startInSourceSeconds));
-
+    const sOff = audioFile.isReversed() ? audioFile.getEndInSourceSeconds() : audioFile.startInSourceSeconds
+    msg.push(cybr.clip.setSourceOffsetSeconds(sOff));
     msg.push(cybr.clip.length(duration));
 
     const { fadeInSeconds, fadeOutSeconds, gainDb } = resolveFades(audioFile)
@@ -260,7 +259,7 @@ function fileEventsToFluidMessage(audioFiles : FluidAudioFile[], session : Fluid
       msg.push(cybr.audioclip.gain(gainDb));
     }
 
-    if (audioFile.reversed) {
+    if (audioFile.isReversed()) {
       msg.push(cybr.audioclip.reverse(true))
     }
 

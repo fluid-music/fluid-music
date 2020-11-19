@@ -43,13 +43,13 @@ export interface AudioFileOptions {
   startInSourceSeconds? : number
   startTimeSeconds? : number
   durationSeconds? : number
-  reversed? : boolean
+  playbackRate? : number
 }
 
 export class FluidAudioFile {
   constructor(options : AudioFileOptions) {
     if (typeof options.path !== 'string') {
-      throw new Error('AudioFile Technique constructor did not find an options.path string')
+      throw new Error('AudioFile Technique constructor did not find an options.path string: ' + JSON.stringify(options))
     }
 
     Object.assign(this, options)
@@ -70,9 +70,9 @@ export class FluidAudioFile {
   static Modes = AudioFileMode
 
   path : string = ''
-  /** Fade out time in seconds. When `.reversed` this is the fade in time */
+  /** Fade out time in seconds */
   fadeOutSeconds : number = 0
-  /** Fade in time in seconds. When `.reversed` this is the fade out time */
+  /** Fade in time in seconds */
   fadeInSeconds : number = 0
   gainDb : number = 0
   mode : AudioFileMode = AudioFileMode.Event
@@ -88,7 +88,7 @@ export class FluidAudioFile {
    * that this may change if (for example), I add a playback speed property
    */
   durationSeconds : number = 1
-  reversed : boolean = false
+  playbackRate : number = 1
 
   /**
    * Check the AudioFile for potential problems. If problems are found, return
@@ -99,10 +99,6 @@ export class FluidAudioFile {
       return 'AudioFile technique is missing a path'
     }
 
-    if (this.reversed && !this.info.duration) {
-      return 'Audio file is reversed, but has no duration'
-    }
-
     if (this.mode === AudioFileMode.OneShot && typeof this.info.duration !== 'number') {
       return 'AudioFile techniques cannot have .mode=OneShot without specifying an info.duration'
     }
@@ -111,19 +107,52 @@ export class FluidAudioFile {
   }
 
   /**
-   * Calculate how long the audio file can play until it ends. This is
-   * determined by the `.startInSourceSeconds` property.
+   * Reverse the audio file playback, swapping the in/out fades.
+   * @param reverse If true, play audio file in reverse. If false, play forwards
+   */
+  reverse(bool : boolean = true) {
+    if (bool !== this.isReversed()) {
+      this.startInSourceSeconds = this.getEndInSourceSeconds()
+      this.playbackRate *= -1
+
+      // swap fadeIn/Out seconds
+      const fadeInSeconds = this.fadeInSeconds
+      this.fadeInSeconds = this.fadeOutSeconds
+      this.fadeOutSeconds = fadeInSeconds
+    }
+    return this.playbackRate
+  }
+
+  /**
+   * Identify where within the source file playback will end, given the values
+   * of `.startInSourceSeconds`, `.durationSeconds`, and `.playbackRate`.
+   */
+  getEndInSourceSeconds() {
+    return this.startInSourceSeconds + (this.durationSeconds * this.playbackRate)
+  }
+
+  isReversed() {
+    return this.playbackRate < 0
+  }
+
+  /**
+   * Calculate and return the maximum valid value for `.durationSeconds`.
    *
-   * When reversed, the `.durationSeconds` value is used in the calculation
+   * Setting the `.durationSeconds` value to the value returned by this function
+   * will result in the underlying audio file being played to the end of the
+   * underlying audio source object (or to the beginning, if `.playbackRate` is
+   * negative.
+   *
+   * ```
+   * audioFile.durationSeconds = audioFile.getMaxDurationSeconds()
+   * ```
    *
    * When the file is NOT reversed, the source file length is used, so make sure
-   * that it exists in the `.info` object.
+   * that `audioFile.info.duration` exists.
    */
   getMaxDurationSeconds() {
-    if (this.reversed) {
-      return this.startInSourceSeconds + this.durationSeconds
-    }
-    return this.getSourceDurationSeconds() - this.startInSourceSeconds
+    if (this.isReversed()) return this.startInSourceSeconds / this.playbackRate * -1
+    return (this.getSourceDurationSeconds() - this.startInSourceSeconds) / this.playbackRate
   }
 
   /**
@@ -139,37 +168,13 @@ export class FluidAudioFile {
   }
 
   getTailLeftSeconds () {
-    if (this.reversed) {
-      return this.getSourceDurationSeconds() - (this.startInSourceSeconds + this.durationSeconds)
-    }
-    return this.startInSourceSeconds
+    if (this.isReversed()) return (this.startInSourceSeconds - this.getSourceDurationSeconds()) / this.playbackRate
+    return this.startInSourceSeconds / this.playbackRate
   }
 
   getTailRightSeconds() {
-    if (this.reversed) {
-      return this.startInSourceSeconds
-    }
-    return this.getSourceDurationSeconds() - (this.startInSourceSeconds + this.durationSeconds)
-  }
-
-  getFadeLeftSeconds() {
-    if (this.reversed) return this.fadeOutSeconds
-    return this.fadeInSeconds
-  }
-
-  getFadeRightSeconds() {
-    if (this.reversed) return this.fadeInSeconds
-    return this.fadeOutSeconds
-  }
-
-  setFadeLeftSeconds(seconds : number) {
-    if (this.reversed) this.fadeOutSeconds = seconds
-    else this.fadeInSeconds = seconds
-  }
-
-  setFadeRightSeconds(seconds : number) {
-    if (this.reversed) this.fadeInSeconds = seconds
-    else this.fadeOutSeconds = seconds
+    if (this.isReversed()) return this.getEndInSourceSeconds() / this.playbackRate * -1
+    return (this.getSourceDurationSeconds() - this.getEndInSourceSeconds()) / this.playbackRate
   }
 
   /**
@@ -180,9 +185,14 @@ export class FluidAudioFile {
    * edge to the right. Negative values make the item shorter by moving the
    * right edge to the left.
    */
-  trimRightBySeconds(seconds : number) {
-    if (this.reversed) this.startInSourceSeconds -= seconds
-    this.durationSeconds += seconds // No else (intentional)
+  growRightEdgeBySeconds(seconds : number) {
+    this.durationSeconds += seconds
+  }
+
+  growRightEdgeBySecondsSafe(seconds : number) {
+    seconds = Math.min(seconds, this.getTailRightSeconds())
+    seconds = Math.max(seconds, -this.durationSeconds)
+    this.growRightEdgeBySeconds(seconds)
   }
 
   /**
@@ -193,21 +203,16 @@ export class FluidAudioFile {
    * to the left. Negative values make the item shorter by moving the left edge
    * to the right.
    */
-  trimLeftBySeconds(seconds : number) {
-    if (this.reversed) {
-      this.durationSeconds += seconds
-      this.startTimeSeconds -= seconds
-    } else {
-      // Charles: test this:
-      this.startInSourceSeconds -= seconds
-      this.durationSeconds += seconds
-      this.startTimeSeconds -= seconds
-    }
+  growLeftEdgeBySeconds(seconds : number) {
+    this.startInSourceSeconds += this.isReversed() ? seconds : -seconds
+    this.startTimeSeconds -= seconds
+    this.durationSeconds += seconds
   }
 
-  trimLeftBySecondsSafe(seconds : number) {
+  growLeftEdgeBySecondsSafe(seconds : number) {
     seconds = Math.min(seconds, this.startTimeSeconds, this.getTailLeftSeconds())
-    this.trimLeftBySeconds(seconds)
+    seconds = Math.max(seconds, -this.durationSeconds)
+    this.growLeftEdgeBySeconds(seconds)
   }
 }
 
