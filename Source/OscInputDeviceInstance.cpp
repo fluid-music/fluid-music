@@ -86,3 +86,6 @@ void OscInputDeviceInstance::handleOscMessages(std::vector<TimestampedTest> ttMs
         if (recording && tt.editTime >= recordingStartTime) toMessageThread.writeMessage(tt);
     }
 }
+
+void OscInputDeviceInstance::addConsumer (te::InputDeviceInstance::Consumer* node) { juce::ScopedLock sl (nodeLock); nodes.addIfNotAlreadyThere (node); }
+void OscInputDeviceInstance::removeConsumer (te::InputDeviceInstance::Consumer* node) { juce::ScopedLock sl (nodeLock); nodes.removeAllInstancesOf (node); }

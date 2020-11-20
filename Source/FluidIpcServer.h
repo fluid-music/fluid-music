@@ -23,6 +23,7 @@ class FluidIpcServer;
 //==============================================================================
 class FluidIpc : public InterprocessConnection{
 public:
+    ~FluidIpc();
     void connectionMade() override;
     void connectionLost() override;
     void messageReceived(const MemoryBlock& message) override;

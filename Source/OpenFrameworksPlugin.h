@@ -50,7 +50,7 @@ public:
     bool needsConstantBufferSize() override { return false; }
     // takesMidiInput is not overridden, and by default if returns false. Why??
 
-    void applyToBuffer(const te::AudioRenderContext&) override;
+    void applyToBuffer(const te::PluginRenderContext&) override;
     // Overridden from Selectable ==================================================
 
     juce::String getSelectableDescription() override;

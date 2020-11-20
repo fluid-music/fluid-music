@@ -89,5 +89,11 @@ public:
      replacing it. It will be refactored when we template it, so for now just
      using a public member is a reasonable compromize. */
     LockFreeOscMessageQueue toMessageThread;
-};
 
+    void addConsumer (Consumer* node) override;
+    void removeConsumer (Consumer* node) override;
+
+private:
+    juce::CriticalSection nodeLock;
+    juce::Array<te::InputDeviceInstance::Consumer*> nodes;
+};

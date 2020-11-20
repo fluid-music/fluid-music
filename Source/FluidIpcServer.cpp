@@ -36,6 +36,10 @@ void FluidIpcServer::removeIpcConn(int ipc_conn){
 }
 
 //==============================================================================
+FluidIpc::~FluidIpc() {
+    disconnect();
+}
+
 void FluidIpc::setFluidServer(FluidOscServer& server){
     fluidOscServer = &server;
 }

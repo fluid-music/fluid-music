@@ -46,14 +46,14 @@ ValueTree OpenFrameworksPlugin::create()
 const char* OpenFrameworksPlugin::xmlTypeName = "openframeworks";
 
 // Called from a "mixer" thread. (There can be multiple "mixer" threads)
-void OpenFrameworksPlugin::applyToBuffer(const te::AudioRenderContext& fc)
+void OpenFrameworksPlugin::applyToBuffer(const te::PluginRenderContext& fc)
 {
     if (fc.bufferForMidiMessages != nullptr) {
         fc.bufferForMidiMessages->addToNoteNumbers(roundToInt(semitones->getCurrentValue()));
         for (auto& msg : *(fc.bufferForMidiMessages)) {
             std::cout
                 << "Got midi message: "
-                << fc.streamTime.start
+                << fc.editTime
                 << " juce::Time seconds: " << Time::getMillisecondCounterHiRes() * 0.001
                 << msg.getTimeStamp() // This is not really meaningful. It's the time stamp within the block, which I believe is arbitrary. We should really figure out how to playhead->getEditTime (or whatever it is) this value
                 << " - "
