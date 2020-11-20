@@ -598,21 +598,21 @@ te::RackType::Ptr ensureWidthRack(te::Track& track) {
         // Create a macro in the rack
         auto widthMacro = track.macroParameterList.createMacroParameter();
         widthMacro->macroName = "width";
-        widthMacro->value = 1.0;
+        widthMacro->setParameter(1.0, juce::NotificationType::sendNotificationSync);
         volume1->panParam->addModifier(*widthMacro, -1,  0.5);
         volume2->panParam->addModifier(*widthMacro,  1, -0.5);
 
         // Create a macro on the track
         auto autoMacro = track.macroParameterList.createMacroParameter();
         autoMacro->macroName = "width automation";
-        autoMacro->value = 1.0;
+        autoMacro->setParameter(1.0, juce::NotificationType::sendNotificationSync);
         volume3->panParam->addModifier(*autoMacro, -1,  0.5);
         volume4->panParam->addModifier(*autoMacro,  1, -0.5);
 
         // Make the pan automation macro while we're here
         auto panMacro = track.macroParameterList.createMacroParameter();
         panMacro->macroName = "pan automation";
-        panMacro->value = 0.5;
+        panMacro->setParameter(0.5, juce::NotificationType::sendNotificationSync);
 
         auto volumePlugin  = track.pluginList.getPluginsOfType<te::VolumeAndPanPlugin>().getLast();
         jassert(volumePlugin);

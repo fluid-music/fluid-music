@@ -658,7 +658,6 @@ OSCMessage FluidOscServer::selectAudioTrack(const juce::OSCMessage& message) {
         return reply;
     }
 
-    bool makeFolder = false;
     String submixName = String();
 
     if (message.size() >= 2) {
