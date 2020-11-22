@@ -36,7 +36,7 @@ export class FluidSession {
   tracks : FluidTrack[] = []
   regions : any[] = []
 
-  /** position of the edit cursor, measured in whole notes */
+  /** Position of the edit cursor, measured in whole notes */
   editCursorTime : number = 0
 
   /**
@@ -184,7 +184,7 @@ export class FluidSession {
               clip,
               clipIndex,
               data,
-              eventIndex: eventIndex++, // Caution, this is probably broken
+              eventIndex: eventIndex++,
               session: this,
               startTime: clip.startTime + event.startTime,
               duration: event.duration,
