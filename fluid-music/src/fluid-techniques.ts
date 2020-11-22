@@ -96,7 +96,7 @@ export interface MidiNoteOptions {
 
 
 /**
- *  Inserts an automation point for a specific plugin on an arbitrary track
+ * Inserts an automation point for a specific plugin on an arbitrary track
  */
 export class PluginAuto implements Technique {
   // Mandatory members
