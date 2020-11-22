@@ -321,6 +321,17 @@ OSCMessage FluidOscServer::reverseAudioClip(bool reverse) {
 
     if (reverse) {
         double sourceLength = audioClip->getSourceLength() / speedRatio;
+        // If the length of the clip exceeds the source length, reversing will
+        // result in an incorrect "window" into the file, because tracktion allows
+        // audio clips to exceed the source length, but does not allow negative
+        // offsets.
+        double maxValidLength = sourceLength - startInSource;
+        jassert(maxValidLength > 0);
+        if (length > maxValidLength && maxValidLength > 0) {
+            std::cout << "pre-reverse trim: " << maxValidLength - length << " " << audioClip->getOriginalFile().getFileName() << std::endl;
+            audioClip->setLength(maxValidLength, false);
+        }
+
         double tailSize = sourceLength - (startInSource + length);
         audioClip->setIsReversed(reverse);
         audioClip->setOffset(tailSize);

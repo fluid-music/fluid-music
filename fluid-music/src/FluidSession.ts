@@ -172,10 +172,6 @@ export class FluidSession {
   }
 
   processEvents() {
-    // Charles: At some point in the future, I may implement custom finalizers,
-    // which could be stored in a Map like this:
-    // const finalizers = new Map<Clip, {(clip : Clip) : any}[]>()
-
     this.forEachTrack(track => {
       track.clips.forEach((clip, clipIndex) => {
         const data = {}
@@ -204,6 +200,12 @@ export class FluidSession {
         clip.events = []
       })  // iterate over clips  with clips.forEach method
     })    // iterate over tracks with session.forEachTrack
+  }
+
+  finalize() {
+    // Charles: At some point in the future, I may implement custom finalizers,
+    // which could be stored in a Map like this:
+    // const finalizers = new Map<Clip, {(clip : Clip) : any}[]>()
 
     // Finalize
     this.forEachTrack(track => {
@@ -218,7 +220,9 @@ export class FluidSession {
           const trimSeconds = maxDurationSeconds - currentSeconds
 
           // Shrink only, don't expand
-          if (trimSeconds < 0) fEvent1.growRightEdgeBySeconds(trimSeconds)
+          if (trimSeconds < 0) {
+            fEvent1.growRightEdgeBySecondsSafe(trimSeconds)
+          }
         }
       }
     })

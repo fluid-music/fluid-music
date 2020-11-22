@@ -77,15 +77,28 @@ export class FluidAudioFile {
   gainDb : number = 0
   mode : AudioFileMode = AudioFileMode.Event
   info : AudioFileInfo = {}
+
   /** The time within the parent (track) that this sample will be triggered */
   startTimeSeconds : number = 0
-  /** startInSourceSeconds is the beginning of the region of interest within
-   * the audio source file. Set this to zero to play from the beginning
+
+  /**
+   * startInSourceSeconds specifies the beginning of the region of interest
+   * within the audio source file. Set this to zero to play from the beginning.
+   * This measures the start point within the source material, assuming a 1x
+   * `.playbackRate` (even when `this.playbackRate != 1`). Notice that you
+   * cannot use `startInSourceSeconds + durationSeconds` to calculate the
+   * "endInSourceSeconds".
+   *
+   * To calculate where in the source audio file playback ends, use
+   * `.getEndInSourceSeconds()`, which correctly accounts for the value of
+   * `.playbackRate`.
    */
   startInSourceSeconds : number = 0
-  /** durationSeconds specifies the length of the playback event on the main
-   * channel which corresponds to the length of the region of interest. Note
-   * that this may change if (for example), I add a playback speed property
+
+  /**
+   * durationSeconds specifies the length of the playback event measured on the
+   * main timeline. To calculate where in the source audio file playback ends,
+   * use `.getEndInSourceSeconds()`.
    */
   durationSeconds : number = 1
   playbackRate : number = 1
@@ -183,7 +196,9 @@ export class FluidAudioFile {
    *
    * @param seconds Positive values make the item longer by moving the right
    * edge to the right. Negative values make the item shorter by moving the
-   * right edge to the left.
+   * right edge to the left. This value is be measured on the timeline, and not
+   * in the audiofile source (an important distinction when
+   * `this.playbackRate != 1`).
    */
   growRightEdgeBySeconds(seconds : number) {
     this.durationSeconds += seconds
@@ -201,16 +216,17 @@ export class FluidAudioFile {
    *
    * @param seconds Positive values make the item longer by moving the left edge
    * to the left. Negative values make the item shorter by moving the left edge
-   * to the right.
+   * to the right. This value is be measured on the timeline, and not in the
+   * audiofile source (an important distinction when `this.playbackRate != 1`).
    */
   growLeftEdgeBySeconds(seconds : number) {
-    this.startInSourceSeconds += this.isReversed() ? seconds : -seconds
+    this.startInSourceSeconds -= seconds / this.playbackRate
     this.startTimeSeconds -= seconds
     this.durationSeconds += seconds
   }
 
   growLeftEdgeBySecondsSafe(seconds : number) {
-    seconds = Math.min(seconds, this.startTimeSeconds, this.getTailLeftSeconds())
+    seconds = Math.min(seconds, this.getTailLeftSeconds())
     seconds = Math.max(seconds, -this.durationSeconds)
     this.growLeftEdgeBySeconds(seconds)
   }

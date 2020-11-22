@@ -233,18 +233,41 @@ export function sessionToContentFluidMessage(session : FluidSession) {
 function fileEventsToFluidMessage(audioFiles : FluidAudioFile[], session : FluidSession) {
   return audioFiles.map((audioFile, eventIndex) => {
 
-    let startTime = session.timeSecondsToWholeNotes(audioFile.startTimeSeconds)
-    let duration = session.timeSecondsToWholeNotes(audioFile.durationSeconds)
-
     if (typeof audioFile.path !== 'string') {
       console.error(audioFile);
       throw new Error(`fileEventsToFluidMessage: A file event is missing a .path string ${JSON.stringify(audioFile)}`);
     };
 
-    const clipName = `s${basename(audioFile.path)}.${eventIndex}`;
+    // tracktion does not deal well with AudioClip objects that extend beyond
+    // the boundaries of the source material. It handles the case where a clip
+    // is longer than than the audio file, but it cannot handle the case where a
+    // negative startInSourceSeconds offsets the onset of the source material.
+    // It is similarly obstinate with reversed audio clips. For these reasons,
+    // let's identify the "true" start time, meaning the start/end time of the
+    // actual content.
+    const isReversed = audioFile.isReversed()
+    let durationSeconds = audioFile.durationSeconds
+    let startTimeSeconds = audioFile.startTimeSeconds
+    let sOff = isReversed ? audioFile.getEndInSourceSeconds() : audioFile.startInSourceSeconds
+    // Amount to from from the end of the ITEM
+    const trimFromEnd = Math.min(0, audioFile.getTailRightSeconds()) * -1
+    const trimFromStart = Math.min(0, audioFile.getTailLeftSeconds()) * -1
+
+    if (trimFromEnd) {
+      durationSeconds -= trimFromEnd
+      if (isReversed) sOff = 0
+    }
+    if (trimFromStart) {
+      startTimeSeconds += trimFromStart
+      durationSeconds -= trimFromStart
+      if (!isReversed) sOff = 0
+    }
+
+    const startTime = session.timeSecondsToWholeNotes(startTimeSeconds)
+    const duration = session.timeSecondsToWholeNotes(durationSeconds)
+    const clipName = `${basename(audioFile.path)}.${eventIndex}`;
     const msg = [cybr.audiotrack.insertWav(clipName, startTime, audioFile.path)] as any[];
 
-    const sOff = audioFile.isReversed() ? audioFile.getEndInSourceSeconds() : audioFile.startInSourceSeconds
     msg.push(cybr.clip.setSourceOffsetSeconds(sOff));
     msg.push(cybr.clip.length(duration));
 
