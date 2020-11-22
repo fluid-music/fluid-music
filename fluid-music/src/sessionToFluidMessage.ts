@@ -255,12 +255,12 @@ function fileEventsToFluidMessage(audioFiles : FluidAudioFile[], session : Fluid
 
     if (trimFromEnd) {
       durationSeconds -= trimFromEnd
-      if (isReversed) sOff = 0
     }
     if (trimFromStart) {
       startTimeSeconds += trimFromStart
       durationSeconds -= trimFromStart
-      if (!isReversed) sOff = 0
+      if (isReversed) sOff = audioFile.getSourceDurationSeconds()
+      else sOff = 0
     }
 
     const startTime = session.timeSecondsToWholeNotes(startTimeSeconds)
