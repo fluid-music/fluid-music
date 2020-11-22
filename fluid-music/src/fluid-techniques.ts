@@ -86,7 +86,7 @@ export class MidiNote implements Technique {
 
     clip.midiEvents.push(midiNoteEvent)
 
-    return null;
+    return null
   }
 }
 export interface MidiNoteOptions {
@@ -125,25 +125,25 @@ export class PluginAuto implements Technique {
       startTime,
       value: this.value,
       curve: this.curve,
-    };
+    }
 
-    const nth     = this.pluginSelector.nth || 0;
+    const nth     = this.pluginSelector.nth || 0
     const matches = track.plugins.filter(plugin =>
       plugin.pluginName === this.pluginSelector.pluginName &&
       plugin.pluginType === this.pluginSelector.pluginType);
 
     if (nth >= matches.length) {
-      const needed = nth - matches.length + 1;
-      if (needed > 0) throw new Error(`${needed} missing ${this.pluginSelector.pluginName} plugins of on ${track.name} track`);
+      const needed = nth - matches.length + 1
+      if (needed > 0) throw new Error(`${needed} missing ${this.pluginSelector.pluginName} plugins of on ${track.name} track`)
     }
 
-    const plugin = matches[nth];
-    const automation = plugin.automation;
+    const plugin = matches[nth]
+    const automation = plugin.automation
 
     if (!automation.hasOwnProperty(this.paramKey))
-      automation[this.paramKey] = { points: [] };
+      automation[this.paramKey] = { points: [] }
 
-    automation[this.paramKey].points.push(point);
+    automation[this.paramKey].points.push(point)
 
     return null
   }
@@ -190,16 +190,16 @@ export class TrackAuto implements Technique {
       startTime,
       value: (this.value as number),
       curve: 0,
-    };
+    }
 
     if (typeof this.curve === 'number') point.curve = this.curve
 
     const automation = track.automation
 
     if (!automation.hasOwnProperty(this.paramKey))
-      automation[this.paramKey] = { points: [] };
+      automation[this.paramKey] = { points: [] }
 
-    automation[this.paramKey].points.push(point);
+    automation[this.paramKey].points.push(point)
 
     return null
   }
