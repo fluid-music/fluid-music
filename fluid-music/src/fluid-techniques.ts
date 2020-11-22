@@ -3,8 +3,6 @@ import { AudioFileMode, AudioFileOptions, FluidAudioFile } from './FluidAudioFil
 import { AutomationPoint } from './plugin'
 import * as random from './random'
 
-import {basename } from 'path'
-
 export interface TechniqueClass {
   new(...options: any[]): Technique
 }
