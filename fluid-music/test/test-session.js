@@ -174,6 +174,15 @@ describe('FluidSession', () => {
       const childB1Parents = tracks[3][2]
       childB1Parents.should.deepEqual([ session.tracks[1] ])
     })
+
+    it('should facilitate .getOrCreateTrackAncestorsByName', function () {
+      const results = session.getOrCreateTrackAncestorsByName('level3B')
+      results.should.containDeep([
+        { name: 'level1' },
+        { name: 'level2' },
+        { name: 'level3B' },
+      ])
+    })
   })
 });
 

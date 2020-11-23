@@ -37,7 +37,7 @@ export class AudioFile extends FluidAudioFile implements Technique {
       if (!newAudioFile.info.duration) throw new Error('Cannot use OneShot Audio File that does not specify a file length in info.duration:' + JSON.stringify(newAudioFile))
       newAudioFile.durationSeconds = newAudioFile.getMaxDurationSeconds()
     } else if (newAudioFile.mode === AudioFileMode.OneVoice) {
-      this.durationSeconds = newAudioFile.getMaxDurationSeconds() // May be trimmed in the finalizer
+      newAudioFile.durationSeconds = newAudioFile.getMaxDurationSeconds() // May be trimmed in the finalizer
     }
 
     track.audioFiles.push(newAudioFile)
@@ -93,7 +93,6 @@ export interface MidiNoteOptions {
   n? : number
   v? : number
 }
-
 
 /**
  * Inserts an automation point for a specific plugin on an arbitrary track

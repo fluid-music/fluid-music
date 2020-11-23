@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as tab from './tab'
 import * as cybr from './cybr'
 import { FluidReceive, FluidTrack, TrackConfig } from './FluidTrack';
-import { ScoreConfig, UseContext } from './fluid-interfaces';
+import { dLibrary, ScoreConfig, tLibrary, UseContext } from './fluid-interfaces';
 import { sessionToTemplateFluidMessage, sessionToContentFluidMessage } from './sessionToFluidMessage'
 import { sessionToReaperProject } from './sessionToReaperProject';
 import { createWriteStream } from 'fs';
@@ -60,18 +60,18 @@ export class FluidSession {
    *    parent's parent, etc) starting with the 'oldest' grandparent, and ending
    *    with the tracks immediate parent.
    */
-  forEachTrack<T>(func : {(track : FluidTrack, index : number, parents: FluidTrack[]) : T }) : T|undefined {
+  forEachTrack<T>(func : {(track : FluidTrack, index : number, ancestors: FluidTrack[]) : T }) : T|undefined {
     let cumulativeIndex = 0
 
-    const iterateOver = (tracks: FluidTrack[], parents: FluidTrack[]) : T|undefined => {
+    const iterateOver = (tracks: FluidTrack[], ancestors: FluidTrack[]) : T|undefined => {
       let i = 0 // parentIndex
 
       for (const track of tracks) {
-        const result = func(track, i++, parents)
+        const result = func(track, i++, ancestors)
         if (result !== undefined) return result
 
         if (track.children.length) {
-          const result = iterateOver(track.children, [...parents, track])
+          const result = iterateOver(track.children, [...ancestors, track])
           if (result !== undefined) return result
         }
       }
@@ -96,6 +96,17 @@ export class FluidSession {
     const newTrack = new FluidTrack({ name })
     this.tracks.push(newTrack)
     return newTrack
+  }
+
+  getOrCreateTrackAncestorsByName(name: string) : FluidTrack[] {
+    const results = this.forEachTrack((track, index, ancestors) => {
+      return track.name === name ? [...ancestors, track] : undefined
+    })
+    if (results) return results
+
+    const newTrack = new FluidTrack({ name })
+    this.tracks.push(newTrack)
+    return [ newTrack ]
   }
 
   /**
@@ -347,23 +358,34 @@ export function parse(
     // We have a string that can be parsed with parseTab
     if (typeof config.trackKey !== 'string')
       throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a track name`);
-    const track = session.getOrCreateTrackByName(config.trackKey);
+
+    // Build technique and dynamic libraries from the track (and its ancestors)
+    const trackAncestry = session.getOrCreateTrackAncestorsByName(config.trackKey)
+    const track = trackAncestry[trackAncestry.length - 1]
+    const [trackTLibrary, trackDLibrary] = trackAncestry.reduce<[tLibrary, dLibrary]>(([ prevTLibrary, prevDLibrary ], track) => {
+      const tLibrary = track.scoreConfig.tLibrary
+      const dLibrary = track.scoreConfig.dLibrary
+      return [
+        tLibrary ? Object.assign(prevTLibrary, tLibrary) : prevTLibrary,
+        dLibrary ? Object.assign(prevDLibrary, dLibrary) : prevDLibrary
+      ]
+    }, [{}, {}])
+
+    const tLibrary = {};
+    const sessionTLibrary = session.scoreConfig.tLibrary || {}
+    const configTLibrary = config.tLibrary || {}
+    Object.assign(tLibrary, sessionTLibrary, trackTLibrary, configTLibrary);
+
+    const dLibrary = {};
+    const sessionDLibrary = session.scoreConfig.dLibrary || {}
+    const configDLibrary = config.dLibrary || {}
+    Object.assign(dLibrary, sessionDLibrary, trackDLibrary, configDLibrary);
 
     // Get the dynamic and rhythm strings
     const d = config.d || track.scoreConfig.d || session.scoreConfig.d; // might be defined
     const r = config.r || track.scoreConfig.r || session.scoreConfig.r; // must be defined
     if (r === undefined)
       throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a rhythm`);
-
-    // Make the tLibrary and dLibrary
-    const tLibrary = {};
-    if (session.scoreConfig.tLibrary) Object.assign(tLibrary, session.scoreConfig.tLibrary);
-    if (track.scoreConfig.tLibrary) Object.assign(tLibrary, track.scoreConfig.tLibrary);
-    if (config.tLibrary) Object.assign(tLibrary, config.tLibrary);
-    const dLibrary = {};
-    if (session.scoreConfig.dLibrary) Object.assign(dLibrary, session.scoreConfig.dLibrary);
-    if (track.scoreConfig.dLibrary) Object.assign(dLibrary, track.scoreConfig.dLibrary);
-    if (config.dLibrary) Object.assign(dLibrary, config.dLibrary);
 
     // create the clip
     const rhythmObject = tab.parseRhythm(r);
