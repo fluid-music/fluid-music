@@ -124,6 +124,7 @@ export class FluidSession {
     const r = parse(score, this, config)
     this.editCursorTime = r.duration + r.startTime
     this.processEvents()
+    return this
   }
 
   /**
@@ -237,6 +238,8 @@ export class FluidSession {
         }
       }
     })
+
+    return this
   }
 
   /**

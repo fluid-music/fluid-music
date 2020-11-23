@@ -180,15 +180,54 @@ export class FluidAudioFile {
     return this.info.duration
   }
 
+  /**
+   * The "right tail" is the source content that gets truncated during playback
+   * when (for example), the `.durationSeconds` ends playback before the end
+   * of the underlying source audio file.
+   *
+   * If source audio file duration is 5 seconds, and the `.durationSeconds`
+   * property is 4 seconds, then the "right tail" will be 1 second (assuming
+   * `.playbackRate == 1` and `.startInSourceSeconds == 0`).
+   *
+   * This method will calculate the duration of the trailing tail even when
+   * audio is playing in reverse (because of a negative `.playbackRate`) or when
+   * `.startInSourceSeconds != 0`.
+   *
+   * Note that there is an inverse relationship between the absolute value of
+   * `.playbackRate` and the tail length, because slowing the playback rate of
+   * the source file effectively increases the length of the underlying sample.
+   *
+   * @returns A duration (measured in seconds on the timeline) of the trailing
+   * tail of this audio item.
+   */
+  getTailRightSeconds() {
+    if (this.isReversed()) return this.getEndInSourceSeconds() / this.playbackRate * -1
+    return (this.getSourceDurationSeconds() - this.getEndInSourceSeconds()) / this.playbackRate
+  }
+
+  /**
+   * The "left tail" is the source content that gets trimmed during playback
+   * when (for example), the `.startInSourceSeconds` offsets the beginning
+   * of the playback within the underlying source audio file.
+   *
+   * If the `.startInSourceSeconds` property is 1, then the "left tail" will
+   * also be 1 (assuming `.playbackRate == 1` and `.startInSourceSeconds == 0`).
+   *
+   * This method will calculate the duration of the lead-in tail even when
+   * audio is playing in reverse (because of a negative `.playbackRate`)
+   *
+   * Note that there is an inverse relationship between the absolute value of
+   * `.playbackRate` and the tail length, because slowing the playback rate of
+   * the source file effectively increases the length of the underlying sample.
+   *
+   * @returns A duration (measured in seconds on the timeline) of the lead-in
+   * tail of this audio item.
+   */
   getTailLeftSeconds () {
     if (this.isReversed()) return (this.startInSourceSeconds - this.getSourceDurationSeconds()) / this.playbackRate
     return this.startInSourceSeconds / this.playbackRate
   }
 
-  getTailRightSeconds() {
-    if (this.isReversed()) return this.getEndInSourceSeconds() / this.playbackRate * -1
-    return (this.getSourceDurationSeconds() - this.getEndInSourceSeconds()) / this.playbackRate
-  }
 
   /**
    * Drag the right edge of the item without moving the contents of the item on
