@@ -69,17 +69,27 @@ export class FluidAudioFile {
 
   static Modes = AudioFileMode
 
+  /** path to the underlying audio file */
   path : string = ''
   /** Fade out time in seconds */
   fadeOutSeconds : number = 0
   /** Fade in time in seconds */
   fadeInSeconds : number = 0
+  /** Gain in DBFS applied to the sample. 0 is unity gain */
   gainDb : number = 0
   mode : AudioFileMode = AudioFileMode.Event
+  /** Information and metadata pertaining to the source audio file */
   info : AudioFileInfo = {}
 
   /** The time within the parent (track) that this sample will be triggered */
   startTimeSeconds : number = 0
+
+  /**
+   * durationSeconds specifies the length of the playback event measured on the
+   * main timeline. To calculate where in the source audio file playback ends,
+   * use `.getEndInSourceSeconds()`.
+   */
+  durationSeconds : number = 1
 
   /**
    * startInSourceSeconds specifies the beginning of the region of interest
@@ -95,12 +105,6 @@ export class FluidAudioFile {
    */
   startInSourceSeconds : number = 0
 
-  /**
-   * durationSeconds specifies the length of the playback event measured on the
-   * main timeline. To calculate where in the source audio file playback ends,
-   * use `.getEndInSourceSeconds()`.
-   */
-  durationSeconds : number = 1
   playbackRate : number = 1
 
   /**
@@ -230,7 +234,7 @@ export class FluidAudioFile {
 
 
   /**
-   * Drag the right edge of the item without moving the contents of the item on
+   * Move the right edge of the item without moving the contents of the item on
    * the timeline.
    *
    * @param seconds Positive values make the item longer by moving the right
@@ -250,7 +254,7 @@ export class FluidAudioFile {
   }
 
   /**
-   * Drag the left edge of the item without moving the contents of the item on
+   * Move the left edge of the item without moving the contents of the item on
    * the timeline.
    *
    * @param seconds Positive values make the item longer by moving the left edge
