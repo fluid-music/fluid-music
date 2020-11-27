@@ -1,6 +1,6 @@
 import { Clip, ScoreConfig, TrackReceive, Tap, UnresolvedSend } from './fluid-interfaces';
 import { FluidAudioFile } from './FluidAudioFile'
-import { FluidPlugin, Automation } from './plugin';
+import { FluidPlugin, Automation } from './FluidPlugin';
 
 export class FluidReceive implements TrackReceive {
   constructor (options : {

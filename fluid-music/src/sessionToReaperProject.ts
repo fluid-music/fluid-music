@@ -1,5 +1,5 @@
 import { extname, basename } from 'path'
-import { FluidPlugin } from './plugin'
+import { FluidPlugin } from './FluidPlugin'
 import { FluidSession } from './FluidSession'
 import { FluidReceive, FluidTrack } from './FluidTrack'
 import { FluidAudioFile, resolveFades } from './FluidAudioFile'

@@ -1,5 +1,5 @@
 import { basename } from 'path'
-import { FluidPlugin, PluginType } from './plugin'
+import { FluidPlugin, PluginType } from './FluidPlugin'
 import { Tap, UseContext } from './fluid-interfaces'
 import { FluidTrack } from './FluidTrack'
 import { FluidSession } from './FluidSession'

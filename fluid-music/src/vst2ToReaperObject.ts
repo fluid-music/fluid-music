@@ -1,4 +1,4 @@
-import { FluidPlugin, PluginType } from './plugin';
+import { FluidPlugin, PluginType } from './FluidPlugin';
 import { IpcClient } from './cybr/IpcClient';
 import * as cybr from './cybr/index';
 

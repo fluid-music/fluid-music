@@ -1,4 +1,4 @@
-import { PluginType, FluidPlugin } from '../plugin';
+import { PluginType, FluidPlugin } from '../FluidPlugin';
 import { PluginAuto as PluginAutoTechnique } from '../fluid-techniques';
 const pluginName = '#TEqualiser'
 const pluginType = PluginType.VST2

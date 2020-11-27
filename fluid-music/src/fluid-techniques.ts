@@ -1,6 +1,6 @@
 import { Technique, MidiNoteEvent, UseContext } from './fluid-interfaces'
 import { AudioFileMode, AudioFileOptions, FluidAudioFile } from './FluidAudioFile'
-import { AutomationPoint } from './plugin'
+import { AutomationPoint } from './FluidPlugin'
 import * as random from './random'
 
 export interface TechniqueClass {

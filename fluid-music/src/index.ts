@@ -1,4 +1,4 @@
-import { FluidPlugin, PluginType } from './plugin';
+import { FluidPlugin, PluginType } from './FluidPlugin';
 import { sessionToContentFluidMessage, sessionToTemplateFluidMessage } from './sessionToFluidMessage';
 import { sessionToReaperProject } from './sessionToReaperProject'
 import { FluidSession } from './FluidSession';
