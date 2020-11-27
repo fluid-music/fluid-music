@@ -22,17 +22,6 @@ import { RoughRider3Vst2 } from './plugin-adapters/rough-rider-3-vst2'
 
 // OSC Message Helpers
 import * as cybr from './cybr/index';
-import * as audioclip from './cybr/audioclip';
-import * as audiofile from './cybr/audiofile';
-import * as audiotrack from './cybr/audiotrack';
-import * as clip from './cybr/clip';
-import * as content  from './cybr/content';
-import * as global from './cybr/global';
-import * as midiclip from './cybr/midiclip';
-import * as plugin from './cybr/plugin';
-import * as sampler from './cybr/sampler';
-import * as tempo from './cybr/tempo';
-import * as transport from './cybr/transport';
 
 const UdpClient = require('./cybr/UdpClient');
 import { IpcClient } from './cybr/IpcClient';
