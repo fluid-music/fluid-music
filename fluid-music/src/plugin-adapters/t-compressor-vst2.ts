@@ -1,5 +1,5 @@
 import { PluginType, FluidPlugin } from '../FluidPlugin';
-import { PluginAuto as PluginAutoTechnique } from '../fluid-techniques';
+import { PluginAutomation } from '../fluid-techniques';
 const pluginName = '#TCompressor'
 const pluginType = PluginType.VST2
 
@@ -70,7 +70,7 @@ const parameterLibrary = {
 }
 const makeAutomation = {
   enable (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -78,7 +78,7 @@ const makeAutomation = {
     });
   },
   mode (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -86,7 +86,7 @@ const makeAutomation = {
     });
   },
   thresholdDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -94,7 +94,7 @@ const makeAutomation = {
     });
   },
   ratio (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -102,7 +102,7 @@ const makeAutomation = {
     });
   },
   attackMs (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -110,7 +110,7 @@ const makeAutomation = {
     });
   },
   holdMs (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -118,7 +118,7 @@ const makeAutomation = {
     });
   },
   releaseMs (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -126,7 +126,7 @@ const makeAutomation = {
     });
   },
   inputDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -134,7 +134,7 @@ const makeAutomation = {
     });
   },
   makeUpDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -142,7 +142,7 @@ const makeAutomation = {
     });
   },
   softKneeDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -150,7 +150,7 @@ const makeAutomation = {
     });
   },
   lookaheadMs (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -158,7 +158,7 @@ const makeAutomation = {
     });
   },
   limit (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -166,7 +166,7 @@ const makeAutomation = {
     });
   },
   useSidechainTrigger (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -174,7 +174,7 @@ const makeAutomation = {
     });
   },
   monitorSidechain (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -182,7 +182,7 @@ const makeAutomation = {
     });
   },
   softClip (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -190,7 +190,7 @@ const makeAutomation = {
     });
   },
   softClipThresholdDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -198,7 +198,7 @@ const makeAutomation = {
     });
   },
   peakDetection (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -206,7 +206,7 @@ const makeAutomation = {
     });
   },
   useSumDetection (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -214,7 +214,7 @@ const makeAutomation = {
     });
   },
   enableAutoMakeUpGain (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -222,7 +222,7 @@ const makeAutomation = {
     });
   },
   filter (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -230,7 +230,7 @@ const makeAutomation = {
     });
   },
   filterType (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -238,7 +238,7 @@ const makeAutomation = {
     });
   },
   freqHz (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -246,7 +246,7 @@ const makeAutomation = {
     });
   },
   q (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -254,7 +254,7 @@ const makeAutomation = {
     });
   },
   gainDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },

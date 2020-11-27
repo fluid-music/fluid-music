@@ -1,5 +1,5 @@
 import { PluginType, FluidPlugin } from '../FluidPlugin';
-import { PluginAuto as PluginAutoTechnique } from '../fluid-techniques';
+import { PluginAutomation } from '../fluid-techniques';
 const pluginName = 'TyrellN6'
 const pluginType = PluginType.VST2
 
@@ -255,7 +255,7 @@ const parameterLibrary = {
 }
 const makeAutomation = {
   mainOutput (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -263,7 +263,7 @@ const makeAutomation = {
     });
   },
   pcoreMatrix1Source (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -271,7 +271,7 @@ const makeAutomation = {
     });
   },
   pcoreMatrix1Depth (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -279,7 +279,7 @@ const makeAutomation = {
     });
   },
   pcoreMatrix1ViaSrc (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -287,7 +287,7 @@ const makeAutomation = {
     });
   },
   pcoreMatrix1Via (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -295,7 +295,7 @@ const makeAutomation = {
     });
   },
   pcoreMatrix2Source (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -303,7 +303,7 @@ const makeAutomation = {
     });
   },
   pcoreMatrix2Depth (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -311,7 +311,7 @@ const makeAutomation = {
     });
   },
   pcoreMatrix2ViaSrc (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -319,7 +319,7 @@ const makeAutomation = {
     });
   },
   pcoreMatrix2Via (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -327,7 +327,7 @@ const makeAutomation = {
     });
   },
   vccVoiceStack (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -335,7 +335,7 @@ const makeAutomation = {
     });
   },
   vccMode (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -343,7 +343,7 @@ const makeAutomation = {
     });
   },
   vccGlideMode (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -351,7 +351,7 @@ const makeAutomation = {
     });
   },
   vccGlide (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -359,7 +359,7 @@ const makeAutomation = {
     });
   },
   vccGlide2 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -367,7 +367,7 @@ const makeAutomation = {
     });
   },
   vccPortaRange (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -375,7 +375,7 @@ const makeAutomation = {
     });
   },
   vccPitchBendUp (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -383,7 +383,7 @@ const makeAutomation = {
     });
   },
   vccPitchBendDown (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -391,7 +391,7 @@ const makeAutomation = {
     });
   },
   vccTranspose (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -399,7 +399,7 @@ const makeAutomation = {
     });
   },
   env1Attack (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -407,7 +407,7 @@ const makeAutomation = {
     });
   },
   env1Decay (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -415,7 +415,7 @@ const makeAutomation = {
     });
   },
   env1Sustain (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -423,7 +423,7 @@ const makeAutomation = {
     });
   },
   env1FallRise (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -431,7 +431,7 @@ const makeAutomation = {
     });
   },
   env1Release (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -439,7 +439,7 @@ const makeAutomation = {
     });
   },
   env1Velocity (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -447,7 +447,7 @@ const makeAutomation = {
     });
   },
   env1KeyTrack (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -455,7 +455,7 @@ const makeAutomation = {
     });
   },
   env1Trigger (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -463,7 +463,7 @@ const makeAutomation = {
     });
   },
   env2Attack (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -471,7 +471,7 @@ const makeAutomation = {
     });
   },
   env2Decay (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -479,7 +479,7 @@ const makeAutomation = {
     });
   },
   env2Sustain (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -487,7 +487,7 @@ const makeAutomation = {
     });
   },
   env2FallRise (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -495,7 +495,7 @@ const makeAutomation = {
     });
   },
   env2Release (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -503,7 +503,7 @@ const makeAutomation = {
     });
   },
   env2Velocity (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -511,7 +511,7 @@ const makeAutomation = {
     });
   },
   env2KeyTrack (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -519,7 +519,7 @@ const makeAutomation = {
     });
   },
   env2Trigger (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -527,7 +527,7 @@ const makeAutomation = {
     });
   },
   lfo1Sync (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -535,7 +535,7 @@ const makeAutomation = {
     });
   },
   lfo1Delay (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -543,7 +543,7 @@ const makeAutomation = {
     });
   },
   lfo2Sync (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -551,7 +551,7 @@ const makeAutomation = {
     });
   },
   lfo2Delay (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -559,7 +559,7 @@ const makeAutomation = {
     });
   },
   tyrellShape1 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -567,7 +567,7 @@ const makeAutomation = {
     });
   },
   tyrellTuneModSrc1 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -575,7 +575,7 @@ const makeAutomation = {
     });
   },
   tyrellTuneModDepth1 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -583,7 +583,7 @@ const makeAutomation = {
     });
   },
   tyrellShape2 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -591,7 +591,7 @@ const makeAutomation = {
     });
   },
   tyrellTune2 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -599,7 +599,7 @@ const makeAutomation = {
     });
   },
   tyrellFineTune2 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -607,7 +607,7 @@ const makeAutomation = {
     });
   },
   tyrellTuneModSrc2 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -615,7 +615,7 @@ const makeAutomation = {
     });
   },
   tyrellTuneModDepth2 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -623,7 +623,7 @@ const makeAutomation = {
     });
   },
   tyrellPwdepth (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -631,7 +631,7 @@ const makeAutomation = {
     });
   },
   tyrellPwsrc (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -639,7 +639,7 @@ const makeAutomation = {
     });
   },
   tyrellDetune (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -647,7 +647,7 @@ const makeAutomation = {
     });
   },
   tyrellSoftSync (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -655,7 +655,7 @@ const makeAutomation = {
     });
   },
   tyrellVibrato (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -663,7 +663,7 @@ const makeAutomation = {
     });
   },
   tyrellRingModIn1 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -671,7 +671,7 @@ const makeAutomation = {
     });
   },
   tyrellRingModIn2 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -679,7 +679,7 @@ const makeAutomation = {
     });
   },
   tyrellNoiseColour (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -687,7 +687,7 @@ const makeAutomation = {
     });
   },
   tyrellOscVolume1 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -695,7 +695,7 @@ const makeAutomation = {
     });
   },
   tyrellOscVolume2 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -703,7 +703,7 @@ const makeAutomation = {
     });
   },
   tyrellSubVolume (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -711,7 +711,7 @@ const makeAutomation = {
     });
   },
   tyrellNoiseVolume (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -719,7 +719,7 @@ const makeAutomation = {
     });
   },
   tyrellRingModulator (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -727,7 +727,7 @@ const makeAutomation = {
     });
   },
   tyrellFeedback (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -735,7 +735,7 @@ const makeAutomation = {
     });
   },
   tyrellVcfmode (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -743,7 +743,7 @@ const makeAutomation = {
     });
   },
   tyrellVcfpoles (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -751,7 +751,7 @@ const makeAutomation = {
     });
   },
   tyrellCutoff (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -759,7 +759,7 @@ const makeAutomation = {
     });
   },
   tyrellFreqModSrc1 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -767,7 +767,7 @@ const makeAutomation = {
     });
   },
   tyrellFreqModDepth1 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -775,7 +775,7 @@ const makeAutomation = {
     });
   },
   tyrellFreqModSrc2 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -783,7 +783,7 @@ const makeAutomation = {
     });
   },
   tyrellFreqModDepth2 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -791,7 +791,7 @@ const makeAutomation = {
     });
   },
   tyrellKeyFollow (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -799,7 +799,7 @@ const makeAutomation = {
     });
   },
   tyrellResonance (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -807,7 +807,7 @@ const makeAutomation = {
     });
   },
   tyrellMixSpread (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -815,7 +815,7 @@ const makeAutomation = {
     });
   },
   tyrellAudioRateSrc (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -823,7 +823,7 @@ const makeAutomation = {
     });
   },
   tyrellAudioRateDest (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -831,7 +831,7 @@ const makeAutomation = {
     });
   },
   tyrellXmoddepth (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -839,7 +839,7 @@ const makeAutomation = {
     });
   },
   tyrellAudioRateModSrc (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -847,7 +847,7 @@ const makeAutomation = {
     });
   },
   chrs1Type (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -855,7 +855,7 @@ const makeAutomation = {
     });
   },
   chrs1Rate (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -863,7 +863,7 @@ const makeAutomation = {
     });
   },
   chrs1Depth (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -871,7 +871,7 @@ const makeAutomation = {
     });
   },
   chrs1Wet (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -879,7 +879,7 @@ const makeAutomation = {
     });
   },
   lfo1Restart (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -887,7 +887,7 @@ const makeAutomation = {
     });
   },
   lfo1Waveform (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -895,7 +895,7 @@ const makeAutomation = {
     });
   },
   lfo1Phase (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -903,7 +903,7 @@ const makeAutomation = {
     });
   },
   lfo1Polarity (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -911,7 +911,7 @@ const makeAutomation = {
     });
   },
   lfo1DepthModDpt1 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -919,7 +919,7 @@ const makeAutomation = {
     });
   },
   lfo1Rate (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -927,7 +927,7 @@ const makeAutomation = {
     });
   },
   lfo1FreqModDpt (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -935,7 +935,7 @@ const makeAutomation = {
     });
   },
   lfo2Restart (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -943,7 +943,7 @@ const makeAutomation = {
     });
   },
   lfo2Waveform (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -951,7 +951,7 @@ const makeAutomation = {
     });
   },
   lfo2Phase (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -959,7 +959,7 @@ const makeAutomation = {
     });
   },
   lfo2Polarity (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -967,7 +967,7 @@ const makeAutomation = {
     });
   },
   lfo2DepthModDpt1 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -975,7 +975,7 @@ const makeAutomation = {
     });
   },
   lfo2Rate (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -983,7 +983,7 @@ const makeAutomation = {
     });
   },
   lfo2FreqModDpt (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },

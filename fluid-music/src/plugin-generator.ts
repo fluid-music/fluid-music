@@ -37,8 +37,8 @@ export function generatePluginModule(report : any, config : {className?: string,
     }
   })
 
-  let output = `import { PluginType, FluidPlugin } from '../plugin';
-import { PluginAuto as PluginAutoTechnique } from '../fluid-techniques';
+  let output = `import { PluginType, FluidPlugin } from '../FluidPlugin';
+import { PluginAutomation } from '../fluid-techniques';
 const pluginName = '${pluginName}'
 const pluginType = ${pluginType}
 
@@ -69,7 +69,7 @@ export interface ${parametersInterfaceName} {
   output += 'const makeAutomation = {\n'
   output += params.map(paramInfo => {
     return `  ${paramInfo.key} (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },

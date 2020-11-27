@@ -49,15 +49,6 @@ export class AudioFile extends FluidAudioFile implements Technique {
  * A midi note within a midi clip.
  */
 export class MidiNote implements Technique {
-  /**
-   * Midi note number - 60 = C4 = Middle C
-   */
-  note : number
-
-  /**
-   * If present, velocity overrides a velocity found in a .d object
-   */
-  velocity? : number
 
   constructor(options : MidiNoteOptions) {
     // For backwards compatibility
@@ -67,6 +58,16 @@ export class MidiNote implements Technique {
     this.note = options.note
     if (typeof options.velocity === 'number') this.velocity = options.velocity
   }
+
+  /**
+   * Midi note number - 60 = C4 = Middle C
+   */
+  note : number
+
+  /**
+   * If present, velocity overrides a velocity found in a .d object
+   */
+  velocity? : number
 
   use (context : UseContext) {
     if (!context.clip) throw new Error('Cannot .use MidiNote without a clip: ' + JSON.stringify({ note: this, context }))
@@ -97,14 +98,7 @@ export interface MidiNoteOptions {
 /**
  * Inserts an automation point for a specific plugin on an arbitrary track
  */
-export class PluginAuto implements Technique {
-  // Mandatory members
-  pluginSelector : PluginSelector
-  paramKey : string
-
-  // members with default values
-  value : number = 0
-  curve : number = 0
+export class PluginAutomation implements Technique {
 
   constructor (options : PluginAutoOptions) {
     if (!options.pluginSelector)
@@ -115,6 +109,14 @@ export class PluginAuto implements Technique {
     if (typeof options.value === 'number') this.value = options.value
     if (typeof options.curve === 'number') this.curve = options.curve
   }
+
+  // Mandatory members
+  pluginSelector : PluginSelector
+  paramKey : string
+
+  // members with default values
+  value : number = 0
+  curve : number = 0
 
   use ({ track, startTime } : UseContext) {
 
@@ -171,7 +173,7 @@ export interface PluginSelector {
 /**
  * An automation event on a track
  */
-export class TrackAuto implements Technique {
+export class TrackAutomation implements Technique {
   paramKey : string
   value : number = 0
   curve : number = 0

@@ -1,5 +1,5 @@
 import { PluginType, FluidPlugin } from '../FluidPlugin';
-import { PluginAuto as PluginAutoTechnique } from '../fluid-techniques';
+import { PluginAutomation } from '../fluid-techniques';
 const pluginName = 'Podolski'
 const pluginType = PluginType.VST2
 
@@ -226,7 +226,7 @@ const parameterLibrary = {
 }
 const makeAutomation = {
   mainOutput (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -234,7 +234,7 @@ const makeAutomation = {
     });
   },
   mainActiveLfog (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -242,7 +242,7 @@ const makeAutomation = {
     });
   },
   mainActiveChrs (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -250,7 +250,7 @@ const makeAutomation = {
     });
   },
   mainActiveDly1 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -258,7 +258,7 @@ const makeAutomation = {
     });
   },
   lfogSync (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -266,7 +266,7 @@ const makeAutomation = {
     });
   },
   lfogPhasePercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -274,7 +274,7 @@ const makeAutomation = {
     });
   },
   vccActiveLfo1 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -282,7 +282,7 @@ const makeAutomation = {
     });
   },
   vccVoices (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -290,7 +290,7 @@ const makeAutomation = {
     });
   },
   vccVoiceStack (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -298,7 +298,7 @@ const makeAutomation = {
     });
   },
   vccMode (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -306,7 +306,7 @@ const makeAutomation = {
     });
   },
   vccGlidePercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -314,7 +314,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod1Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -322,7 +322,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod2Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -330,7 +330,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod3Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -338,7 +338,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod4Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -346,7 +346,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod5Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -354,7 +354,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod6Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -362,7 +362,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod7Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -370,7 +370,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod8Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -378,7 +378,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod9Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -386,7 +386,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod10Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -394,7 +394,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod11Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -402,7 +402,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod12Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -410,7 +410,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod13Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -418,7 +418,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod14Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -426,7 +426,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod15Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -434,7 +434,7 @@ const makeAutomation = {
     });
   },
   vccArpStepMod16Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -442,7 +442,7 @@ const makeAutomation = {
     });
   },
   env1AttackPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -450,7 +450,7 @@ const makeAutomation = {
     });
   },
   env1DecayPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -458,7 +458,7 @@ const makeAutomation = {
     });
   },
   env1SustainPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -466,7 +466,7 @@ const makeAutomation = {
     });
   },
   env1FallRisePercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -474,7 +474,7 @@ const makeAutomation = {
     });
   },
   env1ReleasePercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -482,7 +482,7 @@ const makeAutomation = {
     });
   },
   env1VelocityPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -490,7 +490,7 @@ const makeAutomation = {
     });
   },
   lfo1Sync (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -498,7 +498,7 @@ const makeAutomation = {
     });
   },
   lfo1DelayPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -506,7 +506,7 @@ const makeAutomation = {
     });
   },
   osc1Tune (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -514,7 +514,7 @@ const makeAutomation = {
     });
   },
   osc1TuneModSrc (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -522,7 +522,7 @@ const makeAutomation = {
     });
   },
   osc1TuneModDepth (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -530,7 +530,7 @@ const makeAutomation = {
     });
   },
   osc1PhasePercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -538,7 +538,7 @@ const makeAutomation = {
     });
   },
   osc1PhaseModSrc (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -546,7 +546,7 @@ const makeAutomation = {
     });
   },
   osc1PhaseModDepth (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -554,7 +554,7 @@ const makeAutomation = {
     });
   },
   osc1InverseVolumePercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -562,7 +562,7 @@ const makeAutomation = {
     });
   },
   osc1WaveWarpPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -570,7 +570,7 @@ const makeAutomation = {
     });
   },
   osc1WarpModSrc (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -578,7 +578,7 @@ const makeAutomation = {
     });
   },
   osc1WarpModDepthPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -586,7 +586,7 @@ const makeAutomation = {
     });
   },
   osc1VibratoPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -594,7 +594,7 @@ const makeAutomation = {
     });
   },
   vcf0Type (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -602,7 +602,7 @@ const makeAutomation = {
     });
   },
   vcf0Cutoff (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -610,7 +610,7 @@ const makeAutomation = {
     });
   },
   vcf0ResonancePercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -618,7 +618,7 @@ const makeAutomation = {
     });
   },
   vcf0DrivePercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -626,7 +626,7 @@ const makeAutomation = {
     });
   },
   vcf0CutoffMod1 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -634,7 +634,7 @@ const makeAutomation = {
     });
   },
   vcf0Modsource1 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -642,7 +642,7 @@ const makeAutomation = {
     });
   },
   vcf0CutoffMod2 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -650,7 +650,7 @@ const makeAutomation = {
     });
   },
   vcf0Modsource2 (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -658,7 +658,7 @@ const makeAutomation = {
     });
   },
   vcf0KeyFollowPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -666,7 +666,7 @@ const makeAutomation = {
     });
   },
   vcf0AutoFMPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -674,7 +674,7 @@ const makeAutomation = {
     });
   },
   vcf0ClickPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -682,7 +682,7 @@ const makeAutomation = {
     });
   },
   vca1PanPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -690,7 +690,7 @@ const makeAutomation = {
     });
   },
   vca1VolumePercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -698,7 +698,7 @@ const makeAutomation = {
     });
   },
   vca1ModDepthPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -706,7 +706,7 @@ const makeAutomation = {
     });
   },
   chrsCenterPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -714,7 +714,7 @@ const makeAutomation = {
     });
   },
   chrsSpeedPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -722,7 +722,7 @@ const makeAutomation = {
     });
   },
   chrsDepthPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -730,7 +730,7 @@ const makeAutomation = {
     });
   },
   chrsFeedbackPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -738,7 +738,7 @@ const makeAutomation = {
     });
   },
   chrsMixPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -746,7 +746,7 @@ const makeAutomation = {
     });
   },
   dly1SyncLeft (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -754,7 +754,7 @@ const makeAutomation = {
     });
   },
   dly1SyncRight (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -762,7 +762,7 @@ const makeAutomation = {
     });
   },
   dly1FeedbackPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -770,7 +770,7 @@ const makeAutomation = {
     });
   },
   dly1CrossfeedPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -778,7 +778,7 @@ const makeAutomation = {
     });
   },
   dly1MixPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -786,7 +786,7 @@ const makeAutomation = {
     });
   },
   lfogWaveform (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -794,7 +794,7 @@ const makeAutomation = {
     });
   },
   lfogPolarity (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -802,7 +802,7 @@ const makeAutomation = {
     });
   },
   lfo1Restart (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -810,7 +810,7 @@ const makeAutomation = {
     });
   },
   lfo1Waveform (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -818,7 +818,7 @@ const makeAutomation = {
     });
   },
   lfo1PhasePercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -826,7 +826,7 @@ const makeAutomation = {
     });
   },
   lfo1Polarity (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -834,7 +834,7 @@ const makeAutomation = {
     });
   },
   lfo1DepthModDpt1Percent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -842,7 +842,7 @@ const makeAutomation = {
     });
   },
   lfo1Rate (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -850,7 +850,7 @@ const makeAutomation = {
     });
   },
   lfo1FreqModDpt (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },

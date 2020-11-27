@@ -1,5 +1,5 @@
 import { PluginType, FluidPlugin } from '../FluidPlugin';
-import { PluginAuto as PluginAutoTechnique } from '../fluid-techniques';
+import { PluginAutomation } from '../fluid-techniques';
 const pluginName = 'RoughRider3'
 const pluginType = PluginType.VST2
 
@@ -45,7 +45,7 @@ const parameterLibrary = {
 }
 const makeAutomation = {
   sidechainHighpass (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -53,7 +53,7 @@ const makeAutomation = {
     });
   },
   inputGainDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -61,7 +61,7 @@ const makeAutomation = {
     });
   },
   sensitivityDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -69,7 +69,7 @@ const makeAutomation = {
     });
   },
   ratio (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -77,7 +77,7 @@ const makeAutomation = {
     });
   },
   attackMs (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -85,7 +85,7 @@ const makeAutomation = {
     });
   },
   releaseMs (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -93,7 +93,7 @@ const makeAutomation = {
     });
   },
   makeupGainDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -101,7 +101,7 @@ const makeAutomation = {
     });
   },
   mixPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -109,7 +109,7 @@ const makeAutomation = {
     });
   },
   outputLvlDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -117,7 +117,7 @@ const makeAutomation = {
     });
   },
   externalSidechainEnable (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -125,7 +125,7 @@ const makeAutomation = {
     });
   },
   fullBandwidth (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },

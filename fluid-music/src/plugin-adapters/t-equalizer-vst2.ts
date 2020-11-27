@@ -1,5 +1,5 @@
 import { PluginType, FluidPlugin } from '../FluidPlugin';
-import { PluginAuto as PluginAutoTechnique } from '../fluid-techniques';
+import { PluginAutomation } from '../fluid-techniques';
 const pluginName = '#TEqualiser'
 const pluginType = PluginType.VST2
 
@@ -125,7 +125,7 @@ const parameterLibrary = {
 }
 const makeAutomation = {
   band1State (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -133,7 +133,7 @@ const makeAutomation = {
     });
   },
   band1FrequencyHz (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -141,7 +141,7 @@ const makeAutomation = {
     });
   },
   band1GainDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -149,7 +149,7 @@ const makeAutomation = {
     });
   },
   band1Q (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -157,7 +157,7 @@ const makeAutomation = {
     });
   },
   band1Shape (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -165,7 +165,7 @@ const makeAutomation = {
     });
   },
   band2State (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -173,7 +173,7 @@ const makeAutomation = {
     });
   },
   band2FrequencyHz (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -181,7 +181,7 @@ const makeAutomation = {
     });
   },
   band2GainDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -189,7 +189,7 @@ const makeAutomation = {
     });
   },
   band2Q (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -197,7 +197,7 @@ const makeAutomation = {
     });
   },
   band2Shape (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -205,7 +205,7 @@ const makeAutomation = {
     });
   },
   band3State (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -213,7 +213,7 @@ const makeAutomation = {
     });
   },
   band3FrequencyHz (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -221,7 +221,7 @@ const makeAutomation = {
     });
   },
   band3GainDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -229,7 +229,7 @@ const makeAutomation = {
     });
   },
   band3Q (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -237,7 +237,7 @@ const makeAutomation = {
     });
   },
   band3Shape (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -245,7 +245,7 @@ const makeAutomation = {
     });
   },
   band4State (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -253,7 +253,7 @@ const makeAutomation = {
     });
   },
   band4FrequencyHz (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -261,7 +261,7 @@ const makeAutomation = {
     });
   },
   band4GainDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -269,7 +269,7 @@ const makeAutomation = {
     });
   },
   band4Q (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -277,7 +277,7 @@ const makeAutomation = {
     });
   },
   band4Shape (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -285,7 +285,7 @@ const makeAutomation = {
     });
   },
   band5State (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -293,7 +293,7 @@ const makeAutomation = {
     });
   },
   band5FrequencyHz (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -301,7 +301,7 @@ const makeAutomation = {
     });
   },
   band5GainDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -309,7 +309,7 @@ const makeAutomation = {
     });
   },
   band5Q (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -317,7 +317,7 @@ const makeAutomation = {
     });
   },
   band5Shape (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -325,7 +325,7 @@ const makeAutomation = {
     });
   },
   band6State (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -333,7 +333,7 @@ const makeAutomation = {
     });
   },
   band6FrequencyHz (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -341,7 +341,7 @@ const makeAutomation = {
     });
   },
   band6GainDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -349,7 +349,7 @@ const makeAutomation = {
     });
   },
   band6Q (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -357,7 +357,7 @@ const makeAutomation = {
     });
   },
   band6Shape (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -365,7 +365,7 @@ const makeAutomation = {
     });
   },
   band7State (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -373,7 +373,7 @@ const makeAutomation = {
     });
   },
   band7FrequencyHz (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -381,7 +381,7 @@ const makeAutomation = {
     });
   },
   band7GainDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -389,7 +389,7 @@ const makeAutomation = {
     });
   },
   band7Q (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -397,7 +397,7 @@ const makeAutomation = {
     });
   },
   band7Shape (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -405,7 +405,7 @@ const makeAutomation = {
     });
   },
   band8State (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -413,7 +413,7 @@ const makeAutomation = {
     });
   },
   band8FrequencyHz (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -421,7 +421,7 @@ const makeAutomation = {
     });
   },
   band8GainDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -429,7 +429,7 @@ const makeAutomation = {
     });
   },
   band8Q (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -437,7 +437,7 @@ const makeAutomation = {
     });
   },
   band8Shape (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -445,7 +445,7 @@ const makeAutomation = {
     });
   },
   enable (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -453,7 +453,7 @@ const makeAutomation = {
     });
   },
   outputGainDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -461,7 +461,7 @@ const makeAutomation = {
     });
   },
   soloBand (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -469,7 +469,7 @@ const makeAutomation = {
     });
   },
   soloGainDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -477,7 +477,7 @@ const makeAutomation = {
     });
   },
   analyserMode (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },

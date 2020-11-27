@@ -1,5 +1,5 @@
 import { PluginType, FluidPlugin } from '../FluidPlugin';
-import { PluginAuto as PluginAutoTechnique } from '../fluid-techniques';
+import { PluginAutomation } from '../fluid-techniques';
 const pluginName = '#TStereo Delay'
 const pluginType = PluginType.VST2
 
@@ -72,7 +72,7 @@ const parameterLibrary = {
 }
 const makeAutomation = {
   enable (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -80,7 +80,7 @@ const makeAutomation = {
     });
   },
   inputDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -88,7 +88,7 @@ const makeAutomation = {
     });
   },
   sync (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -96,7 +96,7 @@ const makeAutomation = {
     });
   },
   lSource (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -104,7 +104,7 @@ const makeAutomation = {
     });
   },
   lFeedbackPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -112,7 +112,7 @@ const makeAutomation = {
     });
   },
   lCrossFbPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -120,7 +120,7 @@ const makeAutomation = {
     });
   },
   lNoteDelay (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -128,7 +128,7 @@ const makeAutomation = {
     });
   },
   lNoteOffset (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -136,7 +136,7 @@ const makeAutomation = {
     });
   },
   lDelayMs (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -144,7 +144,7 @@ const makeAutomation = {
     });
   },
   lPan (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -152,7 +152,7 @@ const makeAutomation = {
     });
   },
   lLowCutHz (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -160,7 +160,7 @@ const makeAutomation = {
     });
   },
   lHighCutHz (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -168,7 +168,7 @@ const makeAutomation = {
     });
   },
   rSource (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -176,7 +176,7 @@ const makeAutomation = {
     });
   },
   rFeedbackPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -184,7 +184,7 @@ const makeAutomation = {
     });
   },
   rCrossFbPercent (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -192,7 +192,7 @@ const makeAutomation = {
     });
   },
   rNoteDelay (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -200,7 +200,7 @@ const makeAutomation = {
     });
   },
   rNoteOffset (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -208,7 +208,7 @@ const makeAutomation = {
     });
   },
   rDelayMs (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -216,7 +216,7 @@ const makeAutomation = {
     });
   },
   rPan (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -224,7 +224,7 @@ const makeAutomation = {
     });
   },
   rLowCutHz (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -232,7 +232,7 @@ const makeAutomation = {
     });
   },
   rHighCutHz (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -240,7 +240,7 @@ const makeAutomation = {
     });
   },
   wetDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -248,7 +248,7 @@ const makeAutomation = {
     });
   },
   dryDb (value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
