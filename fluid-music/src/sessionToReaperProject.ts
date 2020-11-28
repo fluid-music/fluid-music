@@ -1,4 +1,5 @@
 import { extname, basename } from 'path'
+import * as chalk from 'chalk'
 import { FluidPlugin } from './FluidPlugin'
 import { FluidSession } from './FluidSession'
 import { FluidReceive, FluidTrack } from './FluidTrack'
@@ -194,10 +195,20 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
           await client.send(cybr.global.activate('reaper-helper.tracktionedit', true))
           tracktionSessionActivated = true
         }
-        const vst2 = await vst2ToReaperObject(client, fluidTrack.name, plugin, nth(plugin), session.bpm);
-        FXChain.add(vst2);
+        try {
+          const vst2 = await vst2ToReaperObject(client, fluidTrack.name, plugin, nth(plugin), session.bpm);
+          FXChain.add(vst2);
+        } catch (error) {
+          console.warn(
+(chalk.reset`{bold.red WARNING:} fluid-music failed to export the {bold ${plugin.pluginName} (${plugin.pluginType})} plugin.
+It has been omitted from the output Reaper session. If you are sure that it is
+installed, use the {bold $ cybr --list-plugins} and {bold $ cybr --scan-plugins} commands
+to ensure that cybr knows how to find it, and then restart the cybr server.
+`)
+          )
+        }
 
-        // get the sicechain receive
+        // get the sidechain receive
         const receive = plugin.sidechainReceive
         if (receive instanceof FluidReceive) {
           if (receive.gainDb !== 0) {
