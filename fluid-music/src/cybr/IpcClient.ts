@@ -1,6 +1,6 @@
-const OscIpcClient = require("osc-ipc-client")
-const osc = require("osc-min")
-
+const OscIpcClient = require('osc-ipc-client')
+const osc = require('osc-min')
+const chalk = require('chalk')
 
 interface IpcClientOptions {
   /** default = 9999 */
@@ -99,9 +99,21 @@ export class IpcClient {
 
     this.connectPromise = new Promise((resolve, reject) => {
       this.client.once('connect', () => { resolve('connected'); });
-      this.client.once('error', (error) => { this.client.close(); reject(error); });
       this.client.once('close', (error) => { error && reject(error) });
       this.client.once('timeout', () => { this.client.close('Connection Timed Out'); });
+      this.client.once('error', (error) => {
+        if (error && error.code === 'ECONNREFUSED') {
+          console.error(chalk.red(`fluid-music failed to connect to the cybr server at ${error.address}:${error.port}
+The cybr server must be running in order for fluid-music to:
+  - export sessions that contain VSTs to .RPP files
+  - export sessions to .tracktionedit files
+  - play a session in realtime or render a session to audio
+
+${('Make sure that cybr is running, and try again!')}
+`))
+        }
+        this.client.close(); reject(error);
+      });
     });
 
     return this.connectPromise;

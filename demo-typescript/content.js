@@ -110,8 +110,11 @@ session.insertScore({
 const client = new cybr.Client()
 async function run() {
   await client.connect(true)
+  console.warn('Saving demo-typescript.RPP')
   await session.saveAsReaperFile('demo-typescript', client)
+  console.warn('Saving demo-typescript.tracktionedit')
   await session.saveAsTracktionFile('demo-typescript', client)
+  console.warn('Done!')
 }
 
 run()
