@@ -4,7 +4,7 @@ const fluid = require('fluid-music')
 const cybr = fluid.cybr
 const chords = require('./midi-chords')
 
-const tyrellN6 = new fluid.TyrellN6Vst2({
+const tyrellN6 = new fluid.plugins.TyrellN6Vst2({
   // Osc Mod
   tyrellSoftSync: 100,
 
@@ -28,7 +28,7 @@ const tyrellN6 = new fluid.TyrellN6Vst2({
   tyrellResonance: 34,
   tyrellKeyFollow: 100,
   tyrellFreqModDepth1: 120,
-  tyrellFreqModSrc2: fluid.TyrellN6Vst2.parameterLibrary.tyrellFreqModSrc2.choices.velocity,
+  tyrellFreqModSrc2: fluid.plugins.TyrellN6Vst2.parameterLibrary.tyrellFreqModSrc2.choices.velocity,
   tyrellFreqModDepth2: 18,
 
   // Oscillators
@@ -53,7 +53,7 @@ const w = [v, V]
 
 const BPM = 92
 const msPerQuarter = 60000 / BPM
-const stereoDelay = new fluid.TStereoDelayVst2({
+const stereoDelay = new fluid.plugins.TStereoDelayVst2({
   lLowCutHz: 100,
   lHighCutHz: 8000,
   rLowCutHz: 110,
@@ -72,34 +72,35 @@ class MidiArp extends fluid.techniques.MidiChord {
   }
 
   /**
-   * @param {number} startTime
-   * @param {number} duration
-   * @param {import('fluid-music/built/fluid-interfaces').ClipEventContext} context
+   * @param {import('fluid-music/built/fluid-interfaces').UseContext} context
    */
-  use (startTime, duration, context) {
+  use (context) {
     const stepSize = 1 / 4 / 8
-    const numSteps = Math.floor(duration / stepSize)
+    const numSteps = Math.floor(context.duration / stepSize)
 
     for (let i = 0; i < numSteps; i++) {
+      const innerContext = Object.assign({}, context)
       const note = this.notes[i % this.notes.length]
       const velocity = Math.min(127, Math.max(1, Math.round(80 * Math.pow(1.045, -i))))
-      const noteStartTime = stepSize * i + startTime
+      const noteStartTime = stepSize * i + context.startTime
       const noteDuration = stepSize
       const technique = new fluid.techniques.MidiNote({ note, velocity })
-      technique.use(noteStartTime, noteDuration, context)
+      innerContext.startTime = noteStartTime
+      innerContext.duration = noteDuration
+      technique.use(innerContext)
     }
 
     // Add fade in and fade out. Remember that the times below are relative to
     // the clip (not the session)
-    const strTime = 0
-    const endTime = context.clip.duration
-    const midTime = endTime / 2
-    const auto1 = new fluid.techniques.TrackAuto({ paramKey: 'gain', curve: -0.5, value: -Infinity })
-    const auto2 = new fluid.techniques.TrackAuto({ paramKey: 'gain', curve: 0.5, value: 0 })
-    const auto3 = new fluid.techniques.TrackAuto({ paramKey: 'gain', curve: 0.0, value: -Infinity })
-    auto1.use(strTime, 0, context)
-    auto2.use(midTime, 0, context)
-    auto3.use(endTime, 0, context)
+    const strTime = context.clip.startTime
+    const endTime = context.clip.startTime + context.clip.duration
+    const midTime = context.clip.startTime + (context.clip.duration / 2)
+    const auto1 = new fluid.techniques.TrackAutomation({ paramKey: 'gain', curve: -0.5, value: -Infinity })
+    const auto2 = new fluid.techniques.TrackAutomation({ paramKey: 'gain', curve: 0.5, value: 0 })
+    const auto3 = new fluid.techniques.TrackAutomation({ paramKey: 'gain', curve: 0.0, value: -Infinity })
+    auto1.use(Object.assign({}, context, { startTime: strTime }))
+    auto2.use(Object.assign({}, context, { startTime: midTime }))
+    auto3.use(Object.assign({}, context, { startTime: endTime }))
 
     return null
   }
@@ -114,8 +115,8 @@ const session = new fluid.FluidSession({
   tLibrary: Object.assign({ v, V, w }, tLibrary)
 }, [
   { name: 'chords1', plugins: [tyrellN6] },
-  { name: 'chords2', plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)], sends: [{ to: 'delay', gainDb: -6, pan: 0.2 }] },
-  { name: 'chords3', plugins: [new fluid.TyrellN6Vst2(tyrellN6.parameters)], sends: [{ to: 'delay', gainDb: -6, pan: -0.2 }] },
+  { name: 'chords2', plugins: [new fluid.plugins.TyrellN6Vst2(tyrellN6.parameters)], sends: [{ to: 'delay', gainDb: -6 }] },
+  { name: 'chords3', plugins: [new fluid.plugins.TyrellN6Vst2(tyrellN6.parameters)], sends: [{ to: 'delay', gainDb: -6 }] },
   { name: 'delay', plugins: [stereoDelay] }
 ])
 
