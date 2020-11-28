@@ -1,9 +1,15 @@
-import { PluginType, FluidPlugin } from './FluidPlugin';
-import { PluginAuto as PluginAutoTechnique } from './fluid-techniques';
+// Charles: Rather than write a plugin generator for this plugin, I wrote this
+// one manually when I was designing the plugin API. As such, it does not have a
+// generator.
+//
+// NOTE: All DragonflyRoom parameters are linear.
+
+import { PluginType, FluidPlugin } from '../FluidPlugin';
+import { PluginAutomation } from '../fluid-techniques';
 const pluginName = 'DragonflyRoomReverb';
 const pluginType = PluginType.VST2;
 
-export interface DragonflyRoomParameters {
+export interface DragonflyRoomVst2Parameters {
   dryLevelPercent? : number;
   earlyLevelPercent? : number;
   earlySendPercent? : number;
@@ -28,7 +34,7 @@ export interface DragonflyRoomParameters {
  * checking could be implemented for parameter values.
  * @ignore
  */
-class DragonflyRoomStateRangeChecks implements DragonflyRoomParameters {
+class DragonflyRoomStateRangeChecks implements DragonflyRoomVst2Parameters {
   _data : any = {};
 
   set dryLevelPercent(value : number) {
@@ -174,7 +180,7 @@ const parameterLibrary = {
 
 const makeAutomation = {
   dryLevelPercent(value? : number, curve = 0) {
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       paramKey: 'dryLevelPercent',
@@ -182,7 +188,7 @@ const makeAutomation = {
     })
   },
   earlyLevelPercent(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -190,7 +196,7 @@ const makeAutomation = {
     });
   },
   earlySendPercent(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -198,7 +204,7 @@ const makeAutomation = {
     });
   },
   lateLevelPercent(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -206,7 +212,7 @@ const makeAutomation = {
     });
   },
   sizeMeters(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -214,7 +220,7 @@ const makeAutomation = {
     });
   },
   widthPercent(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -222,7 +228,7 @@ const makeAutomation = {
     });
   },
   predelayMs(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -230,7 +236,7 @@ const makeAutomation = {
     });
   },
   decaySeconds(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -238,7 +244,7 @@ const makeAutomation = {
     });
   },
   diffusePercent(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -246,7 +252,7 @@ const makeAutomation = {
     });
   },
   spinHz(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName,  pluginType },
@@ -254,7 +260,7 @@ const makeAutomation = {
     });
   },
   wanderPercent(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName,  pluginType },
@@ -262,7 +268,7 @@ const makeAutomation = {
     });
   },
   highCutHz(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName,  pluginType },
@@ -270,7 +276,7 @@ const makeAutomation = {
     });
   },
   earlyDampHz(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName,  pluginType },
@@ -278,7 +284,7 @@ const makeAutomation = {
     });
   },
   lateDampHz(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName,  pluginType },
@@ -286,7 +292,7 @@ const makeAutomation = {
     });
   },
   lowBoostPercent(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName,  pluginType },
@@ -294,7 +300,7 @@ const makeAutomation = {
     });
   },
   lowBoostHz(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName,  pluginType },
@@ -302,7 +308,7 @@ const makeAutomation = {
     });
   },
   lowCutHz(value? : number, curve = 0){
-    return new PluginAutoTechnique({
+    return new PluginAutomation({
       value,
       curve,
       pluginSelector: { pluginName, pluginType },
@@ -311,9 +317,9 @@ const makeAutomation = {
   },
 };
 
-export class DragonflyRoom extends FluidPlugin {
+export class DragonflyRoomVst2 extends FluidPlugin {
   constructor(
-    public readonly parameters : DragonflyRoomParameters = {},
+    public readonly parameters : DragonflyRoomVst2Parameters = {},
   ) { super(pluginName, PluginType.VST2) }
 
   readonly parameterLibrary = parameterLibrary;
