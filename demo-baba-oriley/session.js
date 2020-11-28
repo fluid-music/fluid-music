@@ -22,7 +22,7 @@ const session = new fluid.FluidSession({
   {
     name: '16th delay',
     plugins: [
-      new fluid.TStereoDelayVst2({
+      new fluid.plugins.TStereoDelayVst2({
         dryDb: -50,
         wetDb: 0,
         sync: 0,
@@ -41,7 +41,7 @@ const session = new fluid.FluidSession({
   {
     name: 'reverb',
     plugins: [
-      new fluid.DragonflyRoom({
+      new fluid.plugins.DragonflyRoomVst2({
         predelayMs: 100,
         earlyLevelPercent: 60,
         lateLevelPercent: 40,
