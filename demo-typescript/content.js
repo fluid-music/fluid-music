@@ -11,11 +11,11 @@ const { MidiChord, MidiNote } = require('fluid-music/built/fluid-techniques');
 // Configure some VSTs
 
 // Synthesizers
-const pwmSynth = new fluid.TyrellN6Vst2({ env1Attack: 2, env1Decay: 77, env1Sustain: 69, tyrellCutoff: 84 })
+const pwmSynth = new fluid.plugins.TyrellN6Vst2({ env1Attack: 2, env1Decay: 77, env1Sustain: 69, tyrellCutoff: 84 })
 const bassSynth = podolskiSine()
 
 // Reverb
-const verbPlugin = new fluid.DragonflyRoom({
+const verbPlugin = new fluid.plugins.DragonflyRoomVst2({
   decaySeconds: 1.5,
   predelayMs: 40,
   dryLevelPercent: 0,
@@ -26,7 +26,7 @@ const verbPlugin = new fluid.DragonflyRoom({
   lateDampHz: 3900,
 })
 
-const bassComp = new fluid.TCompressorVst2({
+const bassComp = new fluid.plugins.TCompressorVst2({
   attackMs: 12,
   releaseMs: 80,
   useSidechainTrigger: 1,
@@ -34,7 +34,7 @@ const bassComp = new fluid.TCompressorVst2({
   ratio: 4,
 })
 
-const scComp = new fluid.RoughRider3Vst2({
+const scComp = new fluid.plugins.RoughRider3Vst2({
   externalSidechainEnable: 1,
   sensitivityDb: -10,
   ratio: 7,
@@ -44,23 +44,23 @@ const scComp = new fluid.RoughRider3Vst2({
 })
 
 // TEqualiser VST
-const eq = new fluid.TEqualizerVst2()
+const eq = new fluid.plugins.TEqualizerVst2()
 eq.setBand2(330, -3)
 
 ////////////////////////////////////////////////////////////////
 // Create score events (automation/midi/samples/etc)
 
 const automationLibrary = {
-  a: new fluid.techniques.TrackAuto({ paramKey: 'pan', value: -.5, curve: -0.5 }),
-  b: new fluid.techniques.TrackAuto({ paramKey: 'pan', value:  .5 }),
-  c: new fluid.techniques.TrackAuto({ paramKey: 'gain', value: -6, curve: 0.8 }),
-  d: new fluid.techniques.TrackAuto({ paramKey: 'gain', value: -32.9 }),
-  e: new fluid.techniques.TrackAuto({ paramKey: 'width', value: 0 }),
-  f: new fluid.techniques.TrackAuto({ paramKey: 'width', value: 1 }),
+  a: new fluid.techniques.TrackAutomation({ paramKey: 'pan', value: -.5, curve: -0.5 }),
+  b: new fluid.techniques.TrackAutomation({ paramKey: 'pan', value:  .5 }),
+  c: new fluid.techniques.TrackAutomation({ paramKey: 'gain', value: -6, curve: 0.8 }),
+  d: new fluid.techniques.TrackAutomation({ paramKey: 'gain', value: -32.9 }),
+  e: new fluid.techniques.TrackAutomation({ paramKey: 'width', value: 0 }),
+  f: new fluid.techniques.TrackAutomation({ paramKey: 'width', value: 1 }),
 
-  u: fluid.PodolskiVst2.makeAutomation.vcf0Cutoff(0.5),
-  v: fluid.DragonflyRoom.makeAutomation.sizeMeters(9),
-  w: fluid.DragonflyRoom.makeAutomation.sizeMeters(30),
+  u: fluid.plugins.PodolskiVst2.makeAutomation.vcf0Cutoff(0.5),
+  v: fluid.plugins.DragonflyRoomVst2.makeAutomation.sizeMeters(9),
+  w: fluid.plugins.DragonflyRoomVst2.makeAutomation.sizeMeters(30),
 }
 
 const chordLibrary = fluid.tLibrary.fromArray(chords.map(chord => new fluid.techniques.MidiChord(chord)))

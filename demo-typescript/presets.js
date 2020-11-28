@@ -1,4 +1,4 @@
-const { PodolskiVst2 } = require("fluid-music")
+const { PodolskiVst2 } = require("fluid-music").plugins
 
 function podolskiSine() {
   return new PodolskiVst2({
