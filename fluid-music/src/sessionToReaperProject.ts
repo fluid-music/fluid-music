@@ -187,9 +187,10 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
 
       for (const plugin of fluidTrack.plugins) {
         if (!client) {
-          console.warn('Encountered a VST while creating a Reaper project, but no cybr IcpClient was supplied. A client will be created implicitly.')
+          console.warn('Reaper exporter encountered an external plugin. Creating a cybr client...')
           client = new cybr.IpcClient()
           await client.connect(true)
+          console.warn('...cybr client connected!')
         }
         if (!tracktionSessionActivated) {
           await client.send(cybr.global.activate('reaper-helper.tracktionedit', true))

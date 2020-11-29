@@ -4,7 +4,6 @@ const cybr   = fluid.cybr;
 const drums  = require('@fluid-music/kit');
 const chords = require('./chords');
 
-const { podolskiSine } = require('./presets')
 const { MidiChord, MidiNote } = require('fluid-music/built/fluid-techniques');
 
 ////////////////////////////////////////////////////////////////
@@ -12,7 +11,7 @@ const { MidiChord, MidiNote } = require('fluid-music/built/fluid-techniques');
 
 // Synthesizers
 const pwmSynth = new fluid.plugins.TyrellN6Vst2({ env1Attack: 2, env1Decay: 77, env1Sustain: 69, tyrellCutoff: 84 })
-const bassSynth = podolskiSine()
+const bassSynth = fluid.plugins.podolskiVst2Presets.sine()
 
 // Reverb
 const verbPlugin = new fluid.plugins.DragonflyRoomVst2({
