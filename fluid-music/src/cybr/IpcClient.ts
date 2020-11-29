@@ -102,19 +102,16 @@ export class IpcClient {
       this.client.once('close', (error) => { error && reject(error) });
       this.client.once('timeout', () => { this.client.close('Connection Timed Out'); });
       this.client.once('error', (error) => {
-        if (error && error.code === 'ECONNREFUSED') {
-          console.error(
-(chalk.reset`{bold.red ERROR:} fluid-music failed to connect to the cybr server at ${error.address}:${error.port}
+console.error((chalk.reset`{bold.red ERROR} {green ${error.code}}:
+fluid-music failed to connect to the cybr server at ${error.address}:${error.port}
 The cybr server must be running in order for fluid-music to:
-  - export sessions that contain VSTs to .RPP files
-  - export sessions to .tracktionedit files
-  - play a session in realtime or render a session to audio
+- export sessions that contain VSTs to .RPP files
+- export sessions to .tracktionedit files
+- play a session in realtime or render a session to audio
 {bold.red Make sure that cybr is running, and try again!}
-`)
-          )
-        }
+`))
         this.client.close(); reject(error);
-      });
+      })
     });
 
     return this.connectPromise;
