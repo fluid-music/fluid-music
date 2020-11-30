@@ -20,7 +20,7 @@ export class AudioFile extends FluidAudioFile implements Technique {
     newAudioFile.startTimeSeconds = startTimeSeconds
 
     if (typeof d.gainDb === 'number' || typeof d.gain === 'number') {
-      console.warn(`AudioFile technique's .use encountered obsolete gain(Db) dynamic`, this, d)
+      console.warn(`AudioFile technique's .use encountered obsolete gain(Db) dynamic. Dynamic libraries should .trimDb instead of .gainDb`, d)
     }
 
     if (typeof d.trimDb === 'number') {
