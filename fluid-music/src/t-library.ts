@@ -1,4 +1,3 @@
-import { assert } from 'console'
 import { valueToMidiNoteNumber }  from './converters'
 import { Technique, tLibrary } from './fluid-interfaces'
 import { MidiNote } from './fluid-techniques'
@@ -76,7 +75,7 @@ function createScaleLetterGetterA() {
  *    musical c note (and so on).
  */
 export function midiScale(startingNoteNumber = 33) : tLibrary {
-  if (typeof startingNoteNumber === 'number') throw new Error('midiScale expected a note number')
+  if (typeof startingNoteNumber !== 'number') throw new Error('midiScale expected a note number')
   const getKey = createScaleLetterGetterA()
   const harmonicMinorScale = [0, 2, 3, 5, 7, 8, 10, 11]
   const tLibrary = {}
