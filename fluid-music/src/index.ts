@@ -1,44 +1,27 @@
-import { FluidPlugin, PluginType } from './FluidPlugin';
-import { sessionToContentFluidMessage, sessionToTemplateFluidMessage } from './sessionToFluidMessage';
-import { sessionToReaperProject } from './sessionToReaperProject'
-import { FluidSession } from './FluidSession';
-import { FluidAudioFile } from './FluidAudioFile'
-import * as gen from './plugin-generator';
-import * as converters from './converters';
-import m from './m'
-import * as random from './random';
-import * as techniques from './fluid-techniques';
-import * as tLibrary from './t-library';
-import * as tab from './tab';
+export { FluidPlugin, PluginType } from './FluidPlugin';
+export { sessionToContentFluidMessage, sessionToTemplateFluidMessage } from './sessionToFluidMessage';
+export { sessionToReaperProject } from './sessionToReaperProject'
+export { FluidSession } from './FluidSession';
+export { FluidAudioFile } from './FluidAudioFile'
+export * as gen from './plugin-generator';
+export * as converters from './converters';
+export * as m from './m'
+export * as random from './random';
+export * as techniques from './fluid-techniques';
+export * as tLibrary from './t-library';
+export * as tab from './tab';
 
 // New Style Plugins
-import * as plugins from './plugin-adapters/index'
+export * as plugins from './plugin-adapters/index'
 
 // OSC Message Helpers
-import * as cybr from './cybr/index';
+export * as cybr from './cybr/index';
 
-const UdpClient = require('./cybr/UdpClient');
-import { IpcClient } from './cybr/IpcClient';
+export const UdpClient = require('./cybr/UdpClient');
+export { IpcClient } from './cybr/IpcClient';
+export { IpcClient as Client } from './cybr/IpcClient'
 
-export = {
-  cybr,
-  Client: IpcClient,
-  IpcClient,
-  UdpClient,
-  converters,
-  tLibrary,
-  techniques,
-  gen,
-  m,
-  plugins,
-  random,
-  tab,
-  sessionToTemplateFluidMessage,
-  sessionToContentFluidMessage,
-  sessionToReaperProject,
-
-  FluidAudioFile,
-  FluidSession,
-  FluidPlugin,
-  PluginType,
-};
+// Technique authors can get syntax completion in VS Code via jsdoc comments.
+// For example, the documentation of a techniques .use method should look like:
+// /** @param {import('fluid-music').UseContext} context */
+export { UseContext } from './fluid-interfaces'
