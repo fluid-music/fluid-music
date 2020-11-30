@@ -344,12 +344,6 @@ function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : Flui
       audioItem.reverseSources()
       audioItem.getOrCreateStructByToken('SOFFS').params[0] =
         audioFile.getSourceDurationSeconds() - audioFile.startInSourceSeconds
-
-      const fadeIn = audioItem.getOrCreateStructByToken('FADEIN')
-      const fadeOut = audioItem.getOrCreateStructByToken('FADEOUT')
-      const fadeInParams = fadeIn.params
-      fadeIn.params = fadeOut.params
-      fadeOut.params = fadeInParams
     }
 
     return audioItem;
