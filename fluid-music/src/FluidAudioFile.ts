@@ -120,6 +120,10 @@ export class FluidAudioFile {
       return 'AudioFile techniques cannot have .mode=OneShot without specifying an info.duration'
     }
 
+    if (this.durationSeconds < 0) {
+      return 'AudioFile has negative duration'
+    }
+
     return null
   }
 
@@ -182,6 +186,15 @@ export class FluidAudioFile {
       return 4 // 4 is arbitrary
     }
     return this.info.duration
+  }
+
+  /**
+   * Return the length of the source audio file given the current .playbackRate.
+   * This will be the maximum length of the event, assuming the value of
+   * .startInSource does not trim the fileEvent.
+   */
+  getSourcePlaybackSeconds() {
+    return this.getSourceDurationSeconds() / Math.abs(this.playbackRate)
   }
 
   /**
@@ -272,6 +285,17 @@ export class FluidAudioFile {
     seconds = Math.min(seconds, this.getTailLeftSeconds())
     seconds = Math.max(seconds, -this.durationSeconds)
     this.growLeftEdgeBySeconds(seconds)
+  }
+
+  /**
+   * Set the event's .durationSeconds so that it plays right up to the end of
+   * the source file. This takes into account .playbackRate, isReversed(), and
+   * .startInSourceSeconds.
+   */
+  playToEnd() {
+    this.growRightEdgeBySeconds(this.getTailRightSeconds())
+    const warning = this.check()
+    if (warning) console.warn('Warning:', warning, this)
   }
 }
 
