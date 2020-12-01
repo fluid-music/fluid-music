@@ -2,7 +2,7 @@ export { FluidPlugin, PluginType } from './FluidPlugin';
 export { sessionToContentFluidMessage, sessionToTemplateFluidMessage } from './sessionToFluidMessage';
 export { sessionToReaperProject } from './sessionToReaperProject'
 export { FluidSession } from './FluidSession';
-export { FluidAudioFile } from './FluidAudioFile'
+export { FluidAudioFile, AudioFileOptions } from './FluidAudioFile'
 export * as gen from './plugin-generator';
 export * as converters from './converters';
 export * as m from './m'
@@ -21,7 +21,10 @@ export const UdpClient = require('./cybr/UdpClient');
 export { IpcClient } from './cybr/IpcClient';
 export { IpcClient as Client } from './cybr/IpcClient'
 
-// Technique authors can get syntax completion in VS Code via jsdoc comments.
-// For example, the documentation of a techniques .use method should look like:
+// Technique authors can use JSDoc imports to enable syntax completion
+// /** @typedef {import('fluid-music').UseContext} UseContext */
+// This allows /** @param {UseContext} */ in a technique's documentation
+//
+// Imports may also be written inline in JSDoc @param types
 // /** @param {import('fluid-music').UseContext} context */
 export { UseContext } from './fluid-interfaces'
