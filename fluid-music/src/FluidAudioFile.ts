@@ -182,7 +182,7 @@ export class FluidAudioFile {
    */
   getSourceDurationSeconds() {
     if (!this.info.duration) {
-      console.warn('WARNING: AudioFile is missing source length. Make sure that .info.duration is a value in seconds: ' + this)
+      console.warn('WARNING: AudioFile is missing source length. Make sure that .info.duration is a value in seconds: ', this)
       return 4 // 4 is arbitrary
     }
     return this.info.duration
