@@ -180,6 +180,7 @@ export class TrackAutomation implements Technique {
 
   constructor (options : AutoOptions) {
     this.paramKey = options.paramKey
+    if (typeof options.paramKey !== 'string') throw new Error('TrackAutomation constructor missing paramKey:'+JSON.stringify(options))
     if (typeof options.value === 'number') this.value = options.value
     if (typeof options.curve === 'number') this.curve = options.curve
   }

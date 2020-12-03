@@ -28,6 +28,27 @@ export interface TrackConfig extends ScoreConfig {
 }
 
 export class FluidTrack {
+  scoreConfig : ScoreConfig = {}
+
+  // Track
+  name: string;
+  gainDb = 0
+  pan = 0
+  width = 0
+  clips : Clip[] = []
+  audioFiles : FluidAudioFile[] = []
+  plugins : FluidPlugin[] = []
+  receives : TrackReceive[] = []
+  automation : Automation = {
+    gainDb: { points: [] },
+    width: { points: [] },
+    pan: { points: [] },
+  }
+  duration? : number
+  startTime? : number
+  unresolvedSends : UnresolvedSend[] = []
+  children: FluidTrack[] = []
+
   constructor(config: TrackConfig) {
     if (typeof config.name === 'string') this.name = config.name;
     else throw new Error('Cannot create track without a name');
@@ -51,20 +72,4 @@ export class FluidTrack {
       this.children = config.children.map(childConfig => new FluidTrack(childConfig))
     }
   }
-  scoreConfig : ScoreConfig = {}
-
-  // Track
-  name: string;
-  gainDb = 0
-  pan = 0
-  width = 0
-  clips : Clip[] = []
-  audioFiles : FluidAudioFile[] = []
-  plugins : FluidPlugin[] = []
-  receives : TrackReceive[] = []
-  automation : Automation = {}
-  duration? : number
-  startTime? : number
-  unresolvedSends : UnresolvedSend[] = []
-  children: FluidTrack[] = []
 }

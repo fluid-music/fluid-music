@@ -3,6 +3,7 @@ export { sessionToContentFluidMessage, sessionToTemplateFluidMessage } from './s
 export { sessionToReaperProject } from './sessionToReaperProject'
 export { FluidSession } from './FluidSession';
 export { FluidAudioFile, AudioFileOptions } from './FluidAudioFile'
+export { FluidTrack } from './FluidTrack'
 export * as gen from './plugin-generator';
 export * as converters from './converters';
 export * as m from './m'
