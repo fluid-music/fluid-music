@@ -1041,6 +1041,11 @@ void removeAllPluginAutomationFromTrack(te::Track& track) {
             }
         }
     }
+    for (auto macro : track.macroParameterList.getMacroParameters()) {
+        if (macro->hasAutomationPoints()) {
+            macro->getCurve().clear();
+        }
+    }
 }
 
 

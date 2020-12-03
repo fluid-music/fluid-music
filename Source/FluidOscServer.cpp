@@ -169,6 +169,10 @@ OSCMessage FluidOscServer::clearContent(const OSCMessage& message) {
         removeAllPluginAutomationFromTrack(*track);
     }
 
+    for (auto track : te::getTracksOfType<te::FolderTrack>(activeCybrEdit->getEdit(), true)) {
+        removeAllPluginAutomationFromTrack(*track);
+    }
+
     reply.addInt32(0);
     return reply;
 }
