@@ -34,7 +34,7 @@ export class FluidTrack {
   name: string;
   gainDb = 0
   pan = 0
-  width = 0
+  width = 1
   clips : Clip[] = []
   audioFiles : FluidAudioFile[] = []
   plugins : FluidPlugin[] = []

@@ -39,6 +39,7 @@ export function sessionToTemplateFluidMessage(session : FluidSession) {
       createSelectMessage(track, parentName),
       cybr.audiotrack.gain(track.gainDb), // normalization not needed with .gain
       cybr.audiotrack.pan(track.pan),
+      cybr.audiotrack.width(track.width),
     ]
     sessionMessages.push(trackMessages)
   })
