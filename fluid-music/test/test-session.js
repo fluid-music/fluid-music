@@ -3,7 +3,7 @@ require('mocha');
 
 const fluid = require('..')
 const { MidiChord } = require('../built/fluid-techniques')
-const { DragonflyRoomPlugin } = require('../built/plugin-dragonfly-room')
+const { DragonflyRoomVst2 } = require('../built/plugin-adapters/dragonfly-room-vst2')
 const FluidSession = fluid.FluidSession;
 
 
@@ -61,10 +61,10 @@ describe('FluidSession', () => {
     }) // describe EventMidiChord
 
     describe('with EventPluginAuto events', function () {
-      const roomVerb = new fluid.DragonflyRoom()
+      const roomVerb = new DragonflyRoomVst2()
       const tLibrary = {
-        a: new fluid.techniques.PluginAuto(roomVerb.makeAutomation.decaySeconds(2.4)),
-        b: new fluid.techniques.PluginAuto(roomVerb.makeAutomation.decaySeconds(4)),
+        a: new fluid.techniques.PluginAutomation(roomVerb.makeAutomation.decaySeconds(2.4)),
+        b: new fluid.techniques.PluginAutomation(roomVerb.makeAutomation.decaySeconds(4)),
       }
 
       const r = '1 2 3 4 '

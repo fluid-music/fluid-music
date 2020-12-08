@@ -80,13 +80,13 @@ describe('createMidiNoteMessage', () => {
   };
 
   it('Should create an object designed for osc.toBuffer()', () => {
-    fluid.midiclip.note(noteNum, startTimeInWholeNotes, durationInWholeNotes)
+    fluid.cybr.midiclip.note(noteNum, startTimeInWholeNotes, durationInWholeNotes)
       .should.deepEqual(desiredResult);
   });
 
   it('should include an extra argument if a velocity is supplied', () => {
     desiredResult.args.push({ type: 'integer', value: velocity });
-    fluid.midiclip.note(noteNum, startTimeInWholeNotes, durationInWholeNotes, velocity)
+    fluid.cybr.midiclip.note(noteNum, startTimeInWholeNotes, durationInWholeNotes, velocity)
       .should.deepEqual(desiredResult);
   });
 });
