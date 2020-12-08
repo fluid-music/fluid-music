@@ -1,7 +1,7 @@
 {
   "name": "fluid-music",
   "version": "0.9.1",
-  "description": "Basic cybr client examples",
+  "description": "computational music production",
   "main": "built/index.js",
   "types": "built/index.d.ts",
   "scripts": {
@@ -16,7 +16,8 @@
     "test-ipc-client": "mocha test/test-ipc-client.js",
     "docs": "jsdoc2md  --files $(find src -iname '*.js' | grep -v \"plugin-\" | xargs) > docs/fluid.md",
     "generate-zebra2-code": "node code-generators/gen-zebra2-vst2-file.js",
-    "generate-helm-code": "node code-generators/gen-helm-file.js"
+    "generate-helm-code": "node code-generators/gen-helm-file.js",
+    "prepublishOnly": "npm test"
   },
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
