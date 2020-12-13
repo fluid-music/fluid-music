@@ -2,6 +2,7 @@ require('mocha')
 const should = require('should')
 
 const { FluidAudioFile } = require('../built/FluidAudioFile')
+const { AudioFile : AudioFileTechnique } = require('../built/fluid-techniques')
 
 
 describe('test AudioFile', function () {
@@ -78,6 +79,28 @@ describe('test AudioFile', function () {
         startTimeSeconds: 3.75,
         durationSeconds: 0.75
       })
+    })
+  })
+
+  describe('AudioFile technique\'s copyTechnique() method', function () {
+    const technique = new AudioFileTechnique({
+      path: '/hi/there/you.wav',
+      info: { duration: 5 },
+      fadeInSeconds: 1,
+      fadeOutSeconds: 3,
+      durationSeconds: 2,
+      gainDb: -5,
+      startTimeSeconds: 10,
+      startInSourceSeconds: 0.2,
+      mode: FluidAudioFile.Modes.OneVoice,
+    })
+
+    technique.markers.set('onset', 0.2)
+
+    it('should create a copy of the technique object', function () {
+      const copy = AudioFileTechnique.copy(technique)
+      technique.should.deepEqual(copy)
+      technique.should.not.equal(copy)
     })
   })
 })

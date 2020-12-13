@@ -1,5 +1,5 @@
 import { Technique, MidiNoteEvent, UseContext } from './fluid-interfaces'
-import { AudioFileMode, AudioFileOptions, FluidAudioFile } from './FluidAudioFile'
+import { AudioFileMode, AudioFileConfig, FluidAudioFile } from './FluidAudioFile'
 import { AutomationPoint } from './FluidPlugin'
 import * as random from './random'
 
@@ -42,6 +42,45 @@ export class AudioFile extends FluidAudioFile implements Technique {
 
     track.audioFiles.push(newAudioFile)
     return newAudioFile
+  }
+
+  /**
+   * Create a copy of an `AudioFile` technique, optionally applying changes to the
+   * copy before returning it. This is useful in situations when you want several
+   * variations of an audioFile with slightly different properties.
+   *
+   * Why is this a static method? Wouldn't it be cleaner to make the `copy`
+   * method accessible on the `AudioFile` technique instances so users can
+   * simply write `something.copy()`? This is problematic in JavaScript, because
+   * when `something` is an instance of a class derived from `AudioFile`, the
+   * copy method will return an `AudioFile` instance, as opposed to to an
+   * instance of whatever type `something` has. This leads to subtle, hard-to
+   * -find bugs. By making the `copy` a static method, it provides a syntactic
+   * reminder of the type that will be returned. In the example below, it is
+   * clear that newAudioFile will be an instance of `AudioFile` even if
+   * `anAudioFile` is an instance of a derived class.
+   *
+   * `const newAudioFile = AudioFile.copy(anAudioFile)`
+   *
+   * @param audioFileTechnique The input `AudioFile` technique to copy
+   * @param change The resulting `AudioFile` will
+   * @returns A copied version of the input audio file technique
+   */
+  static copy (audioFileTechnique : AudioFile, change : AudioFileConfig = {}) {
+    if (!(audioFileTechnique instanceof AudioFile)) {
+      const msg = 'techniques.AudioFile.copy expects an AudioFile technique'
+      throw new Error(`${msg}, received: ${JSON.stringify(audioFileTechnique)}`)
+    }
+
+    // Merge the markers (as opposed to replacing them)
+    change = Object.assign({}, change)
+    const newMarkers = change.markers
+    if (change.markers) delete change.markers
+
+    const newTechnique = new AudioFile(Object.assign({}, audioFileTechnique, change))
+    if (newMarkers) newTechnique.setMarkers(newMarkers)
+
+    return newTechnique
   }
 }
 

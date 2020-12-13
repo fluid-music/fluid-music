@@ -33,8 +33,17 @@ export interface AudioFileInfo {
   numberOfChannels? : number
 }
 
-export interface AudioFileOptions {
+/** Named positions within the source file, described in seconds */
+export interface AudioFileMarkers {
+  [key: string] : number
+}
+
+export interface AudioFileOptions extends AudioFileConfig {
   path : string
+}
+
+export interface AudioFileConfig {
+  path? : string
   fadeOutSeconds? : number
   fadeInSeconds? : number
   gainDb? : number
@@ -44,15 +53,39 @@ export interface AudioFileOptions {
   startTimeSeconds? : number
   durationSeconds? : number
   playbackRate? : number
+  markers? : {[key: string] : number}|Map<string, number>
 }
 
+/**
+ * FluidAudioFile is a non-destructive reference to static audio asset. Think of
+ * it like an "Item" in Reaper or an "Audio Clip" in Tracktion Waveform.
+ *
+ * It is unusual that you use `FluidAudioFile` directly. More often you will
+ * create and interact with `fluid.techniques.AudioFile` (which is derived from
+ * `FluidAudioFile`). Note that unlike the technique version, `FluidAudioFile`
+ * does not have a `.use` method so a `FluidAudioFile` instance is not a
+ * `Technique`, and cannot be used in a technique library.
+ *
+ * However, most of the methods for manipulating audio files on the timeline are
+ * defined in this class, so the documentation here is likely to be informative.
+ */
 export class FluidAudioFile {
   constructor(options : AudioFileOptions) {
     if (typeof options.path !== 'string') {
       throw new Error('AudioFile Technique constructor did not find an options.path string: ' + JSON.stringify(options))
     }
 
-    Object.assign(this, options)
+    this.path = options.path
+    if (typeof options.fadeInSeconds === 'number') this.fadeInSeconds = options.fadeInSeconds
+    if (typeof options.fadeOutSeconds === 'number') this.fadeOutSeconds = options.fadeOutSeconds
+    if (typeof options.gainDb === 'number') this.gainDb = options.gainDb
+    if (typeof options.startInSourceSeconds === 'number') this.startInSourceSeconds = options.startInSourceSeconds
+    if (typeof options.startTimeSeconds === 'number') this.startTimeSeconds = options.startTimeSeconds
+    if (typeof options.durationSeconds === 'number') this.durationSeconds = options.durationSeconds
+    if (typeof options.playbackRate === 'number') this.playbackRate = options.playbackRate
+    if (options.mode) this.mode = options.mode
+    if (options.info) this.info = options.info
+    if (options.markers) this.setMarkers(options.markers)
 
     // If the user did not specify durationSeconds, assume the region of
     // interest ends at the end of the source file
@@ -75,11 +108,13 @@ export class FluidAudioFile {
   fadeOutSeconds : number = 0
   /** Fade in time in seconds */
   fadeInSeconds : number = 0
-  /** Gain in DBFS applied to the sample. 0 is unity gain */
+  /** Gain in dBFS applied to the sample. 0 is unity gain */
   gainDb : number = 0
   mode : AudioFileMode = AudioFileMode.Event
   /** Information and metadata pertaining to the source audio file */
   info : AudioFileInfo = {}
+  /** Named events within the source file */
+  markers = new Map<string, number>()
 
   /** The time within the parent (track) that this sample will be triggered */
   startTimeSeconds : number = 0
@@ -99,7 +134,7 @@ export class FluidAudioFile {
    * cannot use `startInSourceSeconds + durationSeconds` to calculate the
    * "endInSourceSeconds".
    *
-   * To calculate where in the source audio file playback ends, use
+   * To calculate the position in the source audio file that playback ends, use
    * `.getEndInSourceSeconds()`, which correctly accounts for the value of
    * `.playbackRate`.
    */
@@ -125,6 +160,18 @@ export class FluidAudioFile {
     }
 
     return null
+  }
+
+  /**
+   * Convenience method for setting audio file markers
+   * @param markers
+   */
+  setMarkers(markers : {[key: string] : number} | Map<string, number>) {
+    if (markers instanceof Map) {
+      for (const [key, value] of markers.entries()) this.markers.set(key, value)
+    } else if (markers) {
+      for (const [key, value] of Object.entries(markers)) this.markers.set(key, value)
+    }
   }
 
   /**
@@ -288,8 +335,8 @@ export class FluidAudioFile {
   }
 
   /**
-   * Set the event's .durationSeconds so that it plays right up to the end of
-   * the source file. This takes into account .playbackRate, isReversed(), and
+   * Set the event's `.durationSeconds` so that it plays right up to the end of
+   * the source. This takes into account .playbackRate, isReversed(), and
    * .startInSourceSeconds.
    */
   playToEnd() {
@@ -300,7 +347,7 @@ export class FluidAudioFile {
 }
 
 /**
- * resolveFades is used internally to account for the case when an audio file's
+ * `resolveFades` is used internally to account for the case when an audio file's
  * in and out fades are longer than the item containing the audio file itself.
  * You may set an audio file's `.fadeInSeconds` to a value that is longer than
  * the duration of the audio file instance on a track. Exporters use this method
