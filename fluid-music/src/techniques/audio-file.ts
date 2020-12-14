@@ -1,6 +1,5 @@
 import { AudioFileMode, AudioFileConfig, FluidAudioFile, AudioFileOptions } from '../FluidAudioFile'
 import { Technique, UseContext } from '../fluid-interfaces'
-import { countReset } from 'console'
 
 /**
  * Insert an audio sample into a track
@@ -125,9 +124,12 @@ export class AFOnset {
 
   use(context : UseContext) {
     const newAudioFile = this.audioFile.use(context)
+    const shiftBySeconds = this.onsetSeconds / newAudioFile.playbackRate
+
     newAudioFile.reverse(false) // play forwards
     newAudioFile.startInSourceSeconds = 0
-    newAudioFile.startTimeSeconds = context.startTimeSeconds - (this.onsetSeconds / this.audioFile.playbackRate)
+    newAudioFile.startTimeSeconds = context.startTimeSeconds - shiftBySeconds
+    newAudioFile.growRightEdgeBySecondsSafe(shiftBySeconds)
     return this.audioFile
   }
 
