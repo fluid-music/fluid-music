@@ -1,16 +1,25 @@
-export { FluidPlugin, PluginType } from './FluidPlugin';
-export { sessionToContentFluidMessage, sessionToTemplateFluidMessage } from './sessionToFluidMessage';
+export { FluidPlugin, PluginType } from './FluidPlugin'
+export { sessionToContentFluidMessage, sessionToTemplateFluidMessage } from './sessionToFluidMessage'
 export { sessionToReaperProject } from './sessionToReaperProject'
-export { FluidSession } from './FluidSession';
+export { FluidSession } from './FluidSession'
 export { FluidAudioFile, AudioFileOptions } from './FluidAudioFile'
 export { FluidTrack } from './FluidTrack'
-export * as gen from './plugin-generator';
-export * as converters from './converters';
+export * as gen from './plugin-generator'
+export * as converters from './converters'
 export * as m from './m'
-export * as random from './random';
-export * as techniques from './fluid-techniques';
-export * as tLibrary from './t-library';
-export * as tab from './tab';
+export * as random from './random'
+export * as tLibrary from './t-library'
+export * as tab from './tab'
+
+// Unfortunately, JSDoc imports cannot currently access properties of namespaces
+// that were exported via the `export * as namespace from './somewhere'` format.
+// In order to access techniques, JSDoc imports have to import from the build
+// directory, which is likely to change in the future.
+//
+// While while the example below is unstable, it is also (currently) the only
+// option for non-typescript users:
+// /** @typedef {import('fluid-music/built/fluid-techniques').AudioFile} AudioFile */
+export * as techniques from './techniques/index'
 
 // New Style Plugins
 export * as plugins from './plugin-adapters/index'
