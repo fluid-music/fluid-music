@@ -18,8 +18,8 @@ export * as tab from './tab'
 //
 // While while the example below is unstable, it is also (currently) the only
 // option for non-typescript users:
-// /** @typedef {import('fluid-music/built/fluid-techniques').AudioFile} AudioFile */
-export * as techniques from './techniques/index'
+// /** @typedef {import('fluid-music/built/techniques').AudioFile} AudioFile */
+export * as techniques from './techniques'
 
 // New Style Plugins
 export * as plugins from './plugin-adapters/index'

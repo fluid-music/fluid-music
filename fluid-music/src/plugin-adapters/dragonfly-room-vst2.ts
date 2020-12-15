@@ -5,7 +5,7 @@
 // NOTE: All DragonflyRoom parameters are linear.
 
 import { PluginType, FluidPlugin } from '../FluidPlugin';
-import { PluginAutomation } from '../fluid-techniques';
+import { PluginAutomation } from '../techniques';
 const pluginName = 'DragonflyRoomReverb';
 const pluginType = PluginType.VST2;
 

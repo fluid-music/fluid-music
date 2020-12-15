@@ -38,7 +38,7 @@ export function generatePluginModule(report : any, config : {className?: string,
   })
 
   let output = `import { PluginType, FluidPlugin } from '../FluidPlugin';
-import { PluginAutomation } from '../fluid-techniques';
+import { PluginAutomation } from '../techniques';
 const pluginName = '${pluginName}'
 const pluginType = ${pluginType}
 

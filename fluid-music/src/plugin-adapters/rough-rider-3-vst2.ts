@@ -1,5 +1,5 @@
 import { PluginType, FluidPlugin } from '../FluidPlugin';
-import { PluginAutomation } from '../fluid-techniques';
+import { PluginAutomation } from '../techniques';
 const pluginName = 'RoughRider3'
 const pluginType = PluginType.VST2
 

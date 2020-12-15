@@ -1,6 +1,6 @@
 import { valueToMidiNoteNumber }  from './converters'
 import { Technique, tLibrary } from './fluid-interfaces'
-import { MidiNote } from './fluid-techniques'
+import { MidiNote } from './techniques'
 
 /**
  * Merge multiple event libraries into one, throw an error if any of the input

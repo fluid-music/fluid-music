@@ -2,7 +2,7 @@ export const linear = (min : number, max: number) => (v: number) => (v - min) / 
 export const map = (v: number, min: number, max : number) => linear(min, max)(v);
 
 import { Tap, UnresolvedReceive } from "./fluid-interfaces";
-import { PluginAutomation } from "./fluid-techniques";
+import { PluginAutomation } from "./techniques";
 import { FluidReceive, FluidTrack } from "./FluidTrack";
 
 export enum PluginType {
