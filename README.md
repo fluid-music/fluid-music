@@ -1,18 +1,82 @@
 # Fluid Music
 
-**Add Basic Examples**
+Extensible Music Composition and Music Production Framework for [Node](https://nodejs.org).
 
-## Workflow
+```javascript
+// Insert two measures of snare, kick, and tambourine samples
+const score = {
+  r:      '1 + 2 + 3 + 4 + ',
+  snare: ['    s       s   ', '    s       s   '],
+  kick:  ['D               ', '          D  D  '],
+  tamb:  ['t t t t t t t t ', 't t t t t t t t '],
+}
+```
 
-The engine strikes a balance between code based workflow and a GUI/DAW based workflow. The most basic use of the Fluid Engine looks like this:
+Fluid music converts score objects (above) to:
 
-1. Write **sound design recipes** using the language described in the `fluid-music` node module (recipes encapsulate sound design procedures that would traditionally be performed in a DAW.)
-2. Send a collection of recipes to the Fluid Engine server. Update the recipe parameters while auditioning the sonic output in realtime until results are satisfactory.
-3. Tweak the result in a DAW. Currently the engine can output:
-    - [Reaper](https://reaper.fm) `.RPP` files
-    - [Tracktion Waveform](https://www.tracktion.com/products/waveform) `.tracktionedit` files
+- `.wav` audio files
+- `.tracktionedit` files ([Tracktion Waveform](https://www.tracktion.com/products/waveform-pro))
+- `.rpp` files (shown below in [Reaper](https://reaper.fm))
 
-...but much more complicated workflows are also possible.
+![Screen Shot 2020-12-16 at 1 02 37 AM](https://user-images.githubusercontent.com/1512520/102311683-4baa3b80-3f3b-11eb-87d1-85f4909afb0a.png)
+
+In the example above, characters in the score (`s`, `D`, `t`) insert audio samples into the session. However, the meaning of each character in a score is customizable. 
+
+The power of the fluid music system comes from writing custom techniques in JavaScript that can be triggered by characters in a score. 
+
+## Getting Started
+
+**Charles: link to a getting started guide**
+
+## Score Format
+
+- Insert and edit audio files (trim, fade, move, reverse)
+- Insert MIDI notes
+- Automate track parameters like volume and pan
+- Automate VST parameters
+- Modify the underlying session (add tracks, routing, side chaining, etc)
+- Randomize behaviors
+- Invoke combinations of techniques
+- Do anything you can code
+
+TODO: Explain
+- Rhythm Strings
+- Invoking functions
+
+
+## A Simple Example
+
+```javascript
+const { FluidSession } = require('fluid-music')
+const kit = require('@fluid-music/kit')
+
+// Define a "drums" bus with 3 child-tracks: kick, snare, tambourine
+const tracks = [
+  { name: 'drums', gainDb: -6, children: [
+    { name: 'snare' },
+    { name: 'kick' },
+    { name: 'tamb', pan: 0.2 },
+  ]}
+]
+
+// Each character (D, s, t) in the score below invokes a function which
+// inserts an audio sample into the session. These functions and samples
+// are bundled within the '@fluid-music/kit' npm package.
+const score = {
+  tLibrary: kit.tLibrary,
+  r:      '1 + 2 + 3 + 4 + ',
+  snare: ['    s       s   ', '    s       s   '],
+  kick:  ['D               ', '          D  D  '],
+  tamb:  ['t t t t t t t t ', 't t t t t t t t '],
+}
+
+// Create a session using the tracks and score (above)
+const session = new FluidSession({ bpm: 96 }, tracks)
+  .insertScore(score)
+  .saveAsReaperFile('beat.RPP') // export to Reaper
+    .catch(e => console.error('Error:', e))
+    .then(() => console.warn('Exported: beat.RPP'))
+```
 
 ## Comparison with other tools
 
