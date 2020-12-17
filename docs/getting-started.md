@@ -17,8 +17,8 @@ const tracks = [
 // inserts an audio sample into the session. These functions and samples
 // are bundled within the '@fluid-music/kit' npm package.
 const score = {
-  tLibrary: kit.tLibrary,
-  r:      '1 + 2 + 3 + 4 + ',
+  tLibrary: kit.tLibrary,     // describe the score vocabulary (s/D/t)
+  r:      '1 + 2 + 3 + 4 + ', // describe the score rhythm (16th notes)
   snare: ['    s       s   ', '    s       s   '],
   kick:  ['D               ', '          D  D  '],
   tamb:  ['t t t t t t t t ', 't t t t t t t t '],

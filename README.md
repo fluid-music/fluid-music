@@ -28,8 +28,9 @@ Fluid Music is:
 Fluid Music scores can:
 - Sequence and edit audio files (trim, fade, move, reverse)
 - Insert MIDI notes and clips
-- Automate and configure VST plugins
-- Automate track parameters like volume and panning
+- Support unusual time signatures and rhythms (go beyond 4/4!)
+- Set and automate VST plugins
+- Set and automate track parameters like volume and panning
 - Modify the underlying session (add tracks, routing, side chaining, etc)
 - Insert random or procedurally generated content
 - Do anything you can code

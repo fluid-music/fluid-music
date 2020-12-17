@@ -2,3 +2,4 @@
 - Technique Library
 - Rhythm String
 - Score
+- Session
