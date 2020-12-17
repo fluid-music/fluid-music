@@ -2,7 +2,7 @@ require('mocha')
 const should = require('should')
 
 const { FluidAudioFile } = require('../built/FluidAudioFile')
-const { AudioFile : AudioFileTechnique } = require('../built/fluid-techniques')
+const { AudioFile : AudioFileTechnique } = require('../built/techniques/')
 
 
 describe('test AudioFile', function () {

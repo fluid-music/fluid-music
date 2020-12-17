@@ -254,8 +254,8 @@ export class FluidAudioFile {
    * `.playbackRate == 1` and `.startInSourceSeconds == 0`).
    *
    * This method will calculate the duration of the trailing tail even when
-   * audio is playing in reverse (because of a negative `.playbackRate`) or when
-   * `.startInSourceSeconds != 0`.
+   * audio is playing in reverse (because of a negative `.playbackRate` or when
+   * `.startInSourceSeconds != 0`).
    *
    * Note that there is an inverse relationship between the absolute value of
    * `.playbackRate` and the tail length, because slowing the playback rate of
@@ -336,8 +336,8 @@ export class FluidAudioFile {
 
   /**
    * Set the event's `.durationSeconds` so that it plays right up to the end of
-   * the source. This takes into account .playbackRate, isReversed(), and
-   * .startInSourceSeconds.
+   * the source. This takes into account `.playbackRate`, `.isReversed()`, and
+   * `.startInSourceSeconds`.
    */
   playToEnd() {
     this.growRightEdgeBySeconds(this.getTailRightSeconds())

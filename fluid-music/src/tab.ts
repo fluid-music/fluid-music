@@ -1,24 +1,25 @@
-import { Clip, TechniqueEvent } from './fluid-interfaces'
+import { Clip, dLibrary, TechniqueEvent, tLibrary } from './fluid-interfaces'
 
 /**
  * Rhythm is the parsed representation of a rhythm string. A Rhythm object and
  * its properties are "frozen", and cannot be modified.
- * @typedef Rhythm
- * @property {number[]} totals
- * @property {number[]} deltas
- * @property {string} r The original rhythm sting that created this
  */
+interface Rhythm {
+  totals : number []
+  deltas : number []
+  r : string /** The original rhythm sting that created this rhythm */
+}
 
 /**
  * Convert rhythm string to a cumulative array of durations.
  *
- * @param {string} rhythm - String representing of a rhythm
- * @returns {Rhythm} - a javascript object representing timing. The object will
+ * @param rhythm - String representing of a rhythm
+ * @returns a javascript object representing timing. The object will
  *          have two properties, both of which are arrays:
  *          - .totals is a measure of elapsed times
  *          - .deltas is the duration of each character
  */
-export function parseRhythm(rhythm) {
+export function parseRhythm(rhythm : string) {
   // advances will look like this: [.4,0,0,0,0.5,0]
   const advances = rhythmToAdvanceArray(rhythm);
   // each segment will look like this: [[.4,0,0,0],[.5, 0]]
@@ -37,9 +38,9 @@ export function parseRhythm(rhythm) {
     });
   });
 
-  const result = Object.freeze({
-    totals: Object.freeze(totals),
-    deltas: Object.freeze(deltas),
+  const result : Rhythm = Object.freeze({
+    totals: totals,
+    deltas: deltas,
     r: rhythm,
   });
 
@@ -49,9 +50,9 @@ export function parseRhythm(rhythm) {
 /**
  * Convert a rhythm, pattern, and note library to a `Clip`.
  *
- * @param {string|Rhythm} rhythm
- * @param {string} nPattern
- * @param {tLibrary} tLibrary an indexable object
+ * @param rhythm
+ * @param nPattern
+ * @param tLibrary an indexable object
  *        containing notes or arrays of notes. Can be an object or an array.
  *        If it is an array, the pattern may only contain single digit numbers
  *        (i.e. 0-9).
@@ -63,9 +64,9 @@ export function parseRhythm(rhythm) {
  *        pattern = '0.1.'
  *        noteLibrary = [60, 62]
  *        noteLibrary = {'0': 60, '1': 62 }
- * @returns {Clip} (missing `startTime`. `startTime` is added by `score.parse`)
+ * @returns A clip with `.startTime == 0` (`startTime` is set by `score.parse`).
  */
-export function parseTab(rhythm, nPattern, tLibrary) : Clip {
+export function parseTab(rhythm : string|Rhythm , nPattern : string, tLibrary : tLibrary) : Clip {
 
   const rhythmObject = typeof rhythm === 'string' ? parseRhythm(rhythm) : rhythm;
   const symbolsAndCounts = patternToSymbolsAndCounts(nPattern);
@@ -127,9 +128,9 @@ const is32nd =    (char : string) => char === 't';
 
 /**
  * Helper method gets the implied division of a rhythm char.
- * @param {string} char
+ * @param char
  */
-const division = (char) => {
+const division = (char : string) => {
   if (typeof char !== 'string' || char.length !== 1)
     throw new Error(`division must be a string of length 1, got: '${char}'`);
 
@@ -160,16 +161,16 @@ const division = (char) => {
  *   rhythm - 'h34'
  *   result - [h,q,q]
  * See tests for more examples.
- * @param {string} rhythm - String representing of a rhythm
- * @returns {number[]}  - An array of durations for each character
+ * @param rhythm String representing of a rhythm
+ * @returns An array of durations for each character
  */
-export function rhythmToAdvanceArray(rhythm) {
+export function rhythmToAdvanceArray(rhythm : string | string[]) {
   if (typeof rhythm === 'string') rhythm = Array.from(rhythm);
 
   const result : number[] = [];
 
   rhythm.forEach((char, i, array) => {
-    let next = null; // next non-zero value
+    let next : null|string = null; // next non-zero value
     for (const c of array.slice(i+1)) {
       if (notEmpty(c)) {
         next = c;
@@ -193,7 +194,7 @@ export function rhythmToAdvanceArray(rhythm) {
  * This helper class is only exported for testing purposes.
  *   in  - [1,0,0,0,2,0]
  *   out - [[1,0,0,0], [2,0]]
- * @param {number[]} advances
+ * @param advances
  */
 export function advanceArrayToSegments(advances : number[]) : number[][] {
   const nonZeroIndices : number[] = []; // [0, 4]
@@ -220,8 +221,8 @@ export function advanceArrayToSegments(advances : number[]) : number[][] {
  * segments allows us to accumulate less floating point error. I do not think
  * there is a reason to export getSegmentStartTotals for public use.
  *
- * @param {number[]} advances - an array returned by rhythmToAdvanceArray()
- * @returns {number[]} - total elapsed times at the beginning of each segment
+ * @param advances an array returned by rhythmToAdvanceArray()
+ * @returns total elapsed times at the beginning of each segment
  */
 function getSegmentStartTotals(advances) : number[] {
   const result : number[] = [];
@@ -246,9 +247,9 @@ function getSegmentStartTotals(advances) : number[] {
  *
  * For every new symbol, the out output lists that symbol, and the number of
  * positions that that symbols is active for.
- * @param {string} pattern
+ * @param pattern
  */
-export function patternToSymbolsAndCounts(pattern) {
+export function patternToSymbolsAndCounts(pattern : string) {
   return arrayToSymbolsAndCounts(Array.from(pattern));
 }
 
@@ -286,12 +287,11 @@ function arrayToSymbolsAndCounts(chars : string[]) : [string, number][] {
  * this to work, we need to be able to get the dynamic at an arbitrary point in
  * time (and not just at a discrete point in the rhythm string).
  *
- * @param {string|Rhythm} rhythm
- * @param {string} dPattern dynamic pattern string
- * @param {Object} dLibrary
- * @returns {function}
+ * @param rhythm
+ * @param dPattern dynamic pattern string
+ * @param dLibrary
  */
-export function createDynamicGetter(rhythm, dPattern : string, dLibrary) {
+export function createDynamicGetter(rhythm : string|Rhythm, dPattern : string, dLibrary : dLibrary) {
   // Just truncate the rhythm if it is too long. This might not be the ideal
   // long term solution, but for now parseTab will not allow pattern strings
   // to be longer than rhythm strings
@@ -313,25 +313,25 @@ export function createDynamicGetter(rhythm, dPattern : string, dLibrary) {
  * These keys cannot be used for patterns in tabs and scores.
  */
 export const reservedKeys = {
-  r: null,            // rhythm pattern
-  d: null,            // dynamics pattern
-  v: null,            // deprecated. formerly velocity
-  noteLibrary : null, // deprecated in favor of tLibrary
-  nLibrary: null,     // deprecated in favor of tLibrary
-  vLibrary: null,     // deprecated in favor of dLibrary
-  eLibrary: null,     // Possible use: events library
-  dLibrary: null,     // dynamics library
-  tLibrary: null,     // technique Library
-  eventMappers: null, // specifies custom eventMapper methods
-  plugins: null,      // tracksObject has a .plugins array
-  duration: null,
-  startTime: null,
-  meta: null,
-  originalValue: null,
-  name: null,
-  clips: null,
-  tracks: null,
-  key: null,
-  parent: null,
-  regions: null,
+  r: true,            // rhythm pattern
+  d: true,            // dynamics pattern
+  v: true,            // deprecated. formerly velocity
+  noteLibrary : true, // deprecated in favor of tLibrary
+  nLibrary: true,     // deprecated in favor of tLibrary
+  vLibrary: true,     // deprecated in favor of dLibrary
+  eLibrary: true,     // Possible use: events library
+  dLibrary: true,     // dynamics library
+  tLibrary: true,     // technique Library
+  eventMappers: true, // specifies custom eventMapper methods
+  plugins: true,      // tracksObject has a .plugins array
+  duration: true,
+  startTime: true,
+  meta: true,
+  originalValue: true,
+  name: true,
+  clips: true,
+  tracks: true,
+  key: true,
+  parent: true,
+  regions: true,
 };

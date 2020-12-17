@@ -113,7 +113,7 @@ export class FluidSession {
    * Insert a score object into the session.
    *
    * The contents of the score will be inserted at `session.editCursorTime`,
-   * unless a `config.starTime` is specified.
+   * unless a `config.startTime` is specified.
    *
    * Inserting moves `session.editCursorTime` to the end of newly inserted
    * content. (When no `config.startTime is specified, calling `insertScore`

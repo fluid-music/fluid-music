@@ -2,7 +2,7 @@ require('should');
 require('mocha');
 
 const fluid = require('..')
-const { MidiChord } = require('../built/fluid-techniques')
+const { MidiChord } = require('../built/techniques/')
 const { DragonflyRoomVst2 } = require('../built/plugin-adapters/dragonfly-room-vst2')
 const FluidSession = fluid.FluidSession;
 

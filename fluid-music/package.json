@@ -5,27 +5,18 @@
   "main": "built/index.js",
   "types": "built/index.d.ts",
   "scripts": {
-    "watch": "nodemon -e .js,.mjs,.json,.yaml,.yml src/index.js",
+    "version": "node -e \"console.log(require('./package.json').version);\"",
+    "watch": "tsc --watch",
     "test": "mocha",
-    "test-sess": "mocha test/test-session.js",
-    "test-events": "mocha test/test-events.js",
-    "test-tab": "mocha test/test-tab.js",
-    "test-gen": "mocha test/test-code-generators.js",
-    "test-debug": "mocha --reporter spec --inspect-brk",
-    "test-elib": "mocha test/test-event-library.js",
-    "test-ipc-client": "mocha test/test-ipc-client.js",
-    "docs": "jsdoc2md  --files $(find src -iname '*.js' | grep -v \"plugin-\" | xargs) > docs/fluid.md",
-    "generate-zebra2-code": "node code-generators/gen-zebra2-vst2-file.js",
-    "generate-helm-code": "node code-generators/gen-helm-file.js",
+    "docs": "typedoc --hideGenerator --includeVersion --out docs src/index.ts",
     "prepublishOnly": "npm test"
   },
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
   "devDependencies": {
-    "jsdoc-to-markdown": "^5.0.3",
     "mocha": "^8.1.3",
-    "nodemon": "^2.0.3",
     "should": "^13.2.3",
+    "typedoc": "^0.20.0-beta.27",
     "typescript": "^3.9.7"
   },
   "dependencies": {

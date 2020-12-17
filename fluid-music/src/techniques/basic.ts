@@ -24,7 +24,7 @@ export class MidiNote implements Technique {
   }
 
   /**
-   * Midi note number - 60 = C4 = Middle C
+   * Midi note number: 60 == C4 == Middle C
    */
   note : number
 
