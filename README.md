@@ -23,15 +23,15 @@ Fluid music converts JavaScript score objects (above) to:
 
 Fluid Music is:
 - **Extensible:** Author reusable sound design techniques in JavaScript, and use them in your scores
-- **Open:** Publish and reuse sound design techniques using [npm](https://npmjs.com)
+- **Open:** Publish and reuse sound design techniques with [npm](https://npmjs.com)
 
 Fluid Music scores can:
 - Sequence and edit audio files (trim, fade, move, reverse)
 - Insert MIDI notes and clips
 - Support unusual time signatures and rhythms (go beyond 4/4!)
-- Set and automate VST plugins
-- Set and automate track parameters like volume and panning
-- Modify the underlying session (add tracks, routing, side chaining, etc)
+- Set and automate VST plugin parameters
+- Set and automate track parameters (ex. volume, panning)
+- Modify the underlying session (add tracks, routing, grouping, side chaining, etc)
 - Insert random or procedurally generated content
 - Do anything you can code
 

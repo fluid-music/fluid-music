@@ -13,7 +13,7 @@ const tracks = [
   ]}
 ]
 
-// Each character (D, s, t) in the score below invokes a function which
+// Each character (s/D/t) in the score below invokes a function which
 // inserts an audio sample into the session. These functions and samples
 // are bundled within the '@fluid-music/kit' npm package.
 const score = {
@@ -24,10 +24,10 @@ const score = {
   tamb:  ['t t t t t t t t ', 't t t t t t t t '],
 }
 
-// Create a session using the tracks and score (above)
+// Create a session using the tracks and score (above). Export to Reaper.
 const session = new FluidSession({ bpm: 96 }, tracks)
   .insertScore(score)
-  .saveAsReaperFile('beat.RPP') // export to Reaper
+  .saveAsReaperFile('beat.RPP')
     .catch(e => console.error('Error:', e))
     .then(() => console.warn('Exported: beat.RPP'))
 ```
