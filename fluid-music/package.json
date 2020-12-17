@@ -8,7 +8,7 @@
     "version": "node -e \"console.log(require('./package.json').version);\"",
     "watch": "tsc --watch",
     "test": "mocha",
-    "docs": "typedoc --hideGenerator --includeVersion --out docs src/index.ts",
+    "docs": "typedoc --hideGenerator --includeVersion --out fluid-music.github.io/docs src/index.ts",
     "prepublishOnly": "npm test"
   },
   "author": "Charles Holbrow",
@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@types/node": "^14.6.0",
-    "cd": "^0.3.3",
     "chalk": "^4.1.0",
     "expr-eval": "^2.0.2",
     "osc-ipc-client": "^1.1.3",
