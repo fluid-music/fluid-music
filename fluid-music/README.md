@@ -63,9 +63,9 @@ client.send([
 
 For details, see the the [tests](./test/test-tab.js) and the `fluid.tab` data types below:
 
-### Rhythm
+### Rhythm Strings
 
-A `rhythm` is a string that encodes a sequence of durations. Examples:
+Rhythm strings encode a sequence of durations. Examples:
 - `'1234'` has four characters, and represents a sequence of four quarter notes
 - `'w'` is one character, and represents a single `w`hole note
 - `'hh'` has two characters, and represents a sequency of two `h`alf notes

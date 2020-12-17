@@ -7,7 +7,6 @@ The `cybr` server is a companion to the [`fluid-music` JavaScript library](https
 
 To get the most out of the the fluid music system, you will want to run an instance of `cybr` alongside your JavaScript code.
 
-
 ## CLI
 
 The most common invocation is `cybr -e -f`, which opens an empty document (`-e`) and starts a server listening for `fluid-music` recipes (`-f`). Recipes can then be sent from `fluid-music` client code.
