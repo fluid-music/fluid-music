@@ -8,7 +8,7 @@
     "version": "node -e \"console.log(require('./package.json').version);\"",
     "watch": "tsc --watch",
     "test": "mocha",
-    "docs": "typedoc --hideGenerator --includeVersion --includes doc-resources --readme fluid-music.github.io/README.md --out fluid-music.github.io/docs src/index.ts",
+    "docs": "typedoc --hideGenerator --includeVersion --includes doc-resources --out fluid-music.github.io/docs src/index.ts",
     "prepublishOnly": "npm test"
   },
   "author": "Charles Holbrow",
