@@ -2,9 +2,9 @@
 
 In this guide, we'll create a short composition with the `fluid-music` npm library. I'll describe each line of code, and by the end you should understand the fundamentals of Fluid Music, and be able to create your own compositions.
 
-**Note:** To follow this guide, you'll to install [Reaper](https://reaper.fm) (digital audio workstation). You can download and install Reaper for free. If you use it in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag - in many ways, Reaper is more powerful than other audio software that is an-order-of-magnitude more expensive. You don't need Reaper to use `fluid-music` but it does make things easier.
+**Note:** To follow this guide, you will need to install [Reaper](https://reaper.fm) (digital audio workstation). You can download and install Reaper for free. If you use it in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag – in many ways, Reaper is more powerful than other audio software that is an-order-of-magnitude more expensive. You don't need Reaper to use `fluid-music` but it does make things easier.
 
-From your terminal of choice:
+Execute these commands in your terminal of choice:
 
 ```bash
 $ mkdir fluid-experiment
