@@ -19,6 +19,11 @@ export * as tab from './tab'
 // While while the example below is unstable, it is also (currently) the only
 // option for non-typescript users:
 // /** @typedef {import('fluid-music/built/techniques').AudioFile} AudioFile */
+//
+// Update: it appears that `export * from './somewhere'` is not well supported
+// by typedoc. For that reason, I'm manually exporting names in techniques
+// as opposed to using *. This probably means that it is possible to import
+// techniques with the nicer syntax (see UseContext example below).
 export * as techniques from './techniques'
 
 // New Style Plugins

@@ -1,4 +1,12 @@
-## A Simple Example
+# Getting Started
+
+Fluid music comes with a simple but powerful music notation system built around
+JSON objects.
+
+JavaScript objects containing strings, arrays, and numbers represent musical
+sequences like melodies, rhythmic patterns, chord progressions,
+plugin/track parameter automation, or arbitrary functions that mutate musical
+content.
 
 ```javascript
 const { FluidSession } = require('fluid-music')

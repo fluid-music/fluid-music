@@ -1,10 +1,14 @@
 import { Clip, dLibrary, TechniqueEvent, tLibrary } from './fluid-interfaces'
-
 /**
- * Rhythm is the parsed representation of a rhythm string. A Rhythm object and
- * its properties are "frozen", and cannot be modified.
+ * A Rhythm is the parsed representation of a rhythm string.
+ *
+ * Internally, the fluid tablature system uses several different formats to
+ * represent discrete rhythms. End-users mostly do not need to know about
+ * these, but they are useful if you are working with the source code.
+ *
+ * [[include:tab.md]]
  */
-interface Rhythm {
+export interface Rhythm {
   totals : number []
   deltas : number []
   r : string /** The original rhythm sting that created this rhythm */

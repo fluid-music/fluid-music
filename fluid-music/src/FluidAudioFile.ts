@@ -61,10 +61,10 @@ export interface AudioFileConfig {
  * it like an "Item" in Reaper or an "Audio Clip" in Tracktion Waveform.
  *
  * It is unusual that you use `FluidAudioFile` directly. More often you will
- * create and interact with `fluid.techniques.AudioFile` (which is derived from
- * `FluidAudioFile`). Note that unlike the technique version, `FluidAudioFile`
- * does not have a `.use` method so a `FluidAudioFile` instance is not a
- * `Technique`, and cannot be used in a technique library.
+ * create and interact with the [[`AudioFile | fluid.techniques.AudioFile`]]
+ * derived class. Note that unlike the technique version, `FluidAudioFile` does
+ * not have a `.use` method so a `FluidAudioFile` instance is not a `Technique`,
+ * and cannot be used in a technique library.
  *
  * However, most of the methods for manipulating audio files on the timeline are
  * defined in this class, so the documentation here is likely to be informative.

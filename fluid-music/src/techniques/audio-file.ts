@@ -2,7 +2,10 @@ import { AudioFileMode, AudioFileConfig, FluidAudioFile, AudioFileOptions } from
 import { Technique, UseContext } from '../fluid-interfaces'
 
 /**
- * Insert an audio sample into a track
+ * Insert an audio sample into a track.
+ *
+ * Note that base class [[`FluidAudioFile`]] has many useful methods and
+ * properties for trimming, fading, reversing, etc.
  */
 export class AudioFile extends FluidAudioFile implements Technique {
 
@@ -34,7 +37,7 @@ export class AudioFile extends FluidAudioFile implements Technique {
     track.audioFiles.push(newAudioFile)
     return newAudioFile
   }
-  
+
   /**
    * Create a copy of an `AudioFile` technique, optionally applying changes to
    * the copy before returning it. This is useful in situations when you want
@@ -81,7 +84,7 @@ export class AudioFile extends FluidAudioFile implements Technique {
  * `onsetSeconds` and `releaseSeconds`.
  *
  * ```
- *       onsetSeconds    
+ *       onsetSeconds
  * ├──────────┘         releaseSeconds
  * ├───────────────────────────┘
  * ├──attack──┼──────body──────┼─────────decay─────────┤
