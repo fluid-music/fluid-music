@@ -1,12 +1,19 @@
 # Getting Started
 
-Fluid music comes with a simple but powerful music notation system built around
-JSON objects.
+In this guide, we'll create a short composition with the `fluid-music` npm library. I'll describe each line of code, and by the end you should understand the fundamentals of Fluid Music, and be able to create your own compositions.
 
-JavaScript objects containing strings, arrays, and numbers represent musical
-sequences like melodies, rhythmic patterns, chord progressions,
-plugin/track parameter automation, or arbitrary functions that mutate musical
-content.
+**Note:** To follow this guide, you'll to install [Reaper](https://reaper.fm) (digital audio workstation). You can download and install Reaper for free. If you use it in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag - in many ways, Reaper is more powerful than other audio software that is an-order-of-magnitude more expensive. You don't need Reaper to use `fluid-music` but it does make things easier.
+
+From your terminal of choice:
+
+```bash
+$ mkdir fluid-experiment
+$ cd fluid-experiment
+$ npm init # (answer the questions)
+$ npm i fluid-music @fluid-music/kit
+```
+
+Create `./run.js` file. Copy the following code block into the file:
 
 ```javascript
 const { FluidSession } = require('fluid-music')
@@ -15,7 +22,7 @@ const kit = require('@fluid-music/kit')
 // Define a "drums" bus with 3 child-tracks: kick, snare, tambourine
 const tracks = [
   { name: 'drums', gainDb: -6, children: [
-    { name: 'snare' },
+    { name: 'snare' gainDb: -3 },
     { name: 'kick' },
     { name: 'tamb', pan: 0.2 },
   ]}
@@ -39,3 +46,7 @@ const session = new FluidSession({ bpm: 96 }, tracks)
     .catch(e => console.error('Error:', e))
     .then(() => console.warn('Exported: beat.RPP'))
 ```
+
+Let's think through each line of code
+
+**TODO**

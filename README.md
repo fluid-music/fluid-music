@@ -37,7 +37,7 @@ Fluid Music scores can:
 
 ## Learn More
 
-- [Getting started guide](docs/getting-started.md)
-- [Concepts](docs/concepts.md)
+- [Getting started guide](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/getting-started.md)
+- [Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md)
 - [API Documentation](https://fluid-music.github.io/)
-- [Comparison with Other tools](docs/comparison.md)
+- [Comparison with Other tools](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/comparison.md)
