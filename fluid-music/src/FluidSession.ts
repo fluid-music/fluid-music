@@ -42,7 +42,7 @@ export class FluidSession {
   /**
    * Recursively iterate over all tracks, including track folders and their
    * children, passing each track in to the supplied function as the first
-   * argument. If the supplied function returns anything other than undefined,
+   * argument. If the supplied function returns anything other than `undefined`,
    * the iteration is interrupted, and forEachTrack will return the value
    * returned by `func`.
    *
@@ -98,6 +98,17 @@ export class FluidSession {
     return newTrack
   }
 
+  /**
+   * Find a track by name, returning that track and all of its ancestors in an
+   * array. The first track in the array will always be a track at the root
+   * level of the session. Every track in the array *except for the last one*,
+   * is guaranteed to be a track folder (meaning its `.children.length` property
+   * will be non-zero).
+   *
+   * If the track is not found, it will be created at the root level, and
+   * returned in an array with `.length == 1`.
+   * @param name
+   */
   getOrCreateTrackAncestorsByName(name: string) : FluidTrack[] {
     const results = this.forEachTrack((track, index, ancestors) => {
       return track.name === name ? [...ancestors, track] : undefined
@@ -116,8 +127,9 @@ export class FluidSession {
    * unless a `config.startTime` is specified.
    *
    * Inserting moves `session.editCursorTime` to the end of newly inserted
-   * content. (When no `config.startTime is specified, calling `insertScore`
+   * content. (When no `config.startTime` is specified, calling `insertScore`
    * multiple times inserts contents sequentially)
+   * @chainable
    */
   insertScore(score: any, config: ScoreConfig = {}) {
     config = { startTime: this.editCursorTime, ...config }
@@ -134,6 +146,7 @@ export class FluidSession {
    * Sends are specified on sending tracks, but stored in receiving tracks. This
    * makes it easy to delete a track without having to go hunt down all the
    * tracks that send to it.
+   * @internal
    */
   resolveSends() {
     this.forEachTrack((sendTrack, i) => {
@@ -154,6 +167,12 @@ export class FluidSession {
     })
   }
 
+  /**
+   * Iterate over track's plugins, and resolve sidechain receives. This is used
+   * internally by [[FluidSession.constructor]], and does not need to be called
+   * from consuming code.
+   * @internal
+   */
   resolveSidechainReceives() {
     this.forEachTrack(track => {
       for (const plugin of track.plugins) {
@@ -183,6 +202,14 @@ export class FluidSession {
     return timeInSeconds * this.bpm / 4 / 60
   }
 
+  /**
+   * Iterate over tracks and their clips, calling each technique's
+   * `.use(context)` method.
+   *
+   * This is called internally by [[FluidSession.insertScore]], and does not
+   * need to be called by consuming code.
+   * @internal
+   */
   processEvents() {
     this.forEachTrack(track => {
       track.clips.forEach((clip, clipIndex) => {
@@ -251,8 +278,9 @@ export class FluidSession {
    * this method finishes before using communicating with the server
    *
    * @param filename can be absolute or relative to the working directory. The
-   *    .tracktionedit file extension will be added if it is not present
-   * @param client created (and closed) automatically when not provided
+   *    `.tracktionedit` file extension will be added if it is not present
+   * @param client an [[IpcClient]] will be created (and closed) automatically
+   *    when not provided
    */
   async saveAsTracktionFile (
     filename : string = 'fluid',
@@ -284,6 +312,15 @@ export class FluidSession {
     if (closeWhenFinished) client.close()
   }
 
+  /**
+   * Save the session as a [Reaper](https://reaper.fm) `.RPP` file. If the
+   * session contains any VST plugins, the `cybr` server must be running (and
+   * it must be compiled with VST support).
+   * @param filename can be absolute or relative to the working directory. The
+   *    `.RPP` file extension will be added if it is not already present.
+   * @param client an [[IpcClient]] will be created (and closed) automatically
+   *    when not provided
+   */
   async saveAsReaperFile (
     filename : string = 'fluid',
     client? : cybr.IpcClient)
@@ -302,11 +339,13 @@ export class FluidSession {
 /**
  * Parse descends through a Score Object, and creates clips for every pattern
  * string in a child object. These clips will be added to their parent track,
- * on the supplied session.
+ * on the supplied session. It is used internally by
+ * [[FluidSession.insertScore]].
  *
  * Note that the clips will not be ready for use: All events will be placed in
  * the clip.events member. `session.processEvents` moves the events to their
  * final homes.
+ * @internal
  */
 export function parse(
   scoreObject,
