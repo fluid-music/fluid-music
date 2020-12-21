@@ -141,7 +141,9 @@ export class FluidSession {
 
   /**
    * Iterate over the tracks, and resolve any unresolved sends. This is used
-   * internally, and does not need to be called by consuming code.
+   * internally by [[FluidSession.constructor]]. It does not need to be called
+   * by consuming code unless you manually add tracks with unresolved sends to
+   * [[FluidSession.tracks]].
    *
    * Sends are specified on sending tracks, but stored in receiving tracks. This
    * makes it easy to delete a track without having to go hunt down all the
@@ -169,8 +171,9 @@ export class FluidSession {
 
   /**
    * Iterate over track's plugins, and resolve sidechain receives. This is used
-   * internally by [[FluidSession.constructor]], and does not need to be called
-   * from consuming code.
+   * internally by [[FluidSession.constructor]]. It does not need to be called
+   * from consuming code unless you manually add unresolved sidechain receives
+   * to a new or existing track plugin.
    * @internal
    */
   resolveSidechainReceives() {
