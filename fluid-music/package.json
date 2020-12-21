@@ -9,7 +9,7 @@
     "watch": "tsc --watch",
     "test": "mocha",
     "docs": "typedoc --hideGenerator --includeVersion --includes doc-resources --out fluid-music.github.io/docs src/index.ts",
-    "prepublishOnly": "npm test"
+    "prepublishOnly": "npm test && npm run docs"
   },
   "author": "Charles Holbrow",
   "license": "UNLICENSED",
