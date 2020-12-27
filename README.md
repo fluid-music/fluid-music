@@ -40,4 +40,13 @@ Fluid Music scores can:
 - [Getting started guide](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/getting-started.md)
 - [Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md)
 - [API Documentation](https://fluid-music.github.io/modules.html)
-- [Comparison with Other tools](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/comparison.md)
+- [About](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/about.md)
+
+## Goals
+
+Fluid Music aims to be:
+- *Useful* for creating music that people care about
+- *Welcoming* to developers with a wide variety of backgrounds
+
+These goals are not always aligned with each other. Some of the most *useful*
+software is not *welcoming* (and vice versa). See [About Fluid Music](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/about.md) and [Useful, Welcoming Software](https://web.media.mit.edu/~holbrow/post/useful-welcoming-software/) for more details.
