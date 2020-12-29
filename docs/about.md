@@ -3,10 +3,10 @@
 The Fluid Music framework is made to describe musical ideas and music production
 techniques with code.
 
-The high-level goal enable users to write customizable music production tools,
-and share these tools via a massive, open repository. Users can than create
-music by customizing and reusing different combinations of tools and techniques.
-The software patterns defined by [`fluid-music` npm
+The high-level goal is to enable users to write customizable music production
+tools, and share these tools via a massive, open repository. Users can than
+create music by customizing and reusing different combinations of tools and
+techniques. The software patterns defined by [`fluid-music` npm
 package](https://www.npmjs.com/package/fluid-music) help to keep these tools
 interoperable by providing a simple JavaScript based language for describing
 musical rhythms, chord progressions, audio sample sequences, VST plugin presets,
@@ -256,10 +256,14 @@ The following design choices show a balance between timeline-centric, GUI-based 
   - deploy on a server or in mobile app
   - do experimental sound design
 - Not useful if you need:
-  - precise timeline-based editing/composing on a timeline (while Csound is built on the concept of a text based "score," it is very clumsy to work with when compared with a DAW)
+  - precise timeline-based editing/composing on a timeline (while CSound is built on the concept of a text based "score," it is very clumsy to work with when compared with a DAW)
   - support for pro quality plugins
   - precise audio editing support
   - DAW integration
+
+**Code based languages like Sonic Pi and TidalCycles**
+- Useful when you want to write code as a live musical performance
+- Not useful if you want to compose on a timeline
 
 **Music21 (symbolic music notation library)**
 - Useful for computational score analysis
