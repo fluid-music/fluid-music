@@ -35,6 +35,11 @@ Fluid Music scores can:
 - Insert random or procedurally generated content
 - Do anything you can code
 
+## Stability
+
+The Fluid Music API is **not yet stable**. However, it has been through several
+iterations, and there will **not be major changes** prior to version `1.0`.
+
 ## Learn More
 
 - [Getting started guide](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/getting-started.md)
