@@ -178,7 +178,7 @@ preferences, while also placing all code and dependencies in obscure directories
 on the hard drive that may change confusingly depending on the user's operating
 system.
 
-I found code-based sound design languages like (CSound and SuperCollider) were
+I found code-based sound design languages (like CSound and SuperCollider) were
 effective for some sound-design tasks, but they are not good for building larger
 software applications.
 
