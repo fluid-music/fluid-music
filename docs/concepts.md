@@ -1,12 +1,13 @@
-# Fluid Music Concepts
+# Concepts
 
-These concepts underpin the Fluid Music API.
+The following concepts underpin the Fluid Music framework. These concepts build on each other, so this document is most helpful when read start-to-finish.
 
 1. [Rhythm String](#rhythm-strings)
 1. [Pattern String](#pattern-strings)
 1. [Technique (Library)](#technique-library)
 1. [Score](#score)
 1. [Session](#session)
+1. [Next Steps](#next-steps)
 
 ## Rhythm String
 
@@ -34,7 +35,7 @@ A **Pattern String** represents a sequence of music events. When coupled with a 
 
 There are two things to understand about **Pattern String**
 1. Each character in a **Pattern String** invokes a user-defined **Technique** function
-2. A **Technique Library** (see below) create a mapping between characters and **Techniques**
+2. A **Technique Library** (see below) creates a mapping between characters and **Techniques**
 
 ## Technique (Libraries)
 
@@ -89,14 +90,89 @@ The `context` argument that is passed in to `.use` methods includes the informat
 - `context.durationSeconds` the duration of the technique measured in seconds, which depends on the underlying beats-per-minute.
 - `context.track` the [`FluidTrack`](https://fluid-music.github.io/classes/fluidtrack.html) on which the context was invoked. Read the next section on **Sessions** for how more info about tracks. Tracks will be created automatically if the do not exist when a **Score** object is parsed.
 
-In this trivial example, both of the logging methods simply call `console.log`. In practice, the **Techniques** would typically mutate the underlying a **Session** by (for example) adding audio samples to a Track, MIDI notes to a midi clip. Below is a more practical example.
+In practice, **Technique** methods usually have side-effects - they usually do something more than just `console.log` the `context` argument. In the example below, we use the built-in [`techniques.AudioFile`] **Technique**, which inserts hi-hat audio samples into a track named `hat`.
 
 ```javascript
-//TODO
+const drumTechniqueLibrary = {
+  h: new fluid.techniques.AudioFile({ path: '/closed-hi-hat.wav' }),
+  H: new fluid.techniques.AudioFile({ path: '/open-hi-hat.wav' }),
+}
+// Insert 4 measures of hi-hat samples on the off-beats.
+const score = {
+  tLibrary: drumTechniqueLibrary,
+  r:    '1+2+3+4+',
+  hat: [' h h h h', ' h h h h', ' h h h h', ' h h h H' ]
+}
 ```
 
-This scratches the surface of what you can do with **Score** objects.
+The example above illustrates a previously-unmentioned feature: When the score parser encounters an array, it treats it as a sequence. Each **Pattern String** in the sequence will be parsed with the parent's **Rhythm String**. **Score** objects can even contain deeply nested arrays and objects (arrays containing arrays containing objects containing arrays, etc), but that will be covered in another guide.
 
 ## Session
 
-TODO
+To parse, play, or export a **Score** object, you need to first create a [`FluidSession`](https://fluid-music.github.io/classes/fluidsession.html) instance. These objects are modeled after DAW session: They contains tracks, and those tracks contain MIDI, audio, routing, plugins, and automation.
+
+```javascript
+// main.js
+const { FluidSession } = require('fluid-music')
+const kit = require('@fluid-music/kit')
+
+const session = new FluidSession({ bpm: 96 }, [
+  { name: 'drums', gainDb: -6, children: [
+    { name: 'snare', gainDb: -3 },
+    { name: 'kick' },
+    { name: 'tamb', pan: 0.1 },
+  ]}
+])
+
+// A simple two-measure beat described in the fluid-music score notation
+const score = {
+  tLibrary: kit.tLibrary,     // describe the score vocabulary (s/D/t)
+  r:      '1 + 2 + 3 + 4 + ', // describe the score rhythm (16th notes)
+  snare: ['    s       s   ', '    s       s   '],
+  kick:  ['D               ', '          D  D  '],
+  tamb:  ['t t t t t t t t ', 't t t t t t t t '],
+}
+
+// Insert the score twice for a total of four measures
+session.insertScore(score)
+session.insertScore(score)
+
+// Save the session as a .RPP (Reaper) file
+session.saveAsReaperFile('beat.RPP')
+    .catch(e => console.error('Error:', e))
+    .then(() => console.warn('Exported: beat.RPP'))
+```
+
+The `new FluidSession` constructor accepts two arguments:
+
+1. The first argument is a [SessionConfig](https://fluid-music.github.io/interfaces/sessionconfig.html) which configures the new session. In the example above, `{ bpm: 96 }` sets the beats-per-minute of the `session` object. The score configuration object has some other useful properties. `.r` sets a default (**Rhythm String**) for the entire session. Similarly, `.tLibrary` sets  default **TechniqueLibrary**.
+2. The second argument is an array of [TrackConfig](https://fluid-music.github.io/interfaces/trackconfig.html) objects, which defines the structure of tracks in the session. At minimum, each track config object must have a `.name` string. A track with a with a `.children` array is treated as a submix, with each child track nested underneath it. In the example above, the `snare`, `kick`, and `tamb` will be routed through the `drums` submix.
+
+The code above calls `require('@fluid-music/kit')`, which imports an external **Technique Library**. The name `@fluid-music/kit` identifies an [`@fluid-music/kit` npm package](https://www.npmjs.com/package/@fluid-music/kit) which includes snare, kick and tambourine `AudioFile` techniques (`s`, `D`, and `t` respectively). The `t` **Technique** inserts a tambourine sound, but unlike the `D` and `s` **Techniques**, it does not simply use `techniques.AudioFile` to insert a single clip. Because the tambourine is often played very repetitively (on every 8th note in the example above), it will start to sound very rigid if the exact same sample is used over and over again. So `t` invokes `techniques.Random` **Technique** to randomly select from a collection of different samples with different characteristics. The conventional way to handle this kind of sample and parameter randomization is to load a bunch of samples into a dedicated sampler, and program that sampler to randomize parameters when it receives a MIDI note. Fluid Music takes a different approach: Just invoke a **Technique**'s `.use` method for each `t` character. If you want basic randomization, use the built-in `techniques.Random` class. If you want more precise control, write your own custom **Technique**.
+
+The code example above introduces another key feature: Fluid Music is designed to integrate with the Node Package Manager (`npm`). The `@fluid-music/kit` is a lightweight package that includes a few drum samples and specialized **Techniques** to insert those samples into a session. `npm` handles all the logistics of versioning packages and managing dependencies between packages. This means that you can write your own custom package that invokes **Techniques** defined in `@fluid-music/kit`, and then publish your package to the internet using `npm`. When you go to use your custom package, `npm` will know how to find, download, and install `@fluid-music/kit` in addition to any code or content that you have added.
+
+If you are familiar with package managers like `pip` or `npm` the idea of indirect ("transitive") dependency management will be familiar. However, in the world of sound design, dependency management is still major challenge. Computational sound design programs like SuperCollider, Max, CSound, and even Splice are starting incorporate dependency management, but still leave a lot to be desired. Fluid Music designed around transitive dependencies from the start.
+
+## Next Steps
+
+The concepts described above are important for understanding Fluid Music. However, we only scratched the surface of what you can do with Fluid Music. Concepts and features that were not covered include:
+
+- The Fluid Music server
+- Using VST Plugins
+- Adding support for new VST Plugins
+- Playing audio directly from the Fluid Music server
+- Watching `.js` files for changes for "live" playback
+- Rendering session to audio files
+- Track sends/receives
+- Tracks with Sidechain inputs
+- Writing and publishing your custom **Techniques** and packages
+- Authoring MIDI and MIDI Chord Progression Libraries
+- How to Fade/Trim/Edit/Reverse audio files
+- Getting off the grid with advanced rhythms and micro-timing
+- Long-form scores and deeply nested score objects
+- Dynamic patterns for parameterizing score objects
+- Authoring track automation
+- Authoring plugin parameter automation
+
+I will add guides for these topics as time allows. If you haven't already, I recommend following the [Getting Started](https://github.com/fluid-music/docs/getting-started.md) guide for a practical introduction to the Fluid Music framework.

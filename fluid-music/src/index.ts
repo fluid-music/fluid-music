@@ -1,9 +1,9 @@
 export { FluidPlugin, PluginType } from './FluidPlugin'
 export { sessionToContentFluidMessage, sessionToTemplateFluidMessage } from './sessionToFluidMessage'
 export { sessionToReaperProject } from './sessionToReaperProject'
-export { FluidSession } from './FluidSession'
+export { FluidSession, SessionConfig } from './FluidSession'
 export { FluidAudioFile, AudioFileOptions, AudioFileMode } from './FluidAudioFile'
-export { FluidTrack } from './FluidTrack'
+export { FluidTrack, TrackConfig } from './FluidTrack'
 export * as gen from './plugin-generator'
 export * as converters from './converters'
 export * as m from './m'
@@ -42,4 +42,4 @@ export { IpcClient as Client } from './cybr/IpcClient'
 //
 // Imports may also be written inline in JSDoc @param types
 // /** @param {import('fluid-music').UseContext} context */
-export { UseContext } from './fluid-interfaces'
+export { UseContext, ScoreConfig, UnresolvedSend, UnresolvedReceive } from './fluid-interfaces'
