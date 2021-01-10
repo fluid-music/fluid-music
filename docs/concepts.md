@@ -1,6 +1,6 @@
 # Concepts
 
-The following concepts underpin the Fluid Music framework. These concepts build on each other, so this document is most helpful when read start-to-finish.
+The following concepts underpin the Fluid Music framework. The concepts below build on each other, so this document is most helpful when read start-to-finish.
 
 1. [Rhythm String](#rhythm-strings)
 1. [Pattern String](#pattern-strings)

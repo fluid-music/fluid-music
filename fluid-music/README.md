@@ -43,8 +43,8 @@ iterations, and there will **not be major changes** prior to version `1.0`.
 ## Learn More
 
 - **[Closed Beta Test](https://web.media.mit.edu/~holbrow/project/fluid-music-beta/)**
-- [Getting started guide](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/getting-started.md)
 - [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md)
+- [Getting started guide](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/getting-started.md)
 - [API Documentation](https://fluid-music.github.io/modules.html)
 - [About](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/about.md)
 

@@ -1,19 +1,21 @@
 # Getting Started
 
-In this guide, we'll create a short composition with the `fluid-music` npm library. I'll describe each line of code, and by the end you should understand the fundamentals of Fluid Music, and be able to create your own compositions.
+In this practical guide, we'll create a brief composition using the `fluid-music` npm library.
 
-**Note:** To follow this guide, you will need to install [Reaper](https://reaper.fm) (digital audio workstation). You can download and install Reaper for free. If you use it in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag – in many ways, Reaper is more powerful than other audio software that is an-order-of-magnitude more expensive. **You don't need Reaper to use `fluid-music` but it does make things easier.**
+**NOTE:** This guide will be easier to understand if you read [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md) first!
 
-Execute these commands in your terminal of choice:
+**NOTE:** To follow this guide, you will need to install [Reaper](https://reaper.fm) (digital audio workstation). You can download and install Reaper for free. If you use it in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag – in many ways, Reaper is more powerful than other audio software that is more expensive by an order of magnitude. **You don't need Reaper to use `fluid-music` but it does make things easier.**
+
+First, we'll create a new directory and initialize a `package.json` file, which identifies the directory as an npm package. I named the package `fluid-experiment` (you can choose any name you like). Then install the `fluid-music` and `@fluid-music/kit` npm libraries.
 
 ```bash
 $ mkdir fluid-experiment
 $ cd fluid-experiment
-$ npm init # (answer the questions)
+$ npm init # (answer the questions to create package.json)
 $ npm i fluid-music @fluid-music/kit
 ```
 
-Create `./run.js` file. Copy the following code block into the file:
+Create a `./run.js` file containing the code below:
 
 ```javascript
 const { FluidSession } = require('fluid-music')
@@ -22,7 +24,7 @@ const kit = require('@fluid-music/kit')
 // Define a "drums" bus with 3 child-tracks: kick, snare, tambourine
 const tracks = [
   { name: 'drums', gainDb: -6, children: [
-    { name: 'snare' gainDb: -3 },
+    { name: 'snare', gainDb: -3 },
     { name: 'kick' },
     { name: 'tamb', pan: 0.2 },
   ]}
@@ -39,14 +41,18 @@ const score = {
   tamb:  ['t t t t t t t t ', 't t t t t t t t '],
 }
 
-// Create a session using the tracks and score (above). Export to Reaper.
+// Create a Session, specifying the beats-per-minute and audio/midi tracks
 const session = new FluidSession({ bpm: 96 }, tracks)
-  .insertScore(score)
-  .saveAsReaperFile('beat.RPP')
+
+// Insert the score object, and export to Reaper
+session.insertScore(score)
+session.saveAsReaperFile('beat.RPP')
     .catch(e => console.error('Error:', e))
     .then(() => console.warn('Exported: beat.RPP'))
 ```
 
-Let's think through each line of code
+Open `beat.RPP` in Reaper. It should look like this:
 
-**TODO**
+<img width="1035" alt="Reaper UI containing beat.RPP" src="https://user-images.githubusercontent.com/1512520/104135377-fc9acf00-535d-11eb-8125-beb7c1b77cb1.png">
+
+Congratulations, you just created your first fluid music project.
