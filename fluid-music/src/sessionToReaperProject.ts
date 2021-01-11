@@ -40,6 +40,12 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
 
   const reaperProject = new rppp.objects.ReaperProject()
   reaperProject.getOrCreateStructByToken('TEMPO').params = [session.bpm, 4, 4]
+  reaperProject.getOrCreateStructByToken('CURSOR').params = [session.timeWholeNotesToSeconds(session.editCursorTime)]
+  reaperProject.getOrCreateStructByToken('LOOP').params = [session.loopEnabled ? 1 : 0]
+  reaperProject.getOrCreateStructByToken('SELECTION').params = [
+    session.timeWholeNotesToSeconds(session.loopRegion.startTime),
+    session.timeWholeNotesToSeconds(session.loopRegion.startTime + session.loopRegion.duration)
+  ]
   const flatTracks : [FluidTrack, any][] = []
 
   session.forEachTrack((track, i, ancestors) => {

@@ -125,8 +125,18 @@ export function sessionToTemplateFluidMessage(session : FluidSession) {
  */
 export function sessionToContentFluidMessage(session : FluidSession) {
   const sessionMessages : any[] = []
-  let summativeIndex = 0
 
+  // Configure loop region
+  if (session.loopEnabled) {
+    sessionMessages.push(cybr.transport.loop(
+      session.loopRegion.startTime,
+      session.loopRegion.startTime + session.loopRegion.duration)
+    )
+  } else {
+    sessionMessages.push(cybr.transport.loop(false))
+  }
+
+  let summativeIndex = 0
   session.forEachTrack((track, i, ancestors) => {
     const parentName = ancestors.length ? ancestors[ancestors.length - 1].name : undefined
     const isSubmix = isSubmixTrack(track)

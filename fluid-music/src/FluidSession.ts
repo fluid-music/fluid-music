@@ -3,20 +3,43 @@ import * as path from 'path'
 import * as tab from './tab'
 import * as cybr from './cybr'
 import { FluidReceive, FluidTrack, TrackConfig } from './FluidTrack';
-import { dLibrary, ScoreConfig, tLibrary, UseContext } from './fluid-interfaces';
+import { dLibrary, ScoreConfig, tLibrary, UseContext, Event } from './fluid-interfaces';
 import { sessionToTemplateFluidMessage, sessionToContentFluidMessage } from './sessionToFluidMessage'
 import { sessionToReaperProject } from './sessionToReaperProject';
 import { createWriteStream } from 'fs';
 import { AudioFileMode } from './FluidAudioFile'
 
 export interface SessionConfig extends ScoreConfig {
+  /** Beats per minute */
   bpm?: number
+
+  /** Looping is disabled by default unless you specify a `loopStartTime` */
+  loopEnabled? : boolean
+
+  /** Loop region start time, specified in whole notes */
+  loopStartTime? : number
+
+  /**
+   * Loop region duration, specified in whole notes. Automatically enables
+   * looping unless `loopEnabled: false` is explicit
+   * */
+  loopDuration? : number
 }
 
 export class FluidSession {
   constructor(session: SessionConfig, tracks: TrackConfig[] = []) {
     if (typeof session.bpm === 'number') this.bpm = session.bpm
-    this.scoreConfig = session
+    if (typeof session.loopDuration === 'number') this.loopRegion.duration = session.loopDuration
+    if (typeof session.loopStartTime === 'number') this.loopRegion.startTime = session.loopStartTime
+    if (typeof session.loopEnabled === 'boolean') this.loopEnabled = session.loopEnabled
+    else if (typeof session.loopDuration === 'number') this.loopEnabled = true
+
+    if (session.d) this.scoreConfig.d = session.d
+    if (session.dLibrary) this.scoreConfig.dLibrary = session.dLibrary
+    if (session.r) this.scoreConfig.r = session.r
+    if (session.tLibrary) this.scoreConfig.tLibrary = session.tLibrary
+    if (session.trackKey) this.scoreConfig.trackKey = session.trackKey
+    if (session.startTime) this.scoreConfig.startTime = session.startTime
 
     for (const [name, track] of Object.entries(tracks)) {
       if (!track.name) track.name = name;
@@ -38,6 +61,14 @@ export class FluidSession {
 
   /** Position of the edit cursor, measured in whole notes */
   editCursorTime : number = 0
+
+  /** Loop region, measured in whole notes */
+  loopRegion : Event = {
+    startTime: 0,
+    duration: 0
+  }
+
+  loopEnabled : boolean = false
 
   /**
    * Recursively iterate over all tracks, including track folders and their
@@ -283,12 +314,43 @@ export class FluidSession {
    * @param filename can be absolute or relative to the working directory. The
    *    `.tracktionedit` file extension will be added if it is not present
    * @param client an [[IpcClient]] will be created (and closed) automatically
-   *    when not provided
+   *    when not provided. When you do provide a client, that client must be
+   *    configured with `keepOpen=true`.
    */
   async saveAsTracktionFile (
-    filename : string = 'fluid',
+    filename : string = 'session',
     client? : cybr.IpcClient)
   {
+    let closeWhenFinished = false
+
+    // create a client if caller did not provide one
+    if (!client) {
+      closeWhenFinished = true
+      client = new cybr.IpcClient()
+      await client.connect(true)
+    }
+
+    await this.send(filename, client)
+    await new Promise(resolve => setTimeout(resolve, 100))
+    await client.send(cybr.global.save())
+
+    if (closeWhenFinished) client.close()
+  }
+
+  /**
+   * Send the entire session to the cybr server. If there is already an active
+   * session in the server, it will be replaced.
+   *
+   * @param filename can be absolute or relative to the working directory. The
+   *    `.tracktionedit`. This file extension will be added if it is not present
+   * @param client an [[IpcClient]] will be created (and closed) automatically
+   *    when not provided. When you do provide a client, that client must be
+   *    configured with `keepOpen=true`.
+   */
+  async send (
+    filename : string = 'session',
+    client? : cybr.IpcClient
+  ) {
     let closeWhenFinished = false
 
     // create a client if caller did not provide one
@@ -309,10 +371,30 @@ export class FluidSession {
       sessionToContentFluidMessage(this),
     ])
 
-    await new Promise(resolve => setTimeout(resolve, 100))
-    await client.send(cybr.global.save())
-
     if (closeWhenFinished) client.close()
+  }
+
+  /**
+   * Send the session to the cybr server and begin playback on the server. If
+   * the server already contains an active session, it will be replaced.
+   *
+   * @param startTime The time to start playback, measured in whole notes
+   * @param client An optional cybr IpcClient. When you do provide a client,
+   *    that client be configured with `keepOpen=true`.
+   */
+  async play (startTime : number = 0, client? : cybr.IpcClient) {
+    await this.send('temp.tracktionedit', client)
+
+    if (client) {
+      client.send(cybr.transport.play())
+    } else {
+      client = new cybr.Client()
+      client.connect(false)
+      client.send([
+        cybr.transport.to(startTime),
+        cybr.transport.play(),
+      ])
+    }
   }
 
   /**

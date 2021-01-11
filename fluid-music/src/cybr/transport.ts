@@ -10,16 +10,17 @@ export function stop() { return { address: '/transport/stop' }; }
 
 /**
  * Set loop points, and enable looping.
- * @param {Number|false} startTimeInWholeNotes - The number of quarter notes
- *    at which the loop should begin. Or `false`, which disables looping.
- * @param {Number} durationInWholeNotes - The length of the loop, measured in
- *    quarter notes.
+ * @param startTimeInWholeNotes The number of whole notes at which the loop
+ *    should begin. Or `false`, which disables looping.
+ * @param durationInWholeNotes The length of the loop, measured in whole notes.
  */
-export function loop(startTimeInWholeNotes, durationInWholeNotes) {
+export function loop(startTimeInWholeNotes : number|boolean, durationInWholeNotes? : number) {
   if (startTimeInWholeNotes === false) {
     // disable looping
     startTimeInWholeNotes = 0;
     durationInWholeNotes = 0;
+  } else if (startTimeInWholeNotes === true) {
+    throw new Error('to enable looping, the first argument to transport.loop must be a startTime number (not `true`)')
   }
 
   if (typeof startTimeInWholeNotes !== 'number' || typeof durationInWholeNotes !== 'number')
