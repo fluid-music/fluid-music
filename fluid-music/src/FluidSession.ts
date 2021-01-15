@@ -330,7 +330,7 @@ export class FluidSession {
       await client.connect(true)
     }
 
-    await this.send(filename, client)
+    await this.sendToServer(filename, client)
     await new Promise(resolve => setTimeout(resolve, 100))
     await client.send(cybr.global.save())
 
@@ -338,8 +338,8 @@ export class FluidSession {
   }
 
   /**
-   * Send the entire session to the cybr server. If there is already an active
-   * session in the server, it will be replaced.
+   * Send the entire session to the cybr server. If the server already has an
+   * active session, it will be replaced by this session.
    *
    * @param filename can be absolute or relative to the working directory. The
    *    `.tracktionedit`. This file extension will be added if it is not present
@@ -347,7 +347,7 @@ export class FluidSession {
    *    when not provided. When you do provide a client, that client must be
    *    configured with `keepOpen=true`.
    */
-  async send (
+  async sendToServer (
     filename : string = 'session',
     client? : cybr.IpcClient
   ) {
@@ -361,7 +361,7 @@ export class FluidSession {
     }
 
     // create a filename if the caller did not provide one
-    if (!filename) filename = 'fluid'
+    if (!filename) filename = 'session'
     if (!path.isAbsolute(filename)) filename = path.join(process.cwd(), filename)
     if (!filename.toLowerCase().endsWith('.tracktionedit')) filename += '.tracktionedit'
 
@@ -372,29 +372,6 @@ export class FluidSession {
     ])
 
     if (closeWhenFinished) client.close()
-  }
-
-  /**
-   * Send the session to the cybr server and begin playback on the server. If
-   * the server already contains an active session, it will be replaced.
-   *
-   * @param startTime The time to start playback, measured in whole notes
-   * @param client An optional cybr IpcClient. When you do provide a client,
-   *    that client be configured with `keepOpen=true`.
-   */
-  async play (startTime : number = 0, client? : cybr.IpcClient) {
-    await this.send('temp.tracktionedit', client)
-
-    if (client) {
-      client.send(cybr.transport.play())
-    } else {
-      client = new cybr.Client()
-      client.connect(false)
-      client.send([
-        cybr.transport.to(startTime),
-        cybr.transport.play(),
-      ])
-    }
   }
 
   /**

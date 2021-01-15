@@ -16,8 +16,11 @@ For up-to-date info on all the possible commands, run `cybr -h`.
 For detailed information about an option,  (ex `-f`) run `cybr -h -f`
 
 ```
+cybr --driver=JACK               Select the audio driver
+cybr --device=system             Choose input+output device (ex. USB Audio Interface)
+cybr --device-out=system         Choose output device (ex. USB Audio Interface)
 cybr -f|--fluid-server           Launch a server and listen for fluid engine OSC messages
-cybr --scan-plugins              Scan for VST/VST3/AU plugins, adding them to the settings file
+cybr --scan-plugins              Scan for plugins, adding them to the settings file
 cybr -a|--autodetect-pm          Add Tracktion Waveform project manager to the settings file
 cybr --list-plugins              List available plugins
 cybr --list-plugin-params=name   List all the automatable parameters in the given plugin
@@ -28,19 +31,18 @@ cybr -o out.tracktionedit        Save/render the active edit to a .tracktionedit
 cybr --list-clips                Print a list of the clips in the active Edit
 cybr --list-tracks               Print a list of tracks in the active Edit
 cybr -e|--empty[=editfile]       Activate an empty edit with optional .tracktionedit file
-cybr -j                          Experimental custom plugin. WORK-IN-PROGRESS
 cybr --print-length              Print the length in seconds of the active edit
 cybr --print-config-filename     Print the complete settings filename.
 cybr -p                          Play the active edit
-cybr -r                          Record OSC while playing the Edit. WORK-IN-PROGRESS
 cybr --list-io                   Print the engine's MIDI and Wave IO devices
 cybr --list-edit-inputs          Print edit inputs (only print available inputs)
-cybr --list-state                Print type of top level chilren in the edit
+cybr --list-state                Print type of top level children in the edit
 cybr --target-port=9999          Set OSC destination port
 cybr --target-host=127.0.0.1     Set OSC Destination hostname
 cybr --ping-osc[=100]            Repeatedly send a test osc message
 cybr --jack-test                 check if jack audio is supported
-cybr --print-block-size          print audio block size
+cybr --print-block-size          Print audio block size
+cybr --query-param=plugin,param  Query and print data points for a plugin parameter
 cybr --preset-path[=./path|!]    Print/Add/Reset preset search path
 cybr --sample-path[=./path|!]    Print/Add/Reset sample search path
 cybr -h|--help [-i ...]          Print detailed info for subsequent arguments
