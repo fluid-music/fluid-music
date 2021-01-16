@@ -62,7 +62,7 @@ $ node session.js
 
 Open `beat.RPP` in Reaper. It should look like this:
 
-<img width="1035" alt="Reaper UI containing beat.RPP" src="https://user-images.githubusercontent.com/1512520/104135377-fc9acf00-535d-11eb-8125-beb7c1b77cb1.png">
+<img width="1081" alt="Reaper GUI containing beat.RPP" src="https://user-images.githubusercontent.com/1512520/104825156-32402c00-5826-11eb-81b4-d8a15653f7a1.png">
 
 Congratulations, you just created your first Fluid Music project.
 
