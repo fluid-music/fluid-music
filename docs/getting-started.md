@@ -238,4 +238,8 @@ If you are using a code editor with TypeScript integration (like [VS Code](https
 
 This is because the Fluid Music tooling generates TypeScript definitions from VST plugins. The image above shows that somehow our code editor knows that the `vcf0Cutoff` parameter has a value between `0` and `150`. What are the units of this value? The units are determined by the the Podolski VST plugin. While many VST plugins would describe a cutoff frequency in Hertz, Podolski uses arbitrary units. Note that the preset that we are using modulates the cutoff frequency with an envelope. Even though the filter is set to `0` the actual cutoff frequency will be well above `0`.
 
-Let's listen to the results. Run the updated session `$ node session.js`, and open up the resulting `beat.RPP` file in Reaper. If `beat.RPP` is still open in Reaper, you will need to close and re-open it.
+Let's listen to the results. Run the updated session with `$ node session.js`, and open up the resulting `beat.RPP` file in Reaper. If `beat.RPP` is still open in Reaper, you will need to close and re-open it.
+
+## Routing Sends and Sidechains
+
+**To do**
