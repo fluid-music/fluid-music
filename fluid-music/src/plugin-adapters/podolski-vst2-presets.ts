@@ -35,3 +35,55 @@ export function sineSlowDecay() {
   podolski.parameters.env1ReleasePercent = 16
   return podolski
 }
+
+
+export function brightPad() {
+  return new PodolskiVst2({
+    // Envelope
+    env1AttackPercent: 9,
+    env1DecayPercent: 20,
+    env1SustainPercent: 80,
+    env1FallRisePercent: -25,
+    env1ReleasePercent: 16,
+    env1VelocityPercent: 55,
+    // Oscillator
+    osc1WaveWarpPercent: 33,
+    osc1PhaseModDepth: 0,
+    osc1PhaseModSrc: PodolskiVst2.parameterLibrary.osc1PhaseModSrc.choices.lfoglobal,
+    vca1ModDepthPercent: 60,
+    osc1Tune: 12,
+    osc1InverseVolumePercent: 60,
+    // Filter
+    vcf0Cutoff: 30,
+    vcf0ResonancePercent: 7,
+    vcf0KeyFollowPercent: 100,
+    vcf0CutoffMod2: 72,
+    vcf0Modsource2: PodolskiVst2.parameterLibrary.vcf0Modsource2.choices.envelope1,
+    vcf0CutoffMod1: 12,
+    vcf0Modsource1: PodolskiVst2.parameterLibrary.vcf0Modsource1.choices.lfo1,
+    vcf0DrivePercent: 40,
+    vcf0ClickPercent: 18,
+    // LFO1
+    lfo1Sync: 0.346,
+    lfo1Waveform: PodolskiVst2.parameterLibrary.lfo1Waveform.choices.sine,
+    lfo1Restart: PodolskiVst2.parameterLibrary.lfo1Restart.choices.sync,
+    lfo1DelayPercent: 25,
+    lfo1DepthModDpt1Percent: 0,
+    // Global LFO
+    lfogSync: .308,
+    lfogWaveform: PodolskiVst2.parameterLibrary.lfogWaveform.choices.sine,
+    // Chorus
+    chrsCenterPercent: 80,
+    chrsSpeedPercent: 22,
+    chrsDepthPercent: 99,
+    chrsFeedbackPercent: 0,
+    chrsMixPercent: 32,
+    // Delay
+    dly1SyncLeft: PodolskiVst2.parameterLibrary.dly1SyncLeft.choices['1/4'],
+    dly1SyncRight: PodolskiVst2.parameterLibrary.dly1SyncRight.choices['1/8 dot'],
+    dly1CrossfeedPercent: 36,
+    dly1MixPercent: 3,
+    // Main
+    mainOutput: 100,
+  })
+}

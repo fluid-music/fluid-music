@@ -120,7 +120,7 @@ session.sendToServer()
   .then(() => console.warn('Sent session to cybr'))
 ```
 
-Run the file `$ node session.js`. This will load the session in the server, but does not begin playback. We can use the `fluid` command line utility to play back audio. First, use `npm` to install `fluid-music` globally, which adds the `fluid` command to your `PATH`.
+Leave the server running, and open a new terminal tab. Run the session script again (`$ node session.js`). This will load the session in the server, but does not begin playback. We will use the `fluid` command line utility to play back audio. First, use `npm` to install `fluid-music` globally, which adds the `fluid` command to your `PATH`.
 
 ```bash
 $ npm install -g fluid-music
@@ -131,17 +131,70 @@ Now you can use the `fluid` command to start playback
 ```bash
 $ fluid play  # Start playback
 $ fluid to 0  # Restart playback from the beginning
-$ fluid stop  # Stop/Pause
+$ fluid stop  # Stop (Pause)
 ```
 
-## Plugins And Routing
+## VST Plugins
 
-Now let's look at some more advanced Fluid Music features.
+Let's try create a session with a VST plugin. In this example, we'll use the excellent free Podolski VST2 plugin. [Download and install Podolski](https://u-he.com/products/podolski/) before proceeding. It's best to install plugins in the default location so that `cybr` knows where to find them.
 
-**TODO**
+The `cybr` server needs to scan for plugins before it can load them. Switch back to your terminal tab that is running the server, and use `ctrl+c` to stop the server. Use the `cybr --scan-plugins` command to search your machine for plugins. If one of your plugins crashes, it will be skipped on subsequent scans, so you may need to scan more than once if `cybr` encounters unstable plugins.
 
-```
-cybr --list-plugins          # List available plugins
+Once you have finished scanning, use the `cybr --list-plugins` to verify the `Podolski` plugin was found.
+
+```bash
+# Some useful cybr commands
 cybr --scan-plugins          # Scan for plugins, adding them to the settings file
+cybr --list-plugins          # List available plugins
 cybr --print-config-filename # Print the complete settings filename.
+```
+
+Restart `cybr -f`, specifying a `--device-out` if needed (if you do not specify a `--device-out="Some Device"`, `cybr` will pick one for you).
+
+```javascript
+const { FluidSession, plugins, techniques } = require('fluid-music')
+const kit = require('@fluid-music/kit')
+
+// Create a tLibrary filled with Midi Chords
+const chordLibrary = {
+  a: new techniques.MidiChord({ notes: [60, 63, 67] }),
+  b: new techniques.MidiChord({ notes: [60, 63, 65] }),
+  c: new techniques.MidiChord({ notes: [55, 62, 65] }),
+  d: new techniques.MidiChord({ notes: [55, 60, 63] }),
+  e: new techniques.MidiChord({ notes: [55, 58, 60] }),
+}
+
+// Instantiate a Podolski VST2 plugin from a preset
+const padSynth = plugins.podolskiVst2Presets.brightPad()
+
+const tracks = [
+  // In the first example, we specified a tLibrary in the score object. In this
+  // example, tLibraries are specified in the tracks object.
+  { name: 'drums', gainDb: -6, tLibrary: kit.tLibrary, children: [
+    { name: 'snare', gainDb: -3 },
+    { name: 'kick' },
+    { name: 'tamb', pan: 0.1 },
+  ]},
+
+  // Notice the 'chords' track has a .plugins array and a .tLibrary
+  { name: 'chords', tLibrary: chordLibrary, plugins: [ padSynth ] },
+]
+
+const score = {
+  r:      '1 + 2 + 3 + 4 + ', // describe the score rhythm (16th notes)
+  snare: ['    s       s   ', '    s       s   '],
+  kick:  ['D               ', '          D  D  ', 'D               ', 'd         d  d  '],
+  tamb:  ['t t t t t t t t ', 't t t t t t t t ', 't t t t t t t t ', 't t t t t t t t '],
+  chords:['a-  b---        ', '            c-  ', 'd---            ', 'e---------------'],
+}
+
+// Create a Session, specifying beats-per-minute and track configuration
+const session = new FluidSession({ bpm: 96, loopDuration: 4 }, tracks)
+
+// Insert the score object, and export to Reaper
+session.insertScore(score)
+session.finalize()
+session.saveAsReaperFile('beat.RPP')
+  .catch(e => console.error('Error:', e))
+  .then(() => console.warn('Saved beat.RPP'))
 ```
