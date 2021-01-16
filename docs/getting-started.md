@@ -2,9 +2,9 @@
 
 In this practical guide, we'll create a brief composition using the `fluid-music` npm library.
 
-**NOTE:** This guide will be easier to understand if you read [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md) first!
+**NOTE:** This guide is an introduction to Fluid Music by example. If you want to understand how the code example in this guide work, read [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md) before following this guide!
 
-**NOTE:** To follow this guide, you will need to install [Reaper](https://reaper.fm) (digital audio workstation). You can download and install Reaper for free. If you use it in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag – in many ways, Reaper is more powerful than other audio software that is more expensive by an order of magnitude. **You don't need Reaper to use `fluid-music` but it does make things easier.**
+**NOTE:** To follow this guide, you will need to install [Reaper](https://reaper.fm) (digital audio workstation). You can download and install Reaper for free. If you use Reaper in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag – in many ways, Reaper is more powerful than other DAWs that are more expensive by an order of magnitude. **You don't need Reaper to use `fluid-music` but it is very helpful for inspecting your session objects.**
 
 First, we'll create a new directory and initialize a `package.json` file, which identifies the directory as an `npm` package. I named the package `fluid-experiment` (you can choose any name you like). Then install the `fluid-music` and `@fluid-music/kit` npm libraries.
 
@@ -149,35 +149,40 @@ cybr --list-plugins          # List available plugins
 cybr --print-config-filename # Print the complete settings filename.
 ```
 
-Restart `cybr -f`, specifying a `--device-out` if needed (if you do not specify a `--device-out="Some Device"`, `cybr` will pick one for you).
+Restart `cybr -f`, specifying a `--device-out="Some Device"` if needed (if you do not specify a `--device-out`, `cybr` will pick one for you).
+
+Copy the code below into your `session.js` file:
 
 ```javascript
 const { FluidSession, plugins, techniques } = require('fluid-music')
 const kit = require('@fluid-music/kit')
 
-// Create a tLibrary filled with Midi Chords
+// Create a tLibrary filled with MIDI Chords
 const chordLibrary = {
-  a: new techniques.MidiChord({ notes: [60, 63, 67] }),
-  b: new techniques.MidiChord({ notes: [60, 63, 65] }),
-  c: new techniques.MidiChord({ notes: [55, 62, 65] }),
-  d: new techniques.MidiChord({ notes: [55, 60, 63] }),
-  e: new techniques.MidiChord({ notes: [55, 58, 60] }),
+  a: new techniques.MidiChord({ notes: [64, 67, 71] }), // e minor
+  b: new techniques.MidiChord({ notes: [64, 67, 69] }),
+  c: new techniques.MidiChord({ notes: [59, 66, 69] }),
+  d: new techniques.MidiChord({ notes: [59, 64, 67] }),
+  e: new techniques.MidiChord({ notes: [59, 62, 64] }),
 }
 
 // Instantiate a Podolski VST2 plugin from a preset
-const padSynth = plugins.podolskiVst2Presets.brightPad()
+const padSynthA = plugins.podolskiVst2Presets.brightPad()
+const padSynthB = plugins.podolskiVst2Presets.brightPad()
 
 const tracks = [
   // In the first example, we specified a tLibrary in the score object. In this
-  // example, tLibraries are specified in the tracks object.
+  // example, tLibrary objects are specified in the tracks object.
   { name: 'drums', gainDb: -6, tLibrary: kit.tLibrary, children: [
     { name: 'snare', gainDb: -3 },
     { name: 'kick' },
     { name: 'tamb', pan: 0.1 },
   ]},
 
-  // Notice the 'chords' track has a .plugins array and a .tLibrary
-  { name: 'chords', tLibrary: chordLibrary, plugins: [ padSynth ] },
+  // Notice the pad tracks have a .plugins array containing the synthesizer
+  // preset. It also has a dedicated tLibrary containing MIDI chords.
+  { name: 'padA', tLibrary: chordLibrary, plugins: [ padSynthA ] },
+  { name: 'padB', tLibrary: chordLibrary, plugins: [ padSynthB ] },
 ]
 
 const score = {
@@ -185,16 +190,52 @@ const score = {
   snare: ['    s       s   ', '    s       s   '],
   kick:  ['D               ', '          D  D  ', 'D               ', 'd         d  d  '],
   tamb:  ['t t t t t t t t ', 't t t t t t t t ', 't t t t t t t t ', 't t t t t t t t '],
-  chords:['a-  b---        ', '            c-  ', 'd---            ', 'e---------------'],
+  padA:  ['a-  b---        ', '            c-  ', 'd---            ', '                '],
+  padB:  ['                ', '                ', '                ', 'e---------------'],
 }
 
 // Create a Session, specifying beats-per-minute and track configuration
 const session = new FluidSession({ bpm: 96, loopDuration: 4 }, tracks)
 
-// Insert the score object, and export to Reaper
+// Insert the score object.
 session.insertScore(score)
 session.finalize()
 session.saveAsReaperFile('beat.RPP')
   .catch(e => console.error('Error:', e))
   .then(() => console.warn('Saved beat.RPP'))
 ```
+
+This version of `session.js` includes some features we haven't seen before. The first is the `MidiChord` technique:
+
+```javascript
+// Create a tLibrary filled with MIDI Chords
+const chordLibrary = {
+  a: new techniques.MidiChord({ notes: [64, 67, 71] }), // e minor
+  b: new techniques.MidiChord({ notes: [64, 67, 69] }),
+  c: new techniques.MidiChord({ notes: [59, 66, 69] }),
+  d: new techniques.MidiChord({ notes: [59, 64, 67] }),
+  e: new techniques.MidiChord({ notes: [59, 62, 64] }),
+}
+```
+
+In the `fluid-music` package techniques are implemented as classes with a `.use(context)` method (see the [MidiChord source code](https://github.com/CharlesHolbrow/fluid-music/blob/ec73a3fc40c1c751f866e9322a37d269091935dd/fluid-music/src/techniques/basic.ts#L178-L193)) This means that we can use the familiar `new` keyword to create objects that have a `.use` function, which makes them valid members of a technique library.
+
+Notice how the `chordLibrary` object is specified as the default `tLibrary` for the `padA` track on line 28. When you call `.insertScore`, and the score parser encounters a character (like `a` or `b`) it will first look in the `score` object for a matching technique, before searching the track's `tLibrary`. Finally it checks if the underlying `session` has a tLibrary containing the character. If the score parser It will throw an error if it cannot find an technique with the specified name, so make sure that your score objects only include characters that you have in your technique libraries.
+
+Another new feature in the score above is the Podolski VST plugin instance. Take a quick look at the
+[Podolski preset source code](https://github.com/CharlesHolbrow/fluid-music/blob/main/fluid-music/src/plugin-adapters/podolski-vst2-presets.ts). To see how these plugins are instantiated. You can create your own presets the same way, but for now, let's just modify the `padB` plugin preset by lowering the filter cutoff frequency to create a "dark" pad sound. Add a newline after creating `padSynthB` and set the `padSynthB.parameters.vcf0Cutoff = 0` so that lines 13-16 look like this:
+
+```javascript
+// Instantiate a Podolski VST2 plugin from a preset
+const padSynthA = plugins.podolskiVst2Presets.brightPad()
+const padSynthB = plugins.podolskiVst2Presets.brightPad()
+padSynthB.parameters.vcf0Cutoff = 0
+```
+
+If you are using a code editor with TypeScript integration (like [VS Code](https://code.visualstudio.com/)) and you have installed `fluid-music` correctly, when you begin typing `padSynthB.parameters.cutoff` you will see a list of suggested parameter values:
+
+<img width="971" alt="VS Code syntax completion support" src="https://user-images.githubusercontent.com/1512520/104821154-f4340f80-5807-11eb-80a3-134b4585ffc2.png">
+
+This is because the Fluid Music tooling generates TypeScript definitions from VST plugins. The image above shows that somehow our code editor knows that the `vcf0Cutoff` parameter has a value between `0` and `150`. What are the units of this value? The units are determined by the the Podolski VST plugin. While many VST plugins would describe a cutoff frequency in Hertz, Podolski uses an arbitrary unit. Note that the preset that we are using uses an envelope to modulate the cutoff frequency, so even though the filter is set to the lowest possible value, the actual cutoff frequency will be well above 0. Let's listen to the results.
+
+Run the updated session `$ node session.js`, and open up the resulting `beat.RPP` file in Reaper. If `beat.RPP` is still open in Reaper, you will need to close and re-open it.

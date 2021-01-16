@@ -36,14 +36,17 @@ export function sineSlowDecay() {
   return podolski
 }
 
-
+/**
+ * A bright, rich pad with a touch of chorus and delay. It has a fast attack and
+ * release, and is a good, neutral starting point for more elaborate patches.
+ */
 export function brightPad() {
   return new PodolskiVst2({
     // Envelope
     env1AttackPercent: 9,
     env1DecayPercent: 20,
     env1SustainPercent: 80,
-    env1FallRisePercent: -25,
+    env1FallRisePercent: -22,
     env1ReleasePercent: 16,
     env1VelocityPercent: 55,
     // Oscillator
@@ -53,14 +56,16 @@ export function brightPad() {
     vca1ModDepthPercent: 60,
     osc1Tune: 12,
     osc1InverseVolumePercent: 60,
+    osc1WarpModSrc: PodolskiVst2.parameterLibrary.osc1WarpModSrc.choices.keyfollow,
+    osc1WarpModDepthPercent: 47,
     // Filter
-    vcf0Cutoff: 30,
-    vcf0ResonancePercent: 7,
+    vcf0Cutoff: 28,
+    vcf0ResonancePercent: 6,
     vcf0KeyFollowPercent: 100,
-    vcf0CutoffMod2: 72,
+    vcf0Modsource1: PodolskiVst2.parameterLibrary.vcf0Modsource1.choices.velocity,
+    vcf0CutoffMod1: 15,
     vcf0Modsource2: PodolskiVst2.parameterLibrary.vcf0Modsource2.choices.envelope1,
-    vcf0CutoffMod1: 12,
-    vcf0Modsource1: PodolskiVst2.parameterLibrary.vcf0Modsource1.choices.lfo1,
+    vcf0CutoffMod2: 48,
     vcf0DrivePercent: 40,
     vcf0ClickPercent: 18,
     // LFO1
