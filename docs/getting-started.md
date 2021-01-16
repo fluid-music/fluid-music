@@ -2,7 +2,7 @@
 
 In this practical guide, we'll create a brief composition using the `fluid-music` npm library.
 
-**NOTE:** This guide is an introduction to Fluid Music by example. If you want to understand how the code example in this guide work, read [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md) before following this guide!
+**NOTE:** If you want to really understand how the examples in this guide work, read [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md) before getting started!
 
 **NOTE:** To follow this guide, you will need to install [Reaper](https://reaper.fm) (digital audio workstation). You can download and install Reaper for free. If you use Reaper in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag – in many ways, Reaper is more powerful than other DAWs that are more expensive by an order of magnitude. **You don't need Reaper to use `fluid-music` but it is very helpful for inspecting your session objects.**
 
@@ -218,12 +218,12 @@ const chordLibrary = {
 }
 ```
 
-In the `fluid-music` package techniques are implemented as classes with a `.use(context)` method (see the [MidiChord source code](https://github.com/CharlesHolbrow/fluid-music/blob/ec73a3fc40c1c751f866e9322a37d269091935dd/fluid-music/src/techniques/basic.ts#L178-L193)) This means that we can use the familiar `new` keyword to create objects that have a `.use` function, which makes them valid members of a technique library.
+Many `fluid-music` techniques are implemented as classes with a `.use(context)` method (see the [MidiChord source code](https://github.com/CharlesHolbrow/fluid-music/blob/ec73a3fc40c1c751f866e9322a37d269091935dd/fluid-music/src/techniques/basic.ts#L178-L193)). This means that we can use the familiar `new` keyword to create objects that have a `.use` function. As we described in [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md#technique-library), objects with a `.use` method are valid techniques.
 
-Notice how the `chordLibrary` object is specified as the default `tLibrary` for the `padA` track on line 28. When you call `.insertScore`, and the score parser encounters a character (like `a` or `b`) it will first look in the `score` object for a matching technique, before searching the track's `tLibrary`. Finally it checks if the underlying `session` has a tLibrary containing the character. If the score parser It will throw an error if it cannot find an technique with the specified name, so make sure that your score objects only include characters that you have in your technique libraries.
+Notice how the `chordLibrary` object is specified as the default `tLibrary` for the `padA` track on line 28. When you call `.insertScore`, and the score parser encounters a character (like `a` or `b`) it will first look in the `score` object for a matching technique, before searching the track `tLibrary`. Finally it checks if the underlying `session` has a tLibrary containing the character. The score parser will throw an error if it cannot find a technique with the specified character, so make sure that your score objects only include characters that you have in your technique libraries.
 
 Another new feature in the score above is the Podolski VST plugin instance. Take a quick look at the
-[Podolski preset source code](https://github.com/CharlesHolbrow/fluid-music/blob/main/fluid-music/src/plugin-adapters/podolski-vst2-presets.ts). To see how these plugins are instantiated. You can create your own presets the same way, but for now, let's just modify the `padB` plugin preset by lowering the filter cutoff frequency to create a "dark" pad sound. Add a newline after creating `padSynthB` and set the `padSynthB.parameters.vcf0Cutoff = 0` so that lines 13-16 look like this:
+[Podolski preset source code](https://github.com/CharlesHolbrow/fluid-music/blob/main/fluid-music/src/plugin-adapters/podolski-vst2-presets.ts). To see how these plugins are instantiated. You can create your own presets the same way, but for now, let's just modify the `padB` plugin preset. We will decrease the filter cutoff frequency to create a "dark" pad sound. Add a newline after creating `padSynthB` and set the `padSynthB.parameters.vcf0Cutoff = 0` so that lines 13-16 look like this:
 
 ```javascript
 // Instantiate a Podolski VST2 plugin from a preset
@@ -236,6 +236,6 @@ If you are using a code editor with TypeScript integration (like [VS Code](https
 
 <img width="971" alt="VS Code syntax completion support" src="https://user-images.githubusercontent.com/1512520/104821154-f4340f80-5807-11eb-80a3-134b4585ffc2.png">
 
-This is because the Fluid Music tooling generates TypeScript definitions from VST plugins. The image above shows that somehow our code editor knows that the `vcf0Cutoff` parameter has a value between `0` and `150`. What are the units of this value? The units are determined by the the Podolski VST plugin. While many VST plugins would describe a cutoff frequency in Hertz, Podolski uses an arbitrary unit. Note that the preset that we are using uses an envelope to modulate the cutoff frequency, so even though the filter is set to the lowest possible value, the actual cutoff frequency will be well above 0. Let's listen to the results.
+This is because the Fluid Music tooling generates TypeScript definitions from VST plugins. The image above shows that somehow our code editor knows that the `vcf0Cutoff` parameter has a value between `0` and `150`. What are the units of this value? The units are determined by the the Podolski VST plugin. While many VST plugins would describe a cutoff frequency in Hertz, Podolski uses arbitrary units. Note that the preset that we are using modulates the cutoff frequency with an envelope. Even though the filter is set to `0` the actual cutoff frequency will be well above `0`.
 
-Run the updated session `$ node session.js`, and open up the resulting `beat.RPP` file in Reaper. If `beat.RPP` is still open in Reaper, you will need to close and re-open it.
+Let's listen to the results. Run the updated session `$ node session.js`, and open up the resulting `beat.RPP` file in Reaper. If `beat.RPP` is still open in Reaper, you will need to close and re-open it.
