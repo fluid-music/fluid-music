@@ -246,9 +246,9 @@ If you are using a code editor with TypeScript integration (like [VS Code](https
 
 <img width="971" alt="VS Code syntax completion support" src="https://user-images.githubusercontent.com/1512520/104821154-f4340f80-5807-11eb-80a3-134b4585ffc2.png">
 
-This is because the Fluid Music tooling generates TypeScript definitions from VST plugins. The image above shows that somehow our code editor knows that the `vcf0Cutoff` parameter has a value between `0` and `150`. What are the units of this value? The units are determined by the the Podolski VST plugin. While many VST plugins would describe a cutoff frequency in Hertz, Podolski uses arbitrary units. Note that the preset that we are using modulates the cutoff frequency with an envelope. Even though the filter is set to `0` the actual cutoff frequency will be well above `0`.
+The image above shows that somehow our code editor knows that the `vcf0Cutoff` parameter has a value between `0` and `150`. This is because the Fluid Music tooling generates TypeScript definitions from VST plugins. What are the units of this `vcf0Cutoff` value? The units are determined by the the Podolski VST plugin. While many VST plugins would describe a cutoff frequency in Hertz, Podolski uses arbitrary units. Note that the preset that we are using modulates the cutoff frequency with an envelope. Even though the filter is set to `0` the actual cutoff frequency will be well above `0`.
 
-Let's listen to the results. Run the updated session with `$ node session.js`, and open up the resulting `session.RPP` file in Reaper. If `session.RPP` is still open in Reaper, you will need to close and re-open it.
+Let's listen to the results. Run the updated session with `$ node session.js`, and open up the resulting `session.RPP` file in Reaper. If `session.RPP` is already open in Reaper, you will need to close and re-open it.
 
 ## Routing Sends and Sidechains
 
