@@ -104,7 +104,7 @@ CoreAudio
 ...
 ```
 
-I want `cybr` to play audio from the headphone jack on my MacBook laptop, so I'll run the server like this:
+The `--list-io` output will look different depending on your OS version and connected audio hardware. I want `cybr` to play audio from the headphone jack on my MacBook laptop, so I'll run the server like this:
 
 ```bash
 $ cybr --device-out="External Headphones" -f
@@ -154,11 +154,7 @@ cybr --list-plugins          # List available plugins
 cybr --print-config-filename # Print the complete settings filename.
 ```
 
-Reaper also needs to scan the newly installed plugin. Open Reaper, and open the Reaper Preferences window (Mac: `⌘+,` Win/Linux: `ctrl+p`). Select the `VST` Settings page, and then click the `Re-scan...` button and select "Re-scan VST paths for new/modified plugins" as shown in the image below:
-
-<img width="720" alt="Raper VST Settings GUI" src="https://user-images.githubusercontent.com/1512520/104863298-6b9a9980-5903-11eb-82af-ff9b9655b5ed.png">
-
-Go back to your terminal, and restart `cybr -f`, specifying a `--device-out="Some Device"` if needed (if you do not specify a `--device-out`, `cybr` will pick one for you).
+Re-open reaper (when Reaper opens, it will scan for new plugins, finding the newly installed Podolski plugin in the process). Go back to your terminal, and restart `cybr -f`, specifying `--device-out="Some Device"` if needed. If you do not specify a `--device-out`, `cybr` will pick one for you.
 
 Create a new file in the same directory that contains `beat.js`. Name the new file `session.js`, and copy in the contents below:
 
