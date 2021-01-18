@@ -24,7 +24,7 @@ After initializing package.json (above), install the `fluid-music` and `@fluid-m
 npm i fluid-music @fluid-music/kit
 ```
 
-Download or copy [`beat.js`](https://raw.githubusercontent.com/CharlesHolbrow/fluid-music/blob/main/demo-getting-started/beat.js) into the new directory. It looks like this:
+Download or copy [`beat.js`](https://raw.githubusercontent.com/CharlesHolbrow/fluid-music/main/demo-getting-started/beat.js) into the new directory. It looks like this:
 
 ```javascript
 const { FluidSession } = require('fluid-music')
@@ -164,7 +164,7 @@ Re-open reaper (when Reaper opens, it will scan for new plugins, finding the new
 
 Create a new file in the same directory that contains `beat.js`. Name the new file `session.js`, and copy in the contents below:
 
-Create download or copy [`./session.js`](https://raw.githubusercontent.com/CharlesHolbrow/fluid-music/blob/main/demo-getting-started/session.js) into the new directory adjacent to `beat.js`. The new `session.js` file will look like this:
+Create download or copy [`session.js`](https://raw.githubusercontent.com/CharlesHolbrow/fluid-music/main/demo-getting-started/session.js) into the new directory adjacent to `beat.js`. The new `session.js` file will look like this:
 
 ```javascript
 const { FluidSession, plugins, techniques } = require('fluid-music')
