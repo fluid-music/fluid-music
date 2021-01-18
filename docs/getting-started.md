@@ -154,9 +154,13 @@ cybr --list-plugins          # List available plugins
 cybr --print-config-filename # Print the complete settings filename.
 ```
 
-Restart `cybr -f`, specifying a `--device-out="Some Device"` if needed (if you do not specify a `--device-out`, `cybr` will pick one for you).
+Reaper also needs to scan the newly installed plugin. Open Reaper, and open the Reaper Preferences window (Mac: `⌘+,` Win/Linux: `ctrl+p`). Select the `VST` Settings page, and then click the `Re-scan...` button and select "Re-scan VST paths for new/modified plugins" as shown in the image below:
 
-Create a new file in the same directory named `session.js`, and copy in the contents below:
+<img width="720" alt="Raper VST Settings GUI" src="https://user-images.githubusercontent.com/1512520/104863298-6b9a9980-5903-11eb-82af-ff9b9655b5ed.png">
+
+Go back to your terminal, and restart `cybr -f`, specifying a `--device-out="Some Device"` if needed (if you do not specify a `--device-out`, `cybr` will pick one for you).
+
+Create a new file in the same directory that contains `beat.js`. Name the new file `session.js`, and copy in the contents below:
 
 ```javascript
 const { FluidSession, plugins, techniques } = require('fluid-music')
@@ -206,9 +210,9 @@ const session = new FluidSession({ bpm: 96, loopDuration: 4 }, tracks)
 // Insert the score object.
 session.insertScore(score)
 session.finalize()
-session.saveAsReaperFile('beat.RPP')
+session.saveAsReaperFile('session.RPP')
   .catch(e => console.error('Error:', e))
-  .then(() => console.warn('Saved beat.RPP'))
+  .then(() => console.warn('Saved session.RPP'))
 ```
 
 This version of `session.js` includes some features we haven't seen before. The first is the `MidiChord` technique:
@@ -244,7 +248,7 @@ If you are using a code editor with TypeScript integration (like [VS Code](https
 
 This is because the Fluid Music tooling generates TypeScript definitions from VST plugins. The image above shows that somehow our code editor knows that the `vcf0Cutoff` parameter has a value between `0` and `150`. What are the units of this value? The units are determined by the the Podolski VST plugin. While many VST plugins would describe a cutoff frequency in Hertz, Podolski uses arbitrary units. Note that the preset that we are using modulates the cutoff frequency with an envelope. Even though the filter is set to `0` the actual cutoff frequency will be well above `0`.
 
-Let's listen to the results. Run the updated session with `$ node session.js`, and open up the resulting `beat.RPP` file in Reaper. If `beat.RPP` is still open in Reaper, you will need to close and re-open it.
+Let's listen to the results. Run the updated session with `$ node session.js`, and open up the resulting `session.RPP` file in Reaper. If `session.RPP` is still open in Reaper, you will need to close and re-open it.
 
 ## Routing Sends and Sidechains
 
