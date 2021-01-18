@@ -4,13 +4,17 @@ In this practical guide, we'll create a brief composition using the `fluid-music
 
 **NOTE:** This "Getting Started" guide aims to be concise. It also obscures the power and flexibility of Fluid Music. For a deeper understanding, read [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md) first.
 
-**NOTE:** To guide shows how Fluid Music (free) external audio software. You can install these as-needed, or you can install them all upfront
+**NOTE:** This guide shows Fluid Music working with external (free) audio software. You can install these as-needed, or you can install them all upfront:
 
 - **Reaper:** (digital audio workstation). You can [download and install Reaper](https://reaper.fm) for free. If you use Reaper in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag – in many ways, Reaper is more powerful than other DAWs that are more expensive by an order of magnitude. **You don't need Reaper to use `fluid-music` but it is very helpful for inspecting your sessions.**
 - The **`fluid`** CLI program: Install this via NPM using this command: `npm install -g fluid-music`
 - The excellent free **Podolski** VST Synthesizer. You can [download and install Podolski](https://u-he.com/products/podolski/) from the U-He website.
 
-First, we'll create a new directory with the `mkdir` terminal command, and initialize a `package.json` file, which identifies the directory as an `npm` package. I named the package `fluid-experiment` (you can choose any name you like).
+## 1. A Simple Session
+
+To get started, we'll create a simple rhythm pattern, import some drum samples, and open the resulting session in Reaper.
+
+Create a new directory with the `mkdir` terminal command, and initialize a `package.json` file, which identifies the directory as an `npm` package. I named the package `fluid-experiment` (you can choose any name you like).
 
 ```bash
 mkdir fluid-experiment
@@ -75,7 +79,7 @@ Open `beat.RPP` in Reaper. It should look like this:
 
 Congratulations, you just created your first Fluid Music project.
 
-## The Fluid Music Server (`cybr`)
+## 2. The Fluid Music Server (`cybr`)
 
 So far, Fluid Music is only manipulating audio meta data. You haven't used any of the audio features. The Fluid Music framework can host and configure VST plugins, play audio, and render audio files. However, to take advantage of these features you need to run an instance of the Fluid Music server on your machine. This server is named `cybr`. Unlike the node library, which is written in TypeScript, `cybr` is written in C++, and it handles all the audio processing for Fluid Music.
 
@@ -137,15 +141,16 @@ Leave the server running, and open a new terminal tab. Run the session script ag
 npm install -g fluid-music
 ```
 
-Now you can use the following `fluid` commands in your terminal to start and stop playback
+Now you can use the following `fluid` commands in your terminal to start and stop playback or render a `.wav` file.
 
 ```bash
 fluid play  # Start playback
 fluid to 0  # Restart playback from the beginning
 fluid stop  # Stop (Pause)
+fluid render beat.wav # render a .wav file (offline)
 ```
 
-## VST Plugins
+## 3. VST Plugins
 
 Let's create a session with a VST plugin. In this example, we'll use the excellent (free) Podolski VST2 plugin. [Download and install Podolski](https://u-he.com/products/podolski/) before proceeding. It's best to install plugins in the default location so that `cybr` knows where to find them.
 
@@ -254,6 +259,6 @@ The image above shows that somehow our code editor knows the `vcf0Cutoff` parame
 
 Let's listen to the results. Run the updated session with `$ node session.js`, and open up the resulting `session.RPP` file in Reaper. If `session.RPP` is already open in Reaper, you will need to close and re-open it.
 
-## Routing Sends and Sidechains
+## 4. Routing Sends and Sidechains
 
 **To do**
