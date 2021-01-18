@@ -76,7 +76,7 @@ export function parseTab(rhythm : string|Rhythm , nPattern : string, tLibrary : 
   const symbolsAndCounts = patternToSymbolsAndCounts(nPattern);
 
   if (nPattern.length > rhythmObject.r.length) {
-    throw new Error(`parseTab: rhythm ('${rhythmObject.r}') not long enough for pattern ('${nPattern}')`);
+    throw new Error(`parseTab: The pattern ('${nPattern}') is longer than the rhythm ('${rhythmObject.r}')`);
   }
 
   let p = 0; // position (in the rhythmObject)

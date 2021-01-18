@@ -1,4 +1,5 @@
 import * as path from 'path'
+import * as chalk from 'chalk'
 
 import * as tab from './tab'
 import * as cybr from './cybr'
@@ -475,26 +476,37 @@ export function parse(
       ]
     }, [{}, {}])
 
-    const tLibrary = {};
+    const tLibrary = {}
     const sessionTLibrary = session.scoreConfig.tLibrary || {}
     const configTLibrary = config.tLibrary || {}
-    Object.assign(tLibrary, sessionTLibrary, trackTLibrary, configTLibrary);
+    Object.assign(tLibrary, sessionTLibrary, trackTLibrary, configTLibrary)
 
-    const dLibrary = {};
+    const dLibrary = {}
     const sessionDLibrary = session.scoreConfig.dLibrary || {}
     const configDLibrary = config.dLibrary || {}
-    Object.assign(dLibrary, sessionDLibrary, trackDLibrary, configDLibrary);
+    Object.assign(dLibrary, sessionDLibrary, trackDLibrary, configDLibrary)
 
     // Get the dynamic and rhythm strings
-    const d = config.d || track.scoreConfig.d || session.scoreConfig.d; // might be defined
-    const r = config.r || track.scoreConfig.r || session.scoreConfig.r; // must be defined
+    const d = config.d || track.scoreConfig.d || session.scoreConfig.d // might be defined
+    const r = config.r || track.scoreConfig.r || session.scoreConfig.r // must be defined
     if (r === undefined)
       throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a rhythm`);
 
     // create the clip
-    const rhythmObject = tab.parseRhythm(r);
-    const resultClip = tab.parseTab(rhythmObject, scoreObject, tLibrary);
-    resultClip.startTime = config.startTime;
+    let rhythmObject
+    let resultClip
+    try {
+      rhythmObject = tab.parseRhythm(r)
+      resultClip = tab.parseTab(rhythmObject, scoreObject, tLibrary);
+    } catch (error) {
+      console.error((chalk.reset`{bold.red SCORE ERROR} ${error.message}
+{green track:}   "${track?.name}"
+{green rhythm:}  "${r}"
+{green pattern:} "${scoreObject}"
+`))
+      throw error
+    }
+    resultClip.startTime = config.startTime
 
     // add dynamics
     if (d) {
