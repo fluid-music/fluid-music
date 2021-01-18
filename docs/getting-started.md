@@ -11,7 +11,7 @@ First, we'll create a new directory with the `mkdir` terminal command, and initi
 ```bash
 mkdir fluid-experiment
 cd fluid-experiment
-npm init # (answer the questions to create package.json)
+npm init # (answer the prompts to create package.json)
 npm i fluid-music @fluid-music/kit
 ```
 
@@ -91,7 +91,7 @@ Let's setup `cybr` to play our session directly so we don't have to open it in a
 cybr --list-io
 ```
 
-This will output all the available audio, midi, and virtual interfaces. On my MacOS system, the I'm looking for `CoreAudio` devices, which look like this:
+This will output all the available audio, midi, and virtual interfaces. On my MacOS system, I am looking for `CoreAudio` devices, which look like this:
 
 ```
 Devices By Type (juce::AudioIODeviceType):
@@ -104,7 +104,7 @@ CoreAudio
 ...
 ```
 
-The `--list-io` output will look different depending on your OS version and connected audio hardware. I want `cybr` to play audio from the headphone jack on my MacBook laptop, so I'll run the server like this:
+Note that `--list-io` output will look different depending on your OS version and connected audio hardware. I want `cybr` to play audio from the headphone jack on my MacBook laptop, so I'll run the server like this:
 
 ```bash
 $ cybr --device-out="External Headphones" -f
