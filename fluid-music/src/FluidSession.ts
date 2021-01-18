@@ -461,8 +461,10 @@ export function parse(
     }
   } else if (typeof scoreObject === 'string') {
     // We have a string that can be parsed with parseTab
-    if (typeof config.trackKey !== 'string')
-      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a track name`);
+    if (typeof config.trackKey !== 'string') {
+      const msg = `Encountered a pattern (${scoreObject}), but could not find a track name`
+      throw new Error(msg)
+    }
 
     // Build technique and dynamic libraries from the track (and its ancestors)
     const trackAncestry = session.getOrCreateTrackAncestorsByName(config.trackKey)
@@ -489,8 +491,10 @@ export function parse(
     // Get the dynamic and rhythm strings
     const d = config.d || track.scoreConfig.d || session.scoreConfig.d // might be defined
     const r = config.r || track.scoreConfig.r || session.scoreConfig.r // must be defined
-    if (r === undefined)
-      throw new Error(`score.parse encountered a pattern (${scoreObject}), but could not find a rhythm`);
+    if (r === undefined) {
+      const msg = `Encountered a pattern ("${scoreObject}") on a track (${track?.name}), but could not find a .r rhythm`
+      throw new Error(msg)
+    }
 
     // create the clip
     let rhythmObject
