@@ -6,16 +6,16 @@ In this practical guide, we'll create a brief composition using the `fluid-music
 
 **NOTE:** To follow this guide, you will need to install [Reaper](https://reaper.fm) (digital audio workstation). You can download and install Reaper for free. If you use Reaper in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag – in many ways, Reaper is more powerful than other DAWs that are more expensive by an order of magnitude. **You don't need Reaper to use `fluid-music` but it is very helpful for inspecting your session objects.**
 
-First, we'll create a new directory and initialize a `package.json` file, which identifies the directory as an `npm` package. I named the package `fluid-experiment` (you can choose any name you like). Then install the `fluid-music` and `@fluid-music/kit` npm libraries.
+First, we'll create a new directory with the `mkdir` terminal command, and initialize a `package.json` file, which identifies the directory as an `npm` package. I named the package `fluid-experiment` (you can choose any name you like). Then install the `fluid-music` and `@fluid-music/kit` npm libraries.
 
 ```bash
-$ mkdir fluid-experiment
-$ cd fluid-experiment
-$ npm init # (answer the questions to create package.json)
-$ npm i fluid-music @fluid-music/kit
+mkdir fluid-experiment
+cd fluid-experiment
+npm init # (answer the questions to create package.json)
+npm i fluid-music @fluid-music/kit
 ```
 
-Create a `./session.js` file containing the code below:
+Create a `./beat.js` file containing the code below:
 
 ```javascript
 const { FluidSession } = require('fluid-music')
@@ -54,10 +54,10 @@ session.saveAsReaperFile('beat.RPP')
     .then(() => console.warn('Exported: beat.RPP'))
 ```
 
-Run `session.js`
+Run `beat.js`. From the terminal, enter:
 
 ```bash
-$ node session.js
+node beat.js
 ```
 
 Open `beat.RPP` in Reaper. It should look like this:
@@ -77,18 +77,23 @@ So far, Fluid Music is only manipulating audio meta data. You haven't used any o
 - To compile with VST support, you need to have access to the VST2 SDK. *Steinberg Media Technologies GmbH*, the company that created the VST2 SDK, is making it increasingly difficult to access the VST2 SDK. If you do not have access to the VST2 SDK, you can compile without VST2 support.
 - VST3 is not yet supported. Most of the work for supporting VST3 is done. It will not be fully supported until after I graduate (Summer 2021).
 
-To verify that `cybr` is installed, run the following help command.
+To verify that `cybr` is installed, run the following help command in your terminal:
 
 ```bash
-$ cybr -h
+cybr -h
 ```
 
 This should output a list of possible cybr command line arguments. If you get a `command not found` error, make sure that the `cybr` executable is the correct file for your operating system, and that it can be found in one of the directories in your `PATH`.
 
-Let's setup `cybr` to play our session directly so we don't have to open it in a DAW. First, let's identify available audio hardware on our system with the `--list-io` flag. This will output all the available audio, midi, and virtual interfaces. On my MacOS system, the I'm looking for `CoreAudio` devices, which look like this:
+Let's setup `cybr` to play our session directly so we don't have to open it in a DAW. First, let's identify available audio hardware on our system with the `--list-io` flag. 
 
 ```bash
-$ cybr --list-io
+cybr --list-io
+```
+
+This will output all the available audio, midi, and virtual interfaces. On my MacOS system, the I'm looking for `CoreAudio` devices, which look like this:
+
+```
 Devices By Type (juce::AudioIODeviceType):
 ...
 CoreAudio
@@ -102,7 +107,7 @@ CoreAudio
 I want `cybr` to play audio from the headphone jack on my MacBook laptop, so I'll run the server like this:
 
 ```bash
-$ ./cybr --device-out="External Headphones" -f
+$ cybr --device-out="External Headphones" -f
 ...
 Using Input Device:  <none>
 Using Output Device: "External Headphones"
@@ -112,7 +117,7 @@ Listening for UDP Connections
 
 Notice the `-f` flag, which is shorthand for `--fluid-server`. This flag tells `cybr` to listen for connections and requests from the `fluid-music` npm package. With the server running, let's send our session from the previous example to the server and then ask the server to play it.
 
-Replace the last three lines of `session.js` with the the following:
+Replace the last three lines of `beat.js` with the the following:
 
 ```javascript
 session.sendToServer()
@@ -120,18 +125,18 @@ session.sendToServer()
   .then(() => console.warn('Sent session to cybr'))
 ```
 
-Leave the server running, and open a new terminal tab. Run the session script again (`$ node session.js`). This will load the session in the server, but does not begin playback. We will use the `fluid` command line utility to play back audio. First, use `npm` to install `fluid-music` globally, which adds the `fluid` command to your `PATH`.
+Leave the server running, and open a new terminal tab. Run the session script again (`$ node beat.js`). This will load the session in the server, but does not begin playback. We will use the `fluid` command line utility to play back audio. First, use `npm` to install `fluid-music` globally, which adds the `fluid` command to your `PATH`. If you ever want to uninstall, replace `install` with `uninstall` in the command below.
 
 ```bash
-$ npm install -g fluid-music
+npm install -g fluid-music
 ```
 
-Now you can use the `fluid` command to start playback
+Now you can use the following `fluid` commands in your terminal to start and stop playback
 
 ```bash
-$ fluid play  # Start playback
-$ fluid to 0  # Restart playback from the beginning
-$ fluid stop  # Stop (Pause)
+fluid play  # Start playback
+fluid to 0  # Restart playback from the beginning
+fluid stop  # Stop (Pause)
 ```
 
 ## VST Plugins
@@ -151,7 +156,7 @@ cybr --print-config-filename # Print the complete settings filename.
 
 Restart `cybr -f`, specifying a `--device-out="Some Device"` if needed (if you do not specify a `--device-out`, `cybr` will pick one for you).
 
-Copy the code below into your `session.js` file:
+Create a new file in the same directory named `session.js`, and copy in the contents below:
 
 ```javascript
 const { FluidSession, plugins, techniques } = require('fluid-music')
@@ -169,6 +174,7 @@ const chordLibrary = {
 // Instantiate a Podolski VST2 plugin from a preset
 const padSynthA = plugins.podolskiVst2Presets.brightPad()
 const padSynthB = plugins.podolskiVst2Presets.brightPad()
+// padSynthB.parameters.vcf0Cutoff = 0
 
 const tracks = [
   // In the first example, we specified a tLibrary in the score object. In this
@@ -218,12 +224,12 @@ const chordLibrary = {
 }
 ```
 
-Many `fluid-music` techniques are implemented as classes with a `.use(context)` method (see the [MidiChord source code](https://github.com/CharlesHolbrow/fluid-music/blob/ec73a3fc40c1c751f866e9322a37d269091935dd/fluid-music/src/techniques/basic.ts#L178-L193)). This means that we can use the familiar `new` keyword to create objects that have a `.use` function. As we described in [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md#technique-library), objects with a `.use` method are valid techniques.
+Many `fluid-music` techniques are implemented as classes with a `.use(context)` method (see the [MidiChord source code](https://github.com/CharlesHolbrow/fluid-music/blob/ec73a3fc40c1c751f866e9322a37d269091935dd/fluid-music/src/techniques/basic.ts#L178-L193)). This means that we can use the familiar `new` keyword to create objects that have a `.use` function. As we described in [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md#technique-library), objects with a `.use` method are valid techniques, and may be used in a `tLibrary` object.
 
 Notice how the `chordLibrary` object is specified as the default `tLibrary` for the `padA` track on line 28. When you call `.insertScore`, and the score parser encounters a character (like `a` or `b`) it will first look in the `score` object for a matching technique, before searching the track `tLibrary`. Finally it checks if the underlying `session` has a tLibrary containing the character. The score parser will throw an error if it cannot find a technique with the specified character, so make sure that your score objects only include characters that you have in your technique libraries.
 
 Another new feature in the score above is the Podolski VST plugin instance. Take a quick look at the
-[Podolski preset source code](https://github.com/CharlesHolbrow/fluid-music/blob/main/fluid-music/src/plugin-adapters/podolski-vst2-presets.ts). To see how these plugins are instantiated. You can create your own presets the same way, but for now, let's just modify the `padB` plugin preset. We will decrease the filter cutoff frequency to create a "dark" pad sound. Add a newline after creating `padSynthB` and set the `padSynthB.parameters.vcf0Cutoff = 0` so that lines 13-16 look like this:
+[Podolski preset source code](https://github.com/CharlesHolbrow/fluid-music/blob/main/fluid-music/src/plugin-adapters/podolski-vst2-presets.ts) to see how these plugins are instantiated. You can create your own presets the same way, but for now, let's just modify the `padB` plugin preset. We will decrease the filter cutoff frequency to create a "dark" pad sound. Uncomment line 16 (`padSynthB.parameters.vcf0Cutoff = 0`) so that lines 13-16 look like this:
 
 ```javascript
 // Instantiate a Podolski VST2 plugin from a preset
