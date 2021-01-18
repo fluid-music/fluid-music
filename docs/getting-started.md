@@ -2,20 +2,29 @@
 
 In this practical guide, we'll create a brief composition using the `fluid-music` npm library.
 
-**NOTE:** If you want to really understand how the examples in this guide work, read [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md) before getting started!
+**NOTE:** This "Getting Started" guide aims to be concise. It also obscures the power and flexibility of Fluid Music. For a deeper understanding, read [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md) first.
 
-**NOTE:** To follow this guide, you will need to install [Reaper](https://reaper.fm) (digital audio workstation). You can download and install Reaper for free. If you use Reaper in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag – in many ways, Reaper is more powerful than other DAWs that are more expensive by an order of magnitude. **You don't need Reaper to use `fluid-music` but it is very helpful for inspecting your session objects.**
+**NOTE:** To guide shows how Fluid Music (free) external audio software. You can install these as-needed, or you can install them all upfront
 
-First, we'll create a new directory with the `mkdir` terminal command, and initialize a `package.json` file, which identifies the directory as an `npm` package. I named the package `fluid-experiment` (you can choose any name you like). Then install the `fluid-music` and `@fluid-music/kit` npm libraries.
+- **Reaper:** (digital audio workstation). You can [download and install Reaper](https://reaper.fm) for free. If you use Reaper in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag – in many ways, Reaper is more powerful than other DAWs that are more expensive by an order of magnitude. **You don't need Reaper to use `fluid-music` but it is very helpful for inspecting your sessions.**
+- The **`fluid`** CLI program: Install this via NPM using this command: `npm install -g fluid-music`
+- The excellent free **Podolski** VST Synthesizer. You can [download and install Podolski](https://u-he.com/products/podolski/) from the U-He website.
+
+First, we'll create a new directory with the `mkdir` terminal command, and initialize a `package.json` file, which identifies the directory as an `npm` package. I named the package `fluid-experiment` (you can choose any name you like).
 
 ```bash
 mkdir fluid-experiment
 cd fluid-experiment
 npm init # (answer the prompts to create package.json)
+```
+
+After initializing package.json (above), install the `fluid-music` and `@fluid-music/kit` npm libraries (below).
+
+```
 npm i fluid-music @fluid-music/kit
 ```
 
-Create a `./beat.js` file containing the code below:
+Download or copy [`beat.js`](https://raw.githubusercontent.com/CharlesHolbrow/fluid-music/blob/main/demo-getting-started/beat.js) into the new directory. It looks like this:
 
 ```javascript
 const { FluidSession } = require('fluid-music')
@@ -50,8 +59,8 @@ session.insertScore(score)
 // Save the session as a Reaper file
 session.finalize()
 session.saveAsReaperFile('beat.RPP')
-    .catch(e => console.error('Error:', e))
-    .then(() => console.warn('Exported: beat.RPP'))
+  .catch(e => console.error('Error:', e))
+  .then(() => console.warn('Exported: beat.RPP'))
 ```
 
 Run `beat.js`. From the terminal, enter:
@@ -73,7 +82,9 @@ So far, Fluid Music is only manipulating audio meta data. You haven't used any o
 - The `cybr` server is not bundled with the `fluid-music` npm package. You need to install and run it independently.
 - You can compile the Fluid Music server using the code in the [fluid-music/server directory](https://github.com/CharlesHolbrow/fluid-music/tree/main/server)
 - This guide assumes you added the `cybr` executable to your `PATH` so you can run it from the command like with with `$ cybr -f`. [What is the `PATH` variable?](https://superuser.com/questions/284342/what-are-path-and-other-environment-variables-and-how-can-i-set-or-use-them)
-    - On most MacOS and Linux systems `/usr/local/bin/` is a reasonable place to put the `cybr` executable
+    - The **MacOS** `.pkg` installer puts `cybr` in `/usr/local/bin/`.
+    - On most **Linux** systems, `/usr/local/bin/` is also a good place to put the `cybr` executable.
+    - On **Windows** there are several options. I used a technique from [this StackOverflow answer](https://stackoverflow.com/a/44593425/702912).
 - To compile with VST support, you need to have access to the VST2 SDK. *Steinberg Media Technologies GmbH*, the company that created the VST2 SDK, is making it increasingly difficult to access the VST2 SDK. If you do not have access to the VST2 SDK, you can compile without VST2 support.
 - VST3 is not yet supported. Most of the work for supporting VST3 is done. It will not be fully supported until after I graduate (Summer 2021).
 
@@ -85,7 +96,7 @@ cybr -h
 
 This should output a list of possible cybr command line arguments. If you get a `command not found` error, make sure that the `cybr` executable is the correct file for your operating system, and that it can be found in one of the directories in your `PATH`.
 
-Let's setup `cybr` to play our session directly so we don't have to open it in a DAW. First, let's identify available audio hardware on our system with the `--list-io` flag. 
+Let's setup `cybr` to play our session directly so we don't have to open it in a DAW. First, let's identify available audio hardware on our system with the `--list-io` flag.
 
 ```bash
 cybr --list-io
@@ -107,17 +118,12 @@ CoreAudio
 Note that `--list-io` output will look different depending on your OS version and connected audio hardware. I want `cybr` to play audio from the headphone jack on my MacBook laptop, so I'll run the server like this:
 
 ```bash
-$ cybr --device-out="External Headphones" -f
-...
-Using Input Device:  <none>
-Using Output Device: "External Headphones"
-Listening for IPC Connections
-Listening for UDP Connections
+cybr --device-out="External Headphones" -f
 ```
 
 Notice the `-f` flag, which is shorthand for `--fluid-server`. This flag tells `cybr` to listen for connections and requests from the `fluid-music` npm package. With the server running, let's send our session from the previous example to the server and then ask the server to play it.
 
-Replace the last three lines of `beat.js` with the the following:
+Replace the last three lines of `beat.js` with the following:
 
 ```javascript
 session.sendToServer()
@@ -141,7 +147,7 @@ fluid stop  # Stop (Pause)
 
 ## VST Plugins
 
-Let's try create a session with a VST plugin. In this example, we'll use the excellent free Podolski VST2 plugin. [Download and install Podolski](https://u-he.com/products/podolski/) before proceeding. It's best to install plugins in the default location so that `cybr` knows where to find them.
+Let's create a session with a VST plugin. In this example, we'll use the excellent (free) Podolski VST2 plugin. [Download and install Podolski](https://u-he.com/products/podolski/) before proceeding. It's best to install plugins in the default location so that `cybr` knows where to find them.
 
 The `cybr` server needs to scan for plugins before it can load them. Switch back to your terminal tab that is running the server, and use `ctrl+c` to stop the server. Use the `cybr --scan-plugins` command to search your machine for plugins. If one of your plugins crashes, it will be skipped on subsequent scans, so you may need to scan more than once if `cybr` encounters unstable plugins.
 
@@ -157,6 +163,8 @@ cybr --print-config-filename # Print the complete settings filename.
 Re-open reaper (when Reaper opens, it will scan for new plugins, finding the newly installed Podolski plugin in the process). Go back to your terminal, and restart `cybr -f`, specifying `--device-out="Some Device"` if needed. If you do not specify a `--device-out`, `cybr` will pick one for you.
 
 Create a new file in the same directory that contains `beat.js`. Name the new file `session.js`, and copy in the contents below:
+
+Create download or copy [`./session.js`](https://raw.githubusercontent.com/CharlesHolbrow/fluid-music/blob/main/demo-getting-started/session.js) into the new directory adjacent to `beat.js`. The new `session.js` file will look like this:
 
 ```javascript
 const { FluidSession, plugins, techniques } = require('fluid-music')
@@ -242,7 +250,7 @@ If you are using a code editor with TypeScript integration (like [VS Code](https
 
 <img width="971" alt="VS Code syntax completion support" src="https://user-images.githubusercontent.com/1512520/104821154-f4340f80-5807-11eb-80a3-134b4585ffc2.png">
 
-The image above shows that somehow our code editor knows that the `vcf0Cutoff` parameter has a value between `0` and `150`. This is because the Fluid Music tooling generates TypeScript definitions from VST plugins. What are the units of this `vcf0Cutoff` value? The units are determined by the the Podolski VST plugin. While many VST plugins would describe a cutoff frequency in Hertz, Podolski uses arbitrary units. Note that the preset that we are using modulates the cutoff frequency with an envelope. Even though the filter is set to `0` the actual cutoff frequency will be well above `0`.
+The image above shows that somehow our code editor knows the `vcf0Cutoff` parameter has a value between `0` and `150`. This is because the Fluid Music tooling generates TypeScript definitions from VST plugins. What are the units of this `vcf0Cutoff` value? The units are determined by the Podolski VST plugin. While many VST plugins would describe a cutoff frequency in Hertz, Podolski uses arbitrary units. Note that the preset that we are using modulates the cutoff frequency with an envelope. Even though the filter is set to `0` the actual cutoff frequency will be well above `0`.
 
 Let's listen to the results. Run the updated session with `$ node session.js`, and open up the resulting `session.RPP` file in Reaper. If `session.RPP` is already open in Reaper, you will need to close and re-open it.
 
