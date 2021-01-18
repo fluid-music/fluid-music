@@ -6,7 +6,7 @@ In this practical guide, we'll create a brief composition using the `fluid-music
 
 **NOTE:** This guide shows Fluid Music working with external (free) audio software. You can install these as-needed, or you can install them all upfront:
 
-- **Reaper:** (digital audio workstation). You can [download and install Reaper](https://reaper.fm) for free. If you use Reaper in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag – in many ways, Reaper is more powerful than other DAWs that are more expensive by an order of magnitude. **You don't need Reaper to use `fluid-music` but it is very helpful for inspecting your sessions.**
+- **Reaper:** (digital audio workstation). You can [download and install Reaper](https://www.reaper.fm/download.php) for free. If you use Reaper in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag – in many ways, Reaper is more powerful than other DAWs that are more expensive by an order of magnitude. **You don't need Reaper to use `fluid-music` but it is very helpful for inspecting your sessions.**
 - The **`fluid`** CLI program: Install this via NPM using this command: `npm install -g fluid-music`
 - The excellent free **Podolski** VST Synthesizer. You can [download and install Podolski](https://u-he.com/products/podolski/) from the U-He website.
 
@@ -90,7 +90,7 @@ So far, Fluid Music is only manipulating audio metadata. You haven't used any of
     - On most **Linux** systems, `/usr/local/bin/` is also a good place to put the `cybr` executable.
     - On **Windows** there are several options. I used a technique from [this StackOverflow answer](https://stackoverflow.com/a/44593425/702912).
 - To compile with VST support, you need to have access to the VST2 SDK. *Steinberg Media Technologies GmbH*, the company that created the VST2 SDK, is making it increasingly difficult to access the VST2 SDK. If you do not have access to the VST2 SDK, you can compile without VST2 support.
-- VST3 plugins are not yet supported. Most of the work for supporting VST3s is complete. It will not be fully supported until after I graduate (Summer 2021).
+- VST3 plugins are not yet supported. Most of the work for supporting VST3s is complete. It will not be fully complete until after I graduate (Summer 2021).
 
 To verify that `cybr` is installed, run the following help command in your terminal:
 
