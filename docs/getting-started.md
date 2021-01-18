@@ -81,7 +81,7 @@ Congratulations, you just created your first Fluid Music project.
 
 ## 2. The Fluid Music Server (`cybr`)
 
-So far, Fluid Music is only manipulating audio meta data. You haven't used any of the audio features. The Fluid Music framework can host and configure VST plugins, play audio, and render audio files. However, to take advantage of these features you need to run an instance of the Fluid Music server on your machine. This server is named `cybr`. Unlike the node library, which is written in TypeScript, `cybr` is written in C++, and it handles all the audio processing for Fluid Music.
+So far, Fluid Music is only manipulating audio metadata. You haven't used any of the audio features. The Fluid Music framework can play audio, render audio files, and host and configure VST plugins. However, to take advantage of these features you need to run an instance of the Fluid Music server on your machine. This server is named `cybr`. Unlike the node library, which is written in TypeScript, `cybr` is written in C++, and it handles all the audio processing for Fluid Music.
 
 - The `cybr` server is not bundled with the `fluid-music` npm package. You need to install and run it independently.
 - You can compile the Fluid Music server using the code in the [fluid-music/server directory](https://github.com/CharlesHolbrow/fluid-music/tree/main/server)
@@ -90,7 +90,7 @@ So far, Fluid Music is only manipulating audio meta data. You haven't used any o
     - On most **Linux** systems, `/usr/local/bin/` is also a good place to put the `cybr` executable.
     - On **Windows** there are several options. I used a technique from [this StackOverflow answer](https://stackoverflow.com/a/44593425/702912).
 - To compile with VST support, you need to have access to the VST2 SDK. *Steinberg Media Technologies GmbH*, the company that created the VST2 SDK, is making it increasingly difficult to access the VST2 SDK. If you do not have access to the VST2 SDK, you can compile without VST2 support.
-- VST3 is not yet supported. Most of the work for supporting VST3 is done. It will not be fully supported until after I graduate (Summer 2021).
+- VST3 plugins are not yet supported. Most of the work for supporting VST3s is complete. It will not be fully supported until after I graduate (Summer 2021).
 
 To verify that `cybr` is installed, run the following help command in your terminal:
 
