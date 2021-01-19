@@ -7,8 +7,8 @@ In this practical guide, we'll create a brief composition using the `fluid-music
 **NOTE:** This guide shows Fluid Music working with external (free) audio software. You can install these as-needed, or you can install them all upfront:
 
 - **Reaper:** (digital audio workstation). You can [download and install Reaper](https://www.reaper.fm/download.php) for free. If you use Reaper in the long term, I recommend purchasing a $60 personal license. Don't be fooled by the low price tag – in many ways, Reaper is more powerful than other DAWs that are more expensive by an order of magnitude. **You don't need Reaper to use `fluid-music` but it is very helpful for inspecting your sessions.**
-- The **`fluid`** CLI program: Install this via NPM using this command: `npm install -g fluid-music`
 - The excellent free **Podolski** VST Synthesizer. You can [download and install Podolski](https://u-he.com/products/podolski/) from the U-He website.
+- The **`fluid`** CLI program: Install this via NPM using this command: `npm install -g fluid-music`
 
 ## 1. A Simple Session
 
@@ -191,7 +191,7 @@ const padSynthB = plugins.podolskiVst2Presets.brightPad()
 
 const tracks = [
   // In the first example, we specified a tLibrary in the score object. In this
-  // example, tLibrary objects are specified in the tracks object.
+  // example, tLibrary objects are specified in the track objects.
   { name: 'drums', gainDb: -6, tLibrary: kit.tLibrary, children: [
     { name: 'snare', gainDb: -3 },
     { name: 'kick' },

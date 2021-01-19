@@ -17,7 +17,7 @@ const padSynthB = plugins.podolskiVst2Presets.brightPad()
 
 const tracks = [
   // In the first example, we specified a tLibrary in the score object. In this
-  // example, tLibrary objects are specified in the tracks object.
+  // example, tLibrary objects are specified in the track objects.
   { name: 'drums', gainDb: -6, tLibrary: kit.tLibrary, children: [
     { name: 'snare', gainDb: -3 },
     { name: 'kick' },
