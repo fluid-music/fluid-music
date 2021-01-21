@@ -100,8 +100,7 @@ export class AFOnset {
 
   /**
    * Note that `.fadeInSeconds` and `.fadeOutSeconds`, on the input file will be
-   * swapped when the audio file is reversed.swapped when the audio file is
-   * reversed.
+   * swapped when the audio file is reversed.
    *
    * @param {AudioFile} audioFileTechnique
    * @param {number} [onsetSeconds] The time at which the 'onset' portion of the
@@ -183,16 +182,19 @@ export class AFOnset {
  *
  * Using AFReverse as a technique will insert a reversed copy of the input audio
  * file into the session. The reversed copy will be aligned such that the onset
- * of the sound corresponds with the end of the triggering event, so in the
- * hypothetical example below, the "Onset" of the sound would alight with the
- * second beat in the measure. In practice, when you want to just insert a
- * reversed audio file you can ignore this detail. However, if you want to
- * precisely position the attack of a reversed sound, it can be helpful to
- * specify a non-zero `onsetSeconds` in the AFReverse constructor.
+ * of the sound corresponds with the end of the triggering event.
+ *
+ * This means that In the hypothetical example below, the onset of the sound
+ * would alight with the second beat in the measure. In practice, when you want
+ * to just insert a reversed audio file you can ignore this detail. However, if
+ * you want to precisely position the attack of a reversed sound, it can be
+ * helpful to specify a non-zero `onsetSeconds` in the AFReverse constructor.
  *
  * ```
- * Example Rhythm:  '1 + 2 + '
- * AFReverse Event: '  a--   '
+ * const score = {
+ *   r:      '1 + 2 + ',
+ *   cymbal: ' a--    ',
+ * }
  * ```
  */
 export class AFReverse extends AFOnset implements Technique {
