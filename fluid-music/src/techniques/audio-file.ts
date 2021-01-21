@@ -99,6 +99,10 @@ export class AFOnset {
   audioFile : AudioFile
 
   /**
+   * Note that `.fadeInSeconds` and `.fadeOutSeconds`, on the input file will be
+   * swapped when the audio file is reversed.swapped when the audio file is
+   * reversed.
+   *
    * @param {AudioFile} audioFileTechnique
    * @param {number} [onsetSeconds] The time at which the 'onset' portion of the
    *    sound begins, measured from the start of the source audio file. If not
@@ -163,6 +167,34 @@ export class AFOnset {
   }
 }
 
+
+/**
+ * AFReverse (Audio File Reverse) encapsulates the `techniques.AudioFile`
+ * instance passed in to the constructor. Like AFOnset, AFReverse divides
+ * the underlying source audio file into three regions delimited by
+ * `onsetSeconds` and `releaseSeconds`.
+ *
+ * ```
+ *       onsetSeconds
+ * ├──────────┘         releaseSeconds
+ * ├───────────────────────────┘
+ * ├──attack──┼──────body──────┼─────────decay─────────┤
+ * ```
+ *
+ * Using AFReverse as a technique will insert a reversed copy of the input audio
+ * file into the session. The reversed copy will be aligned such that the onset
+ * of the sound corresponds with the end of the triggering event, so in the
+ * hypothetical example below, the "Onset" of the sound would alight with the
+ * second beat in the measure. In practice, when you want to just insert a
+ * reversed audio file you can ignore this detail. However, if you want to
+ * precisely position the attack of a reversed sound, it can be helpful to
+ * specify a non-zero `onsetSeconds` in the AFReverse constructor.
+ *
+ * ```
+ * Example Rhythm:  '1 + 2 + '
+ * AFReverse Event: '  a--   '
+ * ```
+ */
 export class AFReverse extends AFOnset implements Technique {
   use(context : UseContext) {
     const rxFile = this.audioFile.use(context)
@@ -186,6 +218,21 @@ export class AFReverse extends AFOnset implements Technique {
   }
 }
 
+/**
+ * Like AFReverse, AFReverseLeadIn inserts a reversed AudioFile into the
+ * session. However the two techniques differ in how they align the input
+ * audio file. AFReverseLeadIn insert the audio file starting BEFORE
+ * the triggering event. The `releaseSeconds` identifies a point in the
+ * sample where the "release" of the sound begins. This point will be aligned
+ * at the onset of the triggering event.
+ *
+ * Use this when you have an audio sample with an interesting release portion,
+ * and you want that release portion to "lead in" to the triggering event.
+ *
+ * The lead in time is capped so that no matter how long the release portion of
+ * the input Audio File is, this audio sample will be inserted no more than
+ * 3.5 seconds in advance of the triggering event.
+ */
 export class AFReverseLeadIn extends AFOnset implements Technique {
   use(context : UseContext) {
     const newFile = this.audioFile.use(context)
