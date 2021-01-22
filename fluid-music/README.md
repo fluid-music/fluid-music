@@ -47,6 +47,7 @@ iterations, and there will **not be major changes** prior to version `1.0`.
 - [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md)
 - [API Documentation](https://fluid-music.github.io/modules.html)
 - [About](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/about.md)
+- [Gitter room (Fluid Music Chat)](https://gitter.im/fluid-music/community)
 
 ## Goals
 
