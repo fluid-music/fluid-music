@@ -25,7 +25,7 @@ padSynthA.parameters.vcf0Cutoff = 22
 padSynthB.parameters.vcf0Cutoff = 2
 
 const score = {
-  r:      '1+2+3+4+', // describe the score rhythm (16th notes)
+  r:      '1+2+3+4+', // describe the score rhythm (8th notes)
   snare: ['  s   s ', '  s   s '],
   kick:  ['D D D D ', 'D D D D ', 'D D D D ', 'D D D D '],
   tamb:  ['tttttttt', 'tttttttt', 'tttttttt', 'tttttttt'],
@@ -45,15 +45,15 @@ const session = new FluidSession({ bpm: 121, loopDuration: 4 }, [
 
   // Notice the pad tracks have a .plugins array containing the synthesizer
   // preset. It also has a dedicated tLibrary containing MIDI chords.
-  { name: 'pads', plugins: [ducker], children: [
-    { name: 'padA', tLibrary: chordLibrary, plugins: [padSynthA] },
-    { name: 'padB', tLibrary: chordLibrary, plugins: [padSynthB] },
+  { name: 'pads', tLibrary: chordLibrary, plugins: [ducker], children: [
+    { name: 'padA', plugins: [padSynthA] },
+    { name: 'padB', plugins: [padSynthB] },
   ]}
 ])
 
 // Insert the score object.
 session.insertScore(score)
 session.finalize()
-session.saveAsReaperFile('sidechain.RPP')
+session.saveAsReaperFile('disco.RPP')
   .catch(e => console.error('Error:', e))
-  .then(() => console.warn('Saved sidechain.RPP'))
+  .then(() => console.warn('Saved: disco.RPP'))
