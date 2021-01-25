@@ -24,7 +24,7 @@ const parameterLibrary = {
   wetDryPercent: { name: 'wetDry', index: 0, isLinear: true, range: [0, 100] as [number, number], units: 'percent' },
   shiftHz: { name: 'shift', index: 1, isLinear: true, range: [-1000, 1000] as [number, number], units: 'hz' },
   delayMs: { name: 'delay', index: 2, isLinear: false, range: [0.01, 1000] as [number, number], units: 'ms', powerFuncB: 3.3221 },
-  sync: { name: 'sync', index: 3, isLinear: true, range: [0, 23] as [number, number], choices: {"free":1,"1/64":2,"1/32":3,"1/16":4,"1/8":5,"1/4":6,"2/4":7,"4/4":8,"8/4":9,"1/64.":10,"1/32.":11,"1/16.":12,"1/8.":13,"1/4.":14,"2/4.":15,"4/4.":16,"1/64T":17,"1/32T":18,"1/16T":19,"1/8T":20,"1/4T":21,"2/4T":22,"4/4T":23} },
+  sync: { name: 'sync', index: 3, isLinear: true, range: [0, 23] as [number, number], choices: {"free":1,"1/64":2,"1/32":3,"1/16":4,"1/8":5,"1/4":6,"2/4":7.00001,"4/4":8,"8/4":9,"1/64.":10,"1/32.":11,"1/16.":12,"1/8.":13,"1/4.":14.00001,"2/4.":15,"4/4.":16,"1/64T":17,"1/32T":18,"1/16T":19,"1/8T":20,"1/4T":21,"2/4T":22,"4/4T":23} },
   feedbackPercent: { name: 'feedback', index: 4, isLinear: true, range: [0, 100] as [number, number], units: 'percent' },
   lowCutHz: { name: 'lowCut', index: 5, isLinear: true, range: [20, 3000] as [number, number], units: 'hz' },
   highCutHz: { name: 'highCut', index: 6, isLinear: true, range: [50, 15000] as [number, number], units: 'hz' },

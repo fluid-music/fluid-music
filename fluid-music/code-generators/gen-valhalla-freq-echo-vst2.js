@@ -33,14 +33,16 @@ for (const paramInfo of freqEchoReport.params) {
       '1/16':  4,
       '1/8':   5,
       '1/4':   6,
-      '2/4':   7,
+      // I think there is a rounding or floating point error, which is corrected
+      // by adding a very small value.
+      '2/4':   7.00001,
       '4/4':   8,
       '8/4':   9,
       '1/64.': 10,
       '1/32.': 11,
       '1/16.': 12,
       '1/8.':  13,
-      '1/4.':  14,
+      '1/4.':  14.00001,
       '2/4.':  15,
       '4/4.':  16,
       '1/64T': 17,
