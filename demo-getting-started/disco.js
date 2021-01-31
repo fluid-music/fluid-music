@@ -7,7 +7,7 @@ const ducker = new plugins.RoughRider3Vst2({
   sensitivityDb: -25,
   attackMs: 3,
   releaseMs: 223,
-}).sidechainWith('kick')
+})
 
 // Create a tLibrary filled with MIDI Chords
 const chordLibrary = {
@@ -45,7 +45,7 @@ const session = new FluidSession({ bpm: 121, loopDuration: 4 }, [
 
   // Notice the pad tracks have a .plugins array containing the synthesizer
   // preset. It also has a dedicated tLibrary containing MIDI chords.
-  { name: 'pads', tLibrary: chordLibrary, plugins: [ducker], children: [
+  { name: 'pads', tLibrary: chordLibrary, plugins: [ducker.sidechainWith('kick')], children: [
     { name: 'padA', plugins: [padSynthA] },
     { name: 'padB', plugins: [padSynthB] },
   ]}
