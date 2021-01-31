@@ -323,6 +323,8 @@ function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : Flui
     if (typeof audioFile.gainDb === 'number')
       audioItem.getOrCreateStructByToken('VOLPAN').params = [1, 0, db2Gain(gainDb), -1]
 
+    audioItem.getOrCreateStructByToken('PLAYRATE').params = [1, 1, audioFile.pitchSemitones, -1, 0, 0.0025]
+
     const audioSource = new rppp.objects.ReaperSource()
     const extension = extname(audioFile.path).toLowerCase()
 

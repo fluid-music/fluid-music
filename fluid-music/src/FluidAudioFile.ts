@@ -54,6 +54,7 @@ export interface AudioFileConfig {
   durationSeconds? : number
   playbackRate? : number
   markers? : {[key: string] : number}|Map<string, number>
+  pitchSemitones? : number
 }
 
 /**
@@ -83,6 +84,7 @@ export class FluidAudioFile {
     if (typeof options.startTimeSeconds === 'number') this.startTimeSeconds = options.startTimeSeconds
     if (typeof options.durationSeconds === 'number') this.durationSeconds = options.durationSeconds
     if (typeof options.playbackRate === 'number') this.playbackRate = options.playbackRate
+    if (typeof options.pitchSemitones === 'number') this.pitchSemitones = options.pitchSemitones
     if (options.mode) this.mode = options.mode
     if (options.info) this.info = options.info
     if (options.markers) this.setMarkers(options.markers)
@@ -141,6 +143,9 @@ export class FluidAudioFile {
   startInSourceSeconds : number = 0
 
   playbackRate : number = 1
+
+  /** Adjust the pitch of the sample in semitones.cents */
+  pitchSemitones : number = 0
 
   /**
    * Check the AudioFile for potential problems. If problems are found, return

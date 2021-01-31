@@ -32,7 +32,11 @@ public:
     
     virtual void oscMessageReceived (const juce::OSCMessage& message) override;
     virtual void oscBundleReceived (const juce::OSCBundle& bundle) override;
-    
+
+    /** Recursively handle all messages and nested bundles, reseting the
+     selection state to parentSelection after each bundle. This should ensure
+     that nested bundles do not leave behind a selection after they have been
+     handled. */
     juce::OSCBundle handleOscBundle(const juce::OSCBundle& bundle, SelectedObjects parentSelection);
     juce::OSCMessage handleOscMessage(const juce::OSCMessage& message);
 
@@ -73,6 +77,7 @@ public:
     juce::OSCMessage offsetClipSourceInSeconds(const juce::OSCMessage& message);
     juce::OSCMessage audioClipFadeInOutSeconds(const juce::OSCMessage& message);
     juce::OSCMessage setClipDb(const juce::OSCMessage& message);
+    juce::OSCMessage setClipPitch(const juce::OSCMessage& message);
     juce::OSCMessage setTempo(const juce::OSCMessage& message);
     juce::OSCMessage clearContent(const juce::OSCMessage& message);
     juce::OSCMessage getAudioFileReport(const juce::OSCMessage& message);
@@ -86,11 +91,6 @@ public:
     SelectedObjects getSelectedObjects();
 
 private:
-
-    /** Recursively handle all messages and nested bundles, reseting the
-     selection state to parentSelection after each bundle. This should ensure
-     that nested bundles do not leave behind a selection after they have been
-     handled. */
 
     void constructReply(juce::OSCMessage &reply, int error, juce::String message);
     void constructReply(juce::OSCMessage &reply, juce::String message);

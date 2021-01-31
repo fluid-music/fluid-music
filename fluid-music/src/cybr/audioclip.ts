@@ -11,10 +11,10 @@ export function reverse(reverse = true) {
 /**
  * Set a fade in and fade out. No effect if there is no selected clip, or the
  * selected clip is a midi clip.
- * @param {number} fadeInSeconds fade in time in seconds
- * @param {number} fadeOutSeconds fade out time in seconds
+ * @param fadeInSeconds fade in time in seconds
+ * @param fadeOutSeconds fade out time in seconds
  */
-export function fadeInOutSeconds(fadeInSeconds, fadeOutSeconds) {
+export function fadeInOutSeconds(fadeInSeconds: number|undefined, fadeOutSeconds : number|undefined) {
   if (typeof fadeOutSeconds !== 'number' && typeof fadeInSeconds !== 'number')
     throw new Error('audioclip fade has no values');
 
@@ -32,26 +32,26 @@ export function fadeInOutSeconds(fadeInSeconds, fadeOutSeconds) {
 /**
  * Set the fade in time in seconds. No effect if there is no selected clip, or
  * the selected clip is a midi clip.
- * @param {number} seconds fade in time in seconds
+ * @param seconds fade in time in seconds
  */
-export function fadeIn(seconds) {
-  return fadeInOutSeconds(seconds, null);
+export function fadeIn(seconds : number) {
+  return fadeInOutSeconds(seconds, undefined);
 };
 
 /**
  * Set the fade out time in seconds. No effect if there is no selected clip,
  * or the selected clip is a midi clip.
- * @param {number} seconds fade in time in seconds
+ * @param seconds fade in time in seconds
  */
-export function fadeOut(seconds) {
-  return fadeInOutSeconds(null, seconds);
+export function fadeOut(seconds: number) {
+  return fadeInOutSeconds(undefined, seconds);
 };
 
 /**
  * Adjust the gain of the selected audio clip.
  * @param {number} dBFS full scale decibel to set
  */
-export function gain(dBFS) {
+export function gain(dBFS : number) {
   if (typeof dBFS !== 'number')
     throw new Error('audioclip.gain requires a dBFS number');
 
@@ -60,3 +60,18 @@ export function gain(dBFS) {
     args: [{ type: 'float', value: dBFS }],
   };
 };
+
+/**
+ * Set the audio clips semitone offset (when the audio clip plays, its pitch
+ * will be offset by this value).
+ * @param semitones
+ */
+export function pitchSemitones(semitones : number) {
+  if (typeof semitones !== 'number')
+    throw new Error('pitchSemitones requires a semitones number')
+
+  return {
+    address: '/audioclip/set/pitch',
+    args: [{ type: 'float', value: semitones }]
+  }
+}

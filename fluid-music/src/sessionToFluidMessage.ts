@@ -302,5 +302,9 @@ function fileEventToFluidMessage(audioFile : FluidAudioFile, session : FluidSess
     msg.push(cybr.audioclip.reverse(true))
   }
 
+  if (audioFile.pitchSemitones) {
+    msg.push(cybr.audioclip.pitchSemitones(audioFile.pitchSemitones))
+  }
+
   return msg
 }

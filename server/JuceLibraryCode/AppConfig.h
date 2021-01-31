@@ -43,7 +43,7 @@
 
 #define JUCE_USE_DARK_SPLASH_SCREEN 1
 
-#define JUCE_PROJUCER_VERSION 0x60004
+#define JUCE_PROJUCER_VERSION 0x60007
 
 //==============================================================================
 #define JUCE_MODULE_AVAILABLE_juce_audio_basics          1
@@ -347,7 +347,7 @@
 #endif
 
 #ifndef    TRACKTION_ENABLE_TIMESTRETCH_SOUNDTOUCH
- //#define TRACKTION_ENABLE_TIMESTRETCH_SOUNDTOUCH 0
+ #define   TRACKTION_ENABLE_TIMESTRETCH_SOUNDTOUCH 1
 #endif
 
 #ifndef    TRACKTION_ENABLE_ABLETON_LINK

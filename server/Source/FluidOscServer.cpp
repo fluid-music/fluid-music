@@ -117,6 +117,7 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/clip/trim/seconds"})) return trimClipBySeconds(message);
     if (msgAddressPattern.matches({"/clip/source/offset/seconds"})) return offsetClipSourceInSeconds(message);
     if (msgAddressPattern.matches({"/audioclip/set/db"})) return setClipDb(message);
+    if (msgAddressPattern.matches({"/audioclip/set/pitch"})) return setClipPitch(message);
     if (msgAddressPattern.matches({"/audioclip/reverse"})) return reverseAudioClip(true);
     if (msgAddressPattern.matches({"/audioclip/unreverse"})) return reverseAudioClip(false);
     if (msgAddressPattern.matches({"/audioclip/fade/seconds"})) return audioClipFadeInOutSeconds(message);
@@ -242,6 +243,38 @@ OSCMessage FluidOscServer::setClipDb(const OSCMessage& message) {
     }
 
     audioClip->setGainDB(dBFS);
+    reply.addInt32(0);
+    return reply;
+}
+
+OSCMessage FluidOscServer::setClipPitch(const juce::OSCMessage& message) {
+    OSCMessage reply("/audioclip/set/pitch/reply");
+
+    if (!selectedClip) {
+        String errorString = "Cannot set audio clip pitch: no clip selected";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    auto* audioClip = dynamic_cast<te::AudioClipBase*>(selectedClip);
+    if (!audioClip) {
+        String errorString = "Cannot set audio clip pitch: selected clip is not an audio clip";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    if (!message.size() || !message[0].isFloat32()) {
+        String errorString = "Cannot set audio clip pitch: missing semitones float argument";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    float semitones = message[0].getFloat32();
+    if (semitones != 0) {
+        audioClip->setTimeStretchMode(te::TimeStretcher::Mode::soundtouchBetter);
+    }
+    audioClip->setPitchChange(semitones);
+
     reply.addInt32(0);
     return reply;
 }
