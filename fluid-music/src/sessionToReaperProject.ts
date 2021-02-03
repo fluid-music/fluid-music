@@ -323,7 +323,14 @@ function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : Flui
     if (typeof audioFile.gainDb === 'number')
       audioItem.getOrCreateStructByToken('VOLPAN').params = [1, 0, db2Gain(gainDb), -1]
 
-    audioItem.getOrCreateStructByToken('PLAYRATE').params = [1, 1, audioFile.pitchSemitones, -1, 0, 0.0025]
+    // The AudioFile .pitchSemitones property is slated to be added in
+    // fluid-music 0.9.4. If we somehow end up with an old-school AudioFile
+    // object, pitchSemitones would be undefined. This should not happen because
+    // it would mean that we are somehow using a AudioFile technique from 0.9.3
+    // (or earlier), and sessionToReaperProject from 0.9.4 (or later). However,
+    // for additional safety I will still check for presence of .pitchSemitones.
+    const semitones = typeof audioFile.pitchSemitones === 'number' ? audioFile.pitchSemitones : 0
+    audioItem.getOrCreateStructByToken('PLAYRATE').params = [1, 1, semitones, -1, 0, 0.0025]
 
     const audioSource = new rppp.objects.ReaperSource()
     const extension = extname(audioFile.path).toLowerCase()
