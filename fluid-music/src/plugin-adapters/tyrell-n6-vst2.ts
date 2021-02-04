@@ -994,7 +994,10 @@ const makeAutomation = {
 export class TyrellN6Vst2 extends FluidPlugin {
   constructor(
     public readonly parameters : TyrellN6Vst2Parameters = {},
-  ) { super(pluginName, pluginType) }
+  ) {
+    super(pluginName, pluginType)
+    this.vst2.uid = 1952017974
+  }
 
   readonly parameterLibrary = parameterLibrary;
   readonly makeAutomation = makeAutomation;

@@ -488,7 +488,10 @@ const makeAutomation = {
 export class TEqualizerVst2 extends FluidPlugin {
   constructor(
     public readonly parameters : TEqualizerVst2Parameters = {},
-  ) { super(pluginName, pluginType) }
+  ) {
+    super(pluginName, pluginType)
+    this.vst2.uid = 1162965874
+  }
 
   readonly parameterLibrary = parameterLibrary;
   readonly makeAutomation = makeAutomation;

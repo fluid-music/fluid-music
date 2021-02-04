@@ -120,6 +120,17 @@ export class FluidPlugin {
   readonly automation : Automation = {};
   readonly makeAutomation : AutoMakerLibrary = {};
 
+  /**
+   * VST2 plugins may specify a some additional parameters in this property.
+   * It will be empty for non-vst2 plugins.
+   */
+  vst2 : {
+    /** The 32-bit plugin VST2 plugin UID (if known) */
+    uid? : number,
+    /** The vst2 plugin state that should be applied before any parameters */
+    initialStateBase64? : string,
+  } = {}
+
   sidechainReceive? : FluidReceive
   unresolvedSidechainReceive? : UnresolvedReceive
 
@@ -216,6 +227,7 @@ export class FluidPlugin {
    * necessary.
    *
    * @param track name of the track that will feed the sidechain
+   * @chainable
    */
   sidechainWith(track : string|FluidTrack) {
     if (typeof track === 'string') {

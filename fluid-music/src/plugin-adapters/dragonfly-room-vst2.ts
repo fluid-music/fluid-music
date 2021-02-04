@@ -320,7 +320,10 @@ const makeAutomation = {
 export class DragonflyRoomVst2 extends FluidPlugin {
   constructor(
     public readonly parameters : DragonflyRoomVst2Parameters = {},
-  ) { super(pluginName, PluginType.VST2) }
+  ) {
+    super(pluginName, PluginType.VST2)
+    this.vst2.uid = 1684435506
+  }
 
   readonly parameterLibrary = parameterLibrary;
   readonly makeAutomation = makeAutomation;

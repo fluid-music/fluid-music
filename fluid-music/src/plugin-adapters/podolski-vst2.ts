@@ -861,7 +861,10 @@ const makeAutomation = {
 export class PodolskiVst2 extends FluidPlugin {
   constructor(
     public readonly parameters : PodolskiVst2Parameters = {},
-  ) { super(pluginName, pluginType) }
+  ) {
+    super(pluginName, pluginType)
+    this.vst2.uid = 1349477487
+  }
 
   readonly parameterLibrary = parameterLibrary;
   readonly makeAutomation = makeAutomation;

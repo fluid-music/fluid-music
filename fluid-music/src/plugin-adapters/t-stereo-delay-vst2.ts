@@ -259,7 +259,10 @@ const makeAutomation = {
 export class TStereoDelayVst2 extends FluidPlugin {
   constructor(
     public readonly parameters : TStereoDelayVst2Parameters = {},
-  ) { super(pluginName, pluginType) }
+  ) {
+    super(pluginName, pluginType)
+    this.vst2.uid = 1396991340
+  }
 
   readonly parameterLibrary = parameterLibrary;
   readonly makeAutomation = makeAutomation;

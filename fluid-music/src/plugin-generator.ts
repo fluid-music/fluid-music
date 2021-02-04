@@ -78,11 +78,19 @@ export interface ${parametersInterfaceName} {
   }`
   }).join(',\n') + '\n}\n'
 
+  let additionalConstructorStatements = ''
+  if (pluginType === 'PluginType.VST2') {
+    additionalConstructorStatements = `
+    this.vst2.uid = ${report.plugin.uidInt}`
+  }
+
   // Finally create the class itself
   output += `export class ${className} extends FluidPlugin {
   constructor(
     public readonly parameters : ${parametersInterfaceName} = {},
-  ) { super(pluginName, pluginType) }
+  ) {
+    super(pluginName, pluginType)${additionalConstructorStatements}
+  }
 
   readonly parameterLibrary = parameterLibrary;
   readonly makeAutomation = makeAutomation;

@@ -99,7 +99,10 @@ const makeAutomation = {
 export class ValhallaFreqEchoVst2 extends FluidPlugin {
   constructor(
     public readonly parameters : ValhallaFreqEchoVst2Parameters = {},
-  ) { super(pluginName, pluginType) }
+  ) {
+    super(pluginName, pluginType)
+    this.vst2.uid = 1181828456
+  }
 
   readonly parameterLibrary = parameterLibrary;
   readonly makeAutomation = makeAutomation;
