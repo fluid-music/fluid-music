@@ -85,6 +85,7 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/midiclip/select"})) return selectMidiClip(message);
     if (msgAddressPattern.matches({"/midiclip/clear"})) return clearMidiClip(message);
     if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
+    if (msgAddressPattern.matches({"/plugin/vst2/select"})) return selectVst2PluginById(message);
     if (msgAddressPattern.matches({"/plugin/param/set"})) return setPluginParam(message);
     if (msgAddressPattern.matches({"/plugin/param/set/at"})) return setPluginParamAt(message);
     if (msgAddressPattern.matches({"/plugin/sidechain/input/set" })) return setPluginSideChainInput(message);
@@ -872,6 +873,7 @@ OSCMessage FluidOscServer::ensureSend(const OSCMessage& message) {
 OSCMessage FluidOscServer::selectPlugin(const OSCMessage& message) {
     OSCMessage reply("/plugin/select/reply");
     if (message.size() > 3 ||
+        message.size() < 2 ||
         !message[0].isString() ||
         !message[1].isInt32() ){
         String errorString = "selectPlugin failed. Incorrect arguments.";
@@ -891,6 +893,37 @@ OSCMessage FluidOscServer::selectPlugin(const OSCMessage& message) {
     }
     selectedPlugin = getOrCreatePluginByName(*selectedTrack, pluginName, pluginFormat, index);
     reply.addInt32(0);
+    return reply;
+}
+
+OSCMessage FluidOscServer::selectVst2PluginById(const juce::OSCMessage& message) {
+    OSCMessage reply("/plugin/vst2/select/reply");
+    if (!selectedTrack) {
+        String errorString = "Cannot select vst2 plugin by ID: No audio track selected";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    if (message.size() < 2 || !message[0].isInt32() || !message[1].isInt32()) {
+        String errorString = "Cannot select vst2 plugin by ID: Incorrect arguments.";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    auto pluginUid = message[0].getInt32();
+    auto positionId = message[1].getInt32(); // nth plugin of type
+
+    for (PluginDescription pluginDesc : selectedTrack->edit.engine.getPluginManager().knownPluginList.getTypes()) {
+        if (pluginDesc.pluginFormatName == "VST") {
+            if (pluginDesc.uid == pluginUid) {
+                selectedPlugin = getOrCreatePluginByName(*selectedTrack, pluginDesc.name, pluginDesc.pluginFormatName, positionId);
+                reply.addInt32(0);
+                return reply;
+            }
+        }
+    }
+
+    constructReply(reply, 1, "Cannot selecte VST2 plugin by ID: plugin not found");
     return reply;
 }
 

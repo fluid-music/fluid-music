@@ -24,25 +24,54 @@ const fs = require('fs');
  *    second podolski instance, even if there are many other plugins on the
  *    track.
  */
-export function select(pluginName, pluginType, pluginId = 0) {
+export function select(pluginName : string, pluginType : string|undefined|null, pluginId : number = 0) {
   if (typeof pluginName !== 'string')
-    throw new Error('plugin.select(pluginName) needs a string, got: ' + undefined);
+    throw new Error('plugin.select(pluginName) needs a string, got: ' + undefined)
 
   if (typeof pluginId !== 'number' || pluginId !== Math.floor(pluginId))
-    throw new Error('plugin.select pluginId values must be an integer');
+    throw new Error('plugin.select pluginId values must be an integer')
 
   const args = [
     { type: 'string', value: pluginName},
     { type: 'integer', value: pluginId},
-  ];
+  ]
+
   if (typeof pluginType === 'string') {
     if (pluginType.toUpperCase() === 'VST2') {
-      pluginType = 'VST'; // cybr/tracktion engine expect 'VST' for vst2s
+      pluginType = 'VST' // cybr/tracktion engine expect 'VST' for vst2s
     }
-    args.push({ type: 'string', value: pluginType });
+    args.push({ type: 'string', value: pluginType })
   }
 
-  return { args, address: '/plugin/select' };
+  return { args, address: '/plugin/select' }
+}
+
+/**
+ * Get or create a vst2 plugin on the selected track. Use this when you know
+ * UID of the vst2 plugin tha you want to select (or create).
+ *
+ * @param vstIdUint the vst2 UID that identifies the plugin
+ * @param pluginIdIndex If there are multiple instances of the named
+ *    plugin on the selected track, use this argument if you want to select a
+ *    specific one one (by default this selects the first plugin with the
+ *    given name). Note that pluginId only counts plugins that match the given
+ *    pluginName, so pluginName='podolski', pluginId=1 will always select the
+ *    second podolski instance, even if there are many other plugins on the
+ *    track.
+ */
+export function selectVst2ById(vstIdUint : number, pluginIdIndex : number = 0) {
+  if (typeof vstIdUint !== 'number')
+    throw new Error('expected a vstID number, got ' + vstIdUint)
+  if (typeof pluginIdIndex !== 'number')
+    throw new Error('expected pluginIdIndex')
+
+  return {
+    address: '/plugin/vst2/select',
+    args: [
+      { type: 'integer', value: vstIdUint },
+      { type: 'integer', value: pluginIdIndex },
+    ]
+  }
 }
 
 /**
