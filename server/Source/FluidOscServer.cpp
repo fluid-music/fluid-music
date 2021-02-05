@@ -91,6 +91,7 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/plugin/sidechain/input/set" })) return setPluginSideChainInput(message);
     if (msgAddressPattern.matches({"/plugin/save"})) return savePluginPreset(message);
     if (msgAddressPattern.matches({"/plugin/load/trkpreset"})) return loadPluginTrkpreset(message);
+    if (msgAddressPattern.matches({"/plugin/load/vst2preset"})) return loadVst2PresetInSelectedPlugin(message);
     if (msgAddressPattern.matches({"/plugin/load"})) return loadPluginPreset(message);
     if (msgAddressPattern.matches({"/plugin/report"})) return getPluginReport(message);
     if (msgAddressPattern.matches({"/plugin/param/report"})) return getPluginParameterReport(message);
@@ -1336,6 +1337,56 @@ OSCMessage FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     loadTracktionPreset(*selectedTrack, v);
 
     reply.addInt32(0);
+    return reply;
+}
+
+OSCMessage FluidOscServer::loadVst2PresetInSelectedPlugin(const juce::OSCMessage& message) {
+    // Set state from the binary contents of a .fxp or .fxb file. This can be loaded
+    OSCMessage reply("/plugin/load/vst2preset/reply");
+    if (!selectedPlugin) {
+        constructReply(reply, 1, "Cannot set vst2 plugin state: No plugin selected");
+        return reply;
+    }
+
+    if (message.size() < 1) {
+        constructReply(reply, 1, "Cannot set vst2 fxb/fxp preset: to few arguments");
+        return reply;
+    }
+
+    if (!message[0].isBlob() && !message[0].isString()) {
+        constructReply(reply, 1, "Cannot set vst2 fxb/fxp preset: invalid argument");
+        return reply;
+    }
+
+    MemoryBlock stateBlob;
+    MemoryOutputStream outStream;
+    if (message[0].isString()) {
+        if (!Base64::convertFromBase64(outStream, message[0].getString())) {
+            constructReply(reply, 1, "Cannot set vst2 fxb/fxp preset: invalid base64 string");
+            return reply;
+        };
+        stateBlob.append(outStream.getData(), outStream.getDataSize());
+    } else {
+        stateBlob = message[0].getBlob();
+    }
+
+    if (auto externalPlugin = dynamic_cast<te::ExternalPlugin*>(selectedPlugin)) {
+        if (externalPlugin->isVST()) {
+            juce::AudioPluginInstance* jucePlugin = externalPlugin->getAudioPluginInstance();
+            jucePlugin->suspendProcessing(true);
+            jucePlugin->setCurrentProgramStateInformation(stateBlob.getData(), (int)stateBlob.getSize());
+            jucePlugin->suspendProcessing(false);
+
+            // Example: getting fxp
+            // jucePlugin->suspendProcessing(true);
+            // MemoryBlock fxpBlock;
+            // jucePlugin->getCurrentProgramStateInformation(fxpBlock); // use getStateInformation(...) to get fxb
+            // String fxpBase64 = Base64::toBase64(fxpBlock.getData(), fxpBlock.getSize());
+            // jucePlugin->suspendProcessing(false);
+        }
+    }
+
+    constructReply(reply, 1, "Cannot set vst2 plugin state: selected plugin is not an external VST2 plugin");
     return reply;
 }
 

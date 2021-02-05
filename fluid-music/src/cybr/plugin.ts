@@ -1,5 +1,23 @@
 const fs = require('fs');
 
+
+/**
+ * Buffers sent via OSC with type: 'blob' must be padded with \0 to a multiple
+ * of 4 bytes (as per OSC spec).
+ *
+ * @param buffer the buffer to pad
+ */
+function padBlobBuffer(buffer : Buffer) {
+  const paddingLength = (4 - (buffer.length % 4)) % 4;
+
+  if (paddingLength) {
+    const padding = Buffer.alloc(paddingLength);
+    return Buffer.concat([buffer, padding]);
+  }
+
+  return buffer
+}
+
 /**
  * Creates an object that looks like this:
  * ```
@@ -94,6 +112,29 @@ export function setParamNormalized(paramName, normalizedValue) {
       { type: 'string', value: "normalized" },
     ],
   }
+}
+
+/**
+ * Load the preset into the currently selected plugin. You must make sure that
+ * the selected plugin is the correct plugin for the supplied preset.
+ *
+ * @param fxpFxb the contents of a .fxp of .fxb file in either a Node.js Buffer
+ *    or a base64-encoded string.
+ */
+export function loadVst2Preset(fxpFxb : Buffer|string) {
+  const args : any[] = []
+
+  if (fxpFxb instanceof Buffer) {
+    args.push({ type: 'blob', value: padBlobBuffer(fxpFxb) })
+  }
+  else if (typeof fxpFxb === 'string') {
+    args.push({ type: 'string', value: fxpFxb})
+  }
+  else {
+    throw new Error('invalid argument fxpFxb value: ' + fxpFxb)
+  }
+
+  return { address: '/plugin/load/vst2preset', args }
 }
 
 /**
@@ -290,15 +331,9 @@ export function loadTrkpreset(file) {
     throw new Error('plugin.loadTrkpreset requires a Buffer or filename')
   }
 
-  // Pad with \0 as required by OSC spec
-  const paddingLength = (4 - (buffer.length % 4)) % 4;
-  const padding = Buffer.alloc(paddingLength);
-  if (paddingLength)
-    buffer = Buffer.concat([buffer, padding]);
-
   return {
     address: '/plugin/load/trkpreset',
-    args: [ { type: 'blob', value: buffer } ],
+    args: [ { type: 'blob', value: padBlobBuffer(buffer) } ],
   };
 }
 
@@ -353,7 +388,7 @@ export function getReport() { return { address: '/plugin/report' }; }
  * is useful to get information about the range of the parameters. Note that
  * setting this to true may change the plugin state, so it probably should be
  * avoided when it is not needed.
- * 
+ *
  * ```javascript
  * // This object was created with steps=15.
  * {

@@ -49,6 +49,7 @@ public:
     juce::OSCMessage selectMidiClip(const juce::OSCMessage& message);
     juce::OSCMessage selectPlugin(const juce::OSCMessage& message);
     juce::OSCMessage selectVst2PluginById(const juce::OSCMessage& message);
+    juce::OSCMessage loadVst2PresetInSelectedPlugin(const juce::OSCMessage& message);
     juce::OSCMessage setPluginParam(const juce::OSCMessage& message);
     juce::OSCMessage setPluginParamAt(const juce::OSCMessage& message);
     juce::OSCMessage setTrackWidth(const juce::OSCMessage& message);

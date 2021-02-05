@@ -105,8 +105,8 @@ juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
 
         TRACKTION_ASSERT_MESSAGE_THREAD
         jucePlugin->suspendProcessing (true);
-        jucePlugin->getCurrentProgramStateInformation(programStateInfoBlock); // Verify: If this is a VST2, get fxp (patch)
-        jucePlugin->getStateInformation(stateInfoBlock);                      // Verify: If this is a VST2, get fxb (bank)
+        jucePlugin->getCurrentProgramStateInformation(programStateInfoBlock); // If this is a VST2, get fxp (patch)
+        jucePlugin->getStateInformation(stateInfoBlock);                      // If this is a VST2, get fxb (bank)
         // Note: I tried to get the VST3 IEditController state from this chunk, but it didn't work.
         // It appears that the data returned by getStateInformation is not the same as the contents
         // of a .vstpreset file.
@@ -355,3 +355,4 @@ juce::var getSingleParameterReport(te::AutomatableParameter* param, int steps) {
 
     return report;
 }
+
