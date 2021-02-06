@@ -864,6 +864,10 @@ export class PodolskiVst2 extends FluidPlugin {
   ) {
     super(pluginName, pluginType)
     this.vst2.uid = 1349477487
+    this.vst2.vendor = 'u-he'
+    this.numAudioInputChannels = 0
+    this.numAudioOutputChannels = 2
+    this.isSynth = true
   }
 
   readonly parameterLibrary = parameterLibrary;

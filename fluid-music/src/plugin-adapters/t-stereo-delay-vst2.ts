@@ -262,6 +262,10 @@ export class TStereoDelayVst2 extends FluidPlugin {
   ) {
     super(pluginName, pluginType)
     this.vst2.uid = 1396991340
+    this.vst2.vendor = 'Tracktion'
+    this.numAudioInputChannels = 2
+    this.numAudioOutputChannels = 2
+    this.isSynth = false
   }
 
   readonly parameterLibrary = parameterLibrary;

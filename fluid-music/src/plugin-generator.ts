@@ -81,7 +81,11 @@ export interface ${parametersInterfaceName} {
   let additionalConstructorStatements = ''
   if (pluginType === 'PluginType.VST2') {
     additionalConstructorStatements = `
-    this.vst2.uid = ${report.plugin.uidInt}`
+    this.vst2.uid = ${report.plugin.uidInt}
+    this.vst2.vendor = '${report.plugin.vendor}'
+    this.numAudioInputChannels = ${report.plugin.numAudioInputChannels}
+    this.numAudioOutputChannels = ${report.plugin.numAudioOutputChannels}
+    this.isSynth = ${!!report.plugin.isSynth}`
   }
 
   // Finally create the class itself

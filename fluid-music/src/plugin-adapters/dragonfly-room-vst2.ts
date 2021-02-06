@@ -323,6 +323,10 @@ export class DragonflyRoomVst2 extends FluidPlugin {
   ) {
     super(pluginName, PluginType.VST2)
     this.vst2.uid = 1684435506
+    this.vst2.vendor = 'Michael Willis'
+    this.numAudioInputChannels = 2
+    this.numAudioInputChannels = 2
+    this.isSynth = false
   }
 
   readonly parameterLibrary = parameterLibrary;

@@ -38,25 +38,29 @@ export async function vst2ToReaperObject(client: IpcClient, trackName: string, p
     }
   }
 
+  if (plugin.vst2.presetBase64) paramSetters.unshift(cybr.plugin.loadVst2Preset(plugin.vst2.presetBase64));
+
   const pluginReport = await cybr.requests.requestReport(pluginName, cybrType, trackName, n, paramSetters, client)
   const vst2State = pluginReport.vst2State;
   const numIn = pluginReport.numAudioInputChannels;
   const numOut = pluginReport.numAudioOutputChannels;
 
+  // Example first line:
+  // <VST "VSTi: Podolski (u-he)" Podolski.vst 0 "" 1349477487<565354506F646F706F646F6C736B6900> ""
   let isI   = pluginReport.isSynth ? 'i' : '';
   let name  = pluginReport.externalPluginFormat + isI + ': '
-            + pluginReport.name + ' (' + pluginReport.vendor + ')';
+            + pluginReport.name + ' (' + pluginReport.vendor + ')'; // VSTi: Podolski (u-he)
   let id    = pluginReport.uidInt;
 
   let newVst = new rppp.objects.ReaperVst();
-  newVst.params[0] = name;
-  newVst.params[1] = pluginReport.name + '.' + pluginReport.pluginType;
+  newVst.params[0] = name; // VSTi:
+  newVst.params[1] = pluginReport.name + '.' + pluginReport.pluginType; // Podolski.vst
   newVst.params[2] = 0;
   newVst.params[3] = "";
   newVst.params[4] = id + '<>';
-  newVst.initializeRouting(numIn, numOut)
-  newVst.setVst2State(vst2State)
-  newVst.setVst2IdNumber(id)
+  newVst.initializeRouting(numIn, numOut);
+  newVst.setVst2State(vst2State);
+  newVst.setVst2IdNumber(id);
 
   // Automation
   for (const [paramKey, automation] of Object.entries(plugin.automation)) {

@@ -139,6 +139,10 @@ export class RoughRider3Vst2 extends FluidPlugin {
   ) {
     super(pluginName, pluginType)
     this.vst2.uid = 1381118768
+    this.vst2.vendor = 'Audio Damage, Inc.'
+    this.numAudioInputChannels = 3
+    this.numAudioOutputChannels = 2
+    this.isSynth = false
   }
 
   readonly parameterLibrary = parameterLibrary;

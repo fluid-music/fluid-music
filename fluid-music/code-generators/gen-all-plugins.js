@@ -1,0 +1,7 @@
+require('./plugins/gen-podolski-vst2')
+require('./plugins/gen-rough-rider-3-vst2')
+require('./plugins/gen-t-compressor-vst2')
+require('./plugins/gen-t-equalizer-vst2')
+require('./plugins/gen-t-stereo-delay-vst2')
+require('./plugins/gen-tyrell-n6-vst2')
+require('./plugins/gen-valhalla-freq-echo-vst2')

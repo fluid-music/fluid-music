@@ -491,6 +491,10 @@ export class TEqualizerVst2 extends FluidPlugin {
   ) {
     super(pluginName, pluginType)
     this.vst2.uid = 1162965874
+    this.vst2.vendor = 'Tracktion'
+    this.numAudioInputChannels = 2
+    this.numAudioOutputChannels = 2
+    this.isSynth = false
   }
 
   readonly parameterLibrary = parameterLibrary;

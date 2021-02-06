@@ -102,6 +102,10 @@ export class ValhallaFreqEchoVst2 extends FluidPlugin {
   ) {
     super(pluginName, pluginType)
     this.vst2.uid = 1181828456
+    this.vst2.vendor = 'Valhalla DSP, LLC'
+    this.numAudioInputChannels = 2
+    this.numAudioOutputChannels = 2
+    this.isSynth = false
   }
 
   readonly parameterLibrary = parameterLibrary;

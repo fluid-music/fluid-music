@@ -997,6 +997,10 @@ export class TyrellN6Vst2 extends FluidPlugin {
   ) {
     super(pluginName, pluginType)
     this.vst2.uid = 1952017974
+    this.vst2.vendor = 'u-he'
+    this.numAudioInputChannels = 2
+    this.numAudioOutputChannels = 2
+    this.isSynth = true
   }
 
   readonly parameterLibrary = parameterLibrary;

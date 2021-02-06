@@ -132,7 +132,16 @@ export class FluidPlugin {
      * configuration specified within the plugin's [[FluidPlugin.parameters]]
      * property */
     presetBase64? : string,
+    /**
+     * VST2 plugins report a vendor name
+     */
+    vendor? : string,
   } = {}
+
+  /** Is this plugin a synth or an effect (does it accept midi input)? */
+  isSynth : boolean = false
+  numAudioInputChannels : number = 2
+  numAudioOutputChannels : number = 2
 
   sidechainReceive? : FluidReceive
   unresolvedSidechainReceive? : UnresolvedReceive
