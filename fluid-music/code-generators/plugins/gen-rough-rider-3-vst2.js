@@ -1,5 +1,5 @@
 const tCompReport = require('./reports/rough-rider-3-vst2')
-const fluid = require('..')
+const fluid = require('../..')
 
 // RoughRider3 has a unusually complicated exponential 'Ratio' normalizer
 // function. I calculated it with a little trial and error here:
@@ -44,4 +44,8 @@ for (const paramInfo of tCompReport.params) {
 }
 
 const moduleString = fluid.gen.generatePluginModule(tCompReport)
-process.stdout.write(moduleString)
+
+const fs = require('fs')
+const path = require('path')
+const filename = path.join(__dirname, '..', '..', 'src', 'plugin-adapters', 'rough-rider-3-vst2.ts')
+fs.createWriteStream(filename).write(moduleString)

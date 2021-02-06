@@ -1,5 +1,5 @@
 const freqEchoReport = require('./reports/valhalla-freq-echo-vst2')
-const fluid = require('..')
+const fluid = require('../..')
 
 for (const paramInfo of freqEchoReport.params) {
   if (paramInfo.name === 'lowCut') {
@@ -57,4 +57,8 @@ for (const paramInfo of freqEchoReport.params) {
 }
 
 const moduleString = fluid.gen.generatePluginModule(freqEchoReport)
-process.stdout.write(moduleString)
+
+const fs = require('fs')
+const path = require('path')
+const filename = path.join(__dirname, '..', '..', 'src', 'plugin-adapters', 'valhalla-freq-echo-vst2.ts')
+fs.createWriteStream(filename).write(moduleString)

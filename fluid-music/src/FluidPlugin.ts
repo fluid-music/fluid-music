@@ -127,8 +127,11 @@ export class FluidPlugin {
   vst2 : {
     /** The 32-bit plugin VST2 plugin UID (if known) */
     uid? : number,
-    /** The vst2 plugin state that should be applied before any parameters */
-    initialStateBase64? : string,
+    /** A .fxp or .fxb vst2 preset preset file, base64 encoded. This is the
+     * initial state of the plugin will be applied before any additional
+     * configuration specified within the plugin's [[FluidPlugin.parameters]]
+     * property */
+    presetBase64? : string,
   } = {}
 
   sidechainReceive? : FluidReceive

@@ -1,5 +1,5 @@
 const tCompReport = require('./reports/podolski-vst2')
-const fluid = require('..')
+const fluid = require('../..')
 
 for (const paramInfo of tCompReport.params) {
   if (paramInfo.name === 'VCC: Active #LFO1') paramInfo.choices = { off: 0, on: 1 }
@@ -11,4 +11,9 @@ for (const paramInfo of tCompReport.params) {
 tCompReport.pluginName = 'Podolski'
 
 const moduleString = fluid.gen.generatePluginModule(tCompReport, { className: 'PodolskiVst2' })
-process.stdout.write(moduleString)
+
+const fs = require('fs')
+const path = require('path')
+const filename = path.join(__dirname, '..', '..', 'src', 'plugin-adapters', 'podolski-vst2.ts')
+fs.createWriteStream(filename).write(moduleString)
+
