@@ -7,3 +7,4 @@ export { TStereoDelayVst2, TStereoDelayVst2Parameters } from './t-stereo-delay-v
 export { TyrellN6Vst2, TyrellN6Vst2Parameters } from './tyrell-n6-vst2'
 export { DragonflyRoomVst2, DragonflyRoomVst2Parameters } from './dragonfly-room-vst2'
 export { ValhallaFreqEchoVst2, ValhallaFreqEchoVst2Parameters } from './valhalla-freq-echo-vst2'
+export { ZebraletteVst2, ZebraletteVst2Parameters } from './zebralette-vst2'
