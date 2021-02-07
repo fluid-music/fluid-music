@@ -26,6 +26,7 @@ for (const paramInfo of freqEchoReport.params) {
     // leave the .range at [0, 1]. In this case the guesser correctly identifies
     // that this parameter is linear from 0-23. To keep things simple we'll leave
     // that range intact.
+    paramInfo.isContinuous = false
     paramInfo.choices = {
       'free':  1,
       '1/64':  2,

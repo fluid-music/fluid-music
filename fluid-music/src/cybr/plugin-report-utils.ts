@@ -149,7 +149,8 @@ export function guessDiscreteChoices(paramInfo) {
 export function guess(paramInfo: any) {
   const units = guessParamUnits(paramInfo)
   const isContinuous = guessIsContinuous(paramInfo)
-  let choices = isContinuous ? null : guessDiscreteChoices(paramInfo)
+  // The user may override the isContinuous guess. If they do. we should make sure to guess the discrete choices
+  let choices = (isContinuous && paramInfo.isContinuous !== false) ? null : guessDiscreteChoices(paramInfo)
   if (choices && Object.keys(choices).length >= paramInfo.outputValueStepsAsStrings.length) {
     console.warn(`Guesser: Omitting .choices from "${paramInfo.name}" param because the report step resolution may be too low`)
     choices = null

@@ -47,7 +47,8 @@ export interface ${parametersInterfaceName} {
   // For now, assume that every parameter is a number. This may change.
   output += params.map(param => {
     let result = ''
-    if (param.range) result += `  /** ${param.units ? param.units+' ' : ''}value from ${param.range[0]} to ${param.range[1]} */\n`
+    if (param.comment) result += param.comment
+    else if (param.range) result += `  /** ${param.units ? param.units+' ' : ''}value from ${param.range[0]} to ${param.range[1]} */\n`
     result += `  ${param.key}? : number;`
     return result
   }).join('\n') + '\n}\n'
@@ -59,7 +60,7 @@ export interface ${parametersInterfaceName} {
     if (param.range) result += `, range: [${param.range[0]}, ${param.range[1]}] as [number, number]`
     if (param.units) result += `, units: '${param.units}'`
     if (typeof param.powerFuncB === 'number') result += `, powerFuncB: ${param.powerFuncB}`
-    if (param.choices) result += `, choices: ${JSON.stringify(param.choices)}`
+    if (!param.isContinuous && param.choices) result += `, choices: ${JSON.stringify(param.choices)}`
     if (param.normalizeFunctionAsString) result += `,
     normalize: ${param.normalizeFunctionAsString}`
     return result + ' }'
