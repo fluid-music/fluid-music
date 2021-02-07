@@ -1380,13 +1380,6 @@ OSCMessage FluidOscServer::loadVst2PresetInSelectedPlugin(const juce::OSCMessage
             jucePlugin->suspendProcessing(false);
 
             externalPlugin->flushPluginStateToValueTree();
-
-            // Example: getting fxp
-            // jucePlugin->suspendProcessing(true);
-            // MemoryBlock fxpBlock;
-            // jucePlugin->getCurrentProgramStateInformation(fxpBlock); // use getStateInformation(...) to get fxb
-            // String fxpBase64 = Base64::toBase64(fxpBlock.getData(), fxpBlock.getSize());
-            // jucePlugin->suspendProcessing(false);
         }
     }
 
