@@ -14,8 +14,8 @@ function makeReaperVstB64PresetName(presetName : string) {
 
 /**
  * Create a `ReaperVst` object from an existing plugin on the cybr instance.
- * This function changes the state of the currently-activated session on cybr, because it
- * has to select every plugin to get its state.
+ * This function can change the state of the currently-activated session on
+ * cybr, because it has to select every plugin to get its state.
  *
  * @param client A FluidIpcClient that is connected to a cybr instance
  * @param trackName See documentation for cybr.audiotrack.select()
@@ -54,7 +54,6 @@ export async function vst2ToReaperObject(client: IpcClient, trackName: string, p
 
   // Check if we are in case #1. If so, there is no need to make a cybr request.
   if (vstPreset && noParams) {
-    console.warn(`No need to contact cybr for ${plugin.pluginName} instance!`)
     if (!vstPreset.state64) {
       console.warn(vstPreset);
       throw new Error(`Unusable ${plugin.pluginName} preset with .fxMagic: '${vstPreset.fxMagic}'`) ;
