@@ -34,7 +34,7 @@ export class IpcClient {
     targetPort: 9999,
     targetHost: '127.0.0.1',
     header: 0xf2b49e2c,
-    timeout: 3000,
+    timeout: 5000,
     isUnixDomainSocket: false,
   }
 
@@ -46,8 +46,9 @@ export class IpcClient {
   connectPromise? : Promise<any>
   broken : boolean = false
   keepOpen : boolean = false
-  connected : boolean = false
-  connectionInitiated : boolean = false
+  connected : boolean = false /** Is the client currently connected? */
+  connectionInitiated : boolean = false /** Did the client initiate a connection? */
+  connectionEstablished : boolean = false /** Were we ever successfully connected? */
 
 
   rejectAllPendingRequests(reason) {
@@ -80,7 +81,10 @@ export class IpcClient {
     this.keepOpen = keepOpen;
 
     this.client = new OscIpcClient(this.config);
-    this.client.once('connect', () => this.connected = true);
+    this.client.once('connect', () => {
+      this.connected = true;
+      this.connectionEstablished = true;
+    });
     this.client.on('res', (data) => {
       const pObj = this.queue.shift();
       try { pObj.resolve(osc.fromBuffer(data, true)); }
@@ -99,18 +103,18 @@ export class IpcClient {
 
     this.connectPromise = new Promise((resolve, reject) => {
       this.client.once('connect', () => { resolve('connected'); });
-      this.client.once('close', (error) => { error && reject(error) });
+      this.client.once('close', (error) => { error && !this.connectionEstablished && reject(error) });
       this.client.once('timeout', () => { this.client.close('Connection Timed Out'); });
       this.client.once('error', (error) => {
-console.error((chalk.reset`{bold.red ERROR} {green ${error.code}}:
-fluid-music failed to connect to the cybr server at ${error.address}:${error.port}
+        if (this.connectionInitiated && !this.connectionEstablished) {
+console.error((chalk.reset`{bold.red ERROR} {red connecting with the cybr server at ${this.config.targetHost}:${this.config.targetPort}}
 The cybr server must be running in order for fluid-music to:
 - export sessions that contain VSTs to .RPP files
 - export sessions to .tracktionedit files
 - play a session in realtime or render a session to audio
 {bold.red Make sure that cybr is running, and try again!}
-`))
-        this.client.close(); reject(error);
+`       ))}
+        reject(error);
       })
     });
 

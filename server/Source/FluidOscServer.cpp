@@ -1380,6 +1380,8 @@ OSCMessage FluidOscServer::loadVst2PresetInSelectedPlugin(const juce::OSCMessage
             jucePlugin->suspendProcessing(false);
 
             externalPlugin->flushPluginStateToValueTree();
+            constructReply(reply, 0, "Loaded vst state");
+            return reply;
         }
     }
 
