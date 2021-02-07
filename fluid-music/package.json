@@ -27,7 +27,8 @@
     "osc-min": "^1.1.2",
     "ramda": "^0.27.1",
     "rppp": "^0.2.4",
-    "sharp11": "^2.0.2"
+    "sharp11": "^2.0.2",
+    "vst2-preset-parser": "^0.1.1"
   },
   "bin": {
     "fluid": "./cli/cli.js"
