@@ -1372,10 +1372,14 @@ OSCMessage FluidOscServer::loadVst2PresetInSelectedPlugin(const juce::OSCMessage
 
     if (auto externalPlugin = dynamic_cast<te::ExternalPlugin*>(selectedPlugin)) {
         if (externalPlugin->isVST()) {
+
             juce::AudioPluginInstance* jucePlugin = externalPlugin->getAudioPluginInstance();
+
             jucePlugin->suspendProcessing(true);
             jucePlugin->setCurrentProgramStateInformation(stateBlob.getData(), (int)stateBlob.getSize());
             jucePlugin->suspendProcessing(false);
+
+            externalPlugin->flushPluginStateToValueTree();
 
             // Example: getting fxp
             // jucePlugin->suspendProcessing(true);

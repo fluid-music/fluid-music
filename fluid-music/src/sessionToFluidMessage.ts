@@ -66,6 +66,10 @@ export function sessionToTemplateFluidMessage(session : FluidSession) {
       const cybrType = plugin.pluginType === PluginType.unknown ? null : plugin.pluginType
       pluginMessages.push(cybr.plugin.select(plugin.pluginName, cybrType, nth(plugin)))
 
+      if (plugin.vst2?.presetBase64) {
+        pluginMessages.push(cybr.plugin.loadVst2Preset(plugin.vst2.presetBase64))
+      }
+
       // set parameters
       for (const [paramKey, explicitValue] of Object.entries(plugin.parameters)) {
         const paramName = plugin.getParameterName(paramKey)

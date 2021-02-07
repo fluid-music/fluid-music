@@ -1,7 +1,7 @@
 export const linear = (min : number, max: number) => (v: number) => (v - min) / (max - min);
 export const map = (v: number, min: number, max : number) => linear(min, max)(v);
 
-import { Tap, UnresolvedReceive } from "./fluid-interfaces";
+import { UnresolvedReceive } from "./fluid-interfaces";
 import { PluginAutomation } from "./techniques";
 import { FluidReceive, FluidTrack } from "./FluidTrack";
 
@@ -127,11 +127,14 @@ export class FluidPlugin {
   vst2 : {
     /** The 32-bit plugin VST2 plugin UID (if known) */
     uid? : number,
-    /** A .fxp or .fxb vst2 preset preset file, base64 encoded. This is the
-     * initial state of the plugin will be applied before any additional
-     * configuration specified within the plugin's [[FluidPlugin.parameters]]
-     * property */
+
+    /**
+     * A .fxp vst2 preset preset file, base64 encoded. This is the initial
+     * state of the plugin will be applied before any additional configuration
+     * specified within the plugin's [[FluidPlugin.parameters]] property.
+     */
     presetBase64? : string,
+
     /**
      * VST2 plugins report a vendor name
      */
@@ -189,7 +192,7 @@ export class FluidPlugin {
    * This function attempts to get JUCE's name from the key. If the key is not
    * registered on the plugin, just return the `key` argument directly. This
    * behavior is designed to make it possible to use and configure plugins with
-   * the FludPlugin base class even when there is no adapter available.
+   * the FluidPlugin base class even when there is no adapter available.
    *
    * When there is no adapter available, you can just set a parameter directly:
    * `pluginInstance.parameters["Wet Level"] = 0.8;
