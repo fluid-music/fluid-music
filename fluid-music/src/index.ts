@@ -42,4 +42,4 @@ export { IpcClient as Client } from './cybr/IpcClient'
 //
 // Imports may also be written inline in JSDoc @param types
 // /** @param {import('fluid-music').UseContext} context */
-export { UseContext, ScoreConfig, UnresolvedSend, UnresolvedReceive } from './fluid-interfaces'
+export { UseContext, ScoreConfig, UnresolvedSend, UnresolvedReceive, Technique } from './fluid-interfaces'

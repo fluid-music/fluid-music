@@ -7,9 +7,7 @@ import { FluidAudioFile, resolveFades } from './FluidAudioFile'
 import { vst2ToReaperObject } from './vst2ToReaperObject'
 import * as cybr from './cybr/index';
 import { IpcClient } from './cybr/IpcClient'
-import { ClipEventContext, MidiNoteEvent, Tap } from './fluid-interfaces'
-
-
+import { Clip, DynamicObject, Tap, MidiNoteEvent } from './fluid-interfaces'
 
 const rppp = require('rppp')
 
@@ -251,6 +249,30 @@ to ensure that cybr knows how to find it, and then restart the cybr server.
 
   return reaperProject;
 };
+
+/**
+ * ClipEventContext is similar to a UseContext object, but used exclusively when
+ * creating reaper sessions.
+ */
+interface ClipEventContext {
+  d: DynamicObject;
+  /**
+   * `data` is a convenient place to store data between `.use` callbacks. One
+   * `.data` object will be created for each pattern string found in the score
+   */
+  data: { [key: string] : any };
+  /** The session containing this track, clip, and event */
+  session: FluidSession;
+  /** the Clip that contains the current event */
+  clip: Clip;
+  /** the Track that contains the current event */
+  track: FluidTrack;
+  /** index of the clip within the track */
+  clipIndex: number;
+  /** index of the event within the clip. */
+  eventIndex?: number;
+}
+
 
 function midiEventsToReaperObject(midiEvents : MidiNoteEvent[] , context : ClipEventContext) {
   const bpm = context.session.bpm

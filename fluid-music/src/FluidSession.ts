@@ -258,7 +258,7 @@ export class FluidSession {
               clip,
               clipIndex,
               data,
-              eventIndex: eventIndex++,
+              eventIndex,
               session: this,
               startTime: clip.startTime + event.startTime,
               duration: event.duration,
@@ -267,6 +267,10 @@ export class FluidSession {
             }
 
             event.technique.use(useContext)
+            // allow events to change the eventIndex
+            eventIndex = (typeof useContext.eventIndex === 'number')
+              ? useContext.eventIndex + 1
+              : eventIndex + 1
           } else {
             throw new Error(`Unhandled Event (no .use(...) method): ${JSON.stringify(event)}`)
           }

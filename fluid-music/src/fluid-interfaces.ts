@@ -63,36 +63,12 @@ export interface TrackReceive {
   // For now, I will not implement panning in sends.
 }
 
-/**
- * ClipEventContext fields specify the context of the ClipEvent currently being
- * processed, including the track and clip that contain the note.
- */
-export interface ClipEventContext {
-  d: DynamicObject;
-
-  /**
-   * this is a convenient place to store data between .process callbacks. Like
-   * the EventContext, it is replaced for each Clip.
-   */
-  data: { [key: string] : any };
-  /** The session containing this track, clip, and event */
-  session: FluidSession;
-  /** the Clip that contains the current event */
-  clip: Clip;
-  /** the Track that contains the current event */
-  track: FluidTrack;
-  /** index of the clip within the track */
-  clipIndex: number;
-  /** index of the event within the clip. */
-  eventIndex?: number;
-}
-
 export interface UseContext {
   d: DynamicObject;
 
   /**
-   * this is a convenient place to store data between .process callbacks. Like
-   * the EventContext, it is replaced for each Clip.
+   * `data` is a convenient place to store data between `.use` callbacks. One
+   * `.data` object will be created for each pattern string found in a score.
    */
   data: { [key: string] : any };
   /** The session containing this track, clip, and event */
