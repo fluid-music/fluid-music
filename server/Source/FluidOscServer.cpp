@@ -120,6 +120,7 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/clip/source/offset/seconds"})) return offsetClipSourceInSeconds(message);
     if (msgAddressPattern.matches({"/audioclip/set/db"})) return setClipDb(message);
     if (msgAddressPattern.matches({"/audioclip/set/pitch"})) return setClipPitch(message);
+    if (msgAddressPattern.matches({"/audioclip/set/stretch-mode"})) return setClipStretchMode(message);
     if (msgAddressPattern.matches({"/audioclip/reverse"})) return reverseAudioClip(true);
     if (msgAddressPattern.matches({"/audioclip/unreverse"})) return reverseAudioClip(false);
     if (msgAddressPattern.matches({"/audioclip/fade/seconds"})) return audioClipFadeInOutSeconds(message);
@@ -276,6 +277,29 @@ OSCMessage FluidOscServer::setClipPitch(const juce::OSCMessage& message) {
         audioClip->setTimeStretchMode(te::TimeStretcher::Mode::soundtouchBetter);
     }
     audioClip->setPitchChange(semitones);
+
+    reply.addInt32(0);
+    return reply;
+}
+
+OSCMessage FluidOscServer::setClipStretchMode(const juce::OSCMessage& message) {
+    OSCMessage reply("/audioclip/set/stretch-mode/reply");
+
+    if (!selectedClip) {
+        String errorString = "Cannot set audio clip stretch mode: no clip selected";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    auto* audioClip = dynamic_cast<te::AudioClipBase*>(selectedClip);
+    if (!audioClip) {
+        String errorString = "Cannot set audio clip stretch mode: selected clip is not an audio clip";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    int mode = message[0].getInt32();
+    audioClip->setTimeStretchMode((te::TimeStretcher::Mode)mode);
 
     reply.addInt32(0);
     return reply;

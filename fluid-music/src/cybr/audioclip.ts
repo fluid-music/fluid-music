@@ -75,3 +75,34 @@ export function pitchSemitones(semitones : number) {
     args: [{ type: 'float', value: semitones }]
   }
 }
+
+/**
+ * Set time stretch mode. 
+ * 
+ * Available modes:
+ *  disabled = 0           // default
+ *  elastiqueTransient = 1 // defunct
+ *  elastiqueTonal = 2     // defunct
+ *  soundtouchNormal = 3
+ *  soundtouchBetter = 4
+ *  melodyne = 5
+ *  elastiquePro = 6
+ *  elastiqueEfficient = 7
+ *  elastiqueMobile = 8
+ *  elastiqueMonophonic = 9
+ * 
+ * @param {number} mode the time stretch mode
+ */
+export function stretchMode(mode : number = 0) {
+  if (typeof mode !== 'number')
+    throw new Error('stretchMode requires a mode number')
+  if (mode > 9 || mode < 0)
+    throw new RangeError('stretchMode only accepts integers between 0 - 9')
+  if (Number.isInteger(mode))
+    throw new TypeError('stretchMode requires an integer mode argument')
+
+  return {
+    address: '/audioclip/set/stretch-mode',
+    args: [{ type: 'integer', value: mode }],
+  }
+}
