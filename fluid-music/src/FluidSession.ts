@@ -222,7 +222,7 @@ export class FluidSession {
             })
             delete plugin.unresolvedSidechainReceive
           } else {
-            console.warn(`WARNING: Track (${track.name}) includes a plugin (${plugin.pluginName})which contains a sidechain receive from a non-existent track (${sendTrackName})`)
+            console.warn(`WARNING: Track (${track.name}) includes a plugin (${plugin.pluginName}) which contains a sidechain receive from a non-existent track (${sendTrackName})`)
           }
         }
       }
