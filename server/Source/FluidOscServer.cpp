@@ -977,10 +977,25 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
         te::AutomatableParameter::Ptr param = selectedPlugin->getAutomatableParameter(i);
         if (param->paramName.equalsIgnoreCase(paramName)) {
 
-            param->parameterChangeGestureBegin();
+            param->parameterChangeGestureBegin(); // BEGIN GESTURE
+
+            if (selectedPlugin->getPluginType() == "vst" && param->getCurrentValue() == paramValue) {
+                // An interesting edge-case was causing a bug. To reproduce:
+                // 1) assume the parameter is initially set to 0.5
+                // 2) load a vst preset which sets the parameter to 1.0
+                // 3) instantly set the parameter back to 0.5
+                // In this case, the value tree has not yet updated, and it "looks like"
+                // the parameter is already set to 0.5, causing it not to be updated.
+                // To address this, we use a hacky trick to force the parameter to udpate.
+                float dummy = (param->valueRange.start == paramValue) ? paramValue + 0.0001 : paramValue - 0.0001;
+                if (isNormalized) param->setNormalisedParameter(dummy, NotificationType::sendNotification);
+                else param->setParameter(dummy, NotificationType::sendNotification);
+            }
+
             if (isNormalized) param->setNormalisedParameter(paramValue, NotificationType::sendNotification);
             else param->setParameter(paramValue, NotificationType::sendNotificationSync);
-            param->parameterChangeGestureEnd();
+
+            param->parameterChangeGestureEnd(); // END GESTURE
 
             String replyString = "set " + paramName
             + " to " + String(message[1].getFloat32())
