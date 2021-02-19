@@ -83,6 +83,7 @@ public:
     juce::OSCMessage setTempo(const juce::OSCMessage& message);
     juce::OSCMessage clearContent(const juce::OSCMessage& message);
     juce::OSCMessage getAudioFileReport(const juce::OSCMessage& message);
+    juce::OSCMessage setTimeSignatureAt(const juce::OSCMessage& message);
 
     // everything else
     juce::OSCMessage muteTrack(bool mute);

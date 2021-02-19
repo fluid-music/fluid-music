@@ -125,11 +125,43 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/audioclip/fade/seconds"})) return audioClipFadeInOutSeconds(message);
     if (msgAddressPattern.matches({"/tempo/set/"})) return setTempo(message);
     if (msgAddressPattern.matches({"/content/clear"})) return clearContent(message);
+    if (msgAddressPattern.matches({"/tempo/set/timesig"})) return setTimeSignatureAt(message);
 
     printOscMessage(message);
     OSCMessage error("/error");
     constructReply(error, 1, "Unhandled Message");
     return error;
+}
+
+OSCMessage FluidOscServer::setTimeSignatureAt(const OSCMessage& message) {
+    OSCMessage reply("/tempo/set/timesig/reply");
+
+    if (!activeCybrEdit) {
+        constructReply(reply, 1, "Cannot set time signature: No active edit");
+        return reply;
+    }
+
+    if (message.size() < 2 || !message[0].isInt32() || !message[1].isInt32()) {
+        constructReply(reply, 1, "Cannot set time signature: Invalid Arguments");
+        return reply;
+    }
+
+    double timeWholeNotes = 0;
+    int upper = message[0].getInt32();
+    int lower = message[1].getInt32();
+
+    if (message.size() > 2 && message[2].isFloat32()) {
+        timeWholeNotes = message[2].getFloat32();
+    }
+
+    te::Edit& edit = activeCybrEdit->getEdit();
+    double time = edit.tempoSequence.beatsToTime(timeWholeNotes * 4);
+    te::TimeSigSetting::Ptr timeSignature = edit.tempoSequence.insertTimeSig(time);
+    timeSignature->numerator = upper;
+    timeSignature->denominator = lower;
+    if (upper % 3 == 0) timeSignature->triplets = true;
+    reply.addInt32(0);
+    return reply;
 }
 
 OSCMessage FluidOscServer::selectSubmixTrack(const OSCMessage& message) {
@@ -987,7 +1019,7 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
                 // In this case, the value tree has not yet updated, and it "looks like"
                 // the parameter is already set to 0.5, causing it not to be updated.
                 // To address this, we use a hacky trick to force the parameter to udpate.
-                float dummy = (param->valueRange.start == paramValue) ? paramValue + 0.0001 : paramValue - 0.0001;
+                float dummy = (param->valueRange.end == paramValue) ? paramValue - 0.00001 : paramValue + 0.00001;
                 if (isNormalized) param->setNormalisedParameter(dummy, NotificationType::sendNotification);
                 else param->setParameter(dummy, NotificationType::sendNotification);
             }
