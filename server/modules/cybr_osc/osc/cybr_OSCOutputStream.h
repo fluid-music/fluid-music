@@ -57,6 +57,8 @@ struct JUCE_API OSCOutputStream
 
     bool writeFloat32 (float value);
 
+    bool writeFloat64 (double value);
+
     bool writeString (const juce::String& value);
 
     bool writeBlob (const juce::MemoryBlock& blob);

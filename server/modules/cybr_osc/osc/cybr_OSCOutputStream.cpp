@@ -59,6 +59,11 @@ bool OSCOutputStream::writeFloat32 (float value)
     return output.writeFloatBigEndian (value);
 }
 
+bool OSCOutputStream::writeFloat64 (double value)
+{
+    return output.writeDoubleBigEndian (value);
+}
+
 bool OSCOutputStream::writeString (const String& value)
 {
     if (! output.writeString (value))
@@ -121,6 +126,7 @@ bool OSCOutputStream::writeArgument (const OSCArgument& arg)
     {
         case TypeWrapper::int32:       return writeInt32 (arg.getInt32());
         case TypeWrapper::float32:     return writeFloat32 (arg.getFloat32());
+        case TypeWrapper::float64:     return writeFloat64 (arg.getFloat64());
         case TypeWrapper::string:      return writeString (arg.getString());
         case TypeWrapper::blob:        return writeBlob (arg.getBlob());
         case TypeWrapper::colour:      return writeColour (arg.getColour());
