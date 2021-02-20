@@ -5,6 +5,7 @@
 //  Created by Zhi Wei Gan on 2/24/20.
 //
 
+#pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
 
 namespace cybr {

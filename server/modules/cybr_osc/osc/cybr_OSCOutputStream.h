@@ -24,6 +24,8 @@
   ==============================================================================
 */
 
+#pragma once
+
 #include "../JuceLibraryCode/JuceHeader.h"
 
 namespace cybr

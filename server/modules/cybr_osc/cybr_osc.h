@@ -63,3 +63,5 @@
 #include "osc/juce_OSCBundle.h"
 #include "osc/juce_OSCReceiver.h"
 #include "osc/juce_OSCSender.h"
+#include "osc/cybr_OSCInputStream.h"
+#include "osc/cybr_OSCOutputStream.h"

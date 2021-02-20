@@ -24,7 +24,7 @@
   ==============================================================================
 */
 
-#include "temp_OSCOutputStream.h"
+#include "cybr_OSCOutputStream.h"
 
 using namespace juce;
 
@@ -32,15 +32,6 @@ namespace cybr
 {
 
 using OSCType = char;
-
-class TypeWrapper{
-public:
-    static const OSCType int32 = 'i';
-    static const OSCType float32 = 'f';
-    static const OSCType string = 's';
-    static const OSCType blob = 'b';
-    static const OSCType colour = 'r';
-};
 
 //==============================================================================
 /** Writes OSC data to an internal memory buffer, which grows as required.

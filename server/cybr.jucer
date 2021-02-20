@@ -51,14 +51,6 @@
             file="Source/plugin_report.cpp"/>
       <FILE id="OHcgSO" name="plugin_report.h" compile="0" resource="0" file="Source/plugin_report.h"/>
     </GROUP>
-    <FILE id="OhQeKm" name="temp_OSCInputStream.cpp" compile="1" resource="0"
-          file="Source/temp_OSCInputStream.cpp"/>
-    <FILE id="UV8I0A" name="temp_OSCInputStream.h" compile="0" resource="0"
-          file="Source/temp_OSCInputStream.h"/>
-    <FILE id="jRtzeL" name="temp_OSCOutputStream.cpp" compile="1" resource="0"
-          file="Source/temp_OSCOutputStream.cpp"/>
-    <FILE id="KFe72t" name="temp_OSCOutputStream.h" compile="0" resource="0"
-          file="Source/temp_OSCOutputStream.h"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2017 targetFolder="Builds/VisualStudio2017">

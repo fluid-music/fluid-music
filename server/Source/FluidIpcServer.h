@@ -11,8 +11,6 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "temp_OSCInputStream.h"
-#include "temp_OSCOutputStream.h"
 #include "FluidOscServer.h"
 
 using namespace juce;
