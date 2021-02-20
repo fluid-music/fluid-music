@@ -288,8 +288,8 @@ function midiEventsToReaperObject(midiEvents : MidiNoteEvent[] , context : ClipE
   const duration  = context.clip.duration
 
   midiItem.getOrCreateStructByToken('NAME').params[0] = clipName
-  midiItem.getOrCreateStructByToken('POSITION').params[0] = startTime * 4 * 60 / bpm
-  midiItem.getOrCreateStructByToken('LENGTH').params[0] = duration * 4 * 60 / bpm
+  midiItem.getOrCreateStructByToken('POSITION').params[0] = context.session.timeWholeNotesToSeconds(startTime)
+  midiItem.getOrCreateStructByToken('LENGTH').params[0] = context.session.timeWholeNotesToSeconds(duration)
 
   const midiArray : any[] = []
   for (const event of midiEvents) {

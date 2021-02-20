@@ -33,7 +33,7 @@ export function select(name, startTimeInWholeNotes, durationInWholeNotes) {
 }
 
 /**
- * Create an /midiclip/n message
+ * Create an /midiclip/note message
  * @param {Integer} noteNum MIDI Note Number
  * @param {Number} startTimeInWholeNotes Note start time in whole notes
  * @param {Number} [durationInWholeNotes=0.25] Note length in whole notes
