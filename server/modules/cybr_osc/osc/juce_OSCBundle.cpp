@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-namespace juce
+namespace cybr
 {
 
 OSCBundle::OSCBundle()
@@ -246,4 +246,4 @@ static OSCBundleElementTests OSCBundleElementUnitTests;
 
 #endif
 
-} // namespace juce
+} // namespace cybr

@@ -32,7 +32,7 @@
  #error "Incorrect use of JUCE cpp file"
 #endif
 
-#include "juce_osc.h"
+#include "cybr_osc.h"
 
 #include "osc/juce_OSCTypes.cpp"
 #include "osc/juce_OSCTimeTag.cpp"

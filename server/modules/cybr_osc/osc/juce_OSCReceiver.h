@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-namespace juce
+namespace cybr
 {
 
 //==============================================================================
@@ -45,7 +45,7 @@ public:
     OSCReceiver();
 
     /** Creates an OSCReceiver with a specific name for its thread. */
-    OSCReceiver (const String& threadName);
+    OSCReceiver (const juce::String& threadName);
 
     /** Destructor. */
     ~OSCReceiver();
@@ -64,7 +64,7 @@ public:
         object is still using it!
         @returns true if the connection was successful; false otherwise.
     */
-    bool connectToSocket (DatagramSocket& socketToUse);
+    bool connectToSocket (juce::DatagramSocket& socketToUse);
 
     //==============================================================================
     /** Disconnects from the currently used UDP port.
@@ -221,4 +221,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OSCReceiver)
 };
 
-} // namespace juce
+} // namespace cybr

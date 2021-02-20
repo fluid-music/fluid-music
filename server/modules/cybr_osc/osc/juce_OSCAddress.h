@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-namespace juce
+namespace cybr
 {
 
 //==============================================================================
@@ -51,7 +51,7 @@ public:
     /** Constructs a new OSCAddress from a String.
         @throw OSCFormatError if the string is not a valid OSC address.
     */
-    OSCAddress (const String& address);
+    OSCAddress (const juce::String& address);
 
     /** Constructs a new OSCAddress from a C string.
         @throw OSCFormatError of the string is not a valid OSC address.
@@ -73,12 +73,12 @@ public:
 
         @returns a String object that represents the OSC address.
     */
-    String toString() const noexcept;
+    juce::String toString() const noexcept;
 
 private:
     //==============================================================================
-    StringArray oscSymbols;
-    String asString;
+    juce::StringArray oscSymbols;
+    juce::String asString;
     friend class OSCAddressPattern;
 };
 
@@ -103,7 +103,7 @@ public:
     /** Constructs a new OSCAddressPattern from a String.
         @throw OSCFormatError if the string is not a valid OSC address pattern.
     */
-    OSCAddressPattern (const String& address);
+    OSCAddressPattern (const juce::String& address);
 
     /** Constructs a new OSCAddressPattern from a C string.
         @throw OSCFormatError of the string is not a valid OSC address pattern.
@@ -140,14 +140,14 @@ public:
 
         @returns a String object that represents the OSC address pattern.
     */
-    String toString() const noexcept;
+    juce::String toString() const noexcept;
 
 
 private:
     //==============================================================================
-    StringArray oscSymbols;
-    String asString;
+    juce::StringArray oscSymbols;
+    juce::String asString;
     bool wasInitialisedWithWildcards;
 };
 
-} // namespace juce
+} // namespace cybr

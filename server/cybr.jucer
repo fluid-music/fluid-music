@@ -82,7 +82,8 @@
         <MODULEPATH id="juce_audio_utils" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_dsp" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="tracktion_engine" path="tracktion_engine/modules"/>
-        <MODULEPATH id="juce_osc" path="Source"/>
+        <MODULEPATH id="juce_osc" path="tracktion_engine/modules/juce/modules"/>
+        <MODULEPATH id="cybr_osc" path="modules"/>
       </MODULEPATHS>
     </VS2017>
     <XCODE_MAC targetFolder="Builds/MacOSX">
@@ -106,7 +107,8 @@
         <MODULEPATH id="juce_audio_devices" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_audio_basics" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="tracktion_engine" path="tracktion_engine/modules"/>
-        <MODULEPATH id="juce_osc" path="Source"/>
+        <MODULEPATH id="juce_osc" path="tracktion_engine/modules/juce/modules"/>
+        <MODULEPATH id="cybr_osc" path="modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
@@ -130,11 +132,13 @@
         <MODULEPATH id="juce_audio_formats" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_audio_devices" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_audio_basics" path="tracktion_engine/modules/juce/modules"/>
-        <MODULEPATH id="juce_osc" path="Source"/>
+        <MODULEPATH id="juce_osc" path="tracktion_engine/modules/juce/modules"/>
+        <MODULEPATH id="cybr_osc" path="modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
   <MODULES>
+    <MODULE id="cybr_osc" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>

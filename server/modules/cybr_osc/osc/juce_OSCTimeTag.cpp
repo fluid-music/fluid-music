@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-namespace juce
+namespace cybr
 {
 
 const OSCTimeTag OSCTimeTag::immediately;
@@ -152,4 +152,4 @@ static OSCTimeTagTests OSCTimeTagUnitTests;
 
 #endif
 
-} // namespace juce
+} // namespace cybr

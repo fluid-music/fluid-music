@@ -26,7 +26,9 @@
 
 #include "temp_OSCOutputStream.h"
 
-namespace juce
+using namespace juce;
+
+namespace cybr
 {
 
 using OSCType = char;

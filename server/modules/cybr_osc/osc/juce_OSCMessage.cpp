@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-namespace juce
+namespace cybr
 {
 
 OSCMessage::OSCMessage (const OSCAddressPattern& ap) noexcept  : addressPattern (ap)
@@ -224,4 +224,4 @@ static OSCMessageTests OSCMessageUnitTests;
 
 #endif
 
-} // namespace juce
+} // namespace cybr

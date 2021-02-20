@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-namespace juce
+namespace cybr
 {
 
 //==============================================================================
@@ -32,7 +32,7 @@ using OSCType = char;
 
 
 /** The type used for OSC type tag strings. */
-using OSCTypeList = Array<OSCType>;
+using OSCTypeList = juce::Array<OSCType>;
 
 //==============================================================================
 /** The definitions of supported OSC types and their associated OSC type tags,
@@ -48,6 +48,7 @@ class JUCE_API  OSCTypes
 public:
     static const OSCType int32;
     static const OSCType float32;
+    static const OSCType float64;
     static const OSCType string;
     static const OSCType blob;
     static const OSCType colour;
@@ -56,6 +57,7 @@ public:
     {
         return type == OSCTypes::int32
             || type == OSCTypes::float32
+            || type == OSCTypes::float64
             || type == OSCTypes::string
             || type == OSCTypes::blob
             || type == OSCTypes::colour;
@@ -71,10 +73,10 @@ public:
 */
 struct OSCColour
 {
-    uint8 red, green, blue, alpha;
+    juce::uint8 red, green, blue, alpha;
 
-    uint32 toInt32() const;
-    static OSCColour fromInt32 (uint32);
+    juce::uint32 toInt32() const;
+    static OSCColour fromInt32 (juce::uint32);
 };
 
 
@@ -85,7 +87,7 @@ struct OSCColour
 */
 struct OSCException  : public std::exception
 {
-    OSCException (const String& desc)
+    OSCException (const juce::String& desc)
         : description (desc)
     {
        #if ! JUCE_UNIT_TESTS
@@ -93,7 +95,7 @@ struct OSCException  : public std::exception
        #endif
     }
 
-    String description;
+    juce::String description;
 };
 
 //==============================================================================
@@ -104,7 +106,7 @@ struct OSCException  : public std::exception
 */
 struct OSCFormatError : public OSCException
 {
-    OSCFormatError (const String& desc) : OSCException (desc) {}
+    OSCFormatError (const juce::String& desc) : OSCException (desc) {}
 };
 
 //==============================================================================
@@ -117,7 +119,7 @@ struct OSCFormatError : public OSCException
 */
 struct OSCInternalError : public OSCException
 {
-    OSCInternalError (const String& desc) : OSCException (desc) {}
+    OSCInternalError (const juce::String& desc) : OSCException (desc) {}
 };
 
-} // namespace juce
+} // namespace cybr

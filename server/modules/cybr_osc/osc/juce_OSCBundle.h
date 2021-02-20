@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-namespace juce
+namespace cybr
 {
 
 //==============================================================================
@@ -139,8 +139,8 @@ public:
 
 private:
     //==============================================================================
-    Array<OSCBundle::Element> elements;
+    juce::Array<OSCBundle::Element> elements;
     OSCTimeTag timeTag;
 };
 
-} // namespace juce
+} // namespace cybr

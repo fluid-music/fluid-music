@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-namespace juce
+namespace cybr
 {
 
 namespace
@@ -873,4 +873,4 @@ static OSCRoundTripTests OSCRoundTripUnitTests;
 
 #endif
 
-} // namespace juce
+} // namespace cybr

@@ -18,22 +18,22 @@ FluidOscServer::FluidOscServer() {
     addListener (this);
 }
 
-void FluidOscServer::oscBundleReceived(const OSCBundle &bundle){
+void FluidOscServer::oscBundleReceived(const cybr::OSCBundle &bundle){
     SelectedObjects obj;
     handleOscBundle(bundle, obj);
 }
 
-void FluidOscServer::oscMessageReceived(const OSCMessage &message){
+void FluidOscServer::oscMessageReceived(const cybr::OSCMessage &message){
     handleOscMessage(message);
 }
 
-void FluidOscServer::constructReply(OSCMessage &reply, int error, String message){
+void FluidOscServer::constructReply(cybr::OSCMessage &reply, int error, String message){
     reply.addInt32(error);
     reply.addString(message);
     std::cout<<message<<std::endl;
 }
 
-void FluidOscServer::constructReply(OSCMessage &reply, String message){
+void FluidOscServer::constructReply(cybr::OSCMessage &reply, String message){
     reply.addString(message);
     std::cout<<message<<std::endl;
 }
@@ -42,20 +42,20 @@ SelectedObjects FluidOscServer::getSelectedObjects() {
     return { selectedTrack, selectedClip, selectedPlugin };
 }
 
-OSCBundle FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjects parentSelection) {
+cybr::OSCBundle FluidOscServer::handleOscBundle(const cybr::OSCBundle &bundle, SelectedObjects parentSelection) {
     SelectedObjects currBundle = parentSelection;
-    OSCBundle reply;
+    cybr::OSCBundle reply;
     for (const auto& element: bundle) {
         if (element.isMessage()) {
             // allow messages to update the current selection ("currBundle")
-            OSCMessage replyMessage = handleOscMessage(element.getMessage());
+            cybr::OSCMessage replyMessage = handleOscMessage(element.getMessage());
             currBundle.audioTrack = selectedTrack;
             currBundle.clip = selectedClip;
             currBundle.plugin = selectedPlugin;
             reply.addElement(replyMessage);
         } else if (element.isBundle()) {
             // After processing a bundle, selection will reset to "currBundle"
-            OSCBundle replyBundle = handleOscBundle(element.getBundle(), currBundle);
+            cybr::OSCBundle replyBundle = handleOscBundle(element.getBundle(), currBundle);
             reply.addElement(replyBundle);
         }
     }
@@ -66,8 +66,8 @@ OSCBundle FluidOscServer::handleOscBundle(const OSCBundle &bundle, SelectedObjec
     return reply;
 }
 
-OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
-    const OSCAddressPattern msgAddressPattern = message.getAddressPattern();
+cybr::OSCMessage FluidOscServer::handleOscMessage (const cybr::OSCMessage& message) {
+    const cybr::OSCAddressPattern msgAddressPattern = message.getAddressPattern();
 
     if (msgAddressPattern.matches({"/test"}) || msgAddressPattern.matches({"/print"})) {
         printOscMessage(message);
@@ -128,13 +128,13 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/tempo/set/timesig"})) return setTimeSignatureAt(message);
 
     printOscMessage(message);
-    OSCMessage error("/error");
+    cybr::OSCMessage error("/error");
     constructReply(error, 1, "Unhandled Message");
     return error;
 }
 
-OSCMessage FluidOscServer::setTimeSignatureAt(const OSCMessage& message) {
-    OSCMessage reply("/tempo/set/timesig/reply");
+cybr::OSCMessage FluidOscServer::setTimeSignatureAt(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/tempo/set/timesig/reply");
 
     if (!activeCybrEdit) {
         constructReply(reply, 1, "Cannot set time signature: No active edit");
@@ -164,8 +164,8 @@ OSCMessage FluidOscServer::setTimeSignatureAt(const OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::selectSubmixTrack(const OSCMessage& message) {
-    OSCMessage reply("/audiotrack/select/submix/reply");
+cybr::OSCMessage FluidOscServer::selectSubmixTrack(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/audiotrack/select/submix/reply");
     if (!activeCybrEdit) {
         constructReply(reply, 1, "Cannot select submix track: No active edit");
         return reply;
@@ -192,8 +192,8 @@ OSCMessage FluidOscServer::selectSubmixTrack(const OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::clearContent(const OSCMessage& message) {
-    OSCMessage reply("/content/clear/reply");
+cybr::OSCMessage FluidOscServer::clearContent(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/content/clear/reply");
     if (!activeCybrEdit) {
         constructReply(reply, 1, "Cannot clear content: No active edit");
         return reply;
@@ -212,8 +212,8 @@ OSCMessage FluidOscServer::clearContent(const OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::removeAudioTrackClips(const OSCMessage& message) {
-    OSCMessage reply("/audiotrack/remove/clips/reply");
+cybr::OSCMessage FluidOscServer::removeAudioTrackClips(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/audiotrack/remove/clips/reply");
     if (!selectedTrack) {
         const String errorString = "Cannot remove audio track clips: no track selected";
         constructReply(reply, 1, errorString);
@@ -232,8 +232,8 @@ OSCMessage FluidOscServer::removeAudioTrackClips(const OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::removeAudioTrackAutomation(const OSCMessage& message) {
-    OSCMessage reply("/audiotrack/remove/automation/reply");
+cybr::OSCMessage FluidOscServer::removeAudioTrackAutomation(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/audiotrack/remove/automation/reply");
 
     if (!selectedTrack) {
         String errorString = "Cannot remove audio track automation: no track selected";
@@ -247,8 +247,8 @@ OSCMessage FluidOscServer::removeAudioTrackAutomation(const OSCMessage& message)
 }
 
 
-OSCMessage FluidOscServer::setClipDb(const OSCMessage& message) {
-    OSCMessage reply("/audioclip/set/db/reply");
+cybr::OSCMessage FluidOscServer::setClipDb(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/audioclip/set/db/reply");
 
     if (!selectedClip) {
         String errorString = "Cannot set audio clip gain: no clip selected";
@@ -281,8 +281,8 @@ OSCMessage FluidOscServer::setClipDb(const OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::setClipPitch(const juce::OSCMessage& message) {
-    OSCMessage reply("/audioclip/set/pitch/reply");
+cybr::OSCMessage FluidOscServer::setClipPitch(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/audioclip/set/pitch/reply");
 
     if (!selectedClip) {
         String errorString = "Cannot set audio clip pitch: no clip selected";
@@ -313,8 +313,8 @@ OSCMessage FluidOscServer::setClipPitch(const juce::OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::audioClipFadeInOutSeconds(const OSCMessage& message) {
-    OSCMessage reply("/audioclip/fade/seconds/reply");
+cybr::OSCMessage FluidOscServer::audioClipFadeInOutSeconds(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/audioclip/fade/seconds/reply");
     if (!selectedClip) {
         String errorString = "Cannot setup audio clip fade in/out: no clip selected";
         constructReply(reply, 1, errorString);
@@ -351,8 +351,8 @@ OSCMessage FluidOscServer::audioClipFadeInOutSeconds(const OSCMessage& message) 
     return reply;
 }
 
-OSCMessage FluidOscServer::reverseAudioClip(bool reverse) {
-    OSCMessage reply("/audioclip/reverse/reply");
+cybr::OSCMessage FluidOscServer::reverseAudioClip(bool reverse) {
+    cybr::OSCMessage reply("/audioclip/reverse/reply");
     if (!selectedClip) {
         String errorString = "Cannot update clip reverse status: no clip selected";
         constructReply(reply, 1, errorString);
@@ -425,8 +425,8 @@ OSCMessage FluidOscServer::reverseAudioClip(bool reverse) {
     return reply;
 }
 
-OSCMessage FluidOscServer::offsetClipSourceInSeconds(const juce::OSCMessage& message) {
-    OSCMessage reply("/clip/source/offset/seconds/reply");
+cybr::OSCMessage FluidOscServer::offsetClipSourceInSeconds(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/clip/source/offset/seconds/reply");
     if (!selectedClip) {
         String errorString = "Cannot set clip source offset: no clip selected";
         constructReply(reply, 1, errorString);
@@ -445,8 +445,8 @@ OSCMessage FluidOscServer::offsetClipSourceInSeconds(const juce::OSCMessage& mes
     return reply;
 }
 
-OSCMessage FluidOscServer::trimClipBySeconds(const juce::OSCMessage& message) {
-    OSCMessage reply("/clip/trim/seconds/reply");
+cybr::OSCMessage FluidOscServer::trimClipBySeconds(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/clip/trim/seconds/reply");
     if (!selectedClip) {
         String errorString = "Cannot trim clip: No clip selected";
         constructReply(reply, 1, errorString);
@@ -471,8 +471,8 @@ OSCMessage FluidOscServer::trimClipBySeconds(const juce::OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::setClipLength(const juce::OSCMessage& message) {
-    OSCMessage reply("/clip/set/length/reply");
+cybr::OSCMessage FluidOscServer::setClipLength(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/clip/set/length/reply");
     if (!selectedClip) {
         String errorString = "Cannot set clip length: No clip selected";
         constructReply(reply, 1, errorString);
@@ -523,8 +523,8 @@ OSCMessage FluidOscServer::setClipLength(const juce::OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::selectClip(const juce::OSCMessage& message) {
-    OSCMessage reply("/clip/select/reply");
+cybr::OSCMessage FluidOscServer::selectClip(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/clip/select/reply");
     if (!selectedTrack) {
         String errorString = "Cannot select clip: No audio track selected";
         constructReply(reply, 1, errorString);
@@ -557,14 +557,14 @@ OSCMessage FluidOscServer::selectClip(const juce::OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::renderRegion(const OSCMessage& message) {
+cybr::OSCMessage FluidOscServer::renderRegion(const cybr::OSCMessage& message) {
     // Args
     // 0 - (string, required) output filename
     // 1 - (float, optional) start wholeNotes
     // 2 - (float, optional) duration in wholeNotes
     // If both 1 and 2 are floats, render this time range. Otherwise,
     // render the edit loop region.
-    OSCMessage reply("/audiotrack/region/render/reply");
+    cybr::OSCMessage reply("/audiotrack/region/render/reply");
     if (!selectedTrack) {
         String errorString = "Cannot render track region: No selected track";
         constructReply(reply, 1, errorString);
@@ -598,11 +598,11 @@ OSCMessage FluidOscServer::renderRegion(const OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::renderClip(const juce::OSCMessage &message) {
+cybr::OSCMessage FluidOscServer::renderClip(const cybr::OSCMessage &message) {
     // Args
     // 0 - (string, required) output filename
     // 1 - (float, optional) tail in seconds
-    OSCMessage reply("/clip/render/reply");
+    cybr::OSCMessage reply("/clip/render/reply");
     if (message.size() < 1 || !message[0].isString()) {
         String errorString = "Cannot render track region: Missing filename";
         constructReply(reply, 1, errorString);
@@ -635,8 +635,8 @@ OSCMessage FluidOscServer::renderClip(const juce::OSCMessage &message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
-    OSCMessage reply("/file/save/reply");
+cybr::OSCMessage FluidOscServer::saveActiveEdit(const cybr::OSCMessage &message) {
+    cybr::OSCMessage reply("/file/save/reply");
     if (!activeCybrEdit) {
         String errorString = "Cannot save active edit: No active edit";
         constructReply(reply, 1, errorString);
@@ -668,8 +668,8 @@ OSCMessage FluidOscServer::saveActiveEdit(const juce::OSCMessage &message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::activateEditFile(File file, bool forceEmptyEdit) {
-    OSCMessage reply("/file/activate/reply");
+cybr::OSCMessage FluidOscServer::activateEditFile(File file, bool forceEmptyEdit) {
+    cybr::OSCMessage reply("/file/activate/reply");
     if (forceEmptyEdit || !file.existsAsFile()) {
         std::cout << "Creating new edit: " << file.getFullPathName() << std::endl;
         activeCybrEdit = std::make_unique<CybrEdit>(createEmptyEdit(file, te::Engine::getInstance(), te::Edit::forEditing));
@@ -686,8 +686,8 @@ OSCMessage FluidOscServer::activateEditFile(File file, bool forceEmptyEdit) {
     return reply;
 }
 
-OSCMessage FluidOscServer::activateEditFile(const juce::OSCMessage &message) {
-    OSCMessage reply("/file/activate/reply");
+cybr::OSCMessage FluidOscServer::activateEditFile(const cybr::OSCMessage &message) {
+    cybr::OSCMessage reply("/file/activate/reply");
     if (!message.size() || !message[0].isString()) {
         String errorString = "ERROR: /file/activate missing message argument";
         constructReply(reply, 1, errorString);
@@ -703,8 +703,8 @@ OSCMessage FluidOscServer::activateEditFile(const juce::OSCMessage &message) {
     return activateEditFile(file, forceEmptyEdit);
 }
 
-OSCMessage FluidOscServer::changeWorkingDirectory(const OSCMessage& message) {
-    OSCMessage reply("/cd/reply");
+cybr::OSCMessage FluidOscServer::changeWorkingDirectory(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/cd/reply");
     if (!message.size() || !message[0].isString()) {
         String errorString = "ERROR: request to change directory without a path string";
         constructReply(reply, 1, errorString);
@@ -725,8 +725,8 @@ OSCMessage FluidOscServer::changeWorkingDirectory(const OSCMessage& message) {
     }
 }
 
-OSCMessage FluidOscServer::selectAudioTrack(const juce::OSCMessage& message) {
-    OSCMessage reply("/audiotrack/select/reply");
+cybr::OSCMessage FluidOscServer::selectAudioTrack(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/audiotrack/select/reply");
 
     if (!activeCybrEdit) {
         String errorString = "Cannot select track: no active edit";
@@ -758,8 +758,8 @@ OSCMessage FluidOscServer::selectAudioTrack(const juce::OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
-    OSCMessage reply("/audiotrack/select/return/reply");
+cybr::OSCMessage FluidOscServer::selectReturnTrack(const cybr::OSCMessage &message) {
+    cybr::OSCMessage reply("/audiotrack/select/return/reply");
     if (!activeCybrEdit) {
         String errorString = "Cannot select return track: no active edit";
         constructReply(reply, 1, errorString);
@@ -827,8 +827,8 @@ OSCMessage FluidOscServer::selectReturnTrack(const juce::OSCMessage &message) {
  * Verify that a send to a particular bus exists. If it does not, add it to
  * the end of the plugin chain.
  */
-OSCMessage FluidOscServer::ensureSend(const OSCMessage& message) {
-    OSCMessage reply("/audiotrack/send/set/db/reply");
+cybr::OSCMessage FluidOscServer::ensureSend(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/audiotrack/send/set/db/reply");
     if (!selectedTrack) {
         String errorString = "Cannot ensure send: no audio track selected";
         constructReply(reply, 1, errorString);
@@ -903,8 +903,8 @@ OSCMessage FluidOscServer::ensureSend(const OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::selectPlugin(const OSCMessage& message) {
-    OSCMessage reply("/plugin/select/reply");
+cybr::OSCMessage FluidOscServer::selectPlugin(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/plugin/select/reply");
     if (message.size() > 3 ||
         message.size() < 2 ||
         !message[0].isString() ||
@@ -929,8 +929,8 @@ OSCMessage FluidOscServer::selectPlugin(const OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::selectVst2PluginById(const juce::OSCMessage& message) {
-    OSCMessage reply("/plugin/vst2/select/reply");
+cybr::OSCMessage FluidOscServer::selectVst2PluginById(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/plugin/vst2/select/reply");
     if (!selectedTrack) {
         String errorString = "Cannot select vst2 plugin by ID: No audio track selected";
         constructReply(reply, 1, errorString);
@@ -960,8 +960,8 @@ OSCMessage FluidOscServer::selectVst2PluginById(const juce::OSCMessage& message)
     return reply;
 }
 
-OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
-    OSCMessage reply("/plugin/param/set");
+cybr::OSCMessage FluidOscServer::setPluginParam(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/plugin/param/set");
     if (message.size() > 3 ||
         !message[0].isString() ||
         !message[1].isFloat32() ||
@@ -1042,8 +1042,8 @@ OSCMessage FluidOscServer::setPluginParam(const OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
-    OSCMessage reply("/plugin/param/set/at/reply");
+cybr::OSCMessage FluidOscServer::setPluginParamAt(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/plugin/param/set/at/reply");
     if (message.size() > 5 ||
         !message[0].isString() ||
         !message[1].isFloat32() ||
@@ -1127,8 +1127,8 @@ OSCMessage FluidOscServer::setPluginParamAt(const OSCMessage& message) {
     return reply;
 }
 
-juce::OSCMessage FluidOscServer::setTrackWidth(const juce::OSCMessage& message) {
-    OSCMessage reply("/audiotrack/set/width/reply");
+cybr::OSCMessage FluidOscServer::setTrackWidth(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/audiotrack/set/width/reply");
 
     if (!selectedTrack) {
         constructReply(reply, 1, "Cannot set track width: No audiotrack selected");
@@ -1183,8 +1183,8 @@ juce::OSCMessage FluidOscServer::setTrackWidth(const juce::OSCMessage& message) 
     return reply;
 }
 
-OSCMessage FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
-    OSCMessage reply("/plugin/sidechain/input/set/reply");
+cybr::OSCMessage FluidOscServer::setPluginSideChainInput(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/plugin/sidechain/input/set/reply");
     if (!selectedPlugin) {
         String errorString = "Cannot set plugin side chain input: No selected plugin";
         constructReply(reply, 1, errorString);
@@ -1219,8 +1219,8 @@ OSCMessage FluidOscServer::setPluginSideChainInput(const OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
-    OSCMessage reply("/plugin/report/reply");
+cybr::OSCMessage FluidOscServer::getPluginReport(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/plugin/report/reply");
 
     if (!selectedPlugin) {
         String errorString = "Cannot get plugin report: No selected plugin";
@@ -1237,8 +1237,8 @@ OSCMessage FluidOscServer::getPluginReport(const juce::OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::getPluginParametersReport(const juce::OSCMessage& message) {
-    OSCMessage reply("/plugin/params/report/reply");
+cybr::OSCMessage FluidOscServer::getPluginParametersReport(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/plugin/params/report/reply");
 
     if (!selectedPlugin) {
         String errorString = "Cannot get plugin parameter report: No selected plugin";
@@ -1258,8 +1258,8 @@ OSCMessage FluidOscServer::getPluginParametersReport(const juce::OSCMessage& mes
     return reply;
 }
 
-OSCMessage FluidOscServer::getPluginParameterReport(const juce::OSCMessage& message) {
-    OSCMessage reply("/plugin/param/report/reply");
+cybr::OSCMessage FluidOscServer::getPluginParameterReport(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/plugin/param/report/reply");
 
     if (!selectedPlugin) {
         constructReply(reply, 1, "Cannot get plugin single parameter report: No selected plugin");
@@ -1290,8 +1290,8 @@ OSCMessage FluidOscServer::getPluginParameterReport(const juce::OSCMessage& mess
     return reply;
 }
 
-OSCMessage FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
-    OSCMessage reply("/plugin/save/reply");
+cybr::OSCMessage FluidOscServer::savePluginPreset(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/plugin/save/reply");
     if (!selectedPlugin) {
         String errorString = "Cannot save plugin preset: No selected plugin";
         constructReply(reply, 1, errorString);
@@ -1307,8 +1307,8 @@ OSCMessage FluidOscServer::savePluginPreset(const juce::OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::loadPluginTrkpreset(const juce::OSCMessage &message) {
-    OSCMessage reply("/plugin/load/trkpreset/reply");
+cybr::OSCMessage FluidOscServer::loadPluginTrkpreset(const cybr::OSCMessage &message) {
+    cybr::OSCMessage reply("/plugin/load/trkpreset/reply");
     if (!selectedTrack) {
         String errorString = "Cannot load plugin preset: No audio track selected";
         constructReply(reply, 1, errorString);
@@ -1342,8 +1342,8 @@ OSCMessage FluidOscServer::loadPluginTrkpreset(const juce::OSCMessage &message) 
     return reply;
 }
 
-OSCMessage FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
-    OSCMessage reply("/plugin/load/reply");
+cybr::OSCMessage FluidOscServer::loadPluginPreset(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/plugin/load/reply");
     if (!selectedTrack) {
         String errorString = "Cannot load plugin preset: No audio track selected";
         constructReply(reply, 1, errorString);
@@ -1387,9 +1387,9 @@ OSCMessage FluidOscServer::loadPluginPreset(const juce::OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::loadVst2PresetInSelectedPlugin(const juce::OSCMessage& message) {
+cybr::OSCMessage FluidOscServer::loadVst2PresetInSelectedPlugin(const cybr::OSCMessage& message) {
     // Set state from the binary contents of a .fxp or .fxb file. This can be loaded
-    OSCMessage reply("/plugin/load/vst2preset/reply");
+    cybr::OSCMessage reply("/plugin/load/vst2preset/reply");
     if (!selectedPlugin) {
         constructReply(reply, 1, "Cannot set vst2 plugin state: No plugin selected");
         return reply;
@@ -1436,8 +1436,8 @@ OSCMessage FluidOscServer::loadVst2PresetInSelectedPlugin(const juce::OSCMessage
     return reply;
 }
 
-OSCMessage FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
-    OSCMessage reply("/midiclip/select/reply");
+cybr::OSCMessage FluidOscServer::selectMidiClip(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/midiclip/select/reply");
     if (!selectedTrack){
         String errorString = "Cannot load plugin preset: No audio track selected";
         constructReply(reply, 1, errorString);
@@ -1477,8 +1477,8 @@ OSCMessage FluidOscServer::selectMidiClip(const juce::OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
-    OSCMessage reply("/midiclip/clear");
+cybr::OSCMessage FluidOscServer::clearMidiClip(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/midiclip/clear");
     if (!selectedClip) {
         String errorString = "Cannot clear midi clip: No clip selected";
         constructReply(reply, 1, errorString);
@@ -1507,8 +1507,8 @@ OSCMessage FluidOscServer::clearMidiClip(const juce::OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
-    OSCMessage reply("/midiclip/insert/note/reply");
+cybr::OSCMessage FluidOscServer::insertMidiNote(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/midiclip/insert/note/reply");
     if(!selectedClip){
         String errorString = "Cannot insert midi note: No clip selected.";
         constructReply(reply, 1, errorString);
@@ -1566,8 +1566,8 @@ OSCMessage FluidOscServer::insertMidiNote(const juce::OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
-    OSCMessage reply("/audiotrack/insert/wav/reply");
+cybr::OSCMessage FluidOscServer::insertWaveSample(const cybr::OSCMessage& message){
+    cybr::OSCMessage reply("/audiotrack/insert/wav/reply");
     if(!selectedTrack){
         String errorString = "Cannot insert wave sample: Must select Audio Track before inserting";
         constructReply(reply, 1, errorString);
@@ -1642,8 +1642,8 @@ OSCMessage FluidOscServer::insertWaveSample(const juce::OSCMessage& message){
     return reply;
 }
 
-OSCMessage FluidOscServer::setTrackGain(const OSCMessage& message) {
-    OSCMessage reply("/audiotrack/set/db/reply");
+cybr::OSCMessage FluidOscServer::setTrackGain(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/audiotrack/set/db/reply");
     if (!selectedTrack) {
         String errorString = "Cannot set track gain: No track selected.";
         constructReply(reply, 1, errorString);
@@ -1692,8 +1692,8 @@ OSCMessage FluidOscServer::setTrackGain(const OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::setTrackPan(const OSCMessage& message) {
-    OSCMessage reply("/audiotrack/set/pan/reply");
+cybr::OSCMessage FluidOscServer::setTrackPan(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/audiotrack/set/pan/reply");
     if (!selectedTrack) {
         String errorString = "Cannot set track pan: No track selected.";
         constructReply(reply, 1, errorString);
@@ -1742,8 +1742,8 @@ OSCMessage FluidOscServer::setTrackPan(const OSCMessage& message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::muteTrack(bool mute) {
-    OSCMessage reply("/audiotrack/mute/reply");
+cybr::OSCMessage FluidOscServer::muteTrack(bool mute) {
+    cybr::OSCMessage reply("/audiotrack/mute/reply");
     if (!selectedTrack) {
         String errorString = "Cannot " + String((mute ? "mute" : "unmute")) + ": No track selected.";
         constructReply(reply, 1, errorString);
@@ -1755,8 +1755,8 @@ OSCMessage FluidOscServer::muteTrack(bool mute) {
     return reply;
 }
 
-OSCMessage FluidOscServer::setTempo(const OSCMessage &message) {
-    OSCMessage reply("/tempo/set/reply");
+cybr::OSCMessage FluidOscServer::setTempo(const cybr::OSCMessage &message) {
+    cybr::OSCMessage reply("/tempo/set/reply");
     if (!message.size() || !message[0].isFloat32()) {
         String errorString = "Cannot set tempo: missing tempo argument";
         constructReply(reply, 1, errorString);
@@ -1770,8 +1770,8 @@ OSCMessage FluidOscServer::setTempo(const OSCMessage &message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
-    OSCMessage reply("/plugin/sampler/reply");
+cybr::OSCMessage FluidOscServer::handleSamplerMessage(const cybr::OSCMessage &message) {
+    cybr::OSCMessage reply("/plugin/sampler/reply");
     if (!selectedPlugin) {
         String errorString = "Cannot update sampler. No plugin selected.";
         constructReply(reply, 1, errorString);
@@ -1785,7 +1785,7 @@ OSCMessage FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
         return reply;
     }
 
-    const OSCAddressPattern pattern = message.getAddressPattern();
+    const cybr::OSCAddressPattern pattern = message.getAddressPattern();
     if (pattern.matches({"/plugin/sampler/add"})) {
         // Required:
         // 0 - (string) name
@@ -1846,8 +1846,8 @@ OSCMessage FluidOscServer::handleSamplerMessage(const OSCMessage &message) {
     return reply;
 }
 
-OSCMessage FluidOscServer::handleTransportMessage(const OSCMessage& message) {
-    OSCMessage reply("/transport/reply");
+cybr::OSCMessage FluidOscServer::handleTransportMessage(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/transport/reply");
     if (!activeCybrEdit) {
         String errorString = "Cannot update transport: No active edit";
         constructReply(reply, 1, errorString);
@@ -1855,7 +1855,7 @@ OSCMessage FluidOscServer::handleTransportMessage(const OSCMessage& message) {
     }
     te::TransportControl& transport = activeCybrEdit->getEdit().getTransport();
 
-    const OSCAddressPattern pattern = message.getAddressPattern();
+    const cybr::OSCAddressPattern pattern = message.getAddressPattern();
     if (pattern.matches({"/transport/play"})) {
         std::cout << "Play!" << std::endl;
         transport.play(false);
@@ -1917,8 +1917,8 @@ OSCMessage FluidOscServer::handleTransportMessage(const OSCMessage& message) {
     return reply;
 };
 
-OSCMessage FluidOscServer::getAudioFileReport(const OSCMessage& message) {
-    OSCMessage reply("/audiofile/report/reply");
+cybr::OSCMessage FluidOscServer::getAudioFileReport(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/audiofile/report/reply");
 
     if (!message.size()) {
         constructReply(reply, 1,  "Cannot get audio file report: missing argument");

@@ -7,7 +7,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-namespace juce{
+namespace cybr {
 
 //==============================================================================
 /** Allows a block of data to be accessed as a stream of OSC data.
@@ -38,27 +38,29 @@ public:
     size_t getDataSize() const noexcept         { return input.getDataSize(); }
 
     /** Returns the current position of the stream. */
-    uint64 getPosition()                        { return (uint64) input.getPosition(); }
+    juce::uint64 getPosition()                        { return (juce::uint64) input.getPosition(); }
 
     /** Attempts to set the current position of the stream. Returns true if this was successful. */
-    bool setPosition (int64 pos)                { return input.setPosition (pos); }
+    bool setPosition (juce::int64 pos)                { return input.setPosition (pos); }
 
     /** Returns the total amount of data in bytes accessible by this stream. */
-    int64 getTotalLength()                      { return input.getTotalLength(); }
+    juce::int64 getTotalLength()                      { return input.getTotalLength(); }
 
     /** Returns true if the stream has no more data to read. */
     bool isExhausted()                          { return input.isExhausted(); }
 
     //==============================================================================
-    int32 readInt32();
+    juce::int32 readInt32();
 
-    uint64 readUint64();
+    juce::uint64 readUint64();
 
     float readFloat32();
+    
+    double readFloat64();
 
-    String readString();
+    juce::String readString();
 
-    MemoryBlock readBlob();
+    juce::MemoryBlock readBlob();
 
     OSCColour readColour();
 
@@ -83,7 +85,7 @@ public:
     OSCBundle::Element readElementWithKnownSize (size_t elementSize);
 
 private:
-    MemoryInputStream input;
+    juce::MemoryInputStream input;
 
     void readPaddingZeros (size_t bytesRead);
     
@@ -91,7 +93,7 @@ private:
     
     OSCMessage readMessageWithCheckedSize (size_t size);
     
-    void checkBytesAvailable (int64 requiredBytes, const char* message);
+    void checkBytesAvailable (juce::int64 requiredBytes, const char* message);
 };
 
 } // namespace

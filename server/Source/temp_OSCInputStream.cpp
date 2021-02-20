@@ -1,6 +1,8 @@
 #include "temp_OSCInputStream.h"
 
-namespace juce{
+using namespace juce;
+
+namespace cybr {
 
 using OSCType = char;
 
@@ -11,6 +13,7 @@ public:
     static const OSCType string = 's';
     static const OSCType blob = 'b';
     static const OSCType colour = 'r';
+    static const OSCType float64 = 'd';
 };
 
 OSCInputStream::OSCInputStream (const void* sourceData, size_t sourceDataSize)
@@ -34,6 +37,12 @@ float OSCInputStream::readFloat32()
 {
     checkBytesAvailable (4, "OSC input stream exhausted while reading float");
     return input.readFloatBigEndian();
+}
+
+double OSCInputStream::readFloat64()
+{
+    checkBytesAvailable (8, "OSC input stream exhausted while reading double");
+    return input.readDoubleBigEndian();
 }
 
 String OSCInputStream::readString()
@@ -128,6 +137,7 @@ OSCArgument OSCInputStream::readArgument (OSCType type)
     {
         case TypeWrapper::int32:       return OSCArgument (readInt32());
         case TypeWrapper::float32:     return OSCArgument (readFloat32());
+        case TypeWrapper::float64:     return OSCArgument (readFloat64());
         case TypeWrapper::string:      return OSCArgument (readString());
         case TypeWrapper::blob:        return OSCArgument (readBlob());
         case TypeWrapper::colour:      return OSCArgument (readColour());

@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-namespace juce
+namespace cybr
 {
 
 namespace
@@ -1191,4 +1191,4 @@ static OSCInputStreamTests OSCInputStreamUnitTests;
 
 #endif
 
-} // namespace juce
+} // namespace cybr

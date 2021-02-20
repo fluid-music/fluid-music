@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-namespace juce
+namespace cybr
 {
 
 //==============================================================================
@@ -56,10 +56,10 @@ public:
     OSCTimeTag() noexcept;
 
     /** Constructs an OSCTimeTag object from a raw binary OSC time tag. */
-    OSCTimeTag (uint64 rawTimeTag) noexcept;
+    OSCTimeTag (juce::uint64 rawTimeTag) noexcept;
 
     /** Constructs an OSCTimeTag object from a juce::Time object. */
-    OSCTimeTag (Time time) noexcept;
+    OSCTimeTag (juce::Time time) noexcept;
 
     /** Returns a juce::Time object representing the same time as the OSCTimeTag.
 
@@ -67,20 +67,20 @@ public:
         resulting juce::Time object will represent an arbitrary point of time (but
         guaranteed to be in the past), since juce::Time does not have such a special value.
     */
-    Time toTime() const noexcept;
+    juce::Time toTime() const noexcept;
 
     /** Returns true if the OSCTimeTag object has the special value representing "immediately". */
     bool isImmediately() const noexcept;
 
     /** Returns the raw binary OSC time tag representation. */
-    uint64 getRawTimeTag() const noexcept               { return rawTimeTag; }
+    juce::uint64 getRawTimeTag() const noexcept               { return rawTimeTag; }
 
     /** The special value representing "immediately". */
     static const OSCTimeTag immediately;
 
 private:
     //==============================================================================
-    uint64 rawTimeTag;
+    juce::uint64 rawTimeTag;
 };
 
-} // namespace juce
+} // namespace cybr

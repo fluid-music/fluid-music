@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-namespace juce
+namespace cybr
 {
 
 namespace
@@ -789,4 +789,4 @@ static OSCPatternMatcherTests OSCPatternMatcherUnitTests;
 
 #endif
 
-} // namespace juce
+} // namespace cybr

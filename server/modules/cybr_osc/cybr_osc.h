@@ -33,10 +33,10 @@
 
  BEGIN_JUCE_MODULE_DECLARATION
 
-  ID:                 juce_osc
-  vendor:             juce
+  ID:                 cybr_osc
+  vendor:             cybr
   version:            6.0.4
-  name:               JUCE OSC classes
+  name:               Modified JUCE OSC classes
   description:        Open Sound Control implementation.
   website:            http://www.juce.com/juce
   license:            GPL/Commercial

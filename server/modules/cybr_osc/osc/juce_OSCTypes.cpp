@@ -23,11 +23,14 @@
   ==============================================================================
 */
 
-namespace juce
+using namespace juce;
+
+namespace cybr
 {
 
 const OSCType OSCTypes::int32   = 'i';
 const OSCType OSCTypes::float32 = 'f';
+const OSCType OSCTypes::float64 = 'd';
 const OSCType OSCTypes::string  = 's';
 const OSCType OSCTypes::blob    = 'b';
 const OSCType OSCTypes::colour  = 'r';
@@ -45,4 +48,4 @@ OSCColour OSCColour::fromInt32 (uint32 c)
              (uint8) c };
 }
 
-} // namespace juce
+} // namespace cybr

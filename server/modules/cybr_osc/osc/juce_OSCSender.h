@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-namespace juce
+namespace cybr
 {
 
 //==============================================================================
@@ -59,7 +59,7 @@ public:
         @returns true if the connection was successful; false otherwise.
         @see send, disconnect.
     */
-    bool connect (const String& targetHostName, int targetPortNumber);
+    bool connect (const juce::String& targetHostName, int targetPortNumber);
 
     /** Uses an existing datagram socket for sending OSC packets to the specified target.
 
@@ -72,7 +72,7 @@ public:
         @returns true if the connection was successful; false otherwise.
         @see connect, send, disconnect.
     */
-    bool connectToSocket (DatagramSocket& socket, const String& targetHostName, int targetPortNumber);
+    bool connectToSocket (juce::DatagramSocket& socket, const juce::String& targetHostName, int targetPortNumber);
 
     //==============================================================================
     /** Disconnects from the currently used UDP port.
@@ -101,7 +101,7 @@ public:
         @param  message           The OSC message to send.
         @returns true if the operation was successful.
     */
-    bool sendToIPAddress (const String& targetIPAddress, int targetPortNumber,
+    bool sendToIPAddress (const juce::String& targetIPAddress, int targetPortNumber,
                           const OSCMessage& message);
 
     /** Sends an OSC bundle to a specific IP address and port.
@@ -111,7 +111,7 @@ public:
         @param  bundle            The OSC bundle to send.
         @returns true if the operation was successful.
     */
-    bool sendToIPAddress (const String& targetIPAddress, int targetPortNumber,
+    bool sendToIPAddress (const juce::String& targetIPAddress, int targetPortNumber,
                           const OSCBundle& bundle);
 
     /** Creates a new OSC message with the specified address pattern and list
@@ -134,7 +134,7 @@ public:
         @param  args     The list of arguments for the message.
     */
     template <typename... Args>
-    bool sendToIPAddress (const String& targetIPAddress, int targetPortNumber,
+    bool sendToIPAddress (const juce::String& targetIPAddress, int targetPortNumber,
                           const OSCAddressPattern& address, Args&&... args);
 
 private:
@@ -154,10 +154,10 @@ bool OSCSender::send (const OSCAddressPattern& address, Args&&... args)
 }
 
 template <typename... Args>
-bool OSCSender::sendToIPAddress (const String& targetIPAddress, int targetPortNumber,
+bool OSCSender::sendToIPAddress (const juce::String& targetIPAddress, int targetPortNumber,
                                  const OSCAddressPattern& address, Args&&... args)
 {
     return sendToIPAddress (targetIPAddress, targetPortNumber, OSCMessage (address, std::forward<Args> (args)...));
 }
 
-} // namespace juce
+} // namespace cybr

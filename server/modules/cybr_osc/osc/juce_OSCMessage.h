@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-namespace juce
+namespace cybr
 {
 
 //==============================================================================
@@ -122,7 +122,7 @@ public:
     /** Creates a new OSCArgument of type int32 with the given value,
         and adds it to the OSCMessage object.
     */
-    void addInt32 (int32 value);
+    void addInt32 (juce::int32 value);
 
     /** Creates a new OSCArgument of type float32 with the given value,
         and adds it to the OSCMessage object.
@@ -132,14 +132,14 @@ public:
     /** Creates a new OSCArgument of type string with the given value,
         and adds it to the OSCMessage object.
     */
-    void addString (const String& value);
+    void addString (const juce::String& value);
 
     /** Creates a new OSCArgument of type blob with binary data content copied from
         the given MemoryBlock.
 
         Note: If the argument passed is an lvalue, this may copy the binary data.
     */
-    void addBlob (MemoryBlock blob);
+    void addBlob (juce::MemoryBlock blob);
 
     /** Creates a new OSCArgument of type colour with the given value,
         and adds it to the OSCMessage object.
@@ -168,7 +168,7 @@ private:
 
     //==============================================================================
     OSCAddressPattern addressPattern;
-    Array<OSCArgument> arguments;
+    juce::Array<OSCArgument> arguments;
 };
 
 
@@ -180,4 +180,4 @@ OSCMessage::OSCMessage (const OSCAddressPattern& ap, Arg1&& arg1, Args&&... args
     addArguments (std::forward<Arg1> (arg1), std::forward<Args> (args)...);
 }
 
-} // namespace juce
+} // namespace cybr
