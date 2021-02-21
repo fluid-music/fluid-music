@@ -10,27 +10,27 @@ export function stop() { return { address: '/transport/stop' }; }
 
 /**
  * Set loop points, and enable looping.
- * @param startTimeInWholeNotes The number of whole notes at which the loop
- *    should begin. Or `false`, which disables looping.
- * @param durationInWholeNotes The length of the loop, measured in whole notes.
+ * @param startTimeSeconds The time in seconds at which the loop should begin.
+ *    Or `false`, which disables looping.
+ * @param durationSeconds The length of the loop, measured seconds.
  */
-export function loop(startTimeInWholeNotes : number|boolean, durationInWholeNotes? : number) {
-  if (startTimeInWholeNotes === false) {
+export function loop(startTimeSeconds : number|boolean, durationSeconds? : number) {
+  if (startTimeSeconds === false) {
     // disable looping
-    startTimeInWholeNotes = 0;
-    durationInWholeNotes = 0;
-  } else if (startTimeInWholeNotes === true) {
+    startTimeSeconds = 0;
+    durationSeconds = 0;
+  } else if (startTimeSeconds === true) {
     throw new Error('to enable looping, the first argument to transport.loop must be a startTime number (not `true`)')
   }
 
-  if (typeof startTimeInWholeNotes !== 'number' || typeof durationInWholeNotes !== 'number')
+  if (typeof startTimeSeconds !== 'number' || typeof durationSeconds !== 'number')
     throw new Error('transport.loop requires start and length times (in whole notes)');
 
   return {
     address: '/transport/loop',
     args: [
-      { type: 'float', value: startTimeInWholeNotes },
-      { type: 'float', value: durationInWholeNotes },
+      { type: 'double', value: startTimeSeconds },
+      { type: 'double', value: durationSeconds },
     ],
   };
 }

@@ -134,9 +134,9 @@ export function sessionToContentFluidMessage(session : FluidSession) {
   // Configure loop region
   if (session.loopEnabled) {
     sessionMessages.push(cybr.transport.loop(
-      session.loopRegion.startTime,
-      session.loopRegion.duration)
-    )
+      session.timeWholeNotesToSeconds(session.loopRegion.startTime),
+      session.timeWholeNotesToSeconds(session.loopRegion.duration)
+    ))
   } else {
     sessionMessages.push(cybr.transport.loop(false))
   }

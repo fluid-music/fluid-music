@@ -1936,19 +1936,15 @@ cybr::OSCMessage FluidOscServer::handleTransportMessage(const cybr::OSCMessage& 
         double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(beats);
         transport.setCurrentPosition(startSeconds);
     } else if (pattern.matches({"/transport/loop"})) {
-        if (message.size() < 2 || !message[0].isFloat32() || !message[1].isFloat32()) {
+        double startSeconds = 0;
+        double durationSeconds = 0;
+        if (message.size() < 2 || !getFloatOrDouble(message[0], startSeconds) || !getFloatOrDouble(message[1], durationSeconds)) {
             String errorString = "/transport/loop failed - requires loop start and duration";
             constructReply(reply, 1, errorString);
             return reply;
         }
 
-        double startBeats = message[0].getFloat32() * 4.0;
-        double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
-        double durationBeats = message[1].getFloat32() * 4.0;
-        double endBeats = startBeats + durationBeats;
-        double endSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeats);
-
-        if (durationBeats == 0) {
+        if (durationSeconds == 0) {
             // To disable looping specify duration of 0
             std::cout << "Looping disabled!" << std::endl;
             transport.looping.setValue(false, nullptr);
@@ -1956,12 +1952,15 @@ cybr::OSCMessage FluidOscServer::handleTransportMessage(const cybr::OSCMessage& 
             return reply;
         }
 
+        double endSeconds = startSeconds + durationSeconds;
+
         te::EditTimeRange range = transport.getLoopRange();
         if (range != te::EditTimeRange(startSeconds, endSeconds)) {
             if (range.getStart() != startSeconds) transport.setLoopIn(startSeconds);
             if (range.getEnd() != endSeconds) transport.setLoopOut(endSeconds);
-            std::cout << "Looping start|length: " << startBeats << "|" << endBeats << std::endl;
+            std::cout << "Looping start|length: " << startSeconds << "|" << endSeconds << std::endl;
         }
+
         // If looping was previously disabled, setting looping to true seems to
         // move the playhead to the start of the loop. This surprised me, but is
         // okay for now. It is probably not the ideal behavior. Setting the loop
