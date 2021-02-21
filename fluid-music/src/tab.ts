@@ -84,7 +84,6 @@ export function parseTab(rhythm : string|Rhythm , nPattern : string, tLibrary : 
     startTime : 0,
     events: [] as TechniqueEvent[],
     duration: rhythmObject.totals[rhythmObject.totals.length - 1],
-    midiEvents: [],
     unmappedEvents: [],
   };
 

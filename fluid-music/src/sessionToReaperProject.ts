@@ -8,6 +8,7 @@ import { vst2ToReaperObject } from './vst2ToReaperObject'
 import * as cybr from './cybr/index';
 import { IpcClient } from './cybr/IpcClient'
 import { Clip, DynamicObject, Tap, MidiNoteEvent } from './fluid-interfaces'
+import { FluidMidiClip } from './FluidMidiClip'
 
 const rppp = require('rppp')
 
@@ -122,19 +123,18 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
     const rppItems = fileEventsToReaperObjects(track.audioFiles, session)
 
     // handle Clips
-    track.clips.forEach((clip, clipIndex) => {
+    track.midiClips.forEach((clip, clipIndex) => {
       // Create one EventContext object for each clip.
       const context = {
         session,
         track,
-        clip,
         clipIndex,
         data: {},
         d: {},
       };
 
-      if (clip.midiEvents && clip.midiEvents.length) {
-        rppItems.push(midiEventsToReaperObject(clip.midiEvents, context));
+      if (clip.events && clip.events.length) {
+        rppItems.push(midiEventsToReaperObject(clip, context));
       }
     }); // track.clips.forEach
 
@@ -163,7 +163,7 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
       for (const autoPoint of automation.points) {
         if (typeof autoPoint.value === 'number') {
           autoObject.addBezierPoint(
-            autoPoint.startTime * 4 * 60 / session.bpm,
+            session.timeWholeNotesToSeconds(autoPoint.startTime),
             normalize(autoPoint.value),
             autoPoint.curve
           );
@@ -264,7 +264,6 @@ interface ClipEventContext {
   /** The session containing this track, clip, and event */
   session: FluidSession;
   /** the Clip that contains the current event */
-  clip: Clip;
   /** the Track that contains the current event */
   track: FluidTrack;
   /** index of the clip within the track */
@@ -274,34 +273,31 @@ interface ClipEventContext {
 }
 
 
-function midiEventsToReaperObject(midiEvents : MidiNoteEvent[] , context : ClipEventContext) {
+function midiEventsToReaperObject(midiClip : FluidMidiClip, context : ClipEventContext) {
   const bpm = context.session.bpm
 
-  if (typeof context.clip.startTime !== 'number')
-    throw new Error('Clip is missing startTime')
   if (typeof bpm !== 'number')
     throw new Error('midiEventsToReaperObject did not find a .bpm in the context')
 
   const midiItem = new rppp.objects.ReaperItem()
   const clipName  = `${context.track.name} ${context.clipIndex}`
-  const startTime = context.clip.startTime
-  const duration  = context.clip.duration
 
   midiItem.getOrCreateStructByToken('NAME').params[0] = clipName
-  midiItem.getOrCreateStructByToken('POSITION').params[0] = context.session.timeWholeNotesToSeconds(startTime)
-  midiItem.getOrCreateStructByToken('LENGTH').params[0] = context.session.timeWholeNotesToSeconds(duration)
+  midiItem.getOrCreateStructByToken('POSITION').params[0] = midiClip.startTimeSeconds
+  midiItem.getOrCreateStructByToken('LENGTH').params[0] = midiClip.durationSeconds
 
   const midiArray : any[] = []
-  for (const event of midiEvents) {
+  for (const event of midiClip.events) {
     const velocity = (typeof event.velocity === 'number')
       ? event.velocity
       : undefined
     midiArray.push({ n: event.note, s: event.startTime, l: event.duration, v: velocity });
   }
 
+  const clipDuration = context.session.timeSecondsToWholeNotes(midiClip.durationSeconds)
   const midiSource = new rppp.objects.ReaperSource()
   midiSource.makeMidiSource()
-  midiSource.setMidiNotes(midiArray, duration)
+  midiSource.setMidiNotes(midiArray, clipDuration)
   midiItem.add(midiSource)
 
   return midiItem;

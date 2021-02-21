@@ -157,8 +157,8 @@ export function sessionToContentFluidMessage(session : FluidSession) {
       throw new Error(`sessionToTemplateFluidMessage: ${track.name} track has file events and child tracks, but tracktion does not allow events directly on submix tracks`)
     }
 
-    track.clips.forEach((clip, clipIndex) => {
-      if (isSubmix && clip.midiEvents.length) {
+    track.midiClips.forEach((midiClip, clipIndex) => {
+      if (isSubmix && midiClip.events.length) {
         // Charles: The best thing to do is probably to have some system that
         // creates an additional track, and puts the clips on it. However, I'm
         // not going to add that until it is clearly needed.
@@ -166,15 +166,17 @@ export function sessionToContentFluidMessage(session : FluidSession) {
       }
 
       // Create one EventContext object for each clip.
-      if (clip.midiEvents && clip.midiEvents.length) {
+      if (midiClip.events && midiClip.events.length) {
         // Create a sub-message for each clip. Note that the naming convention
         // gets a little confusing, because we do not yet know if "clip" contains
         // a single "Midi Clip", a collection of audio file events, or both.
         const clipMessages : any[] = []
         trackMessages.push(clipMessages)
         const clipName  = `${track.name} ${clipIndex}`
-        clipMessages.push(cybr.midiclip.select(clipName, clip.startTime, clip.duration))
-        clipMessages.push(clip.midiEvents.map(event => {
+        const startTime = session.timeSecondsToWholeNotes(midiClip.startTimeSeconds)
+        const duration = session.timeSecondsToWholeNotes(midiClip.durationSeconds)
+        clipMessages.push(cybr.midiclip.select(clipName, startTime, duration))
+        clipMessages.push(midiClip.events.map(event => {
           // Velocity in the event takes priority over velocity in the .d object
           const velocity = (typeof event.velocity === 'number')
             ? event.velocity
