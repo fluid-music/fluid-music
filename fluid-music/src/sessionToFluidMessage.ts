@@ -282,9 +282,8 @@ function fileEventToFluidMessage(audioFile : FluidAudioFile, session : FluidSess
     else sOff = 0
   }
 
-  const startTime = session.timeSecondsToWholeNotes(startTimeSeconds)
   const clipName = `${basename(audioFile.path)}.${summativeIndex}`
-  const msg = [cybr.audiotrack.insertWav(clipName, startTime, audioFile.path)] as any[]
+  const msg = [cybr.audiotrack.insertWav(clipName, startTimeSeconds, audioFile.path)] as any[]
 
   msg.push(cybr.clip.setSourceOffsetSeconds(sOff))
   msg.push(cybr.clip.lengthSeconds(durationSeconds))

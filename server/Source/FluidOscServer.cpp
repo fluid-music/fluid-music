@@ -1653,16 +1653,16 @@ cybr::OSCMessage FluidOscServer::insertWaveSample(const cybr::OSCMessage& messag
     }
     String filePath = message[1].getString();
 
-    if (!message[2].isFloat32() && !message[2].isInt32()) {
+    if (!message[2].isFloat64() && !message[2].isFloat32() && !message[2].isInt32()) {
         String errorString = "Cannot insert wave file: third argument must be a start time in whole notes (int or float)";
         constructReply(reply, 1, errorString);
         return reply;
     }
 
-    double startBeat = 0;
-    if (message[2].isFloat32()) startBeat = message[2].getFloat32() * 4.0;
-    else if (message[2].isInt32()) startBeat = message[2].getInt32() * 4;
-    double startSeconds = selectedTrack->edit.tempoSequence.beatsToTime(startBeat);
+    double startSeconds = 0;
+    if (getFloatOrDouble(message[2], startSeconds)) {}
+    else if (message[2].isInt32()) { startSeconds = (double)message[2].getInt32(); }
+    else { jassertfalse; } // should never happen
 
     // The default filePathResolver checks for an absolute file, then looks
     // in the relative to the edit file directory (using edit.editFileRetriever)

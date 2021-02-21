@@ -18,13 +18,13 @@ export function select(trackName : string, parent? : string) {
  * Insert and select an audio file clip into the selected audio track. Noop
  * when there is no selected track.
  * @param {string} clipName name the new clip
- * @param {number} startTimeInWholeNotes clip start time in quarter notes
+ * @param {number} startTimeSeconds clip start time in quarter notes
  * @param {string} fileName
  */
-export function insertWav (clipName : string, startTimeInWholeNotes : number, fileName : string) {
+export function insertWav (clipName : string, startTimeSeconds : number, fileName : string) {
   if (typeof clipName !== 'string')
     throw new Error('audiotrack.insertWav: clipName must be a string');
-  if (typeof startTimeInWholeNotes !== 'number')
+  if (typeof startTimeSeconds !== 'number')
     throw new Error('audiotrack.insertWav: start time must be a number');
   if (typeof fileName !== 'string')
     throw new Error('audiotrack.insertWav: fileName must be a string');
@@ -32,7 +32,7 @@ export function insertWav (clipName : string, startTimeInWholeNotes : number, fi
   const args = [
     {type: 'string', value: clipName},
     {type: 'string', value: fileName},
-    {type: 'float', value: startTimeInWholeNotes},
+    {type: 'double', value: startTimeSeconds},
   ];
   return { address: '/audiotrack/insert/wav', args };
 }
