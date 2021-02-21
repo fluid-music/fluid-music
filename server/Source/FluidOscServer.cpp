@@ -691,6 +691,7 @@ cybr::OSCMessage FluidOscServer::activateEditFile(File file, bool forceEmptyEdit
         std::cout << "Loading edit: " << file.getFullPathName() << std::endl;
         activeCybrEdit = std::make_unique<CybrEdit>(createEdit(file, te::Engine::getInstance(), te::Edit::forEditing));
     }
+    constructReply(reply, 0, "Active: " + file.getFileName());
     return reply;
 }
 
@@ -1464,18 +1465,15 @@ cybr::OSCMessage FluidOscServer::selectMidiClip(const cybr::OSCMessage& message)
         String clipName = message[0].getString();
         selectedClip = getOrCreateMidiClipByName(*clipTrack, clipName);
 
+        double startSeconds = 0;
+        double durationSeconds = 0;
         // Clip startBeats
-        if (message.size() >= 2 && message[1].isFloat32()) {
-            double startBeats = message[1].getFloat32() * 4.0;
-            double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
+        if (message.size() >= 2 && getFloatOrDouble(message[1], startSeconds)) {
             selectedClip->setStart(startSeconds, false, true);
         }
         // Clip length
-        if (message.size() >= 3 && message[2].isFloat32()) {
-            double lengthInBeats = message[2].getFloat32() * 4.0;
-            double startBeat = selectedClip->getStartBeat();
-            double endBeat = startBeat + lengthInBeats;
-            double endTime = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeat);
+        if (message.size() >= 3 && getFloatOrDouble(message[2], durationSeconds)) {
+            double endTime = startSeconds + durationSeconds;
             selectedClip->setEnd(endTime, true);
         }
     } else {

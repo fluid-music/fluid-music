@@ -135,7 +135,7 @@ export function sessionToContentFluidMessage(session : FluidSession) {
   if (session.loopEnabled) {
     sessionMessages.push(cybr.transport.loop(
       session.loopRegion.startTime,
-      session.loopRegion.startTime + session.loopRegion.duration)
+      session.loopRegion.duration)
     )
   } else {
     sessionMessages.push(cybr.transport.loop(false))
@@ -174,9 +174,7 @@ export function sessionToContentFluidMessage(session : FluidSession) {
         const clipMessages : any[] = []
         trackMessages.push(clipMessages)
         const clipName  = `${track.name} ${clipIndex}`
-        const startTime = session.timeSecondsToWholeNotes(midiClip.startTimeSeconds)
-        const duration = session.timeSecondsToWholeNotes(midiClip.durationSeconds)
-        clipMessages.push(cybr.midiclip.select(clipName, startTime, duration))
+        clipMessages.push(cybr.midiclip.select(clipName, midiClip.startTimeSeconds, midiClip.durationSeconds))
         clipMessages.push(midiClip.events.map(event => {
           // Velocity in the event takes priority over velocity in the .d object
           const velocity = (typeof event.velocity === 'number')

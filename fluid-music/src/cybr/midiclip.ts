@@ -26,8 +26,8 @@ export function select(name, startTimeInWholeNotes, durationInWholeNotes) {
     address: '/midiclip/select',
     args: [
       { type: 'string', value: name },
-      { type: 'float',  value: startTimeInWholeNotes }, // start time in whole notes
-      { type: 'float',  value: durationInWholeNotes }, // length in whole notes
+      { type: 'double',  value: startTimeInWholeNotes }, // start time in whole notes
+      { type: 'double',  value: durationInWholeNotes }, // length in whole notes
     ],
   };
 }

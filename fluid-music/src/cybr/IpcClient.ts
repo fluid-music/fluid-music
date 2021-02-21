@@ -181,7 +181,9 @@ The cybr server must be running in order for fluid-music to:
       // catch an error propagating from `.send(...)`.
       this.rejectPendingRequest(pObj, error);
     }
-    return pObj.promise;
+    const response = await pObj.promise;
+    printResponseErrors(response)
+    return response
   }
 
   get targetPort() {
@@ -200,5 +202,16 @@ The cybr server must be running in order for fluid-music to:
   closeIfDone = () => {
     if (this.keepOpen || this.queue.length) return;
     this.close();
+  }
+}
+
+function printResponseErrors(result : any) {
+  if (result.oscType === 'message') {
+    const errorCode = result.args[0]?.value
+    if (errorCode) {
+      console.warn(result.address, result.args[0]?.value, result.args[1]?.value)
+    }
+  } else if (result.oscType === 'bundle') {
+    result.elements.map(printResponseErrors)
   }
 }
