@@ -618,8 +618,8 @@ cybr::OSCMessage FluidOscServer::selectClip(const cybr::OSCMessage& message) {
 cybr::OSCMessage FluidOscServer::renderRegion(const cybr::OSCMessage& message) {
     // Args
     // 0 - (string, required) output filename
-    // 1 - (float, optional) start wholeNotes
-    // 2 - (float, optional) duration in wholeNotes
+    // 1 - (float, optional) start in seconds
+    // 2 - (float, optional) duration in seconds
     // If both 1 and 2 are floats, render this time range. Otherwise,
     // render the edit loop region.
     cybr::OSCMessage reply("/audiotrack/region/render/reply");
@@ -641,15 +641,15 @@ cybr::OSCMessage FluidOscServer::renderRegion(const cybr::OSCMessage& message) {
     te::TransportControl& transport = selectedTrack->edit.getTransport();
     te::EditTimeRange range = transport.getLoopRange();
 
-    if (message.size() >= 3 && message[1].isFloat32() && message[2].isFloat32()) {
-        double startBeats = message[1].getFloat32() * 4.0;
-        double durationBeats = message[2].getFloat32() * 4.0;
-        double endBeats = startBeats + durationBeats;
-        double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(startBeats);
-        double endSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(endBeats);
-        range.start = startSeconds;
-        range.end = endSeconds;
+    {
+        double startSeconds = 0;
+        double durationSeconds = 0;
+        if (message.size() >= 3 && getFloatOrDouble(message[1], startSeconds) && getFloatOrDouble(message[2], durationSeconds)) {
+            range.start = startSeconds;
+            range.end = startSeconds + durationSeconds;
+        }
     }
+
     renderTrackRegion(outputFile, *selectedTrack, range);
 
     reply.addInt32(0);

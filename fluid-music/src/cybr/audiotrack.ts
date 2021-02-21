@@ -179,18 +179,18 @@ export function width(bipolar : number, startTimeInSeconds? : number, curve? : n
  * supplied, the engine should use the loop time range.
  *
  * @param {string} outFilename output filename
- * @param {number} [startTimeInWholeNotes] start time in whole notes
- * @param {number} [durationInWholeNotes] duration in whole notes
+ * @param {number} [startTimeSeconds] start time in seconds
+ * @param {number} [durationSeconds] duration in seconds
  */
-export function renderRegion(outFilename, startTimeInWholeNotes, durationInWholeNotes) {
+export function renderRegion(outFilename, startTimeSeconds, durationSeconds) {
   if (typeof outFilename !== 'string')
     throw new Error('audiotrack.renderRegion requires a outputFilename string');
 
   const args : any[] = [{ type: 'string', value: outFilename }];
 
-  if (startTimeInWholeNotes !== undefined || durationInWholeNotes !== undefined) {
-    if (typeof startTimeInWholeNotes !== 'number' ||
-        typeof durationInWholeNotes !== 'number')
+  if (startTimeSeconds !== undefined || durationSeconds !== undefined) {
+    if (typeof startTimeSeconds !== 'number' ||
+        typeof durationSeconds !== 'number')
     {
       const msg =
         'An invalid time range was supplied to renderRegion: ' +
@@ -199,9 +199,9 @@ export function renderRegion(outFilename, startTimeInWholeNotes, durationInWhole
     }
   }
 
-  if (typeof startTimeInWholeNotes === 'number') {
-    args.push({ type: 'float', value: startTimeInWholeNotes });
-    args.push({ type: 'float', value: durationInWholeNotes });
+  if (typeof startTimeSeconds === 'number') {
+    args.push({ type: 'double', value: startTimeSeconds });
+    args.push({ type: 'double', value: durationSeconds });
   }
 
   return { args, address: '/audiotrack/region/render' };
