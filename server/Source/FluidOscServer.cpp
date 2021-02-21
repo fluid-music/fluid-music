@@ -122,7 +122,8 @@ cybr::OSCMessage FluidOscServer::handleOscMessage (const cybr::OSCMessage& messa
     if (msgAddressPattern.matches({"/cd"})) return changeWorkingDirectory(message);
     if (msgAddressPattern.toString().startsWith({"/transport"})) return handleTransportMessage(message);
     if (msgAddressPattern.matches({"/clip/render"})) return renderClip(message);
-    if (msgAddressPattern.matches({"/clip/set/length"})) return setClipLength(message);
+    if (msgAddressPattern.matches({"/clip/length/set/seconds"})) return setClipLengthSeconds(message);
+    if (msgAddressPattern.matches({"/clip/length/set/beats"})) return setClipLengthBeats(message);
     if (msgAddressPattern.matches({"/clip/select"})) return selectClip(message);
     if (msgAddressPattern.matches({"/clip/trim/seconds"})) return trimClipBySeconds(message);
     if (msgAddressPattern.matches({"/clip/source/offset/seconds"})) return offsetClipSourceInSeconds(message);
@@ -137,7 +138,7 @@ cybr::OSCMessage FluidOscServer::handleOscMessage (const cybr::OSCMessage& messa
 
     printOscMessage(message);
     cybr::OSCMessage error("/error");
-    constructReply(error, 1, "Unhandled Message");
+    constructReply(error, 1, "Unhandled Message: " + message.getAddressPattern().toString());
     return error;
 }
 
@@ -479,15 +480,16 @@ cybr::OSCMessage FluidOscServer::trimClipBySeconds(const cybr::OSCMessage& messa
     return reply;
 }
 
-cybr::OSCMessage FluidOscServer::setClipLength(const cybr::OSCMessage& message) {
-    cybr::OSCMessage reply("/clip/set/length/reply");
+cybr::OSCMessage FluidOscServer::setClipLengthBeats(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/clip/length/set/beats/reply");
     if (!selectedClip) {
         String errorString = "Cannot set clip length: No clip selected";
         constructReply(reply, 1, errorString);
         return reply;
     }
 
-    if (!message.size() || !message[0].isFloat32()) {
+    double durationInBeats = 0;
+    if (!message.size() || !getFloatOrDouble(message[0], durationInBeats)) {
         String errorString = "Cannot set clip length: First argument must be a float duration";
         constructReply(reply, 1, errorString);
         return reply;
@@ -499,9 +501,8 @@ cybr::OSCMessage FluidOscServer::setClipLength(const cybr::OSCMessage& message) 
             trimStart = true;
         }
     }
-    double durationInQuarterNotes = message[0].getFloat32() * 4.0;
 
-    if (durationInQuarterNotes <= 0) {
+    if (durationInBeats <= 0) {
         String errorString = "Cannot set clip length: duration argument must be greater than 0";
         constructReply(reply, 1, errorString);
         return reply;
@@ -512,17 +513,66 @@ cybr::OSCMessage FluidOscServer::setClipLength(const cybr::OSCMessage& message) 
     double endBeat = selectedClip->getEndBeat();
 
     if (trimStart) {
-        double newStartBeat = endBeat - durationInQuarterNotes;
+        double newStartBeat = endBeat - durationInBeats;
         double newStartSeconds = selectedClip->edit.tempoSequence.beatsToTime(newStartBeat);
         selectedClip->setStart(newStartSeconds, true, false);
     } else {
-        double newEndBeat = startBeat + durationInQuarterNotes;
+        double newEndBeat = startBeat + durationInBeats;
         double newEndSeconds = selectedClip->edit.tempoSequence.beatsToTime(newEndBeat);
         double newDuration = newEndSeconds - currentRange.start;
 
          if (newDuration > selectedClip->getMaximumLength()) {
             newEndSeconds = currentRange.start + selectedClip->getMaximumLength();
             newEndBeat = selectedClip->edit.tempoSequence.timeToBeats(newEndSeconds);
+        }
+        selectedClip->setEnd(newEndSeconds, true);
+    }
+
+    reply.addInt32(0);
+    return reply;
+}
+
+cybr::OSCMessage FluidOscServer::setClipLengthSeconds(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/clip/length/set/seconds/reply");
+    if (!selectedClip) {
+        String errorString = "Cannot set clip length: No clip selected";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    double durationSeconds = 0;
+    if (!message.size() || !getFloatOrDouble(message[0], durationSeconds)) {
+        String errorString = "Cannot set clip length: First argument must be a double or float duration";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    bool trimStart = false;
+    if (message.size() >= 2 && message[1].isString()) {
+        if (message[1].getString().toLowerCase().startsWithChar('s')) {
+            trimStart = true;
+        }
+    }
+
+    if (durationSeconds <= 0) {
+        String errorString = "Cannot set clip length: duration argument must be greater than 0";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    te::EditTimeRange currentRange = selectedClip->getEditTimeRange();
+    double startSeconds = selectedClip->getPosition().getStart();
+    double endSeconds = selectedClip->getPosition().getEnd();
+
+    if (trimStart) {
+        double newStartSeconds = endSeconds - durationSeconds;
+        selectedClip->setStart(newStartSeconds, true, false);
+    } else {
+        double newEndSeconds = startSeconds + durationSeconds;
+        double newDuration = newEndSeconds - currentRange.start;
+
+         if (newDuration > selectedClip->getMaximumLength()) {
+            newEndSeconds = currentRange.start + selectedClip->getMaximumLength();
         }
         selectedClip->setEnd(newEndSeconds, true);
     }

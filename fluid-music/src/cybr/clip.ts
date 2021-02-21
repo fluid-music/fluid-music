@@ -34,18 +34,40 @@ export function select(clipName) {
 
 /**
  * Change the length of the clip.
- * @param {number} durationInWholeNotes new length of the clip
- * @param {boolean} [trimStart=false] if true, trim the beginning of the clip,
- *    effectively changing the start time
+ * @param durationSeconds new length of the clip in seconds
+ * @param trimStart if true, trim the beginning of the clip, effectively
+ *    changing the start time
  */
-export function length(durationInWholeNotes, trimStart=false) {
-  if (typeof durationInWholeNotes !== 'number')
-    throw new Error('clip.length requires a duration in whole notes');
+export function lengthSeconds(durationSeconds : number, trimStart=false) {
+  if (typeof durationSeconds !== 'number')
+    throw new Error('invalid length: ' + durationSeconds);
 
   return {
-    address: '/clip/set/length',
+    address: '/clip/length/set/seconds',
     args: [
-      { type: 'float', value: durationInWholeNotes },
+      { type: 'double', value: durationSeconds },
+      { type: 'string', value: trimStart ? 'start' : 'end' },
+    ],
+  };
+}
+
+/**
+ * Change the length of the clip. In this method, beats refer to Tracktion
+ * Waveform's notion of beats, which are indicated by the value in the
+ * lower value of the time signature. This does not seem to correctly account
+ * for compound meters (in 6/8, an eighth note is still considered one beat).
+ * @param durationInBeats new length of the clip in seconds
+ * @param trimStart if true, trim the beginning of the clip, effectively
+ *    changing the start time
+ */
+export function lengthBeats(durationInBeats : number, trimStart=false) {
+  if (typeof durationInBeats !== 'number')
+    throw new Error('invalid length: ' + durationInBeats)
+
+  return {
+    address: '/clip/length/set/beats',
+    args: [
+      { type: 'double', value: durationInBeats },
       { type: 'string', value: trimStart ? 'start' : 'end' },
     ],
   };

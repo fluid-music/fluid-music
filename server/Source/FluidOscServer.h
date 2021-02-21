@@ -73,7 +73,8 @@ public:
     cybr::OSCMessage setTrackPan(const cybr::OSCMessage& message);
     cybr::OSCMessage renderRegion(const cybr::OSCMessage& message);
     cybr::OSCMessage renderClip(const cybr::OSCMessage& message);
-    cybr::OSCMessage setClipLength(const cybr::OSCMessage& message);
+    cybr::OSCMessage setClipLengthBeats(const cybr::OSCMessage& message);
+    cybr::OSCMessage setClipLengthSeconds(const cybr::OSCMessage& message);
     cybr::OSCMessage trimClipBySeconds(const cybr::OSCMessage& message);
     cybr::OSCMessage selectClip(const cybr::OSCMessage& message);
     cybr::OSCMessage offsetClipSourceInSeconds(const cybr::OSCMessage& message);

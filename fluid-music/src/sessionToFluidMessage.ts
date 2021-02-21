@@ -283,12 +283,11 @@ function fileEventToFluidMessage(audioFile : FluidAudioFile, session : FluidSess
   }
 
   const startTime = session.timeSecondsToWholeNotes(startTimeSeconds)
-  const duration = session.timeSecondsToWholeNotes(durationSeconds)
   const clipName = `${basename(audioFile.path)}.${summativeIndex}`
   const msg = [cybr.audiotrack.insertWav(clipName, startTime, audioFile.path)] as any[]
 
   msg.push(cybr.clip.setSourceOffsetSeconds(sOff))
-  msg.push(cybr.clip.length(duration))
+  msg.push(cybr.clip.lengthSeconds(durationSeconds))
 
   const { fadeInSeconds, fadeOutSeconds, gainDb } = resolveFades(audioFile)
 
