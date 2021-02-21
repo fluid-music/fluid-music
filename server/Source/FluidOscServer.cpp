@@ -13,6 +13,14 @@
 
 using namespace juce;
 
+// If the first argument is a float or double return true, and place the
+// retrieved value in result. Otherwise, return false.
+inline bool getFloatOrDouble(const cybr::OSCArgument& arg, double& result) {
+    if (arg.isFloat32()) { result = (double)arg.getFloat32(); return true; }
+    else if (arg.isFloat64()) { result = arg.getFloat64(); return true; }
+    else return false;
+}
+
 //==============================================================================
 FluidOscServer::FluidOscServer() {
     addListener (this);
@@ -1044,13 +1052,15 @@ cybr::OSCMessage FluidOscServer::setPluginParam(const cybr::OSCMessage& message)
 
 cybr::OSCMessage FluidOscServer::setPluginParamAt(const cybr::OSCMessage& message) {
     cybr::OSCMessage reply("/plugin/param/set/at/reply");
+    double changeSeconds = 0;
+
     if (message.size() > 5 ||
         !message[0].isString() ||
         !message[1].isFloat32() ||
-        !message[2].isFloat32() ||
+        !getFloatOrDouble(message[2], changeSeconds) ||
         !message[3].isFloat32() ||
         !message[4].isString() ) {
-        String errorString = "Setting parameter failed. Incorrect arguments. (sfffs, expected).";
+        String errorString = "Setting parameter failed. Incorrect arguments. (sfffs or sfdfs, expected).";
         constructReply(reply, 1, errorString);
         return reply;
     }
@@ -1073,8 +1083,8 @@ cybr::OSCMessage FluidOscServer::setPluginParamAt(const cybr::OSCMessage& messag
         else if ( paramValue < 0) paramValue = 0;
     }
 
-    double changeWholeNotes = (double)message[2].getFloat32();
-    if (changeWholeNotes < 0) {
+    
+    if (changeSeconds < 0) {
         String errorString = "Setting parameter " + paramName
         + " failed. Time has to be a positive number.";
         constructReply(reply, 1, errorString);
@@ -1115,10 +1125,11 @@ cybr::OSCMessage FluidOscServer::setPluginParamAt(const cybr::OSCMessage& messag
     }
 
     if (foundParam) {
-        setParamAutomationPoint(foundParam, paramValue, changeWholeNotes, curveValue, isNormalized);
+        if (isNormalized) paramValue = foundParam->valueRange.convertFrom0to1(paramValue);
+        foundParam->getCurve().addPoint(changeSeconds, paramValue, curveValue);
         String replyString = "set " + paramName
         + " to " + String(message[1].getFloat32()) + " explicit value: " + foundParam->valueToString(paramValue)
-        + " at " + String(changeWholeNotes) + " whole note(s).";
+        + " at " + String(changeSeconds) + " seconds(s).";
         constructReply(reply, 0, replyString);
         return reply;
     }
@@ -1142,14 +1153,13 @@ cybr::OSCMessage FluidOscServer::setTrackWidth(const cybr::OSCMessage& message) 
 
     bool isAutomation = false;
     float curveValue = 0;
-    double timeInWholeNotes = 0;
+    double timeSeconds = 0;
     if (message.size() >= 2) {
         isAutomation = true;
-        if (!message[1].isFloat32()) {
-            constructReply(reply, 1, "Cannot set track width automation point: time value must be a float");
+        if (!getFloatOrDouble(message[1], timeSeconds)) {
+            constructReply(reply, 1, "Cannot set track width automation point: time value must be a float or double");
             return reply;
         }
-        timeInWholeNotes = (double)message[1].getFloat32();
         if (message.size() >= 3 && message[2].isFloat32()) {
             curveValue = message[2].getFloat32();
         }
@@ -1168,7 +1178,8 @@ cybr::OSCMessage FluidOscServer::setTrackWidth(const cybr::OSCMessage& message) 
                 // accepts a juce style smart pointer. Does this mean that it
                 // might automatically cast to a smart points, causeing it to be
                 // erroneously freed when the smart pointer gets deleted?
-                setParamAutomationPoint(macro, paramValue, timeInWholeNotes, curveValue);
+                paramValue = macro->valueRange.convertFrom0to1(paramValue);
+                macro->getCurve().addPoint(timeSeconds, paramValue, curveValue);
             }
         }
     } else  {
@@ -1659,14 +1670,13 @@ cybr::OSCMessage FluidOscServer::setTrackGain(const cybr::OSCMessage& message) {
     float gainDb = message[0].getFloat32();
     bool isAutomation = false;
     float curveValue = 0;
-    double timeInWholeNotes = 0;
+    double timeSeconds = 0;
     if (message.size() >= 2) {
         isAutomation = true;
-        if (!message[1].isFloat32()) {
-            constructReply(reply, 1, "Cannot set track gain automation point: time value must be a float");
+        if (!getFloatOrDouble(message[1], timeSeconds)) {
+            constructReply(reply, 1, "Cannot set track gain automation point: time value must be a float or double");
             return reply;
         }
-        timeInWholeNotes = (double)message[1].getFloat32();
         if (message.size() >= 3 && message[2].isFloat32()) {
             curveValue = message[2].getFloat32();
         }
@@ -1677,7 +1687,7 @@ cybr::OSCMessage FluidOscServer::setTrackGain(const cybr::OSCMessage& message) {
         auto plugin = getOrCreatePluginByName(*selectedTrack, "volume", "tracktion", 0);
         if (auto volumePlugin = dynamic_cast<te::VolumeAndPanPlugin*>(plugin)) {
             float paramValue = te::decibelsToVolumeFaderPosition(gainDb);
-            setParamAutomationPoint(volumePlugin->volParam, paramValue, timeInWholeNotes, curveValue, false);
+            volumePlugin->volParam->getCurve().addPoint(timeSeconds, paramValue, curveValue);
             reply.addInt32(0);
             return reply;
         }
@@ -1709,14 +1719,13 @@ cybr::OSCMessage FluidOscServer::setTrackPan(const cybr::OSCMessage& message) {
     float panValue = message[0].getFloat32();
     bool isAutomation = false;
     float curveValue = 0;
-    double timeInWholeNotes = 0;
+    double timeSeconds = 0;
     if (message.size() >= 2) {
         isAutomation = true;
-        if (!message[1].isFloat32()) {
+        if (!getFloatOrDouble(message[1], timeSeconds)) {
             constructReply(reply, 1, "Cannot set track pan automation point: time value must be a float");
             return reply;
         }
-        timeInWholeNotes = (double)message[1].getFloat32();
         if (message.size() >= 3 && message[2].isFloat32()) {
             curveValue = message[2].getFloat32();
         }
@@ -1726,7 +1735,7 @@ cybr::OSCMessage FluidOscServer::setTrackPan(const cybr::OSCMessage& message) {
         ensureWidthRack(*selectedTrack);
         for (auto macro : selectedTrack->macroParameterList.getMacroParameters()) {
             if (macro->macroName == "pan automation") {
-                setParamAutomationPoint(macro, panValue * 0.5 + 0.5, timeInWholeNotes, curveValue);
+                macro->getCurve().addPoint(timeSeconds, panValue * 0.5 + 0.5, curveValue);
                 reply.addInt32(0);
                 return reply;
             }

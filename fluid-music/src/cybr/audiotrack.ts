@@ -114,18 +114,19 @@ export function unmute() {
  * When adjusting gain, set the gain of the the last volume plugin on the
  * track's PluginList. When adding volume automation, adjust the second last
  * volume parameter, creating it if needed.
- * @param {number} dbfs
- * @param startTimeInWholeNotes When present, insert an automation point instead
+ * @param dbfs
+ * @param startTimeSeconds When present, insert an automation point instead
  *    of setting the parameter directly
  * @param curve (default) 0=linear, -1=startFast, 1=startSlow
  */
-export function gain(dbfs: number, startTimeInWholeNotes? : number, curve? : number) {
+export function gain(dbfs : number, startTimeSeconds? : number, curve? : number) {
   if (typeof dbfs !== 'number')
     throw new Error('audiotrack.gain requires a number in dbfs');
 
   const args = [ { type: 'float', value:  dbfs} ];
-  if (typeof startTimeInWholeNotes === 'number') {
-    args.push({ type: 'float', value: startTimeInWholeNotes });
+
+  if (typeof startTimeSeconds === 'number') {
+    args.push({ type: 'double', value: startTimeSeconds });
     if (typeof curve === 'number') {
       args.push({ type: 'float', value: curve });
     }
@@ -136,17 +137,17 @@ export function gain(dbfs: number, startTimeInWholeNotes? : number, curve? : num
 /**
  * Set the pan, or add a pan automation point
  * @param bipolar stereo pan position -1=hardLeft, 1=hardRight
- * @param startTimeInWholeNotes When present, insert an automation point instead
+ * @param startTimeSeconds When present, insert an automation point instead
  *    of setting the parameter directly
  * @param curve (default) 0=linear, -1=startFast, 1=startSlow
  */
-export function pan(bipolar : number, startTimeInWholeNotes? : number, curve? : number) {
+export function pan(bipolar : number, startTimeSeconds? : number, curve? : number) {
   if (typeof bipolar !== 'number')
     throw new Error('audiotrack.pan requires a number');
 
   const args = [ { type: 'float', value:  Math.max(Math.min(bipolar, 1), -1)} ];
-  if (typeof startTimeInWholeNotes === 'number') {
-    args.push({ type: 'float', value: startTimeInWholeNotes });
+  if (typeof startTimeSeconds === 'number') {
+    args.push({ type: 'double', value: startTimeSeconds });
     if (typeof curve === 'number') {
       args.push({ type: 'float', value: curve });
     }
@@ -158,14 +159,14 @@ export function pan(bipolar : number, startTimeInWholeNotes? : number, curve? : 
 /**
  * Set the track width, or add a width automation point
  * @param bipolar 1=default, 0=mono, -1=stereoInvert
- * @param startTimeInWholeNotes When present, insert an automation point instead
+ * @param startTimeInSeconds When present, insert an automation point instead
  *    of setting the parameter directly
  * @param curve (default) 0=linear, -1=startFast, 1=startSlow
  */
-export function width(bipolar : number, startTimeInWholeNotes? : number, curve? : number) {
+export function width(bipolar : number, startTimeInSeconds? : number, curve? : number) {
   const args = [ { type: 'float', value:  Math.max(Math.min(bipolar, 1), -1)} ];
-  if (typeof startTimeInWholeNotes === 'number') {
-    args.push({ type: 'float', value: startTimeInWholeNotes });
+  if (typeof startTimeInSeconds === 'number') {
+    args.push({ type: 'double', value: startTimeInSeconds });
     if (typeof curve === 'number') {
       args.push({ type: 'float', value: curve });
     }

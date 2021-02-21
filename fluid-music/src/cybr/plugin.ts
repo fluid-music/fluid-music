@@ -164,22 +164,22 @@ export function setParamExplicit(paramName, paramValue) {
  * curve at the specified normalized value and time. The server automatically
  * adds a point at the default value of the parameter at time 0.
  *
- * @param {string} paramName the name of the parameter
- * @param {number} normalizedValue a normalized parameter value from 0 to 1
- * @param {number} [timeInWholeNotes=0] time of parameter change in whole notes
- * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+ * @param paramName the name of the parameter
+ * @param normalizedValue a normalized parameter value from 0 to 1
+ * @param timeInSeconds of parameter change in whole notes
+ * @param curve An optional number from [-1, 1] (inclusive), which
  *    represents the curvature of the line formed by this point and the next
  *    point. Zero implies a linear change. Higher values create a curve that
  *    begins slowly and accelerates. Lower values create a curve that begins
  *    quickly, and decelerates.
  */
-export function setParamNormalizedAt(paramName, normalizedValue, timeInWholeNotes=0, curve=0) {
+export function setParamNormalizedAt(paramName : string, normalizedValue : number, timeInSeconds : number = 0, curve : number = 0) {
   if (typeof paramName !== 'string')
     throw new Error('plugin.setParam needs a parameterName, got: ' + paramName);
   if (typeof normalizedValue !== 'number')
     throw new Error('plugin.setParam needs a value number, got ' + normalizedValue);
-  if (typeof timeInWholeNotes !== 'number')
-    throw new Error('plugin.setParam needs a time number, got ' + timeInWholeNotes);
+  if (typeof timeInSeconds !== 'number')
+    throw new Error('plugin.setParam needs a time number, got ' + timeInSeconds);
   if (typeof curve !== 'number')
     throw new Error('plugin.setParam needs a curve number, got ' + curve);
 
@@ -188,7 +188,7 @@ export function setParamNormalizedAt(paramName, normalizedValue, timeInWholeNote
     args: [
       { type: 'string', value: paramName },
       { type: 'float', value: normalizedValue },
-      { type: 'float', value: timeInWholeNotes },
+      { type: 'double', value: timeInSeconds },
       { type: 'float', value: curve },
       { type: 'string', value: "normalized" },
     ],
@@ -200,23 +200,23 @@ export function setParamNormalizedAt(paramName, normalizedValue, timeInWholeNote
  * curve at the specified value and time. The server automatically adds a
  * point at the default value of the parameter at time 0.
  *
- * @param {string} paramName - the name of the parameter
- * @param {number} paramValue - the explicit value of the parameter set
- * @param {number} [timeInWholeNotes=0] time at which the param change will be
+ * @param paramName the name of the parameter
+ * @param paramValue the explicit value of the parameter set
+ * @param timeInSeconds time at which the param change will be
  *    inserted
- * @param {number} [curve=0] A number from [-1, 1] (inclusive), which
+ * @param curve An optional number from [-1, 1] (inclusive), which
  *    represents the curvature of the line formed by this point and the next
  *    point. Zero implies a linear change. Higher values create a curve that
  *    begins slowly and accelerates. Lower values create a curve that begins
  *    quickly, and decelerates.
  */
-export function setParamExplicitAt(paramName, paramValue, timeInWholeNotes=0, curve = 0) {
+export function setParamExplicitAt(paramName : string, paramValue : number, timeInSeconds : number = 0, curve : number = 0) {
   if (typeof paramName !== 'string')
     throw new Error('plugin.setParam needs a parameterName, got: ' + paramName);
   if (typeof paramValue !== 'number')
     throw new Error('plugin.setParam needs a value number, got ' + paramValue);
-  if (typeof timeInWholeNotes !== 'number')
-    throw new Error('plugin.setParam needs a time number, got ' + timeInWholeNotes);
+  if (typeof timeInSeconds !== 'number')
+    throw new Error('plugin.setParam needs a time number, got ' + timeInSeconds);
   if (typeof curve !== 'number')
     throw new Error('plugin.setParam needs a curve number, got ' + curve);
 
@@ -225,7 +225,7 @@ export function setParamExplicitAt(paramName, paramValue, timeInWholeNotes=0, cu
     args: [
       { type: 'string', value: paramName },
       { type: 'float', value: paramValue },
-      { type: 'float', value: timeInWholeNotes },
+      { type: 'double', value: timeInSeconds },
       { type: 'float', value: curve },
       { type: 'string', value: "explicit" },
     ],

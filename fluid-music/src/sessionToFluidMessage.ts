@@ -5,6 +5,7 @@ import { FluidTrack } from './FluidTrack'
 import { FluidSession } from './FluidSession'
 import { FluidAudioFile, resolveFades } from './FluidAudioFile'
 import * as cybr from './cybr/index'
+import { start } from 'repl'
 
 // This amplification conversion is hard-coded in Tracktion
 const normalizeTracktionGain = (db) => {
@@ -194,9 +195,10 @@ export function sessionToContentFluidMessage(session : FluidSession) {
       for (const autoPoint of automation.points) {
         if (typeof autoPoint.value === 'number') {
           let msg : any = null
-          if (name === 'gain' || name === 'gainDb')  msg = cybr.audiotrack.gain(autoPoint.value, autoPoint.startTime, autoPoint.curve)
-          else if (name === 'pan')   msg = cybr.audiotrack.pan(autoPoint.value, autoPoint.startTime, autoPoint.curve)
-          else if (name === 'width') msg = cybr.audiotrack.width(autoPoint.value, autoPoint.startTime, autoPoint.curve)
+          const startTimeSeconds = session.timeWholeNotesToSeconds(autoPoint.startTime)
+          if (name === 'gain' || name === 'gainDb')  msg = cybr.audiotrack.gain(autoPoint.value, startTimeSeconds, autoPoint.curve)
+          else if (name === 'pan')   msg = cybr.audiotrack.pan(autoPoint.value, startTimeSeconds, autoPoint.curve)
+          else if (name === 'width') msg = cybr.audiotrack.width(autoPoint.value, startTimeSeconds, autoPoint.curve)
           else throw new Error(`Fluid Track Automation found unsupported parameter: "${name}"`)
           trackAutoMsg.push(msg)
         }
