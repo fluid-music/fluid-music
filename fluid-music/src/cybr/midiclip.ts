@@ -10,24 +10,24 @@ export function clear() {
 /**
  * Select a MIDI clip by name on the currently selected track. Create the clip
  * if it does not exist. Set the clip's start time and length in whole notes.
- * @param {string} name name of the MIDI clip to select.
- * @param {number} startTimeInWholeNotes
- * @param {number} durationInWholeNotes
+ * @param name name of the MIDI clip to select.
+ * @param startTimeSeconds
+ * @param durationSeconds
  */
-export function select(name, startTimeInWholeNotes, durationInWholeNotes) {
+export function select(name : string, startTimeSeconds : number, durationSeconds : number) {
   if (typeof name !== 'string')
     throw new Error('midiclip.select requires name string, got: ' + name);
-  if (typeof startTimeInWholeNotes !== 'number')
-    throw new Error('midiclip.select requires start time number, got: ' + startTimeInWholeNotes);
-  if (typeof durationInWholeNotes !== 'number')
-    throw new Error('midiclip.select requires length number, got: ' + durationInWholeNotes);
+  if (typeof startTimeSeconds !== 'number')
+    throw new Error('midiclip.select requires start time number, got: ' + startTimeSeconds);
+  if (typeof durationSeconds !== 'number')
+    throw new Error('midiclip.select requires length number, got: ' + durationSeconds);
 
   return {
     address: '/midiclip/select',
     args: [
       { type: 'string', value: name },
-      { type: 'double',  value: startTimeInWholeNotes }, // start time in whole notes
-      { type: 'double',  value: durationInWholeNotes }, // length in whole notes
+      { type: 'double',  value: startTimeSeconds }, // start time in whole notes
+      { type: 'double',  value: durationSeconds }, // length in whole notes
     ],
   };
 }
@@ -39,7 +39,12 @@ export function select(name, startTimeInWholeNotes, durationInWholeNotes) {
  * @param {Number} [durationInWholeNotes=0.25] Note length in whole notes
  * @param {Integer} [velocity] Optional MIDI note velocity.
  */
-export function note(noteNum, startTimeInWholeNotes, durationInWholeNotes=0.25, velocity) {
+export function note(
+  noteNum : number,
+  startTimeInWholeNotes : number,
+  durationInWholeNotes : number = 0.25,
+  velocity? : number)
+{
   const args = [
     {type: 'integer', value: noteNum },
     {type: 'float',   value: startTimeInWholeNotes },
@@ -58,15 +63,15 @@ export function note(noteNum, startTimeInWholeNotes, durationInWholeNotes=0.25, 
 
 /**
  * Build an OSC message that creates a clip with a bunch of midi notes
- * @param { string } clipName name of the clip.
- * @param { number } startTimeInWholeNotes clip start time in whole notes
- * @param { number} durationInWholeNotes clip length in whole notes
- * @param { Object[] } notes array of objects, which look like:
+ * @param clipName name of the clip.
+ * @param startTimeSeconds clip start time in whole notes
+ * @param durationSeconds clip length in whole notes
+ * @param notes array of objects, which look like:
  *    `{ duration: lengthWholeNotes, n: midiNoteNumber, startTime: startTimeWholeNotes }`
  */
-export function create(clipName, startTimeInWholeNotes, durationInWholeNotes, notes) {
+export function create(clipName : string, startTimeSeconds : number, durationSeconds : number, notes : any[]) {
   const elements = [
-    select(clipName, startTimeInWholeNotes, durationInWholeNotes),
+    select(clipName, startTimeSeconds, durationSeconds),
     clear(),
   ];
 
