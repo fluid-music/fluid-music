@@ -155,17 +155,23 @@ cybr::OSCMessage FluidOscServer::setTimeSignatureAt(const cybr::OSCMessage& mess
         return reply;
     }
 
-    double timeWholeNotes = 0;
     int upper = message[0].getInt32();
     int lower = message[1].getInt32();
-
-    if (message.size() > 2 && message[2].isFloat32()) {
-        timeWholeNotes = message[2].getFloat32();
-    }
+    double timeSeconds = 0;
 
     te::Edit& edit = activeCybrEdit->getEdit();
-    double time = edit.tempoSequence.beatsToTime(timeWholeNotes * 4);
-    te::TimeSigSetting::Ptr timeSignature = edit.tempoSequence.insertTimeSig(time);
+
+    // The behavior of message[2] is overloaded. If it is a float or a double,
+    // treat it as a value in seconds. If int, treat it as a measure number.
+    if (message.size() > 2) {
+        if (getFloatOrDouble(message[2], timeSeconds)) {}
+        else if (message[2].isInt32()) {
+            int measureNumber = jmax(1, message[2].getInt32()); // index from 1
+            timeSeconds = edit.tempoSequence.barsBeatsToTime({measureNumber - 1, 0.0 });
+        }
+    }
+
+    te::TimeSigSetting::Ptr timeSignature = edit.tempoSequence.insertTimeSig(timeSeconds);
     timeSignature->numerator = upper;
     timeSignature->denominator = lower;
     if (upper % 3 == 0) timeSignature->triplets = true;
