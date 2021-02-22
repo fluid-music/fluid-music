@@ -166,11 +166,8 @@ export function sessionToContentFluidMessage(session : FluidSession) {
         throw new Error(`sessionToTemplateFluidMessage: ${track.name} track has both MIDI clips and child tracks, but tracktion does not allow clips directly on submix tracks`)
       }
 
-      // Create one EventContext object for each clip.
       if (midiClip.events && midiClip.events.length) {
-        // Create a sub-message for each clip. Note that the naming convention
-        // gets a little confusing, because we do not yet know if "clip" contains
-        // a single "Midi Clip", a collection of audio file events, or both.
+        // Create a sub-message for each clip.
         const clipMessages : any[] = []
         trackMessages.push(clipMessages)
         const clipName  = `${track.name} ${clipIndex}`
@@ -180,7 +177,15 @@ export function sessionToContentFluidMessage(session : FluidSession) {
           const velocity = (typeof event.velocity === 'number')
             ? event.velocity
             : undefined
-          return cybr.midiclip.note(event.note, event.startTime, event.duration, velocity)
+
+          // When we add support for variable tempo, the start time and duration
+          // calculations will have to be updated. As of February 2021, the bpm
+          // is constant throughout the FluidSession, so it is okay to use a
+          // simple version of timeWholeNotesToSeconds.
+          const startTimeSeconds = session.timeWholeNotesToSeconds(event.startTime)
+          const durationSeconds = session.timeWholeNotesToSeconds(event.duration)
+          console.warn(startTimeSeconds, durationSeconds)
+          return cybr.midiclip.note(event.note, startTimeSeconds, durationSeconds, velocity)
         }))
       }
     }) // track.clips.forEach

@@ -89,7 +89,8 @@ cybr::OSCMessage FluidOscServer::handleOscMessage (const cybr::OSCMessage& messa
         activateEditFile(file, true);
     }
 
-    if (msgAddressPattern.matches({"/midiclip/insert/note"})) return insertMidiNote(message);
+    if (msgAddressPattern.matches({"/midiclip/insert/note/"})) return insertMidiNote(message);
+    if (msgAddressPattern.matches({"/midiclip/insert/note/beats"})) return insertMidiNoteBeats(message);
     if (msgAddressPattern.matches({"/midiclip/select"})) return selectMidiClip(message);
     if (msgAddressPattern.matches({"/midiclip/clear"})) return clearMidiClip(message);
     if (msgAddressPattern.matches({"/plugin/select"})) return selectPlugin(message);
@@ -729,6 +730,7 @@ cybr::OSCMessage FluidOscServer::saveActiveEdit(const cybr::OSCMessage &message)
 
     activeCybrEdit->saveActiveEdit(file, mode);
     reply.addInt32(0);
+    reply.addString(file.getFullPathName());
     return reply;
 }
 
@@ -1572,15 +1574,15 @@ cybr::OSCMessage FluidOscServer::clearMidiClip(const cybr::OSCMessage& message) 
     return reply;
 }
 
-cybr::OSCMessage FluidOscServer::insertMidiNote(const cybr::OSCMessage& message) {
-    cybr::OSCMessage reply("/midiclip/insert/note/reply");
+cybr::OSCMessage FluidOscServer::insertMidiNoteBeats(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/midiclip/insert/note/beats/reply");
     if(!selectedClip){
         String errorString = "Cannot insert midi note: No clip selected.";
         constructReply(reply, 1, errorString);
         return reply;
     }
-    if(message.size() < 3){
-        String errorString = "Cannot insert midi note: Not enough arguments.";
+    if (message.size() < 3) {
+        String errorString = "Cannot insert midi note (beats): Not enough arguments.";
         constructReply(reply, 1, errorString);
         return reply;
     }
@@ -1623,6 +1625,69 @@ cybr::OSCMessage FluidOscServer::insertMidiNote(const cybr::OSCMessage& message)
         if (message[4].isInt32()) colorIndex = message[4].getInt32();
         else if (message[4].isFloat32()) colorIndex = (int)(message[4].getFloat32());
     }
+
+    te::MidiList& notes = selectedMidiClip->getSequence();
+    notes.addNote(noteNumber, startBeat, lengthInBeats, velocity, colorIndex, nullptr);
+
+    reply.addInt32(0);
+    return reply;
+}
+
+cybr::OSCMessage FluidOscServer::insertMidiNote(const cybr::OSCMessage& message) {
+    cybr::OSCMessage reply("/midiclip/insert/note/reply");
+    if (!selectedClip) {
+        String errorString = "Cannot insert midi note: No clip selected.";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+    if (message.size() < 3) {
+        String errorString = "Cannot insert midi note: Not enough arguments.";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    auto selectedMidiClip = dynamic_cast<te::MidiClip*>(selectedClip);
+    if (!selectedMidiClip) {
+        String errorString = "Cannot insertMidiNote: selected clip is not a midi clip";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    int noteNumber = 0;           // message[0]
+    double startSeconds = 0.0;    // message[1] (relative to start of clip)
+    double durationSeconds = 1.0; // message[2]
+    int velocity = 64;            // message[3]
+    int colorIndex = 0;           // message[4]
+
+    if (message[0].isInt32()) noteNumber = message[0].getInt32();
+    else if (message[0].isFloat32()) noteNumber = (int)(message[0].getFloat32());
+    else {
+        constructReply(reply, 1, "Cannot insertMidiNoteSeconds: arg1 must be an int or float");
+        return reply;
+    }
+    if (!getFloatOrDouble(message[1], startSeconds)) {
+        constructReply(reply, 1, "Cannot insertMidiNoteSeconds: arg2 must be a float or double");
+        return reply;
+    }
+    if (!getFloatOrDouble(message[2], durationSeconds)) {
+        constructReply(reply, 1, "Cannot insertMidiNoteSeconds: arg3 must be a float or double");
+        return reply;
+    }
+    if (message.size() >= 4) {
+        if (message[3].isInt32()) velocity = message[3].getInt32();
+        else if (message[3].isFloat32()) velocity = (int)message[3].getFloat32();
+        else if (message[3].isFloat64()) velocity = (int)message[3].getFloat64();
+    }
+
+    if (message.size() >= 5) {
+        if (message[4].isInt32()) colorIndex = message[4].getInt32();
+        else if (message[4].isFloat32()) colorIndex = (int)message[4].getFloat32();
+        else if (message[4].isFloat64()) colorIndex = (int)message[4].getFloat64();
+    }
+    double clipStartBeat = selectedMidiClip->getStartBeat();
+    double startBeat = selectedMidiClip->getBeatOfRelativeTime(startSeconds) - clipStartBeat;
+    double endBeat = selectedMidiClip->getBeatOfRelativeTime(startSeconds + durationSeconds) - clipStartBeat;
+    double lengthInBeats = endBeat - startBeat;
 
     te::MidiList& notes = selectedMidiClip->getSequence();
     notes.addNote(noteNumber, startBeat, lengthInBeats, velocity, colorIndex, nullptr);

@@ -112,9 +112,12 @@ commands.open = function(){
 };
 
 addDocstring('save', 'Save the active tracktionedit file');
-commands.save = function(){
-  client.send(cybr.global.save(null,'d'));
-  console.log('save: ***filename unchanged***');
+commands.save = async function(){
+  const result = await client.send(cybr.global.save(null,'d'));
+  const filename = (result && result.args && result.args[1] && result.args[1].value)
+    ? result.args[1].value
+    : '***filename unchanged***'
+  console.log(`save: ${filename}`);
   return;
 };
 

@@ -62,6 +62,7 @@ public:
     cybr::OSCMessage loadPluginTrkpreset(const cybr::OSCMessage& message);
     cybr::OSCMessage ensureSend(const cybr::OSCMessage& message);
     cybr::OSCMessage clearMidiClip(const cybr::OSCMessage& message);
+    cybr::OSCMessage insertMidiNoteBeats(const cybr::OSCMessage& message);
     cybr::OSCMessage insertMidiNote(const cybr::OSCMessage& message);
     cybr::OSCMessage insertWaveSample(const cybr::OSCMessage& message);
     cybr::OSCMessage saveActiveEdit(const cybr::OSCMessage& message);

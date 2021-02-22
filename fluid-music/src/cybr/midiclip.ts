@@ -39,7 +39,7 @@ export function select(name : string, startTimeSeconds : number, durationSeconds
  * @param {Number} [durationInWholeNotes=0.25] Note length in whole notes
  * @param {Integer} [velocity] Optional MIDI note velocity.
  */
-export function note(
+export function noteBeats(
   noteNum : number,
   startTimeInWholeNotes : number,
   durationInWholeNotes : number = 0.25,
@@ -58,6 +58,30 @@ export function note(
   if (typeof velocity === 'number')
     args.push({ type: 'integer', value: velocity });
 
+  return { address: '/midiclip/insert/note/beats', args }
+}
+
+/**
+ * Insert A midi note, specifying the time and duration in seconds.
+ * @param noteNumber MIDI note number
+ * @param startTimeSeconds start time in seconds, relative to clip start
+ * @param durationSeconds duration in seconds, relative to clip start
+ * @param velocity optional velocity (server default = 64)
+ */
+export function note(
+  noteNumber : number,
+  startTimeSeconds : number,
+  durationSeconds : number,
+  velocity? : number
+) {
+
+  const args = [
+    { type: 'integer', value: noteNumber },
+    { type: 'double', value: startTimeSeconds },
+    { type: 'double', value: durationSeconds },
+  ]
+
+  if (typeof velocity === 'number') args.push({ type: 'integer', value: velocity })
   return { address: '/midiclip/insert/note', args }
 }
 
