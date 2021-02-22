@@ -1933,14 +1933,22 @@ cybr::OSCMessage FluidOscServer::handleTransportMessage(const cybr::OSCMessage& 
         }
         transport.setCurrentPosition(message[0].getFloat32());
     } else if (pattern.matches({"/transport/to"})) {
-        if (message.size() < 1 || !message[0].isFloat32()){
+        if (message.size() < 1 || (!message[0].isFloat32() && !message[0].isFloat64() && !message[0].isInt32())){
             String errorString = "Cannot update transport: Incorrect arguments";
             constructReply(reply, 1, errorString);
             return reply;
         }
-        double beats = message[0].getFloat32() * 4.0;
-        double startSeconds = activeCybrEdit->getEdit().tempoSequence.beatsToTime(beats);
-        transport.setCurrentPosition(startSeconds);
+
+        // The behavior of message[2] is overloaded. If it is a float or a double,
+        // treat it as a value in seconds. If int, treat it as a measure number.
+        double timeSeconds = 0;
+        if (getFloatOrDouble(message[0], timeSeconds)) {}
+        else if (message[0].isInt32()) {
+            int measureNumber = jmax(1, message[0].getInt32()); // index from 1
+            timeSeconds = activeCybrEdit->getEdit().tempoSequence.barsBeatsToTime({measureNumber - 1, 0.0 });
+        }
+
+        transport.setCurrentPosition(timeSeconds);
     } else if (pattern.matches({"/transport/loop"})) {
         double startSeconds = 0;
         double durationSeconds = 0;

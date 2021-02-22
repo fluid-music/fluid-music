@@ -86,12 +86,12 @@ commands.stop = function(){
   client.send(cybr.transport.stop());
 };
 
-addDocstring('to <wholeNotes>', 'Move the transport to a time in whole notes');
+addDocstring('to <measureNumberInt>', 'Move the transport to a measure number');
 commands.to = function(){
   if (typeof parsedArgs.to !== 'number' || isNaN(parsedArgs.to))
     console.error('ERROR: "to" command must have a numeric argument');
   else
-    client.send(cybr.transport.to(parsedArgs.to));
+    client.send(cybr.transport.toMeasure(parsedArgs.to));
 };
 
 addDocstring('create <filename>', 'Create a tracktionedit file, overwriting if needed');

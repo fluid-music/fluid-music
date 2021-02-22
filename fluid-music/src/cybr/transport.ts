@@ -36,16 +36,30 @@ export function loop(startTimeSeconds : number|boolean, durationSeconds? : numbe
 }
 
 /**
+ * Move the playback transport to a particular measure
+ */
+export function toMeasure(measureNumber : number) {
+  if (typeof measureNumber !== 'number')
+    throw new Error('transport.to requires a time (number of whole notes) to go to');
+
+  if (measureNumber < 1)
+    throw new Error(`Invalid measure number: ${measureNumber}. (measure numbers start at 1)`)
+
+  return {
+    address: '/transport/to',
+    args: [ { type: 'integer', value: measureNumber } ],
+  };
+}
+
+/**
  * Move the playback transport
  */
-export function to(timeInWholeNotes) {
-  if (typeof timeInWholeNotes !== 'number')
+export function to(timeSeconds : number) {
+  if (typeof timeSeconds !== 'number')
     throw new Error('transport.to requires a time (number of whole notes) to go to');
 
   return {
     address: '/transport/to',
-    args: [
-      { type: 'float', value: timeInWholeNotes },
-    ]
+    args: [ { type: 'double', value: timeSeconds } ],
   };
 }
