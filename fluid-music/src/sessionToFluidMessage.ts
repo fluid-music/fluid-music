@@ -1,11 +1,10 @@
 import { basename } from 'path'
 import { FluidPlugin, PluginType } from './FluidPlugin'
-import { Tap, UseContext } from './fluid-interfaces'
+import { Tap } from './fluid-interfaces'
 import { FluidTrack } from './FluidTrack'
 import { FluidSession } from './FluidSession'
 import { FluidAudioFile, resolveFades } from './FluidAudioFile'
 import * as cybr from './cybr/index'
-import { start } from 'repl'
 
 // This amplification conversion is hard-coded in Tracktion
 const normalizeTracktionGain = (db) => {
@@ -110,13 +109,14 @@ export function sessionToTemplateFluidMessage(session : FluidSession) {
     // cybr identifies return tracks by name. at the time of writing, there is
     // no proper way to use two tracks that have the same name, while using one
     // of those tracks as a return.
-
     sendReceiveMessage.push(cybr.audiotrack.selectReturnTrack(track.name))
     for (const receive of track.receives) {
-      sendReceiveMessage.push(
-        cybr.audiotrack.select(receive.from.name),
-        cybr.audiotrack.send(track.name, receive.gainDb)
-      )
+      const selectSendingTrack = receive.from.children.length
+        ? cybr.audiotrack.selectSubmixTrack(receive.from.name)
+        : cybr.audiotrack.select(receive.from.name);
+      const sendToReceivingTrack = cybr.audiotrack.send(track.name, receive.gainDb)
+
+      sendReceiveMessage.push(selectSendingTrack, sendToReceivingTrack)
     }
   })
 
