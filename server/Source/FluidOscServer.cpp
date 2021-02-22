@@ -1696,6 +1696,8 @@ cybr::OSCMessage FluidOscServer::insertWaveSample(const cybr::OSCMessage& messag
         te::ClipPosition pos;
         pos.time = timeRange;
         te::WaveAudioClip::Ptr c = audioTrack->insertWaveClip(clipName, file, pos, false);
+        c->setFadeInType(te::AudioFadeCurve::convex);
+        c->setFadeOutType(te::AudioFadeCurve::convex);
         selectedClip = c.get();
     } else {
         String errorString = "Cannot insert wave file: Selected track is not an AudioTrack";
