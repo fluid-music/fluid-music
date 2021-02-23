@@ -81,6 +81,7 @@ public:
     juce::OSCMessage setClipDb(const juce::OSCMessage& message);
     juce::OSCMessage setClipPitch(const juce::OSCMessage& message);
     juce::OSCMessage setClipStretchMode(const juce::OSCMessage& message);
+    juce::OSCMessage setClipSpeedRatio(const juce::OSCMessage& message);
     juce::OSCMessage setTempo(const juce::OSCMessage& message);
     juce::OSCMessage clearContent(const juce::OSCMessage& message);
     juce::OSCMessage getAudioFileReport(const juce::OSCMessage& message);

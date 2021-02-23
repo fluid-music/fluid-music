@@ -121,6 +121,7 @@ OSCMessage FluidOscServer::handleOscMessage (const OSCMessage& message) {
     if (msgAddressPattern.matches({"/audioclip/set/db"})) return setClipDb(message);
     if (msgAddressPattern.matches({"/audioclip/set/pitch"})) return setClipPitch(message);
     if (msgAddressPattern.matches({"/audioclip/set/stretch-mode"})) return setClipStretchMode(message);
+    if (msgAddressPattern.matches({"/audioclip/set/speed-ratio"})) return setClipSpeedRatio(message);
     if (msgAddressPattern.matches({"/audioclip/reverse"})) return reverseAudioClip(true);
     if (msgAddressPattern.matches({"/audioclip/unreverse"})) return reverseAudioClip(false);
     if (msgAddressPattern.matches({"/audioclip/fade/seconds"})) return audioClipFadeInOutSeconds(message);
@@ -282,6 +283,30 @@ OSCMessage FluidOscServer::setClipPitch(const juce::OSCMessage& message) {
     return reply;
 }
 
+OSCMessage FluidOscServer::setClipSpeedRatio(const juce::OSCMessage& message) {
+    OSCMessage reply("/audioclip/set/speed-ratio/reply");
+
+    if (!selectedClip) {
+        String errorString = "Cannot set audio clip speed ratio: no clip selected";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    auto* audioClip = dynamic_cast<te::AudioClipBase*>(selectedClip);
+    if (!audioClip) {
+        String errorString = "Cannot set audio clip speed ratio: selected clip is not an audio clip";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
+    // check mode is valid
+    float ratio = message[0].getFloat32();
+    audioClip->setSpeedRatio((double)ratio);
+
+    reply.addInt32(0);
+    return reply;
+}
+
 OSCMessage FluidOscServer::setClipStretchMode(const juce::OSCMessage& message) {
     OSCMessage reply("/audioclip/set/stretch-mode/reply");
 
@@ -298,7 +323,15 @@ OSCMessage FluidOscServer::setClipStretchMode(const juce::OSCMessage& message) {
         return reply;
     }
 
+    // check mode is valid
     int mode = message[0].getInt32();
+
+    if (mode > 9 || mode < 0){
+        String errorString = "Cannot set audio clip stretch mode: selected mode is out of bounds";
+        constructReply(reply, 1, errorString);
+        return reply;
+    }
+
     audioClip->setTimeStretchMode((te::TimeStretcher::Mode)mode);
 
     reply.addInt32(0);

@@ -146,7 +146,7 @@ juce::DynamicObject::Ptr getPluginReportObject(te::Plugin* selectedPlugin) {
                 object->setProperty("vst2StateError", 1);
             }
             AEffect* vst2 = static_cast<AEffect*>(jucePlugin->getPlatformSpecificData());
-            object->setProperty("vst2Flags", vst2->flags);
+            object->setProperty("vst2Flags", (int64)vst2->flags);
 #endif
         } else if (x->isVST3()) {
 #if (JUCE_PLUGINHOST_VST3)
