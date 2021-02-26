@@ -111,8 +111,7 @@ export function stretchMode(mode : number = 0) {
 
 
 /**
- * Set speed ratio. 
- * 
+ * Set speed ratio for the clip.
  * @param {number} ratio the speed ratio from 0.02 to 10.
  */
 export function speedRatio(ratio : number = 1) {
