@@ -299,7 +299,6 @@ OSCMessage FluidOscServer::setClipSpeedRatio(const juce::OSCMessage& message) {
         return reply;
     }
 
-    // check mode is valid
     float ratio = message[0].getFloat32();
     audioClip->setSpeedRatio((double)ratio);
 

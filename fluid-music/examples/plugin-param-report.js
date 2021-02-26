@@ -7,8 +7,8 @@ const client = new cybr.Client(9999)
 const elements = [
   cybr.global.activate(file, true),
   cybr.audiotrack.select('test-track'),
-  cybr.pluginPodolski.select(),
-  cybr.plugin.getSingleParamReport('VCC: Glide', 10),
+  cybr.plugin.select('DragonflyRoomReverb', 'vst'),
+  cybr.plugin.getSingleParamReport('Width', 10),
 ];
 
 (async () => {
