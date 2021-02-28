@@ -82,8 +82,8 @@ public:
     cybr::OSCMessage audioClipFadeInOutSeconds(const cybr::OSCMessage& message);
     cybr::OSCMessage setClipDb(const cybr::OSCMessage& message);
     cybr::OSCMessage setClipPitch(const cybr::OSCMessage& message);
-    cybr::OSCMessage setClipStretchMode(const juce::OSCMessage& message);
-    cybr::OSCMessage setClipSpeedRatio(const juce::OSCMessage& message);
+    cybr::OSCMessage setClipStretchMode(const cybr::OSCMessage& message);
+    cybr::OSCMessage setClipSpeedRatio(const cybr::OSCMessage& message);
     cybr::OSCMessage setTempo(const cybr::OSCMessage& message);
     cybr::OSCMessage clearContent(const cybr::OSCMessage& message);
     cybr::OSCMessage getAudioFileReport(const cybr::OSCMessage& message);
