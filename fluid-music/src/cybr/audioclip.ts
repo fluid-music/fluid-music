@@ -75,3 +75,53 @@ export function pitchSemitones(semitones : number) {
     args: [{ type: 'float', value: semitones }]
   }
 }
+
+/**
+ * Set time stretch mode. 
+ * elastique and melodyne modes are only available if tracktion is 
+ * built with elastique / melodyne.
+ * 
+ * Available modes:
+ *  disabled = 0           // default
+ *  elastiqueTransient = 1 // defunct
+ *  elastiqueTonal = 2     // defunct
+ *  soundtouchNormal = 3
+ *  soundtouchBetter = 4
+ *  melodyne = 5
+ *  elastiquePro = 6
+ *  elastiqueEfficient = 7
+ *  elastiqueMobile = 8
+ *  elastiqueMonophonic = 9
+ * 
+ * @param {number} mode the time stretch mode
+ */
+export function stretchMode(mode : number = 0) {
+  if (typeof mode !== 'number')
+    throw new Error('stretchMode requires a mode number')
+  if (mode > 9 || mode < 0)
+    throw new RangeError('stretchMode only accepts integers between 0 - 9')
+  if (!Number.isInteger(mode))
+    throw new TypeError('stretchMode requires an integer mode argument')
+
+  return {
+    address: '/audioclip/set/stretch-mode',
+    args: [{ type: 'integer', value: mode }],
+  }
+}
+
+
+/**
+ * Set speed ratio for the clip.
+ * @param {number} ratio the speed ratio from 0.02 to 10.
+ */
+export function speedRatio(ratio : number = 1) {
+  if (typeof ratio !== 'number')
+    throw new Error('stretchMode requires a mode number')
+  if (ratio > 10 || ratio < 0.02)
+    throw new RangeError('speedRatio only accepts numbers between 0.02 - 10')
+  
+  return {
+    address: '/audioclip/set/speed-ratio',
+    args: [{ type: 'float', value: ratio }],
+  }
+}
