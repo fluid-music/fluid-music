@@ -18,13 +18,13 @@ export function select(trackName : string, parent? : string) {
  * Insert and select an audio file clip into the selected audio track. Noop
  * when there is no selected track.
  * @param {string} clipName name the new clip
- * @param {number} startTimeInWholeNotes clip start time in quarter notes
+ * @param {number} startTimeSeconds clip start time in quarter notes
  * @param {string} fileName
  */
-export function insertWav (clipName : string, startTimeInWholeNotes : number, fileName : string) {
+export function insertWav (clipName : string, startTimeSeconds : number, fileName : string) {
   if (typeof clipName !== 'string')
     throw new Error('audiotrack.insertWav: clipName must be a string');
-  if (typeof startTimeInWholeNotes !== 'number')
+  if (typeof startTimeSeconds !== 'number')
     throw new Error('audiotrack.insertWav: start time must be a number');
   if (typeof fileName !== 'string')
     throw new Error('audiotrack.insertWav: fileName must be a string');
@@ -32,7 +32,7 @@ export function insertWav (clipName : string, startTimeInWholeNotes : number, fi
   const args = [
     {type: 'string', value: clipName},
     {type: 'string', value: fileName},
-    {type: 'float', value: startTimeInWholeNotes},
+    {type: 'double', value: startTimeSeconds},
   ];
   return { address: '/audiotrack/insert/wav', args };
 }
@@ -114,18 +114,19 @@ export function unmute() {
  * When adjusting gain, set the gain of the the last volume plugin on the
  * track's PluginList. When adding volume automation, adjust the second last
  * volume parameter, creating it if needed.
- * @param {number} dbfs
- * @param startTimeInWholeNotes When present, insert an automation point instead
+ * @param dbfs
+ * @param startTimeSeconds When present, insert an automation point instead
  *    of setting the parameter directly
  * @param curve (default) 0=linear, -1=startFast, 1=startSlow
  */
-export function gain(dbfs: number, startTimeInWholeNotes? : number, curve? : number) {
+export function gain(dbfs : number, startTimeSeconds? : number, curve? : number) {
   if (typeof dbfs !== 'number')
     throw new Error('audiotrack.gain requires a number in dbfs');
 
   const args = [ { type: 'float', value:  dbfs} ];
-  if (typeof startTimeInWholeNotes === 'number') {
-    args.push({ type: 'float', value: startTimeInWholeNotes });
+
+  if (typeof startTimeSeconds === 'number') {
+    args.push({ type: 'double', value: startTimeSeconds });
     if (typeof curve === 'number') {
       args.push({ type: 'float', value: curve });
     }
@@ -136,17 +137,17 @@ export function gain(dbfs: number, startTimeInWholeNotes? : number, curve? : num
 /**
  * Set the pan, or add a pan automation point
  * @param bipolar stereo pan position -1=hardLeft, 1=hardRight
- * @param startTimeInWholeNotes When present, insert an automation point instead
+ * @param startTimeSeconds When present, insert an automation point instead
  *    of setting the parameter directly
  * @param curve (default) 0=linear, -1=startFast, 1=startSlow
  */
-export function pan(bipolar : number, startTimeInWholeNotes? : number, curve? : number) {
+export function pan(bipolar : number, startTimeSeconds? : number, curve? : number) {
   if (typeof bipolar !== 'number')
     throw new Error('audiotrack.pan requires a number');
 
   const args = [ { type: 'float', value:  Math.max(Math.min(bipolar, 1), -1)} ];
-  if (typeof startTimeInWholeNotes === 'number') {
-    args.push({ type: 'float', value: startTimeInWholeNotes });
+  if (typeof startTimeSeconds === 'number') {
+    args.push({ type: 'double', value: startTimeSeconds });
     if (typeof curve === 'number') {
       args.push({ type: 'float', value: curve });
     }
@@ -158,14 +159,14 @@ export function pan(bipolar : number, startTimeInWholeNotes? : number, curve? : 
 /**
  * Set the track width, or add a width automation point
  * @param bipolar 1=default, 0=mono, -1=stereoInvert
- * @param startTimeInWholeNotes When present, insert an automation point instead
+ * @param startTimeInSeconds When present, insert an automation point instead
  *    of setting the parameter directly
  * @param curve (default) 0=linear, -1=startFast, 1=startSlow
  */
-export function width(bipolar : number, startTimeInWholeNotes? : number, curve? : number) {
+export function width(bipolar : number, startTimeInSeconds? : number, curve? : number) {
   const args = [ { type: 'float', value:  Math.max(Math.min(bipolar, 1), -1)} ];
-  if (typeof startTimeInWholeNotes === 'number') {
-    args.push({ type: 'float', value: startTimeInWholeNotes });
+  if (typeof startTimeInSeconds === 'number') {
+    args.push({ type: 'double', value: startTimeInSeconds });
     if (typeof curve === 'number') {
       args.push({ type: 'float', value: curve });
     }
@@ -178,18 +179,18 @@ export function width(bipolar : number, startTimeInWholeNotes? : number, curve? 
  * supplied, the engine should use the loop time range.
  *
  * @param {string} outFilename output filename
- * @param {number} [startTimeInWholeNotes] start time in whole notes
- * @param {number} [durationInWholeNotes] duration in whole notes
+ * @param {number} [startTimeSeconds] start time in seconds
+ * @param {number} [durationSeconds] duration in seconds
  */
-export function renderRegion(outFilename, startTimeInWholeNotes, durationInWholeNotes) {
+export function renderRegion(outFilename, startTimeSeconds, durationSeconds) {
   if (typeof outFilename !== 'string')
     throw new Error('audiotrack.renderRegion requires a outputFilename string');
 
   const args : any[] = [{ type: 'string', value: outFilename }];
 
-  if (startTimeInWholeNotes !== undefined || durationInWholeNotes !== undefined) {
-    if (typeof startTimeInWholeNotes !== 'number' ||
-        typeof durationInWholeNotes !== 'number')
+  if (startTimeSeconds !== undefined || durationSeconds !== undefined) {
+    if (typeof startTimeSeconds !== 'number' ||
+        typeof durationSeconds !== 'number')
     {
       const msg =
         'An invalid time range was supplied to renderRegion: ' +
@@ -198,9 +199,9 @@ export function renderRegion(outFilename, startTimeInWholeNotes, durationInWhole
     }
   }
 
-  if (typeof startTimeInWholeNotes === 'number') {
-    args.push({ type: 'float', value: startTimeInWholeNotes });
-    args.push({ type: 'float', value: durationInWholeNotes });
+  if (typeof startTimeSeconds === 'number') {
+    args.push({ type: 'double', value: startTimeSeconds });
+    args.push({ type: 'double', value: durationSeconds });
   }
 
   return { args, address: '/audiotrack/region/render' };

@@ -61,8 +61,8 @@ void FluidIpc::connectionLost(){
     fluidIpcServer->removeIpcConn(ipc_num);
 }
 
-bool FluidIpc::sendOSCBundle(const OSCBundle& reply){
-    OSCOutputStream outstream;
+bool FluidIpc::sendOSCBundle(const cybr::OSCBundle& reply){
+    cybr::OSCOutputStream outstream;
 //    std::cout<<reply[0].getMessage().getAddressPattern().toString()<<std::endl;
     if(outstream.writeBundle(reply)){
         MemoryBlock reply_block(outstream.getData(), outstream.getDataSize());
@@ -76,8 +76,8 @@ bool FluidIpc::sendOSCBundle(const OSCBundle& reply){
     return 1;
 }
 
-bool FluidIpc::sendOSCMessage(const OSCMessage& reply){
-    OSCOutputStream outstream;
+bool FluidIpc::sendOSCMessage(const cybr::OSCMessage& reply){
+    cybr::OSCOutputStream outstream;
     if(outstream.writeMessage(reply)){
         MemoryBlock reply_block(outstream.getData(), outstream.getDataSize());
         this->sendMessage(reply_block);
@@ -87,25 +87,25 @@ bool FluidIpc::sendOSCMessage(const OSCMessage& reply){
 }
 
 void FluidIpc::messageReceived(const MemoryBlock &message){
-    OSCInputStream instream(message.getData(), message.getSize());
-    OSCBundle::Element elem = instream.readElementWithKnownSize(message.getSize());
+    cybr::OSCInputStream instream(message.getData(), message.getSize());
+    cybr::OSCBundle::Element elem = instream.readElementWithKnownSize(message.getSize());
     
     if(elem.isBundle()){
         // Pass the current selection in to the bundle handler
         SelectedObjects obj = fluidOscServer->getSelectedObjects();
-        OSCBundle bundle = elem.getBundle();
-        OSCBundle reply = fluidOscServer->handleOscBundle(bundle, obj);
+        cybr::OSCBundle bundle = elem.getBundle();
+        cybr::OSCBundle reply = fluidOscServer->handleOscBundle(bundle, obj);
         if(this->sendOSCBundle(reply)){
-            OSCMessage error("/error");
+            cybr::OSCMessage error("/error");
             error.addString("sendOSCBundle failed");
             this->sendOSCMessage(error);
         }
     }
     else{
-        OSCMessage msg = elem.getMessage();
-        OSCMessage reply = fluidOscServer->handleOscMessage(msg);
+        cybr::OSCMessage msg = elem.getMessage();
+        cybr::OSCMessage reply = fluidOscServer->handleOscMessage(msg);
         if(this->sendOSCMessage(reply)){
-            OSCMessage error("/error");
+            cybr::OSCMessage error("/error");
             error.addString("sendOSCMessage failed");
             this->sendOSCMessage(error);
         }

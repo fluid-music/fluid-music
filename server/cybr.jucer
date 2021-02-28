@@ -51,14 +51,6 @@
             file="Source/plugin_report.cpp"/>
       <FILE id="OHcgSO" name="plugin_report.h" compile="0" resource="0" file="Source/plugin_report.h"/>
     </GROUP>
-    <FILE id="OhQeKm" name="temp_OSCInputStream.cpp" compile="1" resource="0"
-          file="Source/temp_OSCInputStream.cpp"/>
-    <FILE id="UV8I0A" name="temp_OSCInputStream.h" compile="0" resource="0"
-          file="Source/temp_OSCInputStream.h"/>
-    <FILE id="jRtzeL" name="temp_OSCOutputStream.cpp" compile="1" resource="0"
-          file="Source/temp_OSCOutputStream.cpp"/>
-    <FILE id="KFe72t" name="temp_OSCOutputStream.h" compile="0" resource="0"
-          file="Source/temp_OSCOutputStream.h"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2017 targetFolder="Builds/VisualStudio2017">
@@ -81,8 +73,9 @@
         <MODULEPATH id="juce_opengl" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_audio_utils" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_dsp" path="tracktion_engine/modules/juce/modules"/>
-        <MODULEPATH id="juce_osc" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="tracktion_engine" path="tracktion_engine/modules"/>
+        <MODULEPATH id="juce_osc" path="tracktion_engine/modules/juce/modules"/>
+        <MODULEPATH id="cybr_osc" path="modules"/>
       </MODULEPATHS>
     </VS2017>
     <XCODE_MAC targetFolder="Builds/MacOSX">
@@ -91,7 +84,6 @@
         <CONFIGURATION isDebug="0" name="Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_osc" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_opengl" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_gui_extra" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_gui_basics" path="tracktion_engine/modules/juce/modules"/>
@@ -107,6 +99,8 @@
         <MODULEPATH id="juce_audio_devices" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_audio_basics" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="tracktion_engine" path="tracktion_engine/modules"/>
+        <MODULEPATH id="juce_osc" path="tracktion_engine/modules/juce/modules"/>
+        <MODULEPATH id="cybr_osc" path="modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
@@ -116,7 +110,6 @@
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="tracktion_engine" path="tracktion_engine/modules"/>
-        <MODULEPATH id="juce_osc" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_opengl" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_gui_extra" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_gui_basics" path="tracktion_engine/modules/juce/modules"/>
@@ -131,10 +124,13 @@
         <MODULEPATH id="juce_audio_formats" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_audio_devices" path="tracktion_engine/modules/juce/modules"/>
         <MODULEPATH id="juce_audio_basics" path="tracktion_engine/modules/juce/modules"/>
+        <MODULEPATH id="juce_osc" path="tracktion_engine/modules/juce/modules"/>
+        <MODULEPATH id="cybr_osc" path="modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
   <MODULES>
+    <MODULE id="cybr_osc" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>

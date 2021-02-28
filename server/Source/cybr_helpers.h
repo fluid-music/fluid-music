@@ -38,7 +38,7 @@ void listProjects(te::Engine& engine);
 void listPluginParameters(te::Engine& engine, const juce::String pluginName);
 void listPluginPresets(te::Engine& engine, const juce::String pluginName);
 void queryPluginParamPoints(te::Engine& engine, const juce::String pluginName, const juce::String paramName);
-void printOscMessage(const juce::OSCMessage& message);
+void printOscMessage(const cybr::OSCMessage& message);
 void printPreset(te::Plugin* plugin);
 void saveTracktionPreset(te::Plugin* plugin, juce::String name);
 void loadTracktionPreset(te::Track& track, juce::ValueTree preset);

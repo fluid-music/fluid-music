@@ -21,8 +21,8 @@ describe('FluidSession', () => {
     bassTrack.gainDb.should.equal(-6)
 
     session.insertScore({bass: '0 1 2 0'})
-    const clip = bassTrack.clips[0]
-    clip.midiEvents.length.should.equal(4)
+    const clip = bassTrack.midiClips[0]
+    clip.events.length.should.equal(4)
   });
 
   describe('insertScore method', function () {
@@ -39,7 +39,7 @@ describe('FluidSession', () => {
       let clip, track
       before(function () {
         track = session.tracks[0]
-        clip = track.clips[0]
+        clip = track.midiClips[0]
       })
 
       it('should have a single track', function () {
@@ -47,15 +47,15 @@ describe('FluidSession', () => {
         track.name.should.equal('chords')
       })
       it('should have a single clip with 8 midi notes', function () {
-        clip.duration.should.equal(1)
-        clip.midiEvents.length.should.equal(8)
+        clip.durationSeconds.should.equal(2)
+        clip.events.length.should.equal(8)
       })
       it('should have 4 midi notes on the down beat', function () {
-        const chord1 = clip.midiEvents.filter(e => e.startTime === 0)
+        const chord1 = clip.events.filter(e => e.startTime === 0)
         chord1.should.containDeep([{note: 60}, {note: 64}, {note: 67}, {note: 72}])
       })
       it('should have 4 midi notes on beat 3', function () {
-        const chord2 = clip.midiEvents.filter(e => e.startTime === 0.5)
+        const chord2 = clip.events.filter(e => e.startTime === 0.5)
         chord2.should.containDeep([{note: 67}, {note: 70}, {note: 74}, {note: 79}])
       })
     }) // describe EventMidiChord
@@ -104,11 +104,11 @@ describe('FluidSession', () => {
         const bassTrack = session.tracks[0]
         bassTrack.clips.length.should.equal(4)
 
-        const lastClip = bassTrack.clips[3]
-        lastClip.startTime.should.equal(3)
-        lastClip.midiEvents.length.should.equal(2)
+        const lastClip = bassTrack.midiClips[3]
+        lastClip.startTimeSeconds.should.equal(6)
+        lastClip.events.length.should.equal(2)
 
-        const lastMidiEvent = lastClip.midiEvents[1]
+        const lastMidiEvent = lastClip.events[1]
         lastMidiEvent.note.should.equal(75)
         lastMidiEvent.startTime.should.equal(0.5)
 

@@ -30,7 +30,6 @@ export interface DynamicObject {
  */
 export interface Clip {
   events : TechniqueEvent[];
-  midiEvents : MidiNoteEvent[];
   unmappedEvents: any[];
   duration : number;
   startTime : number;

@@ -107,8 +107,8 @@ describe('midiclip.create', () => {
       address: '/midiclip/select',
       args: [
         { type: 'string', value: 'clip1' },
-        { type: 'float',  value: 1 },
-        { type: 'float',  value: 2 },
+        { type: 'double',  value: 1 },
+        { type: 'double',  value: 2 },
       ],
     });
   });

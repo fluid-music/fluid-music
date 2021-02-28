@@ -24,21 +24,14 @@
   ==============================================================================
 */
 
-#include "temp_OSCOutputStream.h"
+#include "cybr_OSCOutputStream.h"
 
-namespace juce
+using namespace juce;
+
+namespace cybr
 {
 
 using OSCType = char;
-
-class TypeWrapper{
-public:
-    static const OSCType int32 = 'i';
-    static const OSCType float32 = 'f';
-    static const OSCType string = 's';
-    static const OSCType blob = 'b';
-    static const OSCType colour = 'r';
-};
 
 //==============================================================================
 /** Writes OSC data to an internal memory buffer, which grows as required.
@@ -64,6 +57,11 @@ bool OSCOutputStream::writeUint64 (uint64 value)
 bool OSCOutputStream::writeFloat32 (float value)
 {
     return output.writeFloatBigEndian (value);
+}
+
+bool OSCOutputStream::writeFloat64 (double value)
+{
+    return output.writeDoubleBigEndian (value);
 }
 
 bool OSCOutputStream::writeString (const String& value)
@@ -128,6 +126,7 @@ bool OSCOutputStream::writeArgument (const OSCArgument& arg)
     {
         case TypeWrapper::int32:       return writeInt32 (arg.getInt32());
         case TypeWrapper::float32:     return writeFloat32 (arg.getFloat32());
+        case TypeWrapper::float64:     return writeFloat64 (arg.getFloat64());
         case TypeWrapper::string:      return writeString (arg.getString());
         case TypeWrapper::blob:        return writeBlob (arg.getBlob());
         case TypeWrapper::colour:      return writeColour (arg.getColour());

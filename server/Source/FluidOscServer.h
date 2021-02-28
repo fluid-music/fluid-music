@@ -15,7 +15,7 @@
 #include "CybrEdit.h"
 #include "CybrSearchPath.h"
 
-typedef void (*OscHandlerFunc)(const juce::OSCMessage&);
+typedef void (*OscHandlerFunc)(const cybr::OSCMessage&);
 
 struct SelectedObjects {
     te::Track* audioTrack = nullptr;
@@ -24,80 +24,83 @@ struct SelectedObjects {
 };
 
 class FluidOscServer :
-public juce::OSCReceiver,
-private juce::OSCReceiver::Listener<juce::OSCReceiver::MessageLoopCallback>
+public cybr::OSCReceiver,
+private cybr::OSCReceiver::Listener<cybr::OSCReceiver::MessageLoopCallback>
 {
 public:
     FluidOscServer();
     
-    virtual void oscMessageReceived (const juce::OSCMessage& message) override;
-    virtual void oscBundleReceived (const juce::OSCBundle& bundle) override;
+    virtual void oscMessageReceived (const cybr::OSCMessage& message) override;
+    virtual void oscBundleReceived (const cybr::OSCBundle& bundle) override;
 
     /** Recursively handle all messages and nested bundles, reseting the
      selection state to parentSelection after each bundle. This should ensure
      that nested bundles do not leave behind a selection after they have been
      handled. */
-    juce::OSCBundle handleOscBundle(const juce::OSCBundle& bundle, SelectedObjects parentSelection);
-    juce::OSCMessage handleOscMessage(const juce::OSCMessage& message);
+    cybr::OSCBundle handleOscBundle(const cybr::OSCBundle& bundle, SelectedObjects parentSelection);
+    cybr::OSCMessage handleOscMessage(const cybr::OSCMessage& message);
 
     // message handlers
-    juce::OSCMessage selectAudioTrack(const juce::OSCMessage& message);
-    juce::OSCMessage selectSubmixTrack(const juce::OSCMessage& message);
-    juce::OSCMessage removeAudioTrackClips(const juce::OSCMessage& message);
-    juce::OSCMessage removeAudioTrackAutomation(const juce::OSCMessage& message);
-    juce::OSCMessage selectReturnTrack(const juce::OSCMessage& message);
-    juce::OSCMessage selectMidiClip(const juce::OSCMessage& message);
-    juce::OSCMessage selectPlugin(const juce::OSCMessage& message);
-    juce::OSCMessage selectVst2PluginById(const juce::OSCMessage& message);
-    juce::OSCMessage loadVst2PresetInSelectedPlugin(const juce::OSCMessage& message);
-    juce::OSCMessage setPluginParam(const juce::OSCMessage& message);
-    juce::OSCMessage setPluginParamAt(const juce::OSCMessage& message);
-    juce::OSCMessage setTrackWidth(const juce::OSCMessage& message);
-    juce::OSCMessage setPluginSideChainInput(const juce::OSCMessage& message);
-    juce::OSCMessage getPluginReport(const juce::OSCMessage& message);
-    juce::OSCMessage getPluginParameterReport(const juce::OSCMessage& message);
-    juce::OSCMessage getPluginParametersReport(const juce::OSCMessage& message);
-    juce::OSCMessage savePluginPreset(const juce::OSCMessage& message);
-    juce::OSCMessage loadPluginPreset(const juce::OSCMessage& message);
-    juce::OSCMessage loadPluginTrkpreset(const juce::OSCMessage& message);
-    juce::OSCMessage ensureSend(const juce::OSCMessage& message);
-    juce::OSCMessage clearMidiClip(const juce::OSCMessage& message);
-    juce::OSCMessage insertMidiNote(const juce::OSCMessage& message);
-    juce::OSCMessage insertWaveSample(const juce::OSCMessage& message);
-    juce::OSCMessage saveActiveEdit(const juce::OSCMessage& message);
-    juce::OSCMessage activateEditFile(const juce::OSCMessage& message);
-    juce::OSCMessage changeWorkingDirectory(const juce::OSCMessage& message);
-    juce::OSCMessage handleSamplerMessage(const juce::OSCMessage& message);
-    juce::OSCMessage handleTransportMessage(const juce::OSCMessage& message);
-    juce::OSCMessage setTrackGain(const juce::OSCMessage& message);
-    juce::OSCMessage setTrackPan(const juce::OSCMessage& message);
-    juce::OSCMessage renderRegion(const juce::OSCMessage& message);
-    juce::OSCMessage renderClip(const juce::OSCMessage& message);
-    juce::OSCMessage setClipLength(const juce::OSCMessage& message);
-    juce::OSCMessage trimClipBySeconds(const juce::OSCMessage& message);
-    juce::OSCMessage selectClip(const juce::OSCMessage& message);
-    juce::OSCMessage offsetClipSourceInSeconds(const juce::OSCMessage& message);
-    juce::OSCMessage audioClipFadeInOutSeconds(const juce::OSCMessage& message);
-    juce::OSCMessage setClipDb(const juce::OSCMessage& message);
-    juce::OSCMessage setClipPitch(const juce::OSCMessage& message);
-    juce::OSCMessage setClipStretchMode(const juce::OSCMessage& message);
-    juce::OSCMessage setClipSpeedRatio(const juce::OSCMessage& message);
-    juce::OSCMessage setTempo(const juce::OSCMessage& message);
-    juce::OSCMessage clearContent(const juce::OSCMessage& message);
-    juce::OSCMessage getAudioFileReport(const juce::OSCMessage& message);
+    cybr::OSCMessage selectAudioTrack(const cybr::OSCMessage& message);
+    cybr::OSCMessage selectSubmixTrack(const cybr::OSCMessage& message);
+    cybr::OSCMessage removeAudioTrackClips(const cybr::OSCMessage& message);
+    cybr::OSCMessage removeAudioTrackAutomation(const cybr::OSCMessage& message);
+    cybr::OSCMessage selectReturnTrack(const cybr::OSCMessage& message);
+    cybr::OSCMessage selectMidiClip(const cybr::OSCMessage& message);
+    cybr::OSCMessage selectPlugin(const cybr::OSCMessage& message);
+    cybr::OSCMessage selectVst2PluginById(const cybr::OSCMessage& message);
+    cybr::OSCMessage loadVst2PresetInSelectedPlugin(const cybr::OSCMessage& message);
+    cybr::OSCMessage setPluginParam(const cybr::OSCMessage& message);
+    cybr::OSCMessage setPluginParamAt(const cybr::OSCMessage& message);
+    cybr::OSCMessage setTrackWidth(const cybr::OSCMessage& message);
+    cybr::OSCMessage setPluginSideChainInput(const cybr::OSCMessage& message);
+    cybr::OSCMessage getPluginReport(const cybr::OSCMessage& message);
+    cybr::OSCMessage getPluginParameterReport(const cybr::OSCMessage& message);
+    cybr::OSCMessage getPluginParametersReport(const cybr::OSCMessage& message);
+    cybr::OSCMessage savePluginPreset(const cybr::OSCMessage& message);
+    cybr::OSCMessage loadPluginPreset(const cybr::OSCMessage& message);
+    cybr::OSCMessage loadPluginTrkpreset(const cybr::OSCMessage& message);
+    cybr::OSCMessage ensureSend(const cybr::OSCMessage& message);
+    cybr::OSCMessage clearMidiClip(const cybr::OSCMessage& message);
+    cybr::OSCMessage insertMidiNoteBeats(const cybr::OSCMessage& message);
+    cybr::OSCMessage insertMidiNote(const cybr::OSCMessage& message);
+    cybr::OSCMessage insertWaveSample(const cybr::OSCMessage& message);
+    cybr::OSCMessage saveActiveEdit(const cybr::OSCMessage& message);
+    cybr::OSCMessage activateEditFile(const cybr::OSCMessage& message);
+    cybr::OSCMessage changeWorkingDirectory(const cybr::OSCMessage& message);
+    cybr::OSCMessage handleSamplerMessage(const cybr::OSCMessage& message);
+    cybr::OSCMessage handleTransportMessage(const cybr::OSCMessage& message);
+    cybr::OSCMessage setTrackGain(const cybr::OSCMessage& message);
+    cybr::OSCMessage setTrackPan(const cybr::OSCMessage& message);
+    cybr::OSCMessage renderRegion(const cybr::OSCMessage& message);
+    cybr::OSCMessage renderClip(const cybr::OSCMessage& message);
+    cybr::OSCMessage setClipLengthBeats(const cybr::OSCMessage& message);
+    cybr::OSCMessage setClipLengthSeconds(const cybr::OSCMessage& message);
+    cybr::OSCMessage trimClipBySeconds(const cybr::OSCMessage& message);
+    cybr::OSCMessage selectClip(const cybr::OSCMessage& message);
+    cybr::OSCMessage offsetClipSourceInSeconds(const cybr::OSCMessage& message);
+    cybr::OSCMessage audioClipFadeInOutSeconds(const cybr::OSCMessage& message);
+    cybr::OSCMessage setClipDb(const cybr::OSCMessage& message);
+    cybr::OSCMessage setClipPitch(const cybr::OSCMessage& message);
+    cybr::OSCMessage setClipStretchMode(const juce::OSCMessage& message);
+    cybr::OSCMessage setClipSpeedRatio(const juce::OSCMessage& message);
+    cybr::OSCMessage setTempo(const cybr::OSCMessage& message);
+    cybr::OSCMessage clearContent(const cybr::OSCMessage& message);
+    cybr::OSCMessage getAudioFileReport(const cybr::OSCMessage& message);
+    cybr::OSCMessage setTimeSignatureAt(const cybr::OSCMessage& message);
 
     // everything else
-    juce::OSCMessage muteTrack(bool mute);
-    juce::OSCMessage reverseAudioClip(bool reverse);
-    juce::OSCMessage activateEditFile(juce::File file, bool forceEmptyEdit = false);
+    cybr::OSCMessage muteTrack(bool mute);
+    cybr::OSCMessage reverseAudioClip(bool reverse);
+    cybr::OSCMessage activateEditFile(juce::File file, bool forceEmptyEdit = false);
     std::unique_ptr<CybrEdit> activeCybrEdit = nullptr;
 
     SelectedObjects getSelectedObjects();
 
 private:
 
-    void constructReply(juce::OSCMessage &reply, int error, juce::String message);
-    void constructReply(juce::OSCMessage &reply, juce::String message);
+    void constructReply(cybr::OSCMessage &reply, int error, juce::String message);
+    void constructReply(cybr::OSCMessage &reply, juce::String message);
     
     te::Track* selectedTrack = nullptr;
     te::Clip* selectedClip = nullptr;

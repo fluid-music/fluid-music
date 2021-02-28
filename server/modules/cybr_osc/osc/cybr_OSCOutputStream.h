@@ -24,9 +24,11 @@
   ==============================================================================
 */
 
+#pragma once
+
 #include "../JuceLibraryCode/JuceHeader.h"
 
-namespace juce
+namespace cybr
 {
 
 //==============================================================================
@@ -49,15 +51,17 @@ struct JUCE_API OSCOutputStream
     size_t getDataSize() const noexcept     { return output.getDataSize(); }
 
     //==============================================================================
-    bool writeInt32 (int32 value);
+    bool writeInt32 (juce::int32 value);
 
-    bool writeUint64 (uint64 value);
+    bool writeUint64 (juce::uint64 value);
 
     bool writeFloat32 (float value);
 
-    bool writeString (const String& value);
+    bool writeFloat64 (double value);
 
-    bool writeBlob (const MemoryBlock& blob);
+    bool writeString (const juce::String& value);
+
+    bool writeBlob (const juce::MemoryBlock& blob);
 
     bool writeColour (OSCColour colour);
 
@@ -80,7 +84,7 @@ struct JUCE_API OSCOutputStream
     bool writeBundleElement (const OSCBundle::Element& element);
 
 private:
-    MemoryOutputStream output;
+    juce::MemoryOutputStream output;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OSCOutputStream)
 };

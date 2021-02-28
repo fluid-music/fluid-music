@@ -727,17 +727,17 @@ int ensureBus(te::Edit& edit, String busName) {
     return busIndex;
 }
 
-void printOscMessage(const OSCMessage& message) {
+void printOscMessage(const cybr::OSCMessage& message) {
     std::cout << message.getAddressPattern().toString();
     for (const auto& arg : message) {
         std::cout << " - ";
         auto type = arg.getType();
-        if (type == OSCTypes::int32) std::cout << arg.getInt32();
-        else if (type == OSCTypes::string) std::cout << arg.getString();
-        else if (type == OSCTypes::float32) std::cout << arg.getFloat32();
-        else if (type == OSCTypes::blob) std::cout << arg.getBlob().toBase64Encoding();
-        else if (type == OSCTypes::colour) {
-            OSCColour c = arg.getColour();
+        if (type == cybr::OSCTypes::int32) std::cout << arg.getInt32();
+        else if (type == cybr::OSCTypes::string) std::cout << arg.getString();
+        else if (type == cybr::OSCTypes::float32) std::cout << arg.getFloat32();
+        else if (type == cybr::OSCTypes::blob) std::cout << arg.getBlob().toBase64Encoding();
+        else if (type == cybr::OSCTypes::colour) {
+            cybr::OSCColour c = arg.getColour();
             std::cout << "RGBA("<< c.red << "," << c.green << "," << c.blue << "," << c.alpha << ")";
         }
     }

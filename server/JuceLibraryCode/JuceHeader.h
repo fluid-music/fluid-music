@@ -14,6 +14,7 @@
 
 #include "AppConfig.h"
 
+#include <cybr_osc/cybr_osc.h>
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_audio_devices/juce_audio_devices.h>
 #include <juce_audio_formats/juce_audio_formats.h>

@@ -1,6 +1,6 @@
 import { basename } from 'path'
 import { FluidPlugin, PluginType } from './FluidPlugin'
-import { Tap, UseContext } from './fluid-interfaces'
+import { Tap } from './fluid-interfaces'
 import { FluidTrack } from './FluidTrack'
 import { FluidSession } from './FluidSession'
 import { FluidAudioFile, resolveFades } from './FluidAudioFile'
@@ -109,13 +109,14 @@ export function sessionToTemplateFluidMessage(session : FluidSession) {
     // cybr identifies return tracks by name. at the time of writing, there is
     // no proper way to use two tracks that have the same name, while using one
     // of those tracks as a return.
-
     sendReceiveMessage.push(cybr.audiotrack.selectReturnTrack(track.name))
     for (const receive of track.receives) {
-      sendReceiveMessage.push(
-        cybr.audiotrack.select(receive.from.name),
-        cybr.audiotrack.send(track.name, receive.gainDb)
-      )
+      const selectSendingTrack = receive.from.children.length
+        ? cybr.audiotrack.selectSubmixTrack(receive.from.name)
+        : cybr.audiotrack.select(receive.from.name);
+      const sendToReceivingTrack = cybr.audiotrack.send(track.name, receive.gainDb)
+
+      sendReceiveMessage.push(selectSendingTrack, sendToReceivingTrack)
     }
   })
 
@@ -133,9 +134,9 @@ export function sessionToContentFluidMessage(session : FluidSession) {
   // Configure loop region
   if (session.loopEnabled) {
     sessionMessages.push(cybr.transport.loop(
-      session.loopRegion.startTime,
-      session.loopRegion.startTime + session.loopRegion.duration)
-    )
+      session.timeWholeNotesToSeconds(session.loopRegion.startTime),
+      session.timeWholeNotesToSeconds(session.loopRegion.duration)
+    ))
   } else {
     sessionMessages.push(cybr.transport.loop(false))
   }
@@ -157,29 +158,34 @@ export function sessionToContentFluidMessage(session : FluidSession) {
       throw new Error(`sessionToTemplateFluidMessage: ${track.name} track has file events and child tracks, but tracktion does not allow events directly on submix tracks`)
     }
 
-    track.clips.forEach((clip, clipIndex) => {
-      if (isSubmix && clip.midiEvents.length) {
+    track.midiClips.forEach((midiClip, clipIndex) => {
+      if (isSubmix && midiClip.events.length) {
         // Charles: The best thing to do is probably to have some system that
         // creates an additional track, and puts the clips on it. However, I'm
         // not going to add that until it is clearly needed.
         throw new Error(`sessionToTemplateFluidMessage: ${track.name} track has both MIDI clips and child tracks, but tracktion does not allow clips directly on submix tracks`)
       }
 
-      // Create one EventContext object for each clip.
-      if (clip.midiEvents && clip.midiEvents.length) {
-        // Create a sub-message for each clip. Note that the naming convention
-        // gets a little confusing, because we do not yet know if "clip" contains
-        // a single "Midi Clip", a collection of audio file events, or both.
+      if (midiClip.events && midiClip.events.length) {
+        // Create a sub-message for each clip.
         const clipMessages : any[] = []
         trackMessages.push(clipMessages)
         const clipName  = `${track.name} ${clipIndex}`
-        clipMessages.push(cybr.midiclip.select(clipName, clip.startTime, clip.duration))
-        clipMessages.push(clip.midiEvents.map(event => {
+        clipMessages.push(cybr.midiclip.select(clipName, midiClip.startTimeSeconds, midiClip.durationSeconds))
+        clipMessages.push(midiClip.events.map(event => {
           // Velocity in the event takes priority over velocity in the .d object
           const velocity = (typeof event.velocity === 'number')
             ? event.velocity
             : undefined
-          return cybr.midiclip.note(event.note, event.startTime, event.duration, velocity)
+
+          // When we add support for variable tempo, the start time and duration
+          // calculations will have to be updated. As of February 2021, the bpm
+          // is constant throughout the FluidSession, so it is okay to use a
+          // simple version of timeWholeNotesToSeconds.
+          const startTimeSeconds = session.timeWholeNotesToSeconds(event.startTime)
+          const durationSeconds = session.timeWholeNotesToSeconds(event.duration)
+          console.warn(startTimeSeconds, durationSeconds)
+          return cybr.midiclip.note(event.note, startTimeSeconds, durationSeconds, velocity)
         }))
       }
     }) // track.clips.forEach
@@ -192,9 +198,10 @@ export function sessionToContentFluidMessage(session : FluidSession) {
       for (const autoPoint of automation.points) {
         if (typeof autoPoint.value === 'number') {
           let msg : any = null
-          if (name === 'gain' || name === 'gainDb')  msg = cybr.audiotrack.gain(autoPoint.value, autoPoint.startTime, autoPoint.curve)
-          else if (name === 'pan')   msg = cybr.audiotrack.pan(autoPoint.value, autoPoint.startTime, autoPoint.curve)
-          else if (name === 'width') msg = cybr.audiotrack.width(autoPoint.value, autoPoint.startTime, autoPoint.curve)
+          const startTimeSeconds = session.timeWholeNotesToSeconds(autoPoint.startTime)
+          if (name === 'gain' || name === 'gainDb')  msg = cybr.audiotrack.gain(autoPoint.value, startTimeSeconds, autoPoint.curve)
+          else if (name === 'pan')   msg = cybr.audiotrack.pan(autoPoint.value, startTimeSeconds, autoPoint.curve)
+          else if (name === 'width') msg = cybr.audiotrack.width(autoPoint.value, startTimeSeconds, autoPoint.curve)
           else throw new Error(`Fluid Track Automation found unsupported parameter: "${name}"`)
           trackAutoMsg.push(msg)
         }
@@ -280,13 +287,11 @@ function fileEventToFluidMessage(audioFile : FluidAudioFile, session : FluidSess
     else sOff = 0
   }
 
-  const startTime = session.timeSecondsToWholeNotes(startTimeSeconds)
-  const duration = session.timeSecondsToWholeNotes(durationSeconds)
   const clipName = `${basename(audioFile.path)}.${summativeIndex}`
-  const msg = [cybr.audiotrack.insertWav(clipName, startTime, audioFile.path)] as any[]
+  const msg = [cybr.audiotrack.insertWav(clipName, startTimeSeconds, audioFile.path)] as any[]
 
   msg.push(cybr.clip.setSourceOffsetSeconds(sOff))
-  msg.push(cybr.clip.length(duration))
+  msg.push(cybr.clip.lengthSeconds(durationSeconds))
 
   const { fadeInSeconds, fadeOutSeconds, gainDb } = resolveFades(audioFile)
 

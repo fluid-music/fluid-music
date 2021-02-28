@@ -1,4 +1,5 @@
 import { Technique, MidiNoteEvent, UseContext } from '../fluid-interfaces'
+import { FluidMidiClip } from '../FluidMidiClip'
 import { AutomationPoint } from '../FluidPlugin'
 import * as random from '../random'
 
@@ -36,19 +37,26 @@ export class MidiNote implements Technique {
   use (context : UseContext) {
     if (!context.clip) throw new Error('Cannot .use MidiNote without a clip: ' + JSON.stringify({ note: this, context }))
 
-    const { d, startTime, clip, duration } = context
+    const { d, startTime, clip, duration, data, session } = context
     const midiNoteEvent : MidiNoteEvent = {
       startTime: startTime - clip.startTime,
       duration,
       note: this.note,
       velocity : 64
     }
+
     if (typeof this.velocity === 'number') midiNoteEvent.velocity = this.velocity
     else if (typeof d.velocity === 'number') midiNoteEvent.velocity = d.velocity
     else if (typeof d.v === 'number') midiNoteEvent.velocity = d.v
 
-    clip.midiEvents.push(midiNoteEvent)
+    if (!(data.midiClip instanceof FluidMidiClip)) {
+      data.midiClip = new FluidMidiClip()
+      data.midiClip.startTimeSeconds = session.timeWholeNotesToSeconds(clip.startTime)
+      data.midiClip.durationSeconds = session.timeWholeNotesToSeconds(clip.duration)
+      context.track.midiClips.push(data.midiClip)
+    }
 
+    data.midiClip.events.push(midiNoteEvent)
     return null
   }
 }

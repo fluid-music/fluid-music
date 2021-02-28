@@ -165,7 +165,7 @@ export class FluidSession {
    */
   insertScore(score: any, config: ScoreConfig = {}) {
     config = { startTime: this.editCursorTime, ...config }
-    const r = parse(score, this, config)
+    const r = parseScore(score, this, config)
     this.editCursorTime = r.duration + r.startTime
     this.processEvents()
     return this
@@ -222,7 +222,7 @@ export class FluidSession {
             })
             delete plugin.unresolvedSidechainReceive
           } else {
-            console.warn(`WARNING: Track (${track.name}) includes a plugin (${plugin.pluginName})which contains a sidechain receive from a non-existent track (${sendTrackName})`)
+            console.warn(`WARNING: Track (${track.name}) includes a plugin (${plugin.pluginName}) which contains a sidechain receive from a non-existent track (${sendTrackName})`)
           }
         }
       }
@@ -414,7 +414,7 @@ export class FluidSession {
  * final homes.
  * @internal
  */
-export function parse(
+export function parseScore(
   scoreObject,
   session : FluidSession = new FluidSession({}),
   config : ScoreConfig = {})
@@ -460,7 +460,7 @@ export function parse(
 
     for (let o of scoreObject) {
       config.startTime = arrayStartTime + result.duration;
-      let r = parse(o, session, config);
+      let r = parseScore(o, session, config);
       result.duration += r.duration;
     }
   } else if (typeof scoreObject === 'string') {
@@ -528,7 +528,7 @@ export function parse(
     for (let [key, val] of Object.entries(scoreObject)) {
       if (tab.reservedKeys.hasOwnProperty(key) && key !== 'clips') continue;
       if (key !== 'clips') config.trackKey = key; // if key='clips' use parent key
-      let r = parse(val, session, config);
+      let r = parseScore(val, session, config);
       if (r.duration > result.duration) result.duration = r.duration;
     }
   }
