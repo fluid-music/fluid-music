@@ -74,8 +74,8 @@ describe('createMidiNoteMessage', () => {
     address: '/midiclip/insert/note',
     args: [
       { type: 'integer', value: noteNum },
-      { type: 'float', value: startTimeInWholeNotes },
-      { type: 'float', value: durationInWholeNotes },
+      { type: 'double', value: startTimeInWholeNotes },
+      { type: 'double', value: durationInWholeNotes },
     ],
   };
 
@@ -126,22 +126,22 @@ describe('midiclip.create', () => {
       address: '/midiclip/insert/note',
       args: [
         { type: 'integer', value: 60 },
-        { type: 'float',   value: 0 },
-        { type: 'float',   value: 0.25 },
+        { type: 'double',   value: 0 },
+        { type: 'double',   value: 0.25 },
       ],
     }, {
       address: '/midiclip/insert/note',
       args: [
         { type: 'integer', value: 64 },
-        { type: 'float',   value: .5 },
-        { type: 'float',   value: 0.25 },
+        { type: 'double',   value: .5 },
+        { type: 'double',   value: 0.25 },
       ],
     }, {
       address: '/midiclip/insert/note',
       args: [
         { type: 'integer', value: 67 },
-        { type: 'float',   value: 1.0 },
-        { type: 'float',   value: 0.25 },
+        { type: 'double',   value: 1.0 },
+        { type: 'double',   value: 0.25 },
       ],
     }])
   });
