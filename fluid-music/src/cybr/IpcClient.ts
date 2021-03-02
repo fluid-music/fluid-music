@@ -50,7 +50,6 @@ export class IpcClient {
   connectionInitiated : boolean = false /** Did the client initiate a connection? */
   connectionEstablished : boolean = false /** Were we ever successfully connected? */
 
-
   rejectAllPendingRequests(reason) {
     while (this.queue.length) {
       const pObj = this.queue.shift().reject(reason);
@@ -183,6 +182,7 @@ The cybr server must be running in order for fluid-music to:
     }
     const response = await pObj.promise;
     printResponseErrors(response)
+    matchResponse(msgObject, response)
     return response
   }
 
@@ -214,4 +214,41 @@ function printResponseErrors(result : any) {
   } else if (result.oscType === 'bundle') {
     result.elements.map(printResponseErrors)
   }
+}
+
+function matchResponse(sent : any, response : any) {
+  if (Array.isArray(sent) || sent.oscType === 'bundle') {
+    const messages = Array.isArray(sent) ? sent : sent.elements
+
+    if (response.oscType !== 'bundle') {
+      console.warn('WARNING: IpcClient received a response with an unexpected bundle shape')
+      return
+    }
+
+    if (messages.length !== response.elements.length) {
+      console.warn('WARNING: IpcClient received a response with an unexpected bundle shape', messages, response)
+      return
+    }
+
+    for (let i = 0; i < messages.length ; i++) {
+      const outgoing = messages[i]
+      const received = response?.elements[i]
+
+      matchResponse(outgoing, received)
+    }
+  } else {
+    // we have two message objects
+    if (!response.address.startsWith(sent.address)) {
+      console.warn('WARNING: IpcClient received unexpected response address', sent, response)
+    }
+
+    if (typeof sent.handleResponse === 'function') {
+      const errorCode = response?.args[0]?.value || 0
+      if (typeof errorCode !== 'number') {
+        console.warn('WARNING: IpcClient tried to call a handler, but received no error code', sent, response)
+      }
+      sent.handleResponse.call(sent, errorCode, ...response.args.slice(1))
+    }
+  }
+  return
 }

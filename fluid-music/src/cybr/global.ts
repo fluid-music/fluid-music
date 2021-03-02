@@ -1,3 +1,5 @@
+const semverSatisfies = require('semver/functions/satisfies')
+
 /**
  * @param {string} [filename] '.tracktionedit' or '.wav' filename. If no
  *        filename is provided, an empty string will be used, which implies
@@ -52,4 +54,37 @@ export function activate(filename, forceEmptyEdit) {
       { type: 'integer', value: forceEmptyEdit ? 1 : 0 },
     ],
   };
+}
+
+/**
+ * Get semantic version number of the cybr server.
+ * @param semverPatternOrHandler if this is a string, treat it as a semver
+ *    pattern, and throw an error if the value returned by the server does not
+ *    satisfy this argument. This can also be a handler function, which accepts
+ *    an error integer as the first argument and a semver string as the second.
+ */
+export function version(semverPatternOrHandler? : string | ((error: number, cybrVersion : string) => any)) {
+  const msg : any =  { address: '/version' }
+
+  if (!semverPatternOrHandler) {
+    msg.handleResponse = (error, cybrVersionString) => {
+      if (error) console.warn('connected to a outdated (pre 0.3.0) version of cybr')
+      else console.warn(`connected to cybr ${cybrVersionString}`)
+    }
+  } else if (typeof semverPatternOrHandler === 'string') {
+    msg.handleResponse = (error, cybrVersionString) => {
+      if (error) {
+        throw new Error('fluid-music connected to an obsolete cybr instance. Install an updated version of cybr and try again.')
+      }
+      if (!semverSatisfies(cybrVersionString.value, semverPatternOrHandler)) {
+        throw new Error(`fluid-music connected to cybr ${cybrVersionString.value}, which does not satisfy ${semverPatternOrHandler}. Consider installing an updated version of the cybr server.`)
+      }
+    }
+  } else if (typeof semverPatternOrHandler === 'function') {
+    msg.handleResponse = (error, stringOscObject) => {
+      semverPatternOrHandler(error, stringOscObject.value)
+    }
+  }
+
+  return msg
 }
