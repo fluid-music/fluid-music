@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="gn3eC9" name="cybr" projectType="consoleapp" defines="DONT_SET_USING_JUCE_NAMESPACE=1"
-              displaySplashScreen="1" jucerFormatVersion="1">
+<JUCERPROJECT id="gn3eC9" name="cybr" projectType="consoleapp" defines="DONT_SET_USING_JUCE_NAMESPACE=1 JUCER_ENABLE_GPL_MODE=1"
+              displaySplashScreen="1" jucerFormatVersion="1" cppLanguageStandard="17">
   <MAINGROUP id="JTqeoX" name="cybr">
     <GROUP id="{E03437D9-F7F3-5413-6A30-51BDC7A4D4BC}" name="Source">
       <FILE id="LeSCei" name="FluidOscServer.h" compile="0" resource="0"
