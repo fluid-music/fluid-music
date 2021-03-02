@@ -184,7 +184,7 @@ export function sessionToContentFluidMessage(session : FluidSession) {
           // simple version of timeWholeNotesToSeconds.
           const startTimeSeconds = session.timeWholeNotesToSeconds(event.startTime)
           const durationSeconds = session.timeWholeNotesToSeconds(event.duration)
-          console.warn(startTimeSeconds, durationSeconds)
+
           return cybr.midiclip.note(event.note, startTimeSeconds, durationSeconds, velocity)
         }))
       }
