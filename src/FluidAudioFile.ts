@@ -180,6 +180,16 @@ export class FluidAudioFile {
   }
 
   /**
+   * Set playbackRate for the clip.
+   * @param {number} ratio the playback ratio in the ranges [-10, -0.02] and [0.02 to 10].
+   */
+  setPlaybackRate(ratio : number = 1) {
+    this.playbackRate = Math.abs(ratio);
+    return this.reverse(ratio < 0);
+  }
+
+
+  /**
    * Reverse the audio file playback, swapping the in/out fades.
    * @param reverse If true, play audio file in reverse. If false, play forwards
    */
