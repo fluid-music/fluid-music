@@ -1,2 +1,4 @@
 server/Builds/
 .DS_Store
+node_modules/
+built/
