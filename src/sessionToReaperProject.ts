@@ -361,7 +361,7 @@ function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : Flui
     // (or earlier), and sessionToReaperProject from 0.9.4 (or later). However,
     // for additional safety I will still check for presence of .pitchSemitones.
     const semitones = typeof audioFile.pitchSemitones === 'number' ? audioFile.pitchSemitones : 0
-    audioItem.getOrCreateStructByToken('PLAYRATE').params = [1, 1, semitones, -1, 0, 0.0025]
+    audioItem.getOrCreateStructByToken('PLAYRATE').params = [Math.abs(audioFile.playbackRate), 0, semitones, -1, 0, 0.0025]
 
     const audioSource = new rppp.objects.ReaperSource()
     const extension = extname(audioFile.path).toLowerCase()

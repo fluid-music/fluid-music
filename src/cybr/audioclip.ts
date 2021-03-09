@@ -135,3 +135,33 @@ export function speedRatio(ratio : number = 1) {
     args: [{ type: 'float', value: ratio }],
   }
 }
+
+/**
+ * Set playbackRate for the clip.
+ * @param {number} ratio the playback ratio in the ranges [-10, -0.02] and [0.02 to 10].
+ */
+ export function playbackRate(ratio : number = 1) {
+  if (typeof ratio !== 'number')
+    throw new Error('stretchMode requires a mode number')
+  if ((ratio < 0.02 && ratio > -0.02) || ratio > 10 || ratio < -10)
+    throw new RangeError('speedRatio only accepts numbers between [-10, -0.02] and [0.02 to 10]')
+  
+  if (ratio > 0) {
+    return [
+      {
+        address: '/audioclip/set/speed-ratio',
+        args: [{ type: 'float', value: ratio }],
+      },
+      { address: '/audioclip/unreverse' }
+    ]
+  } else {
+    return [
+      {
+        address: '/audioclip/set/speed-ratio',
+        args: [{ type: 'float', value: Math.abs(ratio) }],
+      },
+      { address: '/audioclip/reverse' }
+    ]
+  }
+  
+}
