@@ -1,3 +1,4 @@
+import { clamp } from '../converters'
 import { Technique, MidiNoteEvent, UseContext } from '../fluid-interfaces'
 import { FluidMidiClip } from '../FluidMidiClip'
 import { AutomationPoint } from '../FluidPlugin'
@@ -15,7 +16,9 @@ export interface PluginAutoTechniqueClass extends TechniqueClass {
  */
 export class MidiNote implements Technique {
 
-  constructor(options : MidiNoteOptions) {
+  constructor(optionsOrNoteNumber : MidiNoteOptions|number) {
+    const options = (typeof optionsOrNoteNumber === 'number') ? { note: optionsOrNoteNumber } : optionsOrNoteNumber
+
     // For backwards compatibility
     if (typeof options.n === 'number' && typeof options.note !== 'number') options.note = options.n
     if (typeof options.v === 'number' && typeof options.velocity !== 'number') options.velocity = options.v
@@ -48,6 +51,7 @@ export class MidiNote implements Technique {
     if (typeof this.velocity === 'number') midiNoteEvent.velocity = this.velocity
     else if (typeof d.velocity === 'number') midiNoteEvent.velocity = d.velocity
     else if (typeof d.v === 'number') midiNoteEvent.velocity = d.v
+    else if (typeof d.intensity === 'number') midiNoteEvent.velocity = clamp(1, 127, Math.round(d.intensity * 126) + 1)
 
     if (!(data.midiClip instanceof FluidMidiClip)) {
       data.midiClip = new FluidMidiClip()
