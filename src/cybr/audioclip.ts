@@ -53,13 +53,23 @@ export function fadeOut(seconds: number) {
  */
 export function gain(dBFS : number) {
   if (typeof dBFS !== 'number')
-    throw new Error('audioclip.gain requires a dBFS number');
+    throw new Error('audioclip.gain requires a dBFS number')
 
   return {
     address: '/audioclip/set/db',
     args: [{ type: 'float', value: dBFS }],
-  };
-};
+  }
+}
+
+export function pan(bipolarPan : number) {
+  if (typeof bipolarPan !== 'number')
+    throw new Error('audioclip.pan requires a bipolar pan number')
+
+  return {
+    address: '/audioclip/set/pan',
+    args: [{ type: 'float', value: bipolarPan }]
+  }
+}
 
 /**
  * Set the audio clips semitone offset (when the audio clip plays, its pitch

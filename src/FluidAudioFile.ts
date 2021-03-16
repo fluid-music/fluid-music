@@ -47,6 +47,7 @@ export interface AudioFileConfig {
   fadeOutSeconds? : number
   fadeInSeconds? : number
   gainDb? : number
+  pan? : number
   mode? : AudioFileMode
   info? : AudioFileInfo
   startInSourceSeconds? : number
@@ -80,6 +81,7 @@ export class FluidAudioFile {
     if (typeof options.fadeInSeconds === 'number') this.fadeInSeconds = options.fadeInSeconds
     if (typeof options.fadeOutSeconds === 'number') this.fadeOutSeconds = options.fadeOutSeconds
     if (typeof options.gainDb === 'number') this.gainDb = options.gainDb
+    if (typeof options.pan === 'number') this.pan = options.pan
     if (typeof options.startInSourceSeconds === 'number') this.startInSourceSeconds = options.startInSourceSeconds
     if (typeof options.startTimeSeconds === 'number') this.startTimeSeconds = options.startTimeSeconds
     if (typeof options.durationSeconds === 'number') this.durationSeconds = options.durationSeconds
@@ -112,6 +114,9 @@ export class FluidAudioFile {
   fadeInSeconds : number = 0
   /** Gain in dBFS applied to the sample. 0 is unity gain */
   gainDb : number = 0
+  /** Stereo pan as bipolar number form -1 to 1 */
+  pan : number = 0
+  /** Audio file playback mode. See [[AudioFileMode]] */
   mode : AudioFileMode = AudioFileMode.Event
   /** Information and metadata pertaining to the source audio file */
   info : AudioFileInfo = {}

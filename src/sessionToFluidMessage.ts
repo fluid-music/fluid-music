@@ -307,7 +307,9 @@ function fileEventToFluidMessage(audioFile : FluidAudioFile, session : FluidSess
   if (gainDb) {
     msg.push(cybr.audioclip.gain(gainDb))
   }
-
+  if (audioFile.pan) {
+    msg.push(cybr.audioclip.pan(audioFile.pan))
+  }
   if (audioFile.isReversed()) {
     msg.push(cybr.audioclip.reverse(true))
   }

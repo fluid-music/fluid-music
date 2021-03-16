@@ -340,8 +340,7 @@ function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : Flui
     // Remember, it is the the final .use call's job to set event.gainDb. The
     // AudioFile technique's .use method looks for a dynamic Object, and sets
     // the event.gainDb property.
-    if (typeof audioFile.gainDb === 'number')
-      audioItem.getOrCreateStructByToken('VOLPAN').params = [1, 0, db2Gain(gainDb), -1]
+    audioItem.getOrCreateStructByToken('VOLPAN').params = [1, audioFile.pan, db2Gain(gainDb), -1]
 
     // The AudioFile .pitchSemitones property is slated to be added in
     // fluid-music 0.9.4. If we somehow end up with an old-school AudioFile
