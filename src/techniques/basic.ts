@@ -276,3 +276,25 @@ export class Random implements Technique {
 export interface RandomOptions {
   choices : Technique[]
 }
+
+/**
+ * Nudge wraps around a child technique. When Nudge is "used" offset the child
+ * technique on the timeline by adjusting the [[UseContext]] object's
+ * `.startTime` and `.startTimeSeconds` properties.
+ */
+export class Nudge implements Technique {
+  technique : Technique
+  nudgeTimeSeconds : number
+
+  constructor(nudgeTimeSeconds : number, technique : Technique) {
+    this.technique = technique
+    this.nudgeTimeSeconds = nudgeTimeSeconds
+  }
+
+  use(context : UseContext) {
+    const newContext = {...context}
+    newContext.startTimeSeconds = context.startTimeSeconds + this.nudgeTimeSeconds
+    newContext.startTime = context.session.timeSecondsToWholeNotes(newContext.startTimeSeconds)
+    this.technique.use(newContext)
+  }
+}
