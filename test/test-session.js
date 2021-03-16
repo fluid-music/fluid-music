@@ -77,8 +77,8 @@ describe('FluidSession', () => {
         automation.decaySeconds.points.length.should.equal(2)
 
         const [point1, point2] = automation.decaySeconds.points
-        point1.startTime.should.equal(0)
-        point2.startTime.should.equal(0.5)
+        point1.startTimeSeconds.should.equal(0)
+        point2.startTimeSeconds.should.equal(1)
 
         point1.value.should.equal(2.4)
         point2.value.should.equal(4)

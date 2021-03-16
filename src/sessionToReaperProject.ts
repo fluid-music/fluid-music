@@ -159,11 +159,11 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
         throw new Error(`Unsupported reaper track automation lane: "${name}"`);
       }
 
-      automation.points.sort((a, b) => a.startTime - b.startTime)
+      automation.points.sort((a, b) => a.startTimeSeconds - b.startTimeSeconds)
       for (const autoPoint of automation.points) {
         if (typeof autoPoint.value === 'number') {
           autoObject.addBezierPoint(
-            session.timeWholeNotesToSeconds(autoPoint.startTime),
+            autoPoint.startTimeSeconds,
             normalize(autoPoint.value),
             autoPoint.curve
           );

@@ -94,10 +94,10 @@ export class PluginAutomation implements Technique {
   value : number = 0
   curve : number = 0
 
-  use ({ track, startTime } : UseContext) {
+  use ({ track, startTimeSeconds } : UseContext) {
 
     const point : AutomationPoint = {
-      startTime,
+      startTimeSeconds,
       value: this.value,
       curve: this.curve,
     }
@@ -161,9 +161,9 @@ export class TrackAutomation implements Technique {
     if (typeof options.curve === 'number') this.curve = options.curve
   }
 
-  use ({ startTime, track } : UseContext) {
+  use ({ startTimeSeconds, track } : UseContext) {
     const point : AutomationPoint = {
-      startTime,
+      startTimeSeconds,
       value: (this.value as number),
       curve: 0,
     }

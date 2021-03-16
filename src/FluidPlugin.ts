@@ -100,7 +100,7 @@ export interface AutoMakerLibrary {
  * from an AutomationEvent, which can be found in NoteLibraries and Clips.
  */
 export interface AutomationPoint {
-  startTime : number;
+  startTimeSeconds : number;
   curve: number;
   value?: number;
 }

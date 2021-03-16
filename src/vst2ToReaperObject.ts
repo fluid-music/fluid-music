@@ -142,7 +142,7 @@ export async function vst2ToReaperObject(client: IpcClient, trackName: string, p
 
         if (typeof normalizedValue === 'number') {
           automationTrack.addBezierPoint(
-            autoPoint.startTime * 4 * 60 / bpm,
+            autoPoint.startTimeSeconds,
             normalizedValue,
             autoPoint.curve
           );

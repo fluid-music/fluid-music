@@ -199,7 +199,7 @@ export function sessionToContentFluidMessage(session : FluidSession) {
       for (const autoPoint of automation.points) {
         if (typeof autoPoint.value === 'number') {
           let msg : any = null
-          const startTimeSeconds = session.timeWholeNotesToSeconds(autoPoint.startTime)
+          const startTimeSeconds = autoPoint.startTimeSeconds
           if (name === 'gain' || name === 'gainDb')  msg = cybr.audiotrack.gain(autoPoint.value, startTimeSeconds, autoPoint.curve)
           else if (name === 'pan')   msg = cybr.audiotrack.pan(autoPoint.value, startTimeSeconds, autoPoint.curve)
           else if (name === 'width') msg = cybr.audiotrack.width(autoPoint.value, startTimeSeconds, autoPoint.curve)
@@ -239,13 +239,13 @@ export function sessionToContentFluidMessage(session : FluidSession) {
               trackMessages.push(cybr.plugin.setParamNormalizedAt(
                 paramName,
                 Math.max(Math.min(normalizedValue, 1), 0),
-                autoPoint.startTime,
+                autoPoint.startTimeSeconds,
                 autoPoint.curve))
             } else {
               trackMessages.push(cybr.plugin.setParamExplicitAt(
                 paramName,
                 explicitValue,
-                autoPoint.startTime,
+                autoPoint.startTimeSeconds,
                 autoPoint.curve))
             }
           }
