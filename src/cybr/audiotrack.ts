@@ -68,21 +68,27 @@ export function selectSubmixTrack(name: string, parent? : string) {
 }
 
 /**
- * Adjust the send level to the specified bus, adding the send (post-gain) if
- * it does not yet exist. Use with audiotrack.selectReturnTrack(busName).
+ * Adjust the send level to the specified bus, adding the send (post-gain) if it
+ * does not yet exist. Use with audiotrack.selectReturnTrack(busName).
+ *
+ * As of cybr 0.3.0, this will also select the aux send plugin. To select the
+ * aux send plugin without setting the gain, omit the levelDb parameter.
+ *
  * @param {string} busName The name of the return bus to send to
- * @param {number} [levelDb=0] default on the server is 0
+ * @param {number} [levelDb] If not supplied, the aux send plugin on the server
+ * will be selected, but not changed. If it needs to be created, it will be set
+ * to 0dBFS
  */
 export function send(busName : string, levelDb? : number) {
   if (typeof busName !== 'string')
     throw new Error('send requires track name string, got: ' + busName);
 
-  if (typeof levelDb !== undefined && typeof levelDb !== 'number')
+  if (levelDb !== undefined && typeof levelDb !== 'number')
     throw new Error('if send has a levelDb, it must be a number');
 
   const args : any[] = [
     { type: 'string', value: busName },
-    { type: 'string', value: 'ignored'},
+    { type: 'string', value: 'ignored'}, // just select the send plugin
     { type: 'string', value: 'post-gain'},
   ];
 

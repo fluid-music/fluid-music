@@ -209,6 +209,20 @@ export function sessionToContentFluidMessage(session : FluidSession) {
       }
     } // for [name, automation] of track.automation
 
+    // handle send automation
+    for (const receive of track.receives) {
+      if (receive.automation?.gainDb?.points?.length) {
+        let sendAutoMsg : any[] = []
+        trackMessages.push(sendAutoMsg)
+        sendAutoMsg.push(createSelectMessage(receive.from), cybr.audiotrack.send(track.name))
+        for (const point of receive.automation.gainDb.points) {
+          if (typeof point.value === 'number') {
+            sendAutoMsg.push(cybr.plugin.setParamNormalizedAt('Send level', normalizeTracktionGain(point.value), point.startTimeSeconds, point.curve || 0))
+          }
+        }
+      }
+    } // for receive of track.receives
+
     // Handle plugins/plugin automation
     const count : any = {}
     const nth = (plugin : FluidPlugin) => {
