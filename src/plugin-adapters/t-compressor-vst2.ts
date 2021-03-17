@@ -73,7 +73,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'enable',
     });
   },
@@ -81,7 +81,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'mode',
     });
   },
@@ -89,7 +89,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'thresholdDb',
     });
   },
@@ -97,7 +97,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'ratio',
     });
   },
@@ -105,7 +105,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'attackMs',
     });
   },
@@ -113,7 +113,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'holdMs',
     });
   },
@@ -121,7 +121,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'releaseMs',
     });
   },
@@ -129,7 +129,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'inputDb',
     });
   },
@@ -137,7 +137,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'makeUpDb',
     });
   },
@@ -145,7 +145,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'softKneeDb',
     });
   },
@@ -153,7 +153,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lookaheadMs',
     });
   },
@@ -161,7 +161,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'limit',
     });
   },
@@ -169,7 +169,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'useSidechainTrigger',
     });
   },
@@ -177,7 +177,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'monitorSidechain',
     });
   },
@@ -185,7 +185,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'softClip',
     });
   },
@@ -193,7 +193,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'softClipThresholdDb',
     });
   },
@@ -201,7 +201,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'peakDetection',
     });
   },
@@ -209,7 +209,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'useSumDetection',
     });
   },
@@ -217,7 +217,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'enableAutoMakeUpGain',
     });
   },
@@ -225,7 +225,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'filter',
     });
   },
@@ -233,7 +233,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'filterType',
     });
   },
@@ -241,7 +241,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'freqHz',
     });
   },
@@ -249,7 +249,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'q',
     });
   },
@@ -257,7 +257,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'gainDb',
     });
   }

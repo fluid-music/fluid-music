@@ -128,7 +128,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band1State',
     });
   },
@@ -136,7 +136,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band1FrequencyHz',
     });
   },
@@ -144,7 +144,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band1GainDb',
     });
   },
@@ -152,7 +152,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band1Q',
     });
   },
@@ -160,7 +160,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band1Shape',
     });
   },
@@ -168,7 +168,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band2State',
     });
   },
@@ -176,7 +176,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band2FrequencyHz',
     });
   },
@@ -184,7 +184,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band2GainDb',
     });
   },
@@ -192,7 +192,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band2Q',
     });
   },
@@ -200,7 +200,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band2Shape',
     });
   },
@@ -208,7 +208,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band3State',
     });
   },
@@ -216,7 +216,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band3FrequencyHz',
     });
   },
@@ -224,7 +224,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band3GainDb',
     });
   },
@@ -232,7 +232,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band3Q',
     });
   },
@@ -240,7 +240,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band3Shape',
     });
   },
@@ -248,7 +248,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band4State',
     });
   },
@@ -256,7 +256,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band4FrequencyHz',
     });
   },
@@ -264,7 +264,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band4GainDb',
     });
   },
@@ -272,7 +272,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band4Q',
     });
   },
@@ -280,7 +280,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band4Shape',
     });
   },
@@ -288,7 +288,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band5State',
     });
   },
@@ -296,7 +296,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band5FrequencyHz',
     });
   },
@@ -304,7 +304,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band5GainDb',
     });
   },
@@ -312,7 +312,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band5Q',
     });
   },
@@ -320,7 +320,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band5Shape',
     });
   },
@@ -328,7 +328,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band6State',
     });
   },
@@ -336,7 +336,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band6FrequencyHz',
     });
   },
@@ -344,7 +344,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band6GainDb',
     });
   },
@@ -352,7 +352,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band6Q',
     });
   },
@@ -360,7 +360,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band6Shape',
     });
   },
@@ -368,7 +368,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band7State',
     });
   },
@@ -376,7 +376,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band7FrequencyHz',
     });
   },
@@ -384,7 +384,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band7GainDb',
     });
   },
@@ -392,7 +392,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band7Q',
     });
   },
@@ -400,7 +400,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band7Shape',
     });
   },
@@ -408,7 +408,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band8State',
     });
   },
@@ -416,7 +416,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band8FrequencyHz',
     });
   },
@@ -424,7 +424,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band8GainDb',
     });
   },
@@ -432,7 +432,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band8Q',
     });
   },
@@ -440,7 +440,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'band8Shape',
     });
   },
@@ -448,7 +448,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'enable',
     });
   },
@@ -456,7 +456,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'outputGainDb',
     });
   },
@@ -464,7 +464,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'soloBand',
     });
   },
@@ -472,7 +472,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'soloGainDb',
     });
   },
@@ -480,7 +480,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'analyserMode',
     });
   }

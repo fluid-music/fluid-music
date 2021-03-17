@@ -73,7 +73,7 @@ export interface ${parametersInterfaceName} {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: '${paramInfo.key}',
     });
   }`

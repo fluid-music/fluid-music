@@ -184,14 +184,14 @@ const makeAutomation = {
       value,
       curve,
       paramKey: 'dryLevelPercent',
-      pluginSelector: { pluginName, pluginType }
+      plugin: { pluginName, pluginType }
     })
   },
   earlyLevelPercent(value? : number, curve = 0){
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'earlyLevelPercent',
     });
   },
@@ -199,7 +199,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'earlySendPercent',
     });
   },
@@ -207,7 +207,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lateLevelPercent',
     });
   },
@@ -215,7 +215,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'sizeMeters',
     });
   },
@@ -223,7 +223,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'widthPercent',
     });
   },
@@ -231,7 +231,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'predelayMs',
     });
   },
@@ -239,7 +239,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'decaySeconds',
     });
   },
@@ -247,7 +247,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'diffusePercent',
     });
   },
@@ -255,7 +255,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName,  pluginType },
+      plugin: { pluginName,  pluginType },
       paramKey: 'spinHz',
     });
   },
@@ -263,7 +263,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName,  pluginType },
+      plugin: { pluginName,  pluginType },
       paramKey: 'wanderPercent',
     });
   },
@@ -271,7 +271,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName,  pluginType },
+      plugin: { pluginName,  pluginType },
       paramKey: 'highCutHz',
     });
   },
@@ -279,7 +279,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName,  pluginType },
+      plugin: { pluginName,  pluginType },
       paramKey: 'earlyDampHz',
     });
   },
@@ -287,7 +287,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName,  pluginType },
+      plugin: { pluginName,  pluginType },
       paramKey: 'lateDampHz',
     });
   },
@@ -295,7 +295,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName,  pluginType },
+      plugin: { pluginName,  pluginType },
       paramKey: 'lowBoostPercent',
     });
   },
@@ -303,7 +303,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName,  pluginType },
+      plugin: { pluginName,  pluginType },
       paramKey: 'lowBoostHz',
     });
   },
@@ -311,7 +311,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lowCutHz',
     });
   },

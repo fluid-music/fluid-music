@@ -66,7 +66,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'dryLevelPercent',
     });
   },
@@ -74,7 +74,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'earlyLevelPercent',
     });
   },
@@ -82,7 +82,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lateLevelPercent',
     });
   },
@@ -90,7 +90,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'sizeMeters',
     });
   },
@@ -98,7 +98,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'widthPercent',
     });
   },
@@ -106,7 +106,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'predelayMs',
     });
   },
@@ -114,7 +114,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'diffusePercent',
     });
   },
@@ -122,7 +122,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lowCutHz',
     });
   },
@@ -130,7 +130,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lowCrossHz',
     });
   },
@@ -138,7 +138,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lowMultX',
     });
   },
@@ -146,7 +146,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'highCutHz',
     });
   },
@@ -154,7 +154,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'highCrossHz',
     });
   },
@@ -162,7 +162,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'highMultX',
     });
   },
@@ -170,7 +170,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'spinHz',
     });
   },
@@ -178,7 +178,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'wanderMs',
     });
   },
@@ -186,7 +186,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'decaySeconds',
     });
   },
@@ -194,7 +194,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'earlySendPercent',
     });
   },
@@ -202,7 +202,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'modulationPercent',
     });
   }

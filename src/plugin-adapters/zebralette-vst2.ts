@@ -262,7 +262,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'mainOutput',
     });
   },
@@ -270,7 +270,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'mainActiveLfog',
     });
   },
@@ -278,7 +278,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'mainActiveModFX1',
     });
   },
@@ -286,7 +286,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'mainActiveDelay1',
     });
   },
@@ -294,7 +294,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lfogSync',
     });
   },
@@ -302,7 +302,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lfogPhasePercent',
     });
   },
@@ -310,7 +310,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vccActiveLfo1',
     });
   },
@@ -318,7 +318,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vccActiveOsc1',
     });
   },
@@ -326,7 +326,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vccVoices',
     });
   },
@@ -334,7 +334,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vccMode',
     });
   },
@@ -342,7 +342,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vccGlideMode',
     });
   },
@@ -350,7 +350,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vccGlidePercent',
     });
   },
@@ -358,7 +358,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vccGlide2Percent',
     });
   },
@@ -366,7 +366,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vccPortaRangePercent',
     });
   },
@@ -374,7 +374,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vccPitchBendUp',
     });
   },
@@ -382,7 +382,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vccPitchBendDown',
     });
   },
@@ -390,7 +390,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vccTranspose',
     });
   },
@@ -398,7 +398,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vccFineTuneCentsPercent',
     });
   },
@@ -406,7 +406,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'env1InitPercent',
     });
   },
@@ -414,7 +414,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'env1AttackPercent',
     });
   },
@@ -422,7 +422,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'env1DecayPercent',
     });
   },
@@ -430,7 +430,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'env1SustainPercent',
     });
   },
@@ -438,7 +438,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'env1FallRisePercent',
     });
   },
@@ -446,7 +446,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'env1Sustain2Percent',
     });
   },
@@ -454,7 +454,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'env1ReleasePercent',
     });
   },
@@ -462,7 +462,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'env1VelocityPercent',
     });
   },
@@ -470,7 +470,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'env1SlopePercent',
     });
   },
@@ -478,7 +478,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'mseg1VelocityPercent',
     });
   },
@@ -486,7 +486,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'mseg1Attack',
     });
   },
@@ -494,7 +494,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'mseg1Loop',
     });
   },
@@ -502,7 +502,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'mseg1Release',
     });
   },
@@ -510,7 +510,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lfo1Sync',
     });
   },
@@ -518,7 +518,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lfo1DelayPercent',
     });
   },
@@ -526,7 +526,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1Tune',
     });
   },
@@ -534,7 +534,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1TuneModSrc',
     });
   },
@@ -542,7 +542,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1TuneModDepth',
     });
   },
@@ -550,7 +550,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1PhasePercent',
     });
   },
@@ -558,7 +558,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1PhaseModSrc',
     });
   },
@@ -566,7 +566,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1PhaseModDepth',
     });
   },
@@ -574,7 +574,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1WaveWarp',
     });
   },
@@ -582,7 +582,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1WarpModSrc',
     });
   },
@@ -590,7 +590,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1WarpModDepth',
     });
   },
@@ -598,7 +598,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1VibratoPercent',
     });
   },
@@ -606,7 +606,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1SpectraFX1ValPercent',
     });
   },
@@ -614,7 +614,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1Sfx1modsrc',
     });
   },
@@ -622,7 +622,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1Sfx1moddepthPercent',
     });
   },
@@ -630,7 +630,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1SpectraFX2ValPercent',
     });
   },
@@ -638,7 +638,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1Sfx2modsrc',
     });
   },
@@ -646,7 +646,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1Sfx2moddepthPercent',
     });
   },
@@ -654,7 +654,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1Detune',
     });
   },
@@ -662,7 +662,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1Volume',
     });
   },
@@ -670,7 +670,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1VolumeModSrc',
     });
   },
@@ -678,7 +678,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1VolumeModDepthPercent',
     });
   },
@@ -686,7 +686,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1PanPercent',
     });
   },
@@ -694,7 +694,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1PanModSrc',
     });
   },
@@ -702,7 +702,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1PanModDepthPercent',
     });
   },
@@ -710,7 +710,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1SyncTune',
     });
   },
@@ -718,7 +718,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1SyncModSrc',
     });
   },
@@ -726,7 +726,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1SyncModDepth',
     });
   },
@@ -734,7 +734,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1PolyWidthPercent',
     });
   },
@@ -742,7 +742,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'osc1NormalizePercent',
     });
   },
@@ -750,7 +750,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vmixPanPercent',
     });
   },
@@ -758,7 +758,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vmixVolumePercent',
     });
   },
@@ -766,7 +766,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vmixModDepthPercent',
     });
   },
@@ -774,7 +774,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'vmixPanModDepthPercent',
     });
   },
@@ -782,7 +782,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'modFX1CenterPercent',
     });
   },
@@ -790,7 +790,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'modFX1SpeedPercent',
     });
   },
@@ -798,7 +798,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'modFX1StereoPercent',
     });
   },
@@ -806,7 +806,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'modFX1DepthPercent',
     });
   },
@@ -814,7 +814,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'modFX1FeedbackPercent',
     });
   },
@@ -822,7 +822,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'modFX1MixPercent',
     });
   },
@@ -830,7 +830,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'modFX1LowCutFreqPercent',
     });
   },
@@ -838,7 +838,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'modFX1HiCutFreqPercent',
     });
   },
@@ -846,7 +846,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'modFX1QuadPercent',
     });
   },
@@ -854,7 +854,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'modFX1QuadPhasePercent',
     });
   },
@@ -862,7 +862,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'modFX1LowBoostDb',
     });
   },
@@ -870,7 +870,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'modFX1HighBoostDb',
     });
   },
@@ -878,7 +878,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'delay1MixPercent',
     });
   },
@@ -886,7 +886,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'delay1FeedbackPercent',
     });
   },
@@ -894,7 +894,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'delay1XBackPercent',
     });
   },
@@ -902,7 +902,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'delay1LowpassPercent',
     });
   },
@@ -910,7 +910,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'delay1HipassPercent',
     });
   },
@@ -918,7 +918,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lfogWaveform',
     });
   },
@@ -926,7 +926,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lfogPolarity',
     });
   },
@@ -934,7 +934,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lfo1Restart',
     });
   },
@@ -942,7 +942,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lfo1Waveform',
     });
   },
@@ -950,7 +950,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lfo1PhasePercent',
     });
   },
@@ -958,7 +958,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lfo1Polarity',
     });
   },
@@ -966,7 +966,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lfo1DepthModDpt1Percent',
     });
   },
@@ -974,7 +974,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lfo1Rate',
     });
   },
@@ -982,7 +982,7 @@ const makeAutomation = {
     return new PluginAutomation({
       value,
       curve,
-      pluginSelector: { pluginName, pluginType },
+      plugin: { pluginName, pluginType },
       paramKey: 'lfo1FreqModDpt',
     });
   }

@@ -74,26 +74,46 @@ export interface AutoOptions {
  */
  export class PluginAutomation implements Technique {
 
+  /**
+   * There are three possible types for `options.plugin`
+   * - a pluginSelector object `{ pluginName: string, pluginType: string, nth?: number}`
+   * - a 'pluginName' string - gets the first instance only
+   * - a plugin constructor function (instanceof) - gets the first instance only
+   *
+   * ```
+   * // Several different plugin selectors may be used
+   * const plugin = fluid.plugins.DragonflyHallVst2
+   * const op1 = { value: 15, paramKey: 'sizeMeters', plugin: plugin }
+   * const op2 = { value: 10, paramKey: 'sizeMeters', plugin: 'DragonflyHallReverb' }
+   * const op3 = fluid.plugins.DragonflyHallVst2.makeAutomation.sizeMeters(30)
+   * op3.plugin.nth = 2 // Select an instance other than the first
+   *
+   * const tLibraryVerb = {
+   *  b: new techniques.PluginAutomation(op1),
+   *  c: new techniques.PluginAutomation(op2),
+   *  a: new techniques.PluginAutomation(op3),
+   * }
+   * ```
+   */
   constructor (options : PluginAutoOptions) {
-    if (!options.pluginSelector)
-      throw new Error('Cannot create PluginAuto technique without .pluginSelector')
+    if (!options.plugin) {
+      console.log(options)
+      throw new Error('Cannot create PluginAuto technique without a .plugin selector')
+    }
 
-    this.pluginSelector = Object.assign({}, options.pluginSelector)
+    this.plugin = (typeof options.plugin !== 'string' && typeof options.plugin !== 'function') ? {...options.plugin} : options.plugin
     this.paramKey = options.paramKey // ex: 'sizeMeters'
     if (typeof options.value === 'number') this.value = options.value
     if (typeof options.curve === 'number') this.curve = options.curve
   }
 
   // Mandatory members
-  pluginSelector : PluginSelector
+  plugin : PluginSelector|string|any
   paramKey : string
 
   // members with default values
   value : number = 0
   curve : number = 0
-
-  // When the plugin is found for the first time, put it here
-  plugin? : FluidPlugin
 
   use ({ track, startTimeSeconds } : UseContext) {
 
@@ -113,31 +133,63 @@ export interface AutoOptions {
   resolvePlugin(track : FluidTrack) : FluidPlugin {
     // We will not cache the plugin, because we may want to re-use the same
     // technique on another track
-    const nth     = this.pluginSelector.nth || 0
+
+
+    if (typeof this.plugin === 'string') {
+      for (const p of track.plugins) {
+        if (p.pluginName === this.plugin) {
+          return p
+        }
+      }
+      throw new Error('Plugin automation failed to resolve plugins (string)')
+    } else if (typeof this.plugin === 'function') {
+      for (const p of track.plugins) {
+        if (p instanceof this.plugin) {
+          return p
+        }
+      }
+      throw new Error('Plugin automation failed to resolve plugin (instanceof)')
+    }
+
+    // Assume plugin selector
+    const nth     = this.plugin.nth || 0
     const matches = track.plugins.filter(plugin =>
-      plugin.pluginName === this.pluginSelector.pluginName &&
-      plugin.pluginType === this.pluginSelector.pluginType);
+      plugin.pluginName === this.plugin.pluginName &&
+      plugin.pluginType === this.plugin.pluginType);
 
     if (nth >= matches.length) {
       const needed = nth - matches.length + 1
-      if (needed > 0) throw new Error(`${needed} missing ${this.pluginSelector.pluginName} plugins of on ${track.name} track`)
+      if (needed > 0) throw new Error(`${needed} missing ${this.plugin.pluginName} plugins of on ${track.name} track`)
     }
 
-    this.plugin = matches[nth]
-    return this.plugin
+    return matches[nth]
   }
 
 }
 export interface PluginAutoOptions extends AutoOptions {
-  pluginSelector : PluginSelector
+  plugin : PluginSelector|string|any
 }
 
 /**
  * Unlike [[PluginAutomation]], using `PluginAutomationRamp` always inserts two
- * automation points (instead of one). The use method tries to find the starting
- * value, and then ramps from that value to the value specified by
- * `options.value` over the course of the triggering event. from the value of
- * the parameter at the triggering event start time to the
+ * automation points (instead of one). The `.use(context)` method tries to find
+ * the starting value, and then ramps from that value to the value specified by
+ * `options.value` over the course of the triggering event.
+ *
+ * ```
+ * // Several different plugin selectors may be used
+ * const plugin = fluid.plugins.DragonflyHallVst2
+ * const op1 = { value: 15, paramKey: 'sizeMeters', plugin: plugin }
+ * const op2 = { value: 10, paramKey: 'sizeMeters', plugin: 'DragonflyHallReverb' }
+ * const op3 = fluid.plugins.DragonflyHallVst2.makeAutomation.sizeMeters(30)
+ * op3.plugin.nth = 2 // Select an instance other than the first
+ *
+ * const tLibraryVerb = {
+ *  b: new techniques.PluginAutomationRamp(op1),
+ *  c: new techniques.PluginAutomationRamp(op2),
+ *  a: new techniques.PluginAutomationRamp(op3),
+ * }
+ * ```
  */
 export class PluginAutomationRamp implements Technique {
   curve : number = 0
