@@ -1,4 +1,4 @@
-export { PluginAutomation, TrackAutomation, SendAutomation, SendAutomationRamp } from './automation'
+export { PluginAutomation, PluginAutomationRamp, TrackAutomation, SendAutomation, SendAutomationRamp } from './automation'
 export { ILayers, MidiChord, MidiNote, Random, Nudge } from './basic'
 export { AudioFile, AFOnset, AFReverse, AFReverseLeadIn } from './audio-file'
 

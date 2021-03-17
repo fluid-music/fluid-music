@@ -4,7 +4,7 @@ export const map = (v: number, min: number, max : number) => linear(min, max)(v)
 import { UnresolvedReceive } from './fluid-interfaces';
 import { PluginAutomation } from './techniques';
 import { FluidReceive, FluidTrack } from './FluidTrack';
-import { Automation } from './FluidAutomation';
+import { Automation, AutomationLane } from './FluidAutomation';
 
 export enum PluginType {
   unknown = 'unknown',
@@ -238,5 +238,17 @@ export class FluidPlugin {
     }
 
     return this
+  }
+
+  /**
+   * Get the [[AutomationLane]] for the given `paramKey` string, creating it if
+   * it does not already exist.
+   */
+  getAutomationLane(paramKey : string) : AutomationLane {
+    if (!this.automation.hasOwnProperty(paramKey)) {
+      this.automation[paramKey] = new AutomationLane
+    }
+
+    return this.automation[paramKey]
   }
 }

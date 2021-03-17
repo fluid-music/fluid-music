@@ -1,6 +1,7 @@
 import { content } from '../cybr'
 import { Technique, TrackReceive, UseContext } from '../fluid-interfaces'
 import { AutomationLane, AutomationPoint } from '../FluidAutomation'
+import { FluidPlugin } from '../FluidPlugin'
 import { FluidSession } from '../FluidSession'
 import { FluidTrack, FluidReceive } from '../FluidTrack'
 import { Nudge, TechniqueClass } from './basic'
@@ -91,6 +92,9 @@ export interface AutoOptions {
   value : number = 0
   curve : number = 0
 
+  // When the plugin is found for the first time, put it here
+  plugin? : FluidPlugin
+
   use ({ track, startTimeSeconds } : UseContext) {
 
     const point : AutomationPoint = {
@@ -99,6 +103,16 @@ export interface AutoOptions {
       curve: this.curve,
     }
 
+    const automationLane = this.resolvePlugin(track).getAutomationLane(this.paramKey)
+    automationLane.points.push(point)
+
+    return null
+  }
+
+  /** @internal */
+  resolvePlugin(track : FluidTrack) : FluidPlugin {
+    // We will not cache the plugin, because we may want to re-use the same
+    // technique on another track
     const nth     = this.pluginSelector.nth || 0
     const matches = track.plugins.filter(plugin =>
       plugin.pluginName === this.pluginSelector.pluginName &&
@@ -109,19 +123,58 @@ export interface AutoOptions {
       if (needed > 0) throw new Error(`${needed} missing ${this.pluginSelector.pluginName} plugins of on ${track.name} track`)
     }
 
-    const plugin = matches[nth]
-    const automation = plugin.automation
-
-    if (!automation.hasOwnProperty(this.paramKey))
-      automation[this.paramKey] = new AutomationLane
-
-    automation[this.paramKey].points.push(point)
-
-    return null
+    this.plugin = matches[nth]
+    return this.plugin
   }
+
 }
 export interface PluginAutoOptions extends AutoOptions {
   pluginSelector : PluginSelector
+}
+
+/**
+ * Unlike [[PluginAutomation]], using `PluginAutomationRamp` always inserts two
+ * automation points (instead of one). The use method tries to find the starting
+ * value, and then ramps from that value to the value specified by
+ * `options.value` over the course of the triggering event. from the value of
+ * the parameter at the triggering event start time to the
+ */
+export class PluginAutomationRamp implements Technique {
+  curve : number = 0
+  rampStartOptions : PluginAutoOptions
+  rampEndTechnique : PluginAutomation
+
+  constructor(options : PluginAutoOptions) {
+    this.rampStartOptions = {...options}
+
+    options = {...options}
+    if (typeof options.curve === 'number') {
+      this.curve = options.curve
+      delete options.curve
+    }
+
+    this.rampEndTechnique = new PluginAutomation(options)
+  }
+
+  use(context : UseContext) {
+    const paramKey = this.rampStartOptions.paramKey
+    const plugin = this.rampEndTechnique.resolvePlugin(context.track)
+    const automationLane = plugin.getAutomationLane(paramKey)
+    const lastPoint = automationLane.getLastPointAt(context.startTimeSeconds)
+    const lastValue = (lastPoint && typeof lastPoint.value === 'number')
+      ? lastPoint.value
+      : (typeof plugin.parameters[paramKey] === 'number')
+        ? plugin.parameters[paramKey]
+        : this.rampEndTechnique.value
+
+    if (lastValue !== null) {
+      const rampStartOptions = { ...this.rampStartOptions }
+      rampStartOptions.value = lastValue
+      new PluginAutomation(rampStartOptions).use(context)
+    }
+
+    new Nudge(context.durationSeconds, this.rampEndTechnique).use(context)
+  }
 }
 
 /**
@@ -167,6 +220,7 @@ export class SendAutomation implements Technique {
   /**
    * Get the destination track, assigning it to this.destionationTrack if
    * needed, and throwing if it is unspecified or if it cannot be found.
+   * @internal
    */
   resolveDestinationTrack(session : FluidSession) {
     if (this.destinationTrack) return this.destinationTrack
@@ -177,6 +231,7 @@ export class SendAutomation implements Technique {
     return track
   }
 
+  /** @internal */
   getOrCreateReceive(session : FluidSession, sourceTrack : FluidTrack) {
     const destinationTrack = this.resolveDestinationTrack(session)
     let receive : FluidReceive|undefined
