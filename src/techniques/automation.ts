@@ -249,6 +249,12 @@ export class SendAutomation implements Technique {
    * track does not exist, using this technique will throw an error.
    * - `options.value` send level in dBFS
    * - `options.curve` optional automation curve, defaults to 0
+   * ```
+   * const tLibrarySynth = {
+   *   a: new techniques.SendAutomation({ to: 'verb', value: -6, curve: -0.5 })
+   *   b: new techniques.SendAutomation({ to: 'verb', value: -12, curve: -0.5 })
+   * }
+   * ```
    */
   constructor(options : SendAutoOptions) {
     if (options.to instanceof FluidTrack) this.destinationTrack = options.to
@@ -312,6 +318,12 @@ export interface SendAutoOptions {
  * SendAutomationRamp always inserts two automation points. The `use` method
  * identifies the current value at the beginning of the event, and ramps to the
  * new value over the duration of the triggering event.
+ * ```
+ * const tLibrarySynth = {
+ *   a: new techniques.SendAutomationRamp({ to: 'verb', value: -6, curve: -0.5 })
+ *   b: new techniques.SendAutomationRamp({ to: 'verb', value: -12, curve: -0.5 })
+ * }
+ * ```
  */
 export class SendAutomationRamp implements Technique {
   curve : number = 0
