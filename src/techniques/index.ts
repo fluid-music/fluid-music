@@ -1,4 +1,5 @@
-export { PluginAutomation, TrackAutomation, ILayers, MidiChord, MidiNote, Random, Nudge } from './basic'
+export { PluginAutomation, TrackAutomation, SendAutomation } from './automation'
+export { ILayers, MidiChord, MidiNote, Random, Nudge } from './basic'
 export { AudioFile, AFOnset, AFReverse, AFReverseLeadIn } from './audio-file'
 
 // Charles: It would be nice to export techniques like this:

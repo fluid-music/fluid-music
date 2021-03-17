@@ -16,6 +16,9 @@ export class FluidReceive implements TrackReceive {
   from : FluidTrack
   gainDb : number = 0
   tap : Tap = Tap.postFader
+  automation : Automation = {
+    gainDb: { points: [] }
+  }
 }
 
 export interface TrackConfig extends ScoreConfig {
@@ -40,7 +43,7 @@ export class FluidTrack {
   audioFiles : FluidAudioFile[] = []
   midiClips : FluidMidiClip[] = []
   plugins : FluidPlugin[] = []
-  receives : TrackReceive[] = []
+  receives : FluidReceive[] = []
   automation : Automation = {
     gainDb: { points: [] },
     width: { points: [] },

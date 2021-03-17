@@ -184,5 +184,65 @@ describe('FluidSession', () => {
       ])
     })
   })
+
+  describe('send automation technique', function () {
+    let session;
+
+    beforeEach(function() {
+      session = new FluidSession({}, [
+        { name: 'topA' },
+        { name: 'topB' },
+      ])
+    })
+
+    it('should create a send if it does not already exist', function () {
+      const tLibrary = {
+        a: new fluid.techniques.SendAutomation({ to: 'topB', value: 0.5 }),
+        b: new fluid.techniques.SendAutomation({ to: 'topB', value: 0.7 }),
+      }
+
+      const context = session.createContext({ track: 'topA', startTime: 0, duration: 0.25 })
+      tLibrary.a.use(context)
+      const receiveTrack = session.getTrackByName('topB')
+      receiveTrack.receives.length.should.equal(1)
+      should.exist(receiveTrack.receives[0])
+      receiveTrack.receives[0].from.should.equal(session.getTrackByName('topA'))
+      // don't create another receive the second time around
+      context.startTimeSeconds = 3
+      context.startTime = session.timeSecondsToWholeNotes(context.startTimeSeconds)
+      tLibrary.b.use(context)
+      receiveTrack.receives.length.should.equal(1)
+    })
+
+    it('should create automation points in the receive automation.gainDb lane', function () {
+      const tLibrary = {
+        a: new fluid.techniques.SendAutomation({ to: 'topB', value: 0.5, curve: 0.25 }),
+        b: new fluid.techniques.SendAutomation({ to: 'topB', value: 0.7 }),
+      }
+
+      const context = session.createContext({ track: 'topA', startTime: 0, duration: 0.25 })
+      tLibrary.a.use(context)
+      context.startTimeSeconds = 3
+      context.startTime = session.timeSecondsToWholeNotes(context.startTimeSeconds)
+      tLibrary.b.use(context)
+
+
+      const receiveTrack = session.getTrackByName('topB')
+      should.exist(receiveTrack.receives[0])
+      const automationLane = receiveTrack.receives[0].automation.gainDb
+
+      automationLane.points.length.should.equal(2)
+      automationLane.points[0].should.deepEqual({
+        startTimeSeconds: 0,
+        value: 0.5,
+        curve: 0.25,
+      })
+      automationLane.points[1].should.deepEqual({
+        startTimeSeconds: 3,
+        value: 0.7,
+        curve: 0
+      })
+    })
+  })
 });
 
