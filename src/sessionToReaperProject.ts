@@ -115,6 +115,15 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
           sourceTrackNumber: index,
           gain: db2Gain(receive.gainDb),
         })
+        if (receive.automation.gainDb.points.length) {
+          const automationLane = new rppp.objects.ReaperReceiveVolumeAutomation()
+          rpppTrack.add(automationLane)
+          for (const point of receive.automation.gainDb.points) {
+            if (typeof point.value === 'number') {
+              automationLane.addBezierPoint(point.startTimeSeconds, db2Gain(point.value), point.curve)
+            }
+          }
+        }
       } else {
         throw new Error(`sessionToReaperProject failed: ${track.name} contained broken receive: ${JSON.stringify(receive)}`)
       }
