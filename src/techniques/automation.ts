@@ -1,7 +1,9 @@
+import { content } from '../cybr'
 import { Technique, TrackReceive, UseContext } from '../fluid-interfaces'
 import { AutomationLane, AutomationPoint } from '../FluidAutomation'
+import { FluidSession } from '../FluidSession'
 import { FluidTrack, FluidReceive } from '../FluidTrack'
-import { TechniqueClass } from './basic'
+import { Nudge, TechniqueClass } from './basic'
 
 export interface PluginAutoTechniqueClass extends TechniqueClass {
   new(options: PluginAutoOptions) : Technique
@@ -122,6 +124,10 @@ export interface PluginAutoOptions extends AutoOptions {
   pluginSelector : PluginSelector
 }
 
+/**
+ * SendAutomation inserts a single automation point from the track on which it
+ * is used to a track of your choice.
+ */
 export class SendAutomation implements Technique {
   /** The destination track */
   private destinationTrack? : FluidTrack
@@ -131,6 +137,14 @@ export class SendAutomation implements Technique {
   value : number = 0
   curve : number = 0
 
+  /**
+   * Accepts three parameters:
+   * - `options.to` can be a FluidTrack instance or a track name string. A
+   * send will be created on the track if it does not exist already. If the
+   * track does not exist, using this technique will throw an error.
+   * - `options.value` send level in dBFS
+   * - `options.curve` optional automation curve, defaults to 0
+   */
   constructor(options : SendAutoOptions) {
     if (options.to instanceof FluidTrack) this.destinationTrack = options.to
     else if (typeof options.to === 'string') this.unresolvedTrackName = options.to
@@ -141,16 +155,30 @@ export class SendAutomation implements Technique {
   }
 
   use(context : UseContext) {
-    if (!this.destinationTrack) {
-      if (!this.unresolvedTrackName) throw new Error('Cannot use SendAutomation technique with unspecified track')
-      const track = context.session.getTrackByName(this.unresolvedTrackName)
-      if (!track) throw new Error(`SendAutomation used, but '${this.unresolvedTrackName}' track not found in session`)
-      this.destinationTrack = track
-    }
+    const receive = this.getOrCreateReceive(context.session, context.track)
+    // At this point, we have everything we need: sourceTrack, destinationTrack, and receive
+    receive.automation.gainDb.points.push({
+      startTimeSeconds: context.startTimeSeconds,
+      value: this.value,
+      curve: this.curve
+    })
+  }
 
-    const destinationTrack = this.destinationTrack
-    const sourceTrack = context.track
-    // check if a send is already setup
+  /**
+   * Get the destination track, assigning it to this.destionationTrack if
+   * needed, and throwing if it is unspecified or if it cannot be found.
+   */
+  resolveDestinationTrack(session : FluidSession) {
+    if (this.destinationTrack) return this.destinationTrack
+    if (!this.unresolvedTrackName) throw new Error('SendAutomation cannot resolve without a target track or target track name')
+    const track = session.getTrackByName(this.unresolvedTrackName)
+    if (!track) throw new Error(`Send automation cannot resolve "${this.unresolvedTrackName}" track. Track not found in session.`)
+    this.destinationTrack = track
+    return track
+  }
+
+  getOrCreateReceive(session : FluidSession, sourceTrack : FluidTrack) {
+    const destinationTrack = this.resolveDestinationTrack(session)
     let receive : FluidReceive|undefined
     for (const existingReceive of destinationTrack.receives) {
       if (existingReceive.from === sourceTrack) {
@@ -163,14 +191,58 @@ export class SendAutomation implements Technique {
       receive = new FluidReceive({ from: sourceTrack })
       destinationTrack.receives.push(receive)
     }
-    // At this point, we have everything we need: sourceTrack, destinationTrack, and receive
-    receive.automation.gainDb.points.push({
-      startTimeSeconds: context.startTimeSeconds,
-      value: this.value,
-      curve: this.curve
-    })
+    return receive
   }
 }
-export interface SendAutoOptions extends AutoOptions {
+export interface SendAutoOptions {
   to: string|FluidTrack
+  curve? : number
+  value? : number
+}
+
+/**
+ * Unlike [[SendAutomation]], which always inserts one automation point, using
+ * SendAutomationRamp always inserts two automation points. The `use` method
+ * identifies the current value at the beginning of the event, and ramps to the
+ * new value over the duration of the triggering event.
+ */
+export class SendAutomationRamp implements Technique {
+  curve : number = 0
+  rampEndTechnique : SendAutomation
+
+  /**
+   * Accepts three parameters:
+   * - `options.to` can be a FluidTrack instance or a track name string. A
+   * send will be created on the track if it does not exist already. If the
+   * track does not exist, using this technique will throw an error.
+   * - `options.value` send level in dBFS
+   * - `options.curve` optional automation curve, defaults to 0
+   */
+  constructor(options : SendAutoOptions) {
+    if (typeof options.curve === 'number') {
+      this.curve = options.curve
+      options = {...options}
+      delete options.curve
+    }
+    this.rampEndTechnique = new SendAutomation(options)
+  }
+
+  use (context : UseContext) {
+    const receiveTrack = this.rampEndTechnique.resolveDestinationTrack(context.session)
+    const receive = this.rampEndTechnique.getOrCreateReceive(context.session, context.track)
+    const automationLane = receive.automation.gainDb
+
+    const lastPoint = automationLane.getLastPointAt(context.startTimeSeconds)
+    const lastValue = (lastPoint && typeof lastPoint.value === 'number') ? lastPoint.value : receive.gainDb
+
+    // ramp start automation point
+    new SendAutomation({
+      to: receiveTrack,
+      value: lastValue,
+      curve: this.curve,
+    }).use(context)
+
+    // ramp end automation point
+    new Nudge(context.durationSeconds, this.rampEndTechnique).use(context)
+  }
 }
