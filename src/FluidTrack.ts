@@ -2,7 +2,7 @@ import { Clip, ScoreConfig, TrackReceive, Tap, UnresolvedSend } from './fluid-in
 import { FluidAudioFile } from './FluidAudioFile'
 import { FluidMidiClip } from './FluidMidiClip';
 import { FluidPlugin } from './FluidPlugin';
-import { Automation } from './FluidAutomation'
+import { Automation, AutomationLane } from './FluidAutomation'
 
 export class FluidReceive implements TrackReceive {
   constructor (options : {
@@ -18,7 +18,7 @@ export class FluidReceive implements TrackReceive {
   gainDb : number = 0
   tap : Tap = Tap.postFader
   automation : Automation = {
-    gainDb: { points: [] }
+    gainDb: new AutomationLane()
   }
 }
 
@@ -46,9 +46,9 @@ export class FluidTrack {
   plugins : FluidPlugin[] = []
   receives : FluidReceive[] = []
   automation : Automation = {
-    gainDb: { points: [] },
-    width: { points: [] },
-    pan: { points: [] },
+    gainDb: new AutomationLane(),
+    width: new AutomationLane(),
+    pan: new AutomationLane(),
   }
   duration? : number
   startTime? : number

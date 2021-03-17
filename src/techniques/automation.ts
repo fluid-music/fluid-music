@@ -1,5 +1,5 @@
 import { Technique, TrackReceive, UseContext } from '../fluid-interfaces'
-import { AutomationPoint } from '../FluidAutomation'
+import { AutomationLane, AutomationPoint } from '../FluidAutomation'
 import { FluidTrack, FluidReceive } from '../FluidTrack'
 import { TechniqueClass } from './basic'
 
@@ -34,7 +34,7 @@ export interface PluginAutoTechniqueClass extends TechniqueClass {
     const automation = track.automation
 
     if (!automation.hasOwnProperty(this.paramKey))
-      automation[this.paramKey] = { points: [] }
+      automation[this.paramKey] = new AutomationLane
 
     automation[this.paramKey].points.push(point)
 
@@ -111,7 +111,7 @@ export interface AutoOptions {
     const automation = plugin.automation
 
     if (!automation.hasOwnProperty(this.paramKey))
-      automation[this.paramKey] = { points: [] }
+      automation[this.paramKey] = new AutomationLane
 
     automation[this.paramKey].points.push(point)
 
