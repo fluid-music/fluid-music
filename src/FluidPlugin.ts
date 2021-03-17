@@ -1,9 +1,10 @@
 export const linear = (min : number, max: number) => (v: number) => (v - min) / (max - min);
 export const map = (v: number, min: number, max : number) => linear(min, max)(v);
 
-import { UnresolvedReceive } from "./fluid-interfaces";
-import { PluginAutomation } from "./techniques";
-import { FluidReceive, FluidTrack } from "./FluidTrack";
+import { UnresolvedReceive } from './fluid-interfaces';
+import { PluginAutomation } from './techniques';
+import { FluidReceive, FluidTrack } from './FluidTrack';
+import { Automation } from './FluidAutomation';
 
 export enum PluginType {
   unknown = 'unknown',
@@ -95,23 +96,6 @@ export interface AutoMakerLibrary {
   [key: string]: { (value: any): PluginAutomation };
 }
 
-/**
- * AutomationPoint object exist in an automation lane, Note that this is different
- * from an AutomationEvent, which can be found in NoteLibraries and Clips.
- */
-export interface AutomationPoint {
-  startTimeSeconds : number;
-  curve: number;
-  value?: number;
-}
-
-export interface AutomationLane {
-  points : AutomationPoint[];
-}
-
-export interface Automation {
-  [key: string] : AutomationLane;
-}
 
 export class FluidPlugin {
   static readonly PluginType = PluginType;

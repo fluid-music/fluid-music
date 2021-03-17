@@ -1,7 +1,8 @@
 import { Clip, ScoreConfig, TrackReceive, Tap, UnresolvedSend } from './fluid-interfaces';
 import { FluidAudioFile } from './FluidAudioFile'
 import { FluidMidiClip } from './FluidMidiClip';
-import { FluidPlugin, Automation } from './FluidPlugin';
+import { FluidPlugin } from './FluidPlugin';
+import { Automation } from './FluidAutomation'
 
 export class FluidReceive implements TrackReceive {
   constructor (options : {

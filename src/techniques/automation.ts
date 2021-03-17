@@ -1,5 +1,5 @@
 import { Technique, TrackReceive, UseContext } from '../fluid-interfaces'
-import { AutomationPoint } from '../FluidPlugin'
+import { AutomationPoint } from '../FluidAutomation'
 import { FluidTrack, FluidReceive } from '../FluidTrack'
 import { TechniqueClass } from './basic'
 
