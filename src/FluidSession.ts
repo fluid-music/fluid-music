@@ -375,11 +375,11 @@ export class FluidSession {
       track,
       startTime, startTimeSeconds,
       duration, durationSeconds,
-      clip: options.clip,
+      clip: options.clip || { events: [], unmappedEvents: [], duration, startTime  },
       eventIndex: 0,
       clipIndex: typeof options.clipIndex === 'number' ? options.clipIndex : 0,
-      d: options.d ? options.d : {},
-      data: options.data ? options.data : {},
+      d: options.d || {},
+      data: options.data || {},
       session: this
     }
 

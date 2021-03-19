@@ -49,14 +49,18 @@ export class MidiNote implements Technique {
     else if (typeof d.v === 'number') midiNoteEvent.velocity = d.v
     else if (typeof d.intensity === 'number') midiNoteEvent.velocity = clamp(1, 127, Math.round(d.intensity * 126) + 1)
 
-    if (!(data.midiClip instanceof FluidMidiClip)) {
-      data.midiClip = new FluidMidiClip()
-      data.midiClip.startTimeSeconds = session.timeWholeNotesToSeconds(clip.startTime)
-      data.midiClip.durationSeconds = session.timeWholeNotesToSeconds(clip.duration)
-      context.track.midiClips.push(data.midiClip)
+    if (!data.midiClipsPerTrack) data.midiClipsPerTrack = new Map()
+
+    let midiClip = data.midiClipsPerTrack.get(context.track)
+    if (!midiClip) {
+      midiClip = new FluidMidiClip()
+      midiClip.startTimeSeconds = session.timeWholeNotesToSeconds(clip.startTime)
+      midiClip.durationSeconds = session.timeWholeNotesToSeconds(clip.duration)
+      data.midiClipsPerTrack.set(context.track, midiClip)
+      context.track.midiClips.push(midiClip)
     }
 
-    data.midiClip.events.push(midiNoteEvent)
+    midiClip.events.push(midiNoteEvent)
     return null
   }
 }

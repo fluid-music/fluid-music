@@ -26,6 +26,7 @@ export interface DynamicObject {
 }
 
 /**
+ * While parsing a score, each pattern string will create a clip
  * @member duration length measured in whole notes
  */
 export interface Clip {
@@ -62,6 +63,11 @@ export interface TrackReceive {
   // For now, I will not implement panning in sends.
 }
 
+/**
+ * When parsing a score, a UseContext is created for each event (character) in
+ * the score. Note that the .data property is created anew for each Clip (clips
+ * are created by pattern strings in the score).
+ */
 export interface UseContext {
   d: DynamicObject;
 
