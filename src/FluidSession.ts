@@ -189,9 +189,7 @@ export class FluidSession {
       sendTrack.unresolvedSends = sendTrack.unresolvedSends.filter(send => {
         const receiveTrack = this.getTrackByName(send.to)
         if (receiveTrack) {
-          const receiveOptions = Object.assign({}, send, {from: sendTrack})
-          const receive = new FluidReceive(receiveOptions)
-          receiveTrack.receives.push(receive)
+          receiveTrack.addReceiveFrom(sendTrack, send.gainDb)
           return false
         } else {
           console.warn(`WARNING: Track (${sendTrack.name}) contains a send to a non-existent track (${send.to})`)

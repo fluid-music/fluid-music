@@ -78,4 +78,9 @@ export class FluidTrack {
       this.children = config.children.map(childConfig => new FluidTrack(childConfig))
     }
   }
+
+  addReceiveFrom(track : FluidTrack, gainDb : number = 0) {
+    if (!(track instanceof FluidTrack)) throw new TypeError('invalid sending track: ' + typeof track)
+    this.receives.push(new FluidReceive({ from: track, gainDb}))
+  }
 }
