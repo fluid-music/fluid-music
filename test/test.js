@@ -146,3 +146,19 @@ describe('midiclip.create', () => {
     }])
   });
 });
+
+describe('converters.range', () => {
+  it('should create an array starting at 0 when passed a single argument', () => {
+    converters.range(3).should.deepEqual([0, 1, 2])
+    converters.range(-3).should.deepEqual([0, -1, -2])
+  })
+
+  it('should include the start, but not include end', () => {
+    converters.range(1, 4).should.deepEqual([1, 2, 3])
+  })
+
+  it('should work with negative numbers (when two args are passed)', () => {
+    converters.range(-3, -1).should.deepEqual([-3, -2])
+    converters.range(-1, -3).should.deepEqual([-1, -2])
+  })
+})

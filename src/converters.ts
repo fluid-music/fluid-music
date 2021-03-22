@@ -85,3 +85,22 @@ export function velocityNumberToDynamic(velocity : number) {
     intensity: clamp(0, 1, Math.floor(velocity / 127)),
   }
 }
+
+/**
+ * Create an array of integers from `start` (inclusive) to `end` (exclusive). If
+ * only a single argument is passed, create an array from `0` (inclusive) to
+ * `start` (exclusive).
+ *
+ * Works with negative numbers, and counts backwards if needed.
+ */
+export function range(start : number, end : number) {
+  if (end === undefined) [start, end] = [0, start]
+
+  const length = Math.abs(end - start)
+
+  if (end > start) {
+    return new Array(length).fill(undefined).map((_, i) => i + start)
+  }
+
+  return new Array(length).fill(undefined).map((_, i) => start - i)
+}
