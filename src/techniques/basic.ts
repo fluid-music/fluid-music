@@ -178,7 +178,7 @@ export class Nudge implements Technique {
   use(context : UseContext) {
     const newContext = {...context}
     newContext.startTimeSeconds = context.startTimeSeconds + this.nudgeTimeSeconds
-    newContext.startTime = context.session.timeSecondsToWholeNotes(newContext.startTimeSeconds)
+    newContext.startTime = context.startTime + context.session.timeSecondsToWholeNotes(this.nudgeTimeSeconds)
     this.technique.use(newContext)
   }
 }
