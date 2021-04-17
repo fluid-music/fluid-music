@@ -61,7 +61,7 @@ export class MidiNote implements Technique {
     }
 
     midiClip.events.push(midiNoteEvent)
-    return null
+    return midiNoteEvent
   }
 }
 export interface MidiNoteOptions {
@@ -81,10 +81,10 @@ export class MidiChord implements Technique {
   }
 
   use (context : UseContext) {
-    for (const note of this.notes) {
+    return this.notes.map(note => {
       const midiNote = new MidiNote({ note })
-      midiNote.use(context)
-    }
+      return midiNote.use(context)
+    })
   }
 }
 export interface MidiChordOptions {
@@ -121,7 +121,7 @@ export class ILayers implements Technique {
     }
 
     const technique = this.layers[ILayers.clamp(0, length-1, index)]
-    technique.use(context)
+    return technique.use(context)
   }
 
   static clamp(min: number, max: number, value: number) {
@@ -179,6 +179,6 @@ export class Nudge implements Technique {
     const newContext = {...context}
     newContext.startTimeSeconds = context.startTimeSeconds + this.nudgeTimeSeconds
     newContext.startTime = context.startTime + context.session.timeSecondsToWholeNotes(this.nudgeTimeSeconds)
-    this.technique.use(newContext)
+    return this.technique.use(newContext)
   }
 }
