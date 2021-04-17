@@ -287,33 +287,13 @@ export class FluidSession {
   /**
    * If any techniques were inserted that have a `.finalize(session)` method,
    * invoke each unique method once, passing in the [[FluidSession]] instance.
-   * Calling finalize a second time will have no effect unless scoresWere
-   * inserted between subsequent calls to `finalize`.
+   * Calling finalize a second time will have no effect unless new techniques
+   * that have a `.finalize` method were inserted (via
+   * [[FluidSession.insertScore]] between subsequent calls to `finalize`.
    */
   finalize() {
     this.finalizers.forEach((value, finalize) => { finalize(this) })
     this.finalizers.clear()
-
-    // Finalize
-    this.forEachTrack(track => {
-      track.audioFiles.sort((a, b) => a.startTimeSeconds - b.startTimeSeconds)
-      for (let i = 1; i < track.audioFiles.length; i++) {
-        const fEvent1 = track.audioFiles[i - 1]
-        const fEvent2 = track.audioFiles[i]
-        if (fEvent1.mode === AudioFileMode.OneVoice && typeof fEvent1.info.duration === 'number') {
-          const secondsBetween = fEvent2.startTimeSeconds - fEvent1.startTimeSeconds
-          const maxDurationSeconds = secondsBetween + fEvent1.fadeOutSeconds
-          const currentSeconds = fEvent1.durationSeconds
-          const trimSeconds = maxDurationSeconds - currentSeconds
-
-          // Shrink only, don't expand
-          if (trimSeconds < 0) {
-            fEvent1.growRightEdgeBySecondsSafe(trimSeconds)
-          }
-        }
-      }
-    })
-
     return this
   }
 

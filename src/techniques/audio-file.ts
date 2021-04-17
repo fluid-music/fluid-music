@@ -1,5 +1,6 @@
 import { AudioFileMode, AudioFileConfig, FluidAudioFile, AudioFileOptions } from '../FluidAudioFile'
 import { Technique, UseContext } from '../fluid-interfaces'
+import { FluidSession }  from '../FluidSession'
 
 /**
  * Insert an audio sample into a track.
@@ -75,6 +76,28 @@ export class AudioFile extends FluidAudioFile implements Technique {
     if (newMarkers) newTechnique.setMarkers(newMarkers)
 
     return newTechnique
+  }
+
+
+  finalize(session: FluidSession) {
+    session.forEachTrack(track => {
+      track.audioFiles.sort((a, b) => a.startTimeSeconds - b.startTimeSeconds)
+      for (let i = 1; i < track.audioFiles.length; i++) {
+        const fEvent1 = track.audioFiles[i - 1]
+        const fEvent2 = track.audioFiles[i]
+        if (fEvent1.mode === AudioFileMode.OneVoice && typeof fEvent1.info.duration === 'number') {
+          const secondsBetween = fEvent2.startTimeSeconds - fEvent1.startTimeSeconds
+          const maxDurationSeconds = secondsBetween + fEvent1.fadeOutSeconds
+          const currentSeconds = fEvent1.durationSeconds
+          const trimSeconds = maxDurationSeconds - currentSeconds
+
+          // Shrink only, don't expand
+          if (trimSeconds < 0) {
+            fEvent1.growRightEdgeBySecondsSafe(trimSeconds)
+          }
+        }
+      }
+    })
   }
 }
 
