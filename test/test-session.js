@@ -244,5 +244,37 @@ describe('FluidSession', () => {
       })
     })
   })
-});
 
+  describe('finalize method', function () {
+    let finalizeCalled = false
+    let finalizeCallCount = 0
+    let useCallCount = 0
+
+    const t = {
+      use (context) {
+        useCallCount++
+        new fluid.techniques.MidiNote(60).use(context)
+      },
+      finalize (session) {
+        should(session).be.an.instanceOf(FluidSession)
+        finalizeCallCount++
+        finalizeCalled = true
+      }
+    }
+
+    it('should invoke custom technique finalizers', function () {
+      const session = new FluidSession({})
+      session.insertScore({
+        tLibrary: { t },
+        r:      '1234',
+        track1: '.t.t',
+      })
+
+      finalizeCalled.should.be.false()
+      session.finalize()
+      finalizeCalled.should.be.true()
+      finalizeCallCount.should.equal(1)
+      useCallCount.should.equal(2)
+    })
+  })
+});

@@ -3,6 +3,25 @@ import { FluidTrack } from './FluidTrack'
 
 export interface Technique {
   use : {(context : UseContext) : any }
+
+  /**
+   * Techniques may have a finalize method, which will be invoked in when
+   * calling `session.finalize()` for each unique finalize function that was
+   * inserted via `session.insertScore(...)` since the last call to
+   * `session.finalize`. Note that the when finalize methods are not associated
+   * with any particular technique instance, so `.this` will be undefined inside
+   * the finalize method invocation.
+   *
+   * The order that finalizers will be called in is undefined. It's a good idea
+   * to make finalizers idempotent because a finalizer may be called more than
+   * one if the user does the following:
+   *
+   * 1. `session.insertScore(scoreContainingFinalizerTechnique)
+   * 2. `session.finalize()
+   * 3. `session.insertScore(scoreContainingFinalizerTechnique)
+   * 4. `session.finalize() // finalizer invoked a second time`
+   */
+  finalize? : {(session : FluidSession) : any }
 }
 
 /** An Event is just anything with a startTime and a duration */

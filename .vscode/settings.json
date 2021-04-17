@@ -6,6 +6,8 @@
     "audioclip",
     "audiofile",
     "audiotrack",
+    "finalizer",
+    "finalizers",
     "midiclip",
     "rppp",
     "supersaw",

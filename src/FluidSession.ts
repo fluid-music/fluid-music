@@ -28,7 +28,7 @@ export interface SessionConfig extends ScoreConfig {
 }
 
 export class FluidSession {
-  constructor(session: SessionConfig, tracks: TrackConfig[] = []) {
+  constructor(session: SessionConfig = {}, tracks: TrackConfig[] = []) {
     if (typeof session.bpm === 'number') this.bpm = session.bpm
     if (typeof session.loopDuration === 'number') this.loopRegion.duration = session.loopDuration
     if (typeof session.loopStartTime === 'number') this.loopRegion.startTime = session.loopStartTime
@@ -59,6 +59,7 @@ export class FluidSession {
   bpm : number = 120
   tracks : FluidTrack[] = []
   regions : any[] = []
+  finalizers = new Map< {(FluidSession) : any}, any>()
 
   /** Position of the edit cursor, measured in whole notes */
   editCursorTime : number = 0
@@ -264,7 +265,12 @@ export class FluidSession {
               durationSeconds: this.timeWholeNotesToSeconds(event.duration)
             }
 
+            if (event.technique.finalize && !this.finalizers.has(event.technique.finalize)) {
+              this.finalizers.set(event.technique.finalize, event.technique)
+            }
+
             event.technique.use(useContext)
+
             // allow events to change the eventIndex
             eventIndex = (typeof useContext.eventIndex === 'number')
               ? useContext.eventIndex + 1
@@ -278,10 +284,15 @@ export class FluidSession {
     })    // iterate over tracks with session.forEachTrack
   }
 
+  /**
+   * If any techniques were inserted that have a `.finalize(session)` method,
+   * invoke each unique method once, passing in the [[FluidSession]] instance.
+   * Calling finalize a second time will have no effect unless scoresWere
+   * inserted between subsequent calls to `finalize`.
+   */
   finalize() {
-    // Charles: At some point in the future, I may implement custom finalizers,
-    // which could be stored in a Map like this:
-    // const finalizers = new Map<Clip, {(clip : Clip) : any}[]>()
+    this.finalizers.forEach((value, finalize) => { finalize(this) })
+    this.finalizers.clear()
 
     // Finalize
     this.forEachTrack(track => {
