@@ -593,6 +593,7 @@ export function parseScore(
   } else {
     // Assume we have a JavaScript Object
     for (let [key, val] of Object.entries(scoreObject)) {
+      if (val === null || val === undefined) continue;
       if (tab.reservedKeys.hasOwnProperty(key) && key !== 'clips') continue;
       if (key !== 'clips') config.trackKey = key; // if key='clips' use parent key
       let r = parseScore(val, session, config);
