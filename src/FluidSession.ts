@@ -4,7 +4,7 @@ import * as chalk from 'chalk'
 import * as tab from './tab'
 import * as cybr from './cybr'
 import { FluidReceive, FluidTrack, TrackConfig } from './FluidTrack';
-import { dLibrary, ScoreConfig, tLibrary, UseContext, Event, Clip, DynamicObject } from './fluid-interfaces';
+import { dLibrary, ScoreConfig, tLibrary, UseContext, Event, Clip, DynamicObject, Technique } from './fluid-interfaces';
 import { sessionToTemplateFluidMessage, sessionToContentFluidMessage } from './sessionToFluidMessage'
 import { sessionToReaperProject } from './sessionToReaperProject';
 import { createWriteStream } from 'fs';
@@ -25,6 +25,19 @@ export interface SessionConfig extends ScoreConfig {
    * looping unless `loopEnabled: false` is explicit
    * */
   loopDuration? : number
+}
+
+export interface ContextOptions {
+  track : string|FluidTrack,
+  startTime? : number,
+  duration? : number,
+  startTimeSeconds? : number,
+  durationSeconds? : number,
+  clipIndex? : number,
+  eventIndex? : number,
+  clip? : Clip,
+  d?: DynamicObject,
+  data?: { [key: string] : any },
 }
 
 export class FluidSession {
@@ -251,19 +264,18 @@ export class FluidSession {
         let eventIndex = 0
         for (const event of clip.events) {
           if (typeof event.technique?.use === 'function') {
-            let useContext : UseContext = {
+            let useContext = this.createContext({
               d: event.d ? event.d : {},
               track,
               clip,
               clipIndex,
               data,
               eventIndex,
-              session: this,
               startTime: clip.startTime + event.startTime,
               duration: event.duration,
               startTimeSeconds: this.timeWholeNotesToSeconds(event.startTime + clip.startTime),
               durationSeconds: this.timeWholeNotesToSeconds(event.duration)
-            }
+            })
 
             if (event.technique.finalize && !this.finalizers.has(event.technique.finalize)) {
               this.finalizers.set(event.technique.finalize, event.technique)
@@ -301,17 +313,7 @@ export class FluidSession {
    * Create a UseContext object.
    * If no startTime is specified, use the session's editCursor as the start Time
    */
-  createContext (options: {
-    track : string|FluidTrack,
-    startTime? : number,
-    duration? : number,
-    startTimeSeconds? : number,
-    durationSeconds? : number,
-    clipIndex? : number,
-    clip? : Clip,
-    d?: DynamicObject,
-    data?: { [key: string] : any },
-  }) : UseContext
+  createContext (options: ContextOptions) : UseContext
   {
     let track : FluidTrack|null = null
     if (typeof options.track === 'string') track = this.getTrackByName(options.track)
@@ -365,7 +367,7 @@ export class FluidSession {
       startTime, startTimeSeconds,
       duration, durationSeconds,
       clip: options.clip || { events: [], unmappedEvents: [], duration, startTime  },
-      eventIndex: 0,
+      eventIndex: options.eventIndex || 0,
       clipIndex: typeof options.clipIndex === 'number' ? options.clipIndex : 0,
       d: options.d || {},
       data: options.data || {},
@@ -373,6 +375,18 @@ export class FluidSession {
     }
 
     return context
+  }
+
+  useTechnique(technique : Technique, optionsOrTrackName : ContextOptions|string|FluidTrack) {
+    if (typeof optionsOrTrackName === 'string' || optionsOrTrackName instanceof FluidTrack) {
+      technique.use(this.createContext({ track: optionsOrTrackName, duration: 1 }))
+    } else {
+      const options = { ...optionsOrTrackName }
+      if (typeof options.duration !== 'number' && typeof options.durationSeconds !== 'number') {
+        options.duration = 1
+      }
+      technique.use(this.createContext(options))
+    }
   }
 
   /**

@@ -1,5 +1,4 @@
-import { content } from '../cybr'
-import { Technique, TrackReceive, UseContext } from '../fluid-interfaces'
+import { Technique, UseContext } from '../fluid-interfaces'
 import { AutomationLane, AutomationPoint } from '../FluidAutomation'
 import { FluidPlugin } from '../FluidPlugin'
 import { FluidSession } from '../FluidSession'
@@ -13,7 +12,7 @@ export interface PluginAutoTechniqueClass extends TechniqueClass {
 /**
  * An automation event on a track
  */
- export class TrackAutomation implements Technique {
+export class TrackAutomation implements Technique {
   paramKey : string
   value : number = 0
   curve : number = 0
@@ -50,6 +49,49 @@ export interface AutoOptions {
   curve? : number
 }
 
+export class TrackGainAutomation implements Technique {
+  gainDb : number
+  curve : number = 0
+
+  constructor(options : { gainDb: number, curve?: number }|number) {
+    if (typeof options === 'number') {
+      this.gainDb = options
+    } else {
+      this.gainDb = options.gainDb
+      if (typeof options.curve === 'number') this.curve = options.curve
+    }
+  }
+
+  use(context : UseContext) {
+    new TrackAutomation({ paramKey: 'gainDb', value: this.gainDb, curve: this.curve }).use(context)
+  }
+}
+
+export class TrackGainAutomationRamp implements Technique {
+  gainDb : number
+  curve : number = 0
+
+  constructor(options : { gainDb: number, curve?: number }|number) {
+    if (typeof options === 'number') options = { gainDb: options }
+    this.gainDb = options.gainDb
+    if (typeof options.curve === 'number') this.curve = options.curve
+  }
+
+  use (context : UseContext) {
+    const currentPoint = context.track.automation.gainDb.getLastPointAt(context.startTimeSeconds)
+    const currentValue = (typeof currentPoint?.value === 'number') ? currentPoint.value : 0
+    // Notice that when there are no automation points, the default value is 0,
+    // not track.gainDb. This is because the track automation and track gain are
+    // applied in sequence, and we do not want to apply the track's gainDb twice.
+
+    new TrackGainAutomation({ gainDb: currentValue, curve: this.curve }).use(context)
+    const newStartTime = context.startTime + context.duration
+    const newStartTimeSeconds = context.startTimeSeconds + context.durationSeconds
+    context.startTime = newStartTime
+    context.startTimeSeconds = newStartTimeSeconds
+    new TrackGainAutomation({ gainDb: this.gainDb }).use(context)
+  }
+}
 
 /**
  * Identifies a plugin on an arbitrary track
