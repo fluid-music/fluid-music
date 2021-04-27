@@ -989,7 +989,7 @@ const makeAutomation = {
 }
 export class ZebraletteVst2 extends FluidPlugin {
   constructor(
-    public readonly parameters : ZebraletteVst2Parameters = {},
+    public parameters : ZebraletteVst2Parameters = {},
   ) {
     super(pluginName, pluginType)
     this.vst2.uid = 1397572659

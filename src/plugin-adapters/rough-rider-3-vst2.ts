@@ -135,7 +135,7 @@ const makeAutomation = {
 }
 export class RoughRider3Vst2 extends FluidPlugin {
   constructor(
-    public readonly parameters : RoughRider3Vst2Parameters = {},
+    public parameters : RoughRider3Vst2Parameters = {},
   ) {
     super(pluginName, pluginType)
     this.vst2.uid = 1381118768

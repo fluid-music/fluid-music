@@ -264,7 +264,7 @@ const makeAutomation = {
 }
 export class TCompressorVst2 extends FluidPlugin {
   constructor(
-    public readonly parameters : TCompressorVst2Parameters = {},
+    public parameters : TCompressorVst2Parameters = {},
   ) {
     super(pluginName, pluginType)
     this.vst2.uid = 1131375984

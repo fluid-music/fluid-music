@@ -209,7 +209,7 @@ const makeAutomation = {
 }
 export class DragonflyHallVst2 extends FluidPlugin {
   constructor(
-    public readonly parameters : DragonflyHallVst2Parameters = {},
+    public parameters : DragonflyHallVst2Parameters = {},
   ) {
     super(pluginName, pluginType)
     this.vst2.uid = 1684435505

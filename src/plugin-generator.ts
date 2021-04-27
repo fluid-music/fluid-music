@@ -92,7 +92,7 @@ export interface ${parametersInterfaceName} {
   // Finally create the class itself
   output += `export class ${className} extends FluidPlugin {
   constructor(
-    public readonly parameters : ${parametersInterfaceName} = {},
+    public parameters : ${parametersInterfaceName} = {},
   ) {
     super(pluginName, pluginType)${additionalConstructorStatements}
   }
