@@ -7,7 +7,7 @@ import { FluidAudioFile, resolveFades } from './FluidAudioFile'
 import { vst2ToReaperObject } from './vst2ToReaperObject'
 import * as cybr from './cybr/index';
 import { IpcClient } from './cybr/IpcClient'
-import { Clip, DynamicObject, Tap, MidiNoteEvent } from './fluid-interfaces'
+import { DynamicObject, Tap } from './fluid-interfaces'
 import { FluidMidiClip } from './FluidMidiClip'
 
 const rppp = require('rppp')
@@ -210,7 +210,7 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
           tracktionSessionActivated = true
         }
         try {
-          const vst2 = await vst2ToReaperObject(client, fluidTrack.name, plugin, nth(plugin), session.bpm) // Charles: when this throws, does the calling utility script hang?
+          const vst2 = await vst2ToReaperObject(client, fluidTrack.name, plugin, nth(plugin)) // Charles: when this throws, does the calling utility script hang?
           FXChain.add(vst2)
         } catch (error) {
 

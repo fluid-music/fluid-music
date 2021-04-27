@@ -21,11 +21,10 @@ function makeReaperVstB64PresetName(presetName : string) {
  * @param trackName See documentation for cybr.audiotrack.select()
  * @param plugin Plugin Object
  * @param n nth plugin
- * @param bpm Beats per minute
  *
  * @returns {ReaperVst}
  */
-export async function vst2ToReaperObject(client: IpcClient, trackName: string, plugin: FluidPlugin, n: number, bpm: number) {
+export async function vst2ToReaperObject(client: IpcClient, trackName: string, plugin: FluidPlugin, n: number) {
 
   const cybrType = (plugin.pluginType === PluginType.unknown) ? undefined : plugin.pluginType;
   const pluginName = plugin.pluginName;
@@ -80,7 +79,8 @@ export async function vst2ToReaperObject(client: IpcClient, trackName: string, p
       }
     }
 
-    const pluginReport = await cybr.requests.requestReport(pluginName, cybrType, trackName, n, paramSetters, client);
+    const pauseMs = pluginName.startsWith('#T') ? 120 : 40 // Wait a little longer for #T plugins (this should probably be defined as a Plugin property)
+    const pluginReport = await cybr.requests.requestReport(pluginName, cybrType, trackName, n, paramSetters, client, pauseMs);
 
     if (pluginReport.isSynth !== isSynth) {
       console.warn(`WARNING: mismatched plugin.isSynth found in report for ${plugin.pluginName}. Report:${pluginReport.isSynth}, FluidPlugin:${plugin.isSynth}. (using report value)`)
