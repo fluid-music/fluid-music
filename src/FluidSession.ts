@@ -377,7 +377,9 @@ export class FluidSession {
     return context
   }
 
-  useTechnique(technique : Technique, optionsOrTrackName : ContextOptions|string|FluidTrack) {
+  useTechnique(technique : Technique|Technique[], optionsOrTrackName : ContextOptions|string|FluidTrack) {
+    if (Array.isArray(technique)) return technique.map(t => this.useTechnique(t, optionsOrTrackName))
+
     if (typeof optionsOrTrackName === 'string' || optionsOrTrackName instanceof FluidTrack) {
       technique.use(this.createContext({ track: optionsOrTrackName, duration: 1 }))
     } else {
