@@ -385,7 +385,8 @@ export class FluidSession {
       if (typeof options.duration !== 'number' && typeof options.durationSeconds !== 'number') {
         options.duration = 1
       }
-      technique.use(this.createContext(options))
+      const context = this.createContext(options)
+      technique.use(context)
     }
   }
 

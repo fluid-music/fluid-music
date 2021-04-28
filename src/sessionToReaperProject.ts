@@ -155,13 +155,15 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
       let autoObject: any;
       let normalize  = (v) => v;
 
-      if (name === 'gain' || name === 'gainDb') {
+      if (name === 'gainDb') {
         autoObject = new rppp.objects.ReaperVolumeAutomation();
         normalize = db2Gain;
       } else if (name === 'pan') {
         autoObject = new rppp.objects.ReaperPanAutomation();
       } else if (name === 'width') {
         autoObject = new rppp.objects.ReaperWidthAutomation();
+      } else if (name === 'gain') {
+        throw new Error('FluidTrack.automation.gain is deprecated. use .gainDb instead')
       }
 
       if (!autoObject) {
