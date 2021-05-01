@@ -308,7 +308,7 @@ function fileEventToFluidMessage(audioFile : FluidAudioFile, session : FluidSess
   msg.push(cybr.clip.setSourceOffsetSeconds(sOff))
   msg.push(cybr.clip.lengthSeconds(durationSeconds))
 
-  msg.push(cybr.audioclip.playbackRate(audioFile.playbackRate))
+  msg.push(cybr.audioclip.speedRatio(Math.abs(audioFile.playbackRate)))
   
   const { fadeInSeconds, fadeOutSeconds, gainDb } = resolveFades(audioFile)
 
