@@ -1,5 +1,6 @@
 require('mocha')
 const should = require('should')
+const { audiofile } = require('../built/cybr')
 
 const { FluidAudioFile } = require('../built/FluidAudioFile')
 const { AudioFile : AudioFileTechnique } = require('../built/techniques/')
@@ -54,6 +55,8 @@ describe('test AudioFile', function () {
     const audioFile = new FluidAudioFile(audioFileOptions)
     it ('should calculate the end time within the audio sample based on the plabyack rate', function () {
       audioFile.getEndInSourceSeconds().should.equal(1.5)
+      audioFile.playbackRate = 0.5
+      audioFile.getEndInSourceSeconds().should.equal(1.25)
     })
     it('should work even when the AudioFile has been reversed', function () {
       audioFile.reverse()
@@ -62,7 +65,35 @@ describe('test AudioFile', function () {
   })
 
   describe('reverse method', function () {
-    const audioFile = new FluidAudioFile(audioFileOptions)
+    it ('should update the startInSource seconds to the end of the playback region', function () {
+      const audioFile = new FluidAudioFile(audioFileOptions)
+      audioFile.reverse(true)
+      audioFile.startInSourceSeconds.should.equal(1.5)
+      audioFile.reverse(false)
+      audioFile.startInSourceSeconds.should.equal(1)
+    })
+  })
+  describe('setPlaybackRate method', function () {
+    it ('should adjust the durationSeconds property', function () {
+      const audioFile = new FluidAudioFile({ ...audioFileOptions })
+      audioFile.durationSeconds.should.equal(0.5)
+      audioFile.setPlaybackRate(0.5)
+      audioFile.durationSeconds.should.equal(1)
+    })
+
+    it ('should handle the case when the FluidAudioFile is reversed', function () {
+      const audioFile = new FluidAudioFile({ ...audioFileOptions })
+      audioFile.reverse()
+      audioFile.setPlaybackRate(0.5)
+      audioFile.durationSeconds.should.equal(1)
+      audioFile.isReversed().should.be.false()
+      audioFile.setPlaybackRate(-0.5)
+      audioFile.isReversed().should.be.true()
+    })
+
+    it ('should handle the case when playbackRate !== 1||-1', function () {
+      const audioFile = new FluidAudioFile({ ...audioFileOptions })
+    })
   })
 
   describe('growLeftEdgeBySeconds', function () {

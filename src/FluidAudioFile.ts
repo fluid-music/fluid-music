@@ -185,14 +185,24 @@ export class FluidAudioFile {
   }
 
   /**
-   * Set playbackRate for the clip.
-   * @param {number} ratio the playback ratio in the ranges [-10, -0.02] and [0.02 to 10].
+   * Set playbackRate for the clip, stretching the duration proportionally. A
+   * negative value will result in a reversed clip, where a positive value will
+   * result in a non-reversed clip. If `playbackRate` causes the playback
+   * direction to change, `.startInSource` will also be updated so as to
+   * maintain the playback region within the source audio file.
+   *
+   * Note that cybr only accepts values in [-10, -0.02] and [0.02 to 10].
+   *
+   * @param {number}
    */
-  setPlaybackRate(ratio : number = 1) {
-    this.playbackRate = Math.abs(ratio);
-    return this.reverse(ratio < 0);
+  setPlaybackRate(playbackRate : number = 1) {
+    const end = this.getEndInSourceSeconds()
+    const start = this.startInSourceSeconds
+    this.playbackRate = Math.abs(playbackRate)
+    this.durationSeconds = Math.abs(end - start) / this.playbackRate
+    this.reverse(playbackRate < 0)
+    return this
   }
-
 
   /**
    * Reverse the audio file playback, swapping the in/out fades.
@@ -208,7 +218,7 @@ export class FluidAudioFile {
       this.fadeInSeconds = this.fadeOutSeconds
       this.fadeOutSeconds = fadeInSeconds
     }
-    return this.playbackRate
+    return this
   }
 
   /**
@@ -325,12 +335,14 @@ export class FluidAudioFile {
    */
   growRightEdgeBySeconds(seconds : number) {
     this.durationSeconds += seconds
+    return this
   }
 
   growRightEdgeBySecondsSafe(seconds : number) {
     seconds = Math.min(seconds, this.getTailRightSeconds())
     seconds = Math.max(seconds, -this.durationSeconds)
     this.growRightEdgeBySeconds(seconds)
+    return this
   }
 
   /**
@@ -346,12 +358,14 @@ export class FluidAudioFile {
     this.startInSourceSeconds -= seconds / this.playbackRate
     this.startTimeSeconds -= seconds
     this.durationSeconds += seconds
+    return this
   }
 
   growLeftEdgeBySecondsSafe(seconds : number) {
     seconds = Math.min(seconds, this.getTailLeftSeconds())
     seconds = Math.max(seconds, -this.durationSeconds)
     this.growLeftEdgeBySeconds(seconds)
+    return this
   }
 
   /**
@@ -363,6 +377,7 @@ export class FluidAudioFile {
     this.growRightEdgeBySeconds(this.getTailRightSeconds())
     const warning = this.check()
     if (warning) console.warn('Warning:', warning, this)
+    return this
   }
 }
 
