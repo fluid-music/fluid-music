@@ -305,10 +305,14 @@ function fileEventToFluidMessage(audioFile : FluidAudioFile, session : FluidSess
   const clipName = `${basename(audioFile.path)}.${summativeIndex}`
   const msg = [cybr.audiotrack.insertWav(clipName, startTimeSeconds, audioFile.path)] as any[]
 
-  msg.push(cybr.clip.setSourceOffsetSeconds(sOff))
-  msg.push(cybr.clip.lengthSeconds(durationSeconds))
-
+  // Unlike Reaper (and fluid-music) tracktion measures start offset *after*
+  // applying the playback rate
+  msg.push(cybr.clip.setSourceOffsetSeconds(sOff / audioFile.playbackRate))
+  // tracktion engine tries to help us by adjusting the length when we adjust
+  // the speed ratio. For that reason, we must first set the speed ratio, and
+  // then set the length.
   msg.push(cybr.audioclip.speedRatio(Math.abs(audioFile.playbackRate)))
+  msg.push(cybr.clip.lengthSeconds(durationSeconds))
   
   const { fadeInSeconds, fadeOutSeconds, gainDb } = resolveFades(audioFile)
 
