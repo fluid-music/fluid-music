@@ -4,13 +4,14 @@ const fs = require('fs');
 const fluid = require('..');
 const cybr = fluid.cybr;
 const utilPlugin = require('./util-plugin');
+const utilReaper = require('./util-reaper');
 
 
 const argv = process.argv.slice(2);
 
 let docs = 'usage: fluid [flags] command arg\n\n';
 function addDocstring(name, string) {
-  docs += `${name.padEnd(22, ' ')}- ${string}\n`;
+  docs += `${name.padEnd(21, ' ')} - ${string}\n`;
 };
 
 /** Put all args that are meant to have values here (as opposed to "flags" which
@@ -30,6 +31,7 @@ function addDocstring(name, string) {
  */
 const parsedArgs = {
   "-p": 9999,
+  "-path": null,
   "to": NaN, // typeof NaN === 'number'
   "tempo": NaN,
   "create": null,
@@ -188,6 +190,23 @@ addDocstring('vst2 <plugName>', 'print a commonjs module that exports { plugin: 
 commands.vst2 = async () => {
   const moduleString = await utilPlugin.buildPluginModule(parsedArgs.vst2, 'vst2', client);
   console.log(moduleString);
+};
+
+addDocstring('reaper [-path <reaResource>]', 'Install Reaper reload script. Auto-detect path if not specified.');
+commands.reaper = ()=> {
+  // Find the Reaper resource directory
+  let resourceDir = parsedArgs['-path'] || utilReaper.detectReaperResourcePath();
+  if (!resourceDir || !resourceDir.length) {
+    const msg = 'ERROR: Could not find Reaper resource path. Try specifying like this: \n fluid reaper -path "~/Library/Application Support/REAPER"\n'
+    console.log(msg)
+    throw new Error(msg)
+  }
+
+  if (!path.isAbsolute(resourceDir)) resourceDir = path.join(process.cwd(), resourceDir)
+  const scriptsDir = path.join(resourceDir, 'Scripts');
+
+  console.log(`Installing reaper reload script in: ${scriptsDir}`);
+  utilReaper.installLuaReloadScript(scriptsDir);
 };
 
 addDocstring('help', 'print this help information');
