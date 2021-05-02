@@ -91,8 +91,8 @@ So far, Fluid Music is only manipulating audio metadata. You haven't used any of
     - The **MacOS** `.pkg` installer puts `cybr` in `/usr/local/bin/`.
     - On most **Linux** systems, `/usr/local/bin/` is also a good place to put the `cybr` executable.
     - On **Windows** there are several options for putting executables in your `PATH`. I successfully used the technique in [this StackOverflow answer](https://stackoverflow.com/a/44593425/702912).
-- Because *Steinberg Media Technologies GmbH*, is no longer allowing developers to distribute VST2 sdk, cybr uses the open source `FST` headers, for VST2 support.
 - VST3 plugins are not yet supported. Most of the work for supporting VST3s is complete. It will not be fully complete until after I graduate (Summer 2021).
+- VST2 plugins are supported thanks to the open source [FST headers](https://github.com/pierreguillot/FTS)
 
 To verify that `cybr` is installed, run the following help command in your terminal:
 
