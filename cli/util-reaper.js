@@ -66,13 +66,13 @@ reaper.adjustZoom(zoomLevel, 1, true, -1);
   }
 
   if (alreadyInstalled) {
-    console.log(`Reload script already installed in: ${iniFilename}`)
+    console.log(`Reload script already installed in: ${iniFilename}`);
   } else {
     console.log(`Installing reload script to:        ${iniFilename}`);
     const newIniFileRawText = 'SCR 4 0 RS28b8414773d3307e62c10c33b12f109807000000 "Custom: reload.lua" reload.lua\r\n' + iniFileRawText;
     // Consider adding this line to bind to Command+R on Mac:
     // KEY 9 82 _RS28b8414773d3307e62c10c33b12f109807000000 0
-    fs.writeFileSync(iniFilename, newIniFileRawText)
+    fs.writeFileSync(iniFilename, newIniFileRawText);
   }
 }
 
