@@ -37,7 +37,8 @@ Fluid Music scores can:
 
 ## Stability
 
-The Fluid Music API has **not yet stabilized**. However, there will be **no major changes** prior to version `1.0`.
+The Fluid Music API is in beta, and has **not yet stabilized**. However, there will be **no major changes** prior to version `1.0`. See [About Fluid Music](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/about.md) and [Useful, Welcoming Software](https://web.media.mit.edu/~holbrow/post/useful-welcoming-software/) for more details.
+
 
 ## Learn More
 
@@ -53,5 +54,3 @@ The Fluid Music API has **not yet stabilized**. However, there will be **no majo
 Fluid Music aims to be:
 - *Useful* for creating music that people care about
 - *Welcoming* to developers with a wide variety of backgrounds
-
-However, the `fluid-music` library is currently in beta. While the core is well tested and reasonably robust, it still has some sharp edges. See [About Fluid Music](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/about.md) and [Useful, Welcoming Software](https://web.media.mit.edu/~holbrow/post/useful-welcoming-software/) for more details.
