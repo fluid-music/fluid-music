@@ -203,10 +203,8 @@ commands.reaper = ()=> {
   }
 
   if (!path.isAbsolute(resourceDir)) resourceDir = path.join(process.cwd(), resourceDir)
-  const scriptsDir = path.join(resourceDir, 'Scripts');
 
-  console.log(`Installing reaper reload script in: ${scriptsDir}`);
-  utilReaper.installLuaReloadScript(scriptsDir);
+  utilReaper.installLuaReloadScript(resourceDir);
 };
 
 addDocstring('help', 'print this help information');
