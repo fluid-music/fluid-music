@@ -37,8 +37,7 @@ Fluid Music scores can:
 
 ## Stability
 
-The Fluid Music API is **not yet stable**. However, it has been through several
-iterations, and there will **not be major changes** prior to version `1.0`.
+The Fluid Music API has **not yet stabilized**. However, there will be **no major changes** prior to version `1.0`.
 
 ## Learn More
 
