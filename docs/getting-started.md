@@ -121,7 +121,9 @@ CoreAudio
 ...
 ```
 
-Note that `--list-io` output will look different depending on your OS version and connected audio hardware. I want `cybr` to play audio from the headphone jack on my MacBook laptop, so I'll run the server like this:
+Note that `--list-io` output will look different depending on your OS version and connected audio hardware.
+
+`cybr` will try to guess which device you want to use for playback. You can use the `--device-out` argument to choose a device explicitly. I want `cybr` to play audio from the headphone jack on my MacBook laptop, so I'll run the server like this:
 
 ```bash
 cybr --device-out="External Headphones" -f
