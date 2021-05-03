@@ -149,7 +149,7 @@ Now you can use the following `fluid` commands in your terminal to start and sto
 
 ```bash
 fluid play  # Start playback
-fluid to 0  # Restart playback from the beginning
+fluid to 1  # Restart playback from the beginning (measure no. 1)
 fluid stop  # Stop (Pause)
 fluid render beat.wav # render a .wav file (offline)
 ```
@@ -158,16 +158,17 @@ fluid render beat.wav # render a .wav file (offline)
 
 Let's create a session with a VST plugin. In this example, we'll use the excellent (free) Podolski VST2 plugin. [Download and install Podolski](https://u-he.com/products/podolski/) before proceeding. It's best to install plugins in the default location so that `cybr` knows where to find them.
 
-The `cybr` server needs to scan for plugins before it can load them. Switch back to your terminal tab that is running the server, and use `ctrl+c` to stop the server. Use the `cybr --scan-plugins` command to search your machine for plugins. If one of your plugins crashes, it will be skipped on subsequent scans, so you may need to scan more than once if `cybr` encounters unstable plugins.
-
-Once you have finished scanning, use the `cybr --list-plugins` to verify the `Podolski` plugin was found.
+The `cybr` server is effectively a DAW with no graphical user interface. Like a DAW, `cybr` needs to scan for VST plugins before it can load them. Switch back to your terminal tab where the cybr server is running. Stop the server using `ctrl+c`.
 
 ```bash
-# Some useful cybr commands
-cybr --scan-plugins          # Scan for plugins, adding them to the settings file
-cybr --list-plugins          # List available plugins
-cybr --print-config-filename # Print the complete settings filename.
+# Switch back to your terminal tab where cybr is running and stop the server with ctrl+c. Then run:
+`cybr --scan-plugins` # search your machine for plugins
+`cybr --list-plugins` # verify the `Podolski` plugin was found
 ```
+
+Check the output of the `--list-plugins` and verify that it found the Podolski VST2 plugin.
+
+**Note:** found plugins are stored in a configuration file, which can be located with the `cybr --print-config-filename` command. This can be helpful when troubleshooting.
 
 Re-open reaper (when Reaper opens, it will scan for new plugins, finding the newly installed Podolski plugin in the process). Go back to your terminal, and restart `cybr -f`, specifying `--device-out="Some Device"` if needed. If you do not specify a `--device-out`, `cybr` will pick one for you.
 
