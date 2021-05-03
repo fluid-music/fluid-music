@@ -33,7 +33,8 @@
     "vst2-preset-parser": "^0.1.1"
   },
   "bin": {
-    "fluid": "./cli/cli.js"
+    "fluid": "./cli/cli.js",
+    "fluidm": "./cli/cli.js"
   },
   "repository": {
     "type": "git",
