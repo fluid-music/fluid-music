@@ -166,6 +166,8 @@ The `cybr` server is effectively a DAW with no graphical user interface. Like a 
 `cybr --list-plugins` # verify the `Podolski` plugin was found
 ```
 
+**IMPORTANT:** If `cybr --scan-plugins` crashes while attempting to scan a plugin, the plugin that caused the crash will be skipped on subsequent scans. As a result, you may need to run `cybr --scan-plugins` multiple times (once for each plugin that crashes). There are a lot of dodgy VST plugins out there.
+
 Check the output of the `--list-plugins` and verify that it found the Podolski VST2 plugin.
 
 **Note:** found plugins are stored in a configuration file, which can be located with the `cybr --print-config-filename` command. This can be helpful when troubleshooting.
