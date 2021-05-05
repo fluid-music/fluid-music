@@ -78,7 +78,7 @@ export function version(semverPatternOrHandler? : string | ((error: number, cybr
         console.warn('WARNING: fluid-music connected to an obsolete cybr instance. Consider updating cybr.')
       }
       if (!semverSatisfies(cybrVersionString.value, semverPatternOrHandler)) {
-        console.warn(`WARNING: fluid-music connected to cybr ${cybrVersionString.value} which does not satisfy ${semverPatternOrHandler}. Consider updating cybr.`)
+        console.warn(`WARNING: fluid-music connected to cybr ${cybrVersionString.value} which does not satisfy ${semverPatternOrHandler}`)
       }
     }
   } else if (typeof semverPatternOrHandler === 'function') {

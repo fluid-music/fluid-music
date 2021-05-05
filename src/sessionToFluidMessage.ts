@@ -29,7 +29,7 @@ const createSelectMessage = (track : FluidTrack, parentName? : string) => {
  */
 export function sessionToTemplateFluidMessage(session : FluidSession) {
   const sessionMessages : any[] = [
-    cybr.global.version('0.3.0'),
+    cybr.global.version('^0.3.0'),
     cybr.tempo.set(session.bpm),
   ]
 
