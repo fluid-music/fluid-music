@@ -1,6 +1,6 @@
 {
   "name": "fluid-music",
-  "version": "0.9.5",
+  "version": "0.9.6-beta.0",
   "description": "computational music production",
   "main": "built/index.js",
   "types": "built/index.d.ts",
