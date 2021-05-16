@@ -36,7 +36,7 @@ function makeBandMethod (band) {
 
 const extraMethods = [1, 2, 3, 4, 5, 6, 7, 8].map(makeBandMethod).join('\n') + '\n'
 const className = 'TEqualizerVst2' // I'm going to spell the class name correctly (even though they don't)
-const moduleString = fluid.gen.generatePluginModule(tEqualizerVst2, { className, extraMethods })
+const moduleString = fluid.gen.generatePluginModule(tEqualizerVst2, { className, extraMethods, internal: true })
 
 const fs = require('fs')
 const path = require('path')

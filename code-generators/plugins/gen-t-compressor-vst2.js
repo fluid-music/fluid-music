@@ -10,7 +10,7 @@ for (const paramInfo of tCompReport.params) {
   else if (paramInfo.name === 'Ratio') paramInfo.powerFuncB = 5
 }
 
-const moduleString = fluid.gen.generatePluginModule(tCompReport)
+const moduleString = fluid.gen.generatePluginModule(tCompReport, { internal: true })
 const fs = require('fs')
 const path = require('path')
 const filename = path.join(__dirname, '..', '..', 'src', 'plugin-adapters', 't-compressor-vst2.ts')

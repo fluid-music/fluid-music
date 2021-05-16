@@ -15,7 +15,7 @@ for (const paramInfo of tStereoDelayVst2.params) {
   }
 }
 
-const moduleString = fluid.gen.generatePluginModule(tStereoDelayVst2)
+const moduleString = fluid.gen.generatePluginModule(tStereoDelayVst2, { internal: true })
 
 const fs = require('fs')
 const path = require('path')

@@ -7,7 +7,7 @@ for (const paramInfo of freqEchoReport.params) {
   }
 }
 
-const moduleString = fluid.gen.generatePluginModule(freqEchoReport, { className: 'DragonflyHallVst2' })
+const moduleString = fluid.gen.generatePluginModule(freqEchoReport, { className: 'DragonflyHallVst2', internal: true })
 
 const fs = require('fs')
 const path = require('path')

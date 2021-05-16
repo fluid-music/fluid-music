@@ -19,7 +19,7 @@ for (const paramInfo of zebraletteReport.params) {
   }
 }
 
-const moduleString = fluid.gen.generatePluginModule(zebraletteReport)
+const moduleString = fluid.gen.generatePluginModule(zebraletteReport, { internal: true })
 
 const fs = require('fs')
 const path = require('path')

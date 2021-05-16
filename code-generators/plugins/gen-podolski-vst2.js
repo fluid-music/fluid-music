@@ -10,7 +10,7 @@ for (const paramInfo of tCompReport.params) {
 // start of the string.
 tCompReport.pluginName = 'Podolski'
 
-const moduleString = fluid.gen.generatePluginModule(tCompReport, { className: 'PodolskiVst2' })
+const moduleString = fluid.gen.generatePluginModule(tCompReport, { className: 'PodolskiVst2', internal: true })
 
 const fs = require('fs')
 const path = require('path')

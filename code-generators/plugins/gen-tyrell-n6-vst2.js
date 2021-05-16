@@ -11,7 +11,7 @@ for (const paramInfo of tCompReport.params) {
     paramInfo.units = ''
 }
 
-const moduleString = fluid.gen.generatePluginModule(tCompReport)
+const moduleString = fluid.gen.generatePluginModule(tCompReport, { internal: true })
 
 const fs = require('fs')
 const path = require('path')

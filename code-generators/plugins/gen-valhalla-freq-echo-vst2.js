@@ -57,7 +57,7 @@ for (const paramInfo of freqEchoReport.params) {
   }
 }
 
-const moduleString = fluid.gen.generatePluginModule(freqEchoReport)
+const moduleString = fluid.gen.generatePluginModule(freqEchoReport, { internal: true })
 
 const fs = require('fs')
 const path = require('path')
