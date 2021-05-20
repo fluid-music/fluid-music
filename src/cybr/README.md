@@ -1,6 +1,6 @@
 # Cybr Client
 
-Fluid music is written in JavaScript. However, under the hood, `fluid-music` interacts with the [cybr server](../../../server), which is responsible for processing audio, hosting VST plugins, and other tasks.
+Fluid music is written in JavaScript. However, under the hood, `fluid-music` interacts with the [cybr server](https://github.com/fluid-music/cybr), which is responsible for processing audio, hosting VST plugins, and other tasks.
 
 This "`cybr`" client module is used to communicate with the server. It does this through collection of methods that can control the behavior of the server. It is easiest to understand with an example:
 

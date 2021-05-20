@@ -301,14 +301,14 @@ export class FluidAudioFile {
 
   /**
    * The "left tail" is the source content that gets trimmed during playback
-   * when (for example), the `.startInSourceSeconds` offsets the beginning
-   * of the playback within the underlying source audio file.
+   * when (for example), the `.startInSourceSeconds` offsets the beginning of
+   * the playback within the underlying source audio file.
    *
    * If the `.startInSourceSeconds` property is 1, then the "left tail" will
-   * also be 1 (assuming `.playbackRate == 1` and `.startInSourceSeconds == 0`).
+   * also be 1 (assuming `.playbackRate == 1`).
    *
-   * This method will calculate the duration of the lead-in tail even when
-   * audio is playing in reverse (because of a negative `.playbackRate`)
+   * This method will calculate the duration of the lead-in tail correctly even
+   * when audio is playing in reverse (because of a negative `.playbackRate`)
    *
    * Note that there is an inverse relationship between the absolute value of
    * `.playbackRate` and the tail length, because slowing the playback rate of
