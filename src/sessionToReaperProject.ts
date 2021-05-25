@@ -28,9 +28,9 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
   if (!session.bpm) throw new Error('Cannot create reaper project: session BPM must be non-zero')
 
   // If the user does not pass in a client, we will create one automatically. In
-  // the event that a client is created automatically, we want to close it
-  // close it when then method returns. However, if the user passed in a client,
-  // we must not close that client on behalf of the user.
+  // the event that a client is created automatically, we want to close it when
+  // this method returns. However, if the user passed in a client, we must not
+  // close that client on behalf of the user.
   //
   // Note that we don't want to create the client here, because it may not be
   // needed - it is only used when the session contains one or more VST plugins.
