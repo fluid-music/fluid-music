@@ -21,6 +21,14 @@ export function save(filename? : string, samplePathMode? : string) {
 }
 
 /**
+ * Ask cybr to render a file, and return the result. This is an experimental
+ * feature available in cybr 0.3.2.
+ */
+export function requestRenderedWavFile() {
+  return { address: '/file/renderer/get/wav/' }
+}
+
+/**
  * Request that the server change its working directory.
  * @param {String} path - target working directory
  */
