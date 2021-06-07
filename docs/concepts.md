@@ -2,9 +2,9 @@
 
 The following concepts underpin the Fluid Music framework. The concepts below build on each other, so this document is most helpful when read start-to-finish.
 
-1. [Rhythm String](#rhythm-strings)
-1. [Pattern String](#pattern-strings)
-1. [Technique (Library)](#technique-library)
+1. [Rhythm String](#rhythm-string)
+1. [Pattern String](#pattern-string)
+1. [Technique (Library)](#technique-libraries)
 1. [Score](#score)
 1. [Session](#session)
 1. [Next Steps](#next-steps)
