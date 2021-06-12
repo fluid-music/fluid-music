@@ -3,12 +3,45 @@ import { gainToDb, clamp } from './converters'
 /** AudioFile playback modes */
 export enum AudioFileMode {
   /**
-   * In this default mode, a `'1234'` rhythm  string, combined with a `'s...'`
-   * will trim the length of the inserted audio file to a quarter note. */
-  Event = 1,
+   * In this default mode, the duration of the audio item on a track will simply
+   * follow the audio file's `durationSeconds` property. `durationSeconds`
+   * defaults to the length of the source file, so if no custom
+   * `durationSeconds` is specified on an audio file, `Basic` mode will function
+   * similarly to `OneShot` mode.
+   *
+   * ```
+   * // Create an AudioFile technique that truncates playback after 0.5 seconds
+   * const tambourine = new fluid.techniques.AudioFile({
+   *   mode: fluid.AudioFileMode.Basic
+   *   path: '/tambourine.wav',
+   *   info: { duration: 1.234 } // specifies source file length in seconds
+   *   durationSeconds: 0.5,     // stop playback after 0.5 seconds
+   *   fadeOutSeconds: 0.1,
+   * })
+   * ```
+   */
+  Basic = 1,
   // Even though ts docs imply otherwise, enums indices may start on 0 if we do
   // not specify = 1. This causes a bug when we check for the presence of an
   // optional AudioFileMode member with `if (event.mode)`
+
+  /**
+   * In this mode, the audio item length will be taken from the [[UseContext]]'s
+   * `durationSeconds` property. As a result, when using `session.insertScore`,
+   * a `'1234'` rhythm  string, combined with a `'t...'` pattern string will
+   * trim the length of the inserted audio file to a quarter note.
+   *
+   * ```
+   * const tambourine = new fluid.techniques.AudioFile({ path: '/tambourine.wav', info: { duration: 1.234 } })
+   * tambourine.mode = fluid.AudioFileMode.Event
+   * session.insertScore({
+   *   tLibrary: { t: tambourine )},
+   *   r      '1234',
+   *   drums: 't.t.',
+   * })
+   * ```
+   * */
+  Event,
 
   /**
    * The OneShot mode plays the file to its conclusion, ignoring the event
@@ -78,18 +111,21 @@ export class FluidAudioFile {
     }
 
     this.path = options.path
+    if (options.mode) this.mode = options.mode
+    if (options.info) this.info = options.info
+    if (options.markers) this.setMarkers(options.markers)
     if (typeof options.fadeInSeconds === 'number') this.fadeInSeconds = options.fadeInSeconds
     if (typeof options.fadeOutSeconds === 'number') this.fadeOutSeconds = options.fadeOutSeconds
     if (typeof options.gainDb === 'number') this.gainDb = options.gainDb
     if (typeof options.pan === 'number') this.pan = options.pan
     if (typeof options.startInSourceSeconds === 'number') this.startInSourceSeconds = options.startInSourceSeconds
     if (typeof options.startTimeSeconds === 'number') this.startTimeSeconds = options.startTimeSeconds
-    if (typeof options.durationSeconds === 'number') this.durationSeconds = options.durationSeconds
     if (typeof options.playbackRate === 'number') this.playbackRate = options.playbackRate
     if (typeof options.pitchSemitones === 'number') this.pitchSemitones = options.pitchSemitones
-    if (options.mode) this.mode = options.mode
-    if (options.info) this.info = options.info
-    if (options.markers) this.setMarkers(options.markers)
+    if (typeof options.durationSeconds === 'number') this.durationSeconds = options.durationSeconds
+    else this.durationSeconds = this.getSourceDurationSeconds()
+
+
 
     // If the user did not specify durationSeconds, assume the region of
     // interest ends at the end of the source file
@@ -117,7 +153,7 @@ export class FluidAudioFile {
   /** Stereo pan as bipolar number form -1 to 1 */
   pan : number = 0
   /** Audio file playback mode. See [[AudioFileMode]] */
-  mode : AudioFileMode = AudioFileMode.Event
+  mode : AudioFileMode = AudioFileMode.Basic
   /** Information and metadata pertaining to the source audio file */
   info : AudioFileInfo = {}
   /** Named events within the source file */
@@ -128,10 +164,11 @@ export class FluidAudioFile {
 
   /**
    * durationSeconds specifies the length of the playback event measured on the
-   * main timeline. To calculate where in the source audio file playback ends,
-   * use `.getEndInSourceSeconds()`.
+   * main timeline. If this is shorter than the underlying source audio file,
+   * playback of the audio file will be truncated. To calculate where in the
+   * source audio file playback ends, use `.getEndInSourceSeconds()`.
    */
-  durationSeconds : number = 1
+  durationSeconds : number
 
   /**
    * startInSourceSeconds specifies the beginning of the region of interest
@@ -147,6 +184,14 @@ export class FluidAudioFile {
    */
   startInSourceSeconds : number = 0
 
+  /**
+   * Audio file playback rate. Setting this to 0.5 will playback they audio at
+   * half speed (and an octave lower). Setting this to a negative value will
+   * case reverse playback. If this is set to a negative value,
+   * `startInSourceSeconds` should be set to a positive value.  Note that you
+   * use also use the `.reverse()` method which will update the startInSource
+   * value for you.
+   */
   playbackRate : number = 1
 
   /** Adjust the pitch of the sample in semitones.cents */

@@ -2,7 +2,8 @@ require('mocha')
 const should = require('should')
 const { audiofile } = require('../built/cybr')
 
-const { FluidAudioFile } = require('../built/FluidAudioFile')
+const { FluidSession } = require('../built/FluidSession')
+const { FluidAudioFile, AudioFileMode } = require('../built/FluidAudioFile')
 const { AudioFile : AudioFileTechnique } = require('../built/techniques/')
 
 
@@ -132,6 +133,58 @@ describe('test AudioFile', function () {
       const copy = AudioFileTechnique.copy(technique)
       technique.should.deepEqual(copy)
       technique.should.not.equal(copy)
+    })
+  })
+
+  describe('AudioFile modes', function () {
+    let session
+    let t
+    beforeEach(() => {
+      session = new FluidSession({}, [{ name: 'main'}] )
+      t = new AudioFileTechnique({
+        path: '/tambourine.wav',
+        durationSeconds: 0.5,
+        info: { duration: 1.234 },
+      })
+    })
+
+    describe('Basic mode', function () {
+      it('should obey the durationSeconds property', function () {
+        t.mode = AudioFileMode.Basic
+        session.useTechnique(t, { track: 'main', durationSeconds: 500})
+        session.finalize()
+
+        const aFile = session.getTrackByName('main').audioFiles[0]
+        should.exist(aFile)
+        aFile.durationSeconds.should.equal(0.5)
+        aFile.getSourceDurationSeconds().should.equal(1.234)
+      })
+    })
+
+    describe('OneShot mode', function () {
+      it('should get its duration from the source', function () {
+        t.mode = AudioFileMode.OneShot
+        session.useTechnique(t, { track: 'main', durationSeconds: 500 })
+        session.finalize()
+
+        const aFile = session.getTrackByName('main').audioFiles[0]
+        should.exist(aFile)
+        aFile.durationSeconds.should.equal(1.234)
+        aFile.getSourceDurationSeconds().should.equal(1.234)
+      })
+    })
+
+    describe('Event mode', function () {
+      it('should get its duration from the event durationSeconds', function () {
+        t.mode = AudioFileMode.Event
+        session.useTechnique(t, { track: 'main', durationSeconds: 1.1 })
+        session.finalize()
+
+        const aFile = session.getTrackByName('main').audioFiles[0]
+        should.exist(aFile)
+        aFile.durationSeconds.should.equal(1.1)
+        aFile.getSourceDurationSeconds().should.equal(1.234)
+      })
     })
   })
 })
