@@ -122,16 +122,12 @@ export class FluidAudioFile {
     if (typeof options.startTimeSeconds === 'number') this.startTimeSeconds = options.startTimeSeconds
     if (typeof options.playbackRate === 'number') this.playbackRate = options.playbackRate
     if (typeof options.pitchSemitones === 'number') this.pitchSemitones = options.pitchSemitones
+
+    // Set durationSeconds last to ensure any properties that may influence the
+    // maximum duration (ex. startInSourceSeconds and playbackRate) will be set
+    // before we call getMaxDurationSeconds().
     if (typeof options.durationSeconds === 'number') this.durationSeconds = options.durationSeconds
-    else this.durationSeconds = this.getSourceDurationSeconds()
-
-
-
-    // If the user did not specify durationSeconds, assume the region of
-    // interest ends at the end of the source file
-    if (!options.durationSeconds && this.info.duration) {
-      this.durationSeconds = this.info.duration - this.startInSourceSeconds
-    }
+    else this.durationSeconds = this.getMaxDurationSeconds()
 
     const errorMessage = this.check()
     if (errorMessage) {
@@ -158,7 +154,6 @@ export class FluidAudioFile {
   info : AudioFileInfo = {}
   /** Named events within the source file */
   markers = new Map<string, number>()
-
   /** The time within the parent (track) that this sample will be triggered */
   startTimeSeconds : number = 0
 
