@@ -39,15 +39,15 @@ Fluid Music scores can:
 
 The Fluid Music API is in beta, and has **not yet stabilized**. However, there will be **no major changes** prior to version `1.0`.
 
-See [About Fluid Music](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/about.md) for more details.
+See [About Fluid Music](https://github.com/fluid-music/fluid-music/blob/main/docs/about.md) for more details.
 
 ## Learn More
 
 - **[Closed Beta Test](https://web.media.mit.edu/~holbrow/project/fluid-music-beta/)**
-- [Getting Started Guide](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/getting-started.md)
-- [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md)
+- [Getting Started Guide](https://github.com/fluid-music/fluid-music/blob/main/docs/getting-started.md)
+- [Fluid Music Concepts](https://github.com/fluid-music/fluid-music/blob/main/docs/concepts.md)
 - [API Documentation](https://fluid-music.github.io/modules.html)
-- [About](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/about.md)
+- [About](https://github.com/fluid-music/fluid-music/blob/main/docs/about.md)
 - [Gitter room (Fluid Music Chat)](https://gitter.im/fluid-music/community)
 
 ## Goals

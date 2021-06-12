@@ -2,7 +2,7 @@
 
 In this practical guide, we'll create a brief composition using the `fluid-music` npm library.
 
-**NOTE:** This "Getting Started" guide aims to be concise. It also obscures the power and flexibility of Fluid Music. For a deeper understanding, read [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md) first.
+**NOTE:** This "Getting Started" guide aims to be concise. It also obscures the power and flexibility of Fluid Music. For a deeper understanding, read [Fluid Music Concepts](https://github.com/fluid-music/fluid-music/blob/main/docs/concepts.md) first.
 
 **NOTE:** This guide shows Fluid Music working with external (free) audio software. You can install these as-needed, or you can install them all upfront:
 
@@ -244,12 +244,12 @@ const chordLibrary = {
 }
 ```
 
-Many `fluid-music` techniques are implemented as classes with a `.use(context)` method (see the [MidiChord source code](https://github.com/CharlesHolbrow/fluid-music/blob/ec73a3fc40c1c751f866e9322a37d269091935dd/fluid-music/src/techniques/basic.ts#L178-L193)). This means that we can use the familiar `new` keyword to create objects that have a `.use` function. As we described in [Fluid Music Concepts](https://github.com/CharlesHolbrow/fluid-music/blob/main/docs/concepts.md#technique-library), objects with a `.use` method are valid techniques, and may be used in a `tLibrary` object.
+Many `fluid-music` techniques are implemented as classes with a `.use(context)` method (see the [MidiChord source code](https://github.com/fluid-music/fluid-music/blob/ec73a3fc40c1c751f866e9322a37d269091935dd/fluid-music/src/techniques/basic.ts#L178-L193)). This means that we can use the familiar `new` keyword to create objects that have a `.use` function. As we described in [Fluid Music Concepts](https://github.com/fluid-music/fluid-music/blob/main/docs/concepts.md#technique-library), objects with a `.use` method are valid techniques, and may be used in a `tLibrary` object.
 
 Notice how the `chordLibrary` object is specified as the default `tLibrary` for the `padA` track on line 28. When you call `.insertScore`, and the score parser encounters a character (like `a` or `b`) it will first look in the `score` object for a matching technique, before searching the track `tLibrary`. Finally it checks if the underlying `session` has a tLibrary containing the character. The score parser will throw an error if it cannot find a technique with the specified character, so make sure that your score objects only include characters that you have in your technique libraries.
 
 Another new feature in the score above is the Podolski VST plugin instance. Take a quick look at the
-[Podolski preset source code](https://github.com/CharlesHolbrow/fluid-music/blob/main/fluid-music/src/plugin-adapters/podolski-vst2-presets.ts) to see how these plugins are instantiated. You can create your own presets the same way, but for now, let's just modify the `padB` plugin preset. We will decrease the filter cutoff frequency to create a "dark" pad sound. Uncomment line 16 (`padSynthB.parameters.vcf0Cutoff = 0`) so that lines 13-16 look like this:
+[Podolski preset source code](https://github.com/fluid-music/fluid-music/blob/main/fluid-music/src/plugin-adapters/podolski-vst2-presets.ts) to see how these plugins are instantiated. You can create your own presets the same way, but for now, let's just modify the `padB` plugin preset. We will decrease the filter cutoff frequency to create a "dark" pad sound. Uncomment line 16 (`padSynthB.parameters.vcf0Cutoff = 0`) so that lines 13-16 look like this:
 
 ```javascript
 // Instantiate a Podolski VST2 plugin from a preset
