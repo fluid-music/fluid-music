@@ -13,11 +13,11 @@ import { FluidMidiClip } from './FluidMidiClip'
 const rppp = require('rppp')
 
 // Reaper appears to store gain as a simple numeric multiplier. I am choosing a
-// max value of 12 db. Remember that this is equivalent to voltage gain, so we
+// max value of 24 db. Remember that this is equivalent to voltage gain, so we
 // use 20 for the denominator in the equation below. This means that 6.02 db of
 // gain is approximately equal to a gain factor of 2. Remember Power=Voltage^2
 // which is how the 20 ends up in the db equation instead of 10.
-const db2Gain = (db) => Math.pow(10, Math.min(db, 12) / 20)
+const db2Gain = (db) => Math.pow(10, Math.min(db, 24) / 20)
 
 /**
  * Create a `ReaperProject` from a `FluidSession`
