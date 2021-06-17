@@ -71,13 +71,13 @@ However, the VST2 format also comes with non-trivial disadvantages:
 
 - The VST2 standard is not open. Steinberg, the company that created the format,
   does not allow anyone without an existing license to distribute VST2 plugins
-  or VST2 hosts. This means that for now, only users who already have access to
-  the VST2 SDK can use plugins in the Fluid Music. This is probably the biggest
-  limitation of Fluid Music that needs to be addressed before `v1.0.0`
+  or VST2 hosts that use the official SDK.
+  **The Fluid Music framework uses the  GPL [FST](https://github.com/pierreguillot/FTS) headers instead of the  official SDK, so that it can be legally distributed.**
+  So far this has worked well.
 - VST plugin state is not always fully configurable from the host - certain VST2
   parameters (on certain VST2 plugins) can only be modified from the plugin's
-  GUI. This means that a VST2s are not currently fully-configurable in Fluid
-  Music.
+  GUI. To configure non-automatable parameters, you must use a DAW to save a
+  plugin preset, and then load that preset in fluid music.
 - The format is not well defined, and different plugin hosts support slightly
   different feature sets.
 - Sometimes simple modular audio primitives like delays or oscillators are
