@@ -82,7 +82,13 @@ export function guessIsContinuous(paramInfo: any) {
     const allNumbers = floats.every(f => typeof f === 'number')
     if (!allNumbers) return false
     const allIntegers = floats.every(f => f === Math.floor(f))
-    if (allIntegers) return false
+    // Find the difference between the lowest output and the highest output
+    // value. Note that this is different from the [min, max] range - this is
+    // the max minus the min. Some plugins try to make the ui clean by output
+    // only integers. If range is 100 or greater, assume this is one of those
+    // plugin parameters.
+    const range = Math.abs(floats[floats.length - 1] - floats[0])
+    if (range < 100 && allIntegers) return false
     return true
   }
 
