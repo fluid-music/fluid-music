@@ -42,6 +42,8 @@ const parsedArgs = {
   "vst2": null,
   "vst2plugin": null,
   "vst2params": null,
+  "vst3plugin": null,
+  "vst3params": null,
 };
 
 // For each value, if it has an entry in `parsedArgs`, augment the `parsedArgs`
@@ -191,6 +193,18 @@ commands.vst2 = async () => {
   const moduleString = await utilPlugin.buildPluginModule(parsedArgs.vst2, 'vst2', client);
   console.log(moduleString);
 };
+
+addDocstring('vst3plugin <plugName>', 'print the raw vst3 plugin report');
+commands.vst3plugin = async () => {
+  const report = await utilPlugin.getParamsReport(parsedArgs.vst3plugin, 'vst3', client);
+  console.log(report.plugin);
+}
+
+addDocstring('vst3params <plugName>', 'print the raw vst3 parameter report');
+commands.vst3params = async () => {
+  const report = await utilPlugin.getParamsReport(parsedArgs.vst3params, 'vst3', client);
+  console.log(report.params);
+}
 
 addDocstring('reaper [-path <reaResource>]', 'Install Reaper reload script. Auto-detect path if not specified.');
 commands.reaper = ()=> {
