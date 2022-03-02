@@ -76,6 +76,7 @@ export interface AudioFileOptions extends AudioFileConfig {
 }
 
 export interface AudioFileConfig {
+  name? : string
   path? : string
   fadeOutSeconds? : number
   fadeInSeconds? : number
@@ -122,6 +123,7 @@ export class FluidAudioFile {
     if (typeof options.startTimeSeconds === 'number') this.startTimeSeconds = options.startTimeSeconds
     if (typeof options.playbackRate === 'number') this.playbackRate = options.playbackRate
     if (typeof options.pitchSemitones === 'number') this.pitchSemitones = options.pitchSemitones
+    if (typeof options.name === 'string') this.name = options.name
 
     // Set durationSeconds last to ensure any properties that may influence the
     // maximum duration (ex. startInSourceSeconds and playbackRate) will be set
@@ -156,6 +158,8 @@ export class FluidAudioFile {
   markers = new Map<string, number>()
   /** The time within the parent (track) that this sample will be triggered */
   startTimeSeconds : number = 0
+  /** The name as it should show up in an audio editor */
+  name : string = ''
 
   /**
    * durationSeconds specifies the length of the playback event measured on the

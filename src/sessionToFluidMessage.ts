@@ -302,7 +302,7 @@ function fileEventToFluidMessage(audioFile : FluidAudioFile, session : FluidSess
     else sOff = 0
   }
 
-  const clipName = `${basename(audioFile.path)}.${summativeIndex}`
+  const clipName = audioFile.name.length ? audioFile.name : `${basename(audioFile.path)}.${summativeIndex}`
   const msg = [cybr.audiotrack.insertWav(clipName, startTimeSeconds, audioFile.path)] as any[]
 
   // Unlike Reaper (and fluid-music) tracktion measures start offset *after*

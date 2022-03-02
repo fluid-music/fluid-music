@@ -323,13 +323,13 @@ function fileEventsToReaperObjects(fileEvents : FluidAudioFile[], session : Flui
     const errorMessage = audioFile.check()
     if (errorMessage) {
       console.error(audioFile);
-      throw new Error('fileEventsToReaperObjects: ' + errorMessage);
+      throw new Error('fileEventsToReaperObjects: ' + errorMessage)
     }
 
     const { fadeInSeconds, fadeOutSeconds, gainDb } = resolveFades(audioFile)
 
-    const audioItem = new rppp.objects.ReaperItem();
-    const clipName = `${basename(audioFile.path)}.${eventIndex}`;
+    const audioItem = new rppp.objects.ReaperItem()
+    const clipName = audioFile.name.length ? audioFile.name : `${basename(audioFile.path)}.${eventIndex}`
     audioItem.getOrCreateStructByToken('NAME').params[0] = clipName
     audioItem.getOrCreateStructByToken('POSITION').params[0] = audioFile.startTimeSeconds
     audioItem.getOrCreateStructByToken('SOFFS').params[0] = audioFile.startInSourceSeconds || 0
