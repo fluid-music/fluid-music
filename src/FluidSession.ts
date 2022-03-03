@@ -591,7 +591,8 @@ export function parseScore(
       rhythmObject = tab.parseRhythm(r)
       resultClip = tab.parseTab(rhythmObject, scoreObject, tLibrary);
     } catch (error) {
-      console.error((chalk.reset`{bold.red SCORE ERROR} ${error.message}
+      const message = error instanceof Error ? error.message : 'unknown error'
+      console.error((chalk.reset`{bold.red SCORE ERROR} ${message}
 {green track:}   "${track?.name}"
 {green rhythm:}  "${r}"
 {green pattern:} "${scoreObject}"

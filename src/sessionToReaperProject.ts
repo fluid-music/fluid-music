@@ -215,13 +215,13 @@ export async function sessionToReaperProject(session : FluidSession, client?: Ip
           const vst2 = await vst2ToReaperObject(client, fluidTrack.name, plugin, nth(plugin)) // Charles: when this throws, does the calling utility script hang?
           FXChain.add(vst2)
         } catch (error) {
-
+          const message = error instanceof Error ? error.message : 'unknown error'
           console.warn(
 (chalk.reset`{bold.red WARNING:} fluid-music failed to export the {bold ${plugin.pluginName} (${plugin.pluginType})} plugin.
 It has been omitted from the output Reaper session. If you are sure that it is
 installed, use the {bold $ cybr --list-plugins} and {bold $ cybr --scan-plugins} commands
 to ensure that cybr knows how to find it, and then restart the cybr server.
-{bold.yellow REASON:} ${error.message}
+{bold.yellow REASON:} ${message}
 `)
           )
         }
