@@ -11,7 +11,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "fluid-music": "file:../fluid-music",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.20",
     "ramda": "^0.27.0"
   }
 }
